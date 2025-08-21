@@ -265,8 +265,6 @@ class SnakeMathGame {
         this.currentQuestion = this.generateQuestion()
         this.apples = this.generateApples(this.currentQuestion)
 
-         // 1.5 seconds at 60fps
-
         // Don't pop tail - snake grows
       } else {
         this.score = Math.max(0, this.score - 5)
@@ -561,31 +559,31 @@ class SnakeMathGame {
       return
     }
 
-    // Movement controls: WASD + Arrow keys
-    switch (code) {
-      case "KeyW":
-      case "ArrowUp":
+    // WASD movement
+    switch (key) {
+      case "w":
+      case "arrowup":
         if (!this.paused && this.direction.y === 0) {
           this.direction = { x: 0, y: -1 }
           moved = true
         }
         break
-      case "KeyS":
-      case "ArrowDown":
+      case "s":
+      case "arrowdown":
         if (!this.paused && this.direction.y === 0) {
           this.direction = { x: 0, y: 1 }
           moved = true
         }
         break
-      case "KeyA":
-      case "ArrowLeft":
+      case "a":
+      case "arrowleft":
         if (!this.paused && this.direction.x === 0) {
           this.direction = { x: -1, y: 0 }
           moved = true
         }
         break
-      case "KeyD":
-      case "ArrowRight":
+      case "d":
+      case "arrowright":
         if (!this.paused && this.direction.x === 0) {
           this.direction = { x: 1, y: 0 }
           moved = true
