@@ -614,13 +614,13 @@ class SnakeEnglishGame extends SnakeMathGame {
     const q = questions[Math.floor(Math.random() * questions.length)]
 
     // Shuffle options
-    const shuffled = [...q.options]
+    const shuffled = [...q.options];
     for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
 
-    return { question: q.question, correctAnswer: q.correctAnswer, options: shuffled }
+    return { question: q.question, correctAnswer: q.correctAnswer, options: shuffled };
   }
 }
 
