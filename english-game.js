@@ -117,22 +117,22 @@ class SnakeEnglishGame {
       case "synonym":
         const synonymPairs = {
           easy: [
-            { word: "happy", synonym: "glad", others: ["sad", "angry", "tired"] },
-            { word: "big", synonym: "large", others: ["small", "tiny", "short"] },
-            { word: "fast", synonym: "quick", others: ["slow", "lazy", "calm"] },
+            { word: "happy", synonym: "glad", others: ["sad", "angry"]},
+            { word: "big", synonym: "large", others: ["small", "tiny"] },
+            { word: "fast", synonym: "quick", others: ["slow", "lazy"] },
             { word: "smart", synonym: "clever", others: ["dumb", "silly", "weak"] },
           ],
           medium: [
-            { word: "beautiful", synonym: "gorgeous", others: ["ugly", "plain", "boring"] },
-            { word: "difficult", synonym: "hard", others: ["easy", "simple", "clear"] },
-            { word: "ancient", synonym: "old", others: ["new", "modern", "fresh"] },
-            { word: "enormous", synonym: "huge", others: ["tiny", "small", "mini"] },
+            { word: "beautiful", synonym: "gorgeous", others: ["ugly", "plain",] },
+            { word: "difficult", synonym: "hard", others: ["easy", "simple"] },
+            { word: "ancient", synonym: "old", others: ["new", "modern"] },
+            { word: "enormous", synonym: "huge", others: ["tiny", "small"] },
           ],
           hard: [
-            { word: "meticulous", synonym: "careful", others: ["careless", "sloppy", "rushed"] },
-            { word: "ubiquitous", synonym: "everywhere", others: ["rare", "hidden", "absent"] },
-            { word: "ephemeral", synonym: "temporary", others: ["permanent", "lasting", "eternal"] },
-            { word: "perspicacious", synonym: "insightful", others: ["confused", "blind", "ignorant"] },
+            { word: "meticulous", synonym: "careful", others: ["careless", "sloppy"] },
+            { word: "ubiquitous", synonym: "everywhere", others: ["rare", "hidden"] },
+            { word: "ephemeral", synonym: "temporary", others: ["permanent", "lasting"] },
+            { word: "perspicacious", synonym: "insightful", others: ["confused", "blind"] },
           ],
         }
 
@@ -146,22 +146,22 @@ class SnakeEnglishGame {
       case "antonym":
         const antonymPairs = {
           easy: [
-            { word: "hot", antonym: "cold", others: ["warm", "cool", "mild"] },
-            { word: "up", antonym: "down", others: ["left", "right", "over"] },
-            { word: "day", antonym: "night", others: ["noon", "dawn", "dusk"] },
-            { word: "good", antonym: "bad", others: ["nice", "okay", "fine"] },
+            { word: "hot", antonym: "cold", others: ["warm", "cool"] },
+            { word: "up", antonym: "down", others: ["left", "right"] },
+            { word: "day", antonym: "night", others: ["noon", "dawn"] },
+            { word: "good", antonym: "bad", others: ["nice", "okay"] },
           ],
           medium: [
-            { word: "expand", antonym: "shrink", others: ["grow", "stretch", "widen"] },
-            { word: "brave", antonym: "coward", others: ["bold", "strong", "tough"] },
-            { word: "accept", antonym: "reject", others: ["take", "grab", "hold"] },
-            { word: "create", antonym: "destroy", others: ["make", "build", "form"] },
+            { word: "expand", antonym: "shrink", others: ["grow", "stretch"] },
+            { word: "brave", antonym: "coward", others: ["bold", "strong"] },
+            { word: "accept", antonym: "reject", others: ["take", "grab"] },
+            { word: "create", antonym: "destroy", others: ["make", "build"] },
           ],
           hard: [
-            { word: "abundant", antonym: "scarce", others: ["plenty", "rich", "full"] },
-            { word: "benevolent", antonym: "malicious", others: ["kind", "gentle", "caring"] },
-            { word: "conceal", antonym: "reveal", others: ["hide", "cover", "mask"] },
-            { word: "deteriorate", antonym: "improve", others: ["worsen", "decay", "decline"] },
+            { word: "abundant", antonym: "scarce", others: ["plenty", "rich"] },
+            { word: "benevolent", antonym: "malicious", others: ["kind", "gentle"] },
+            { word: "conceal", antonym: "reveal", others: ["hide", "cover"] },
+            { word: "deteriorate", antonym: "improve", others: ["worsen", "decay"] },
           ],
         }
 
@@ -175,22 +175,22 @@ class SnakeEnglishGame {
       case "spelling":
         const spellingWords = {
           easy: [
-            { correct: "friend", wrong: ["freind", "frend", "freand"] },
-            { correct: "because", wrong: ["becuase", "becase", "becouse"] },
-            { correct: "school", wrong: ["scool", "schol", "skool"] },
-            { correct: "people", wrong: ["peopel", "peple", "poeple"] },
+            { correct: "friend", wrong: ["freind", "frend"] },
+            { correct: "because", wrong: ["becuase", "becase"] },
+            { correct: "school", wrong: ["scool", "schol",] },
+            { correct: "people", wrong: ["peopel", "peple"] },
           ],
           medium: [
-            { correct: "necessary", wrong: ["neccessary", "necesary", "neccesary"] },
-            { correct: "beautiful", wrong: ["beatiful", "beutiful", "beautifull"] },
-            { correct: "separate", wrong: ["seperate", "separete", "seprate"] },
-            { correct: "definitely", wrong: ["definately", "definitly", "definetely"] },
+            { correct: "necessary", wrong: ["neccessary", "necesary"] },
+            { correct: "beautiful", wrong: ["beatiful",  "beautifull"] },
+            { correct: "separate", wrong: ["seperate", "separete", ] },
+            { correct: "definitely", wrong: ["definitly", "definetely"] },
           ],
           hard: [
-            { correct: "accommodate", wrong: ["accomodate", "acomodate", "acommodate"] },
-            { correct: "embarrass", wrong: ["embarass", "embarras", "embbarrass"] },
-            { correct: "occurrence", wrong: ["occurence", "occurance", "occurrance"] },
-            { correct: "privilege", wrong: ["priviledge", "privelege", "privilige"] },
+            { correct: "accommodate", wrong: ["accomodate", "acommodate"] },
+            { correct: "embarrass", wrong: ["embarass", "embbarrass"] },
+            { correct: "occurrence", wrong: ["occurence", "occurrance"] },
+            { correct: "privilege", wrong: ["priviledge",  "privilige"] },
           ],
         }
 
@@ -204,22 +204,22 @@ class SnakeEnglishGame {
       case "grammar":
         const grammarQuestions = {
           easy: [
-            { question: "I ___ going to school", correct: "am", wrong: ["is", "are", "be"] },
-            { question: "She ___ a book", correct: "reads", wrong: ["read", "reading", "readed"] },
-            { question: "They ___ happy", correct: "are", wrong: ["is", "am", "be"] },
-            { question: "He ___ tall", correct: "is", wrong: ["are", "am", "be"] },
+            { question: "I ___ going to school", correct: "am", wrong: ["is", "are"] },
+            { question: "She ___ a book", correct: "reads", wrong: ["read", "reading"]},
+            { question: "They ___ happy", correct: "are", wrong: ["is", "am",] },
+            { question: "He ___ tall", correct: "is", wrong: ["are", "am"] },
           ],
           medium: [
-            { question: "I have ___ this before", correct: "done", wrong: ["did", "do", "doing"] },
-            { question: "She ___ been here", correct: "has", wrong: ["have", "had", "having"] },
-            { question: "If I ___ you...", correct: "were", wrong: ["was", "am", "are"] },
-            { question: "He ___ working yesterday", correct: "was", wrong: ["were", "is", "are"] },
+            { question: "I have ___ this before", correct: "done", wrong: ["did", "do"] },
+            { question: "She ___ been here", correct: "has", wrong: ["have", "had",] },
+            { question: "If I ___ you...", correct: "were", wrong: ["was", "am"] },
+            { question: "He ___ working yesterday", correct: "was", wrong: ["were", "is", ] },
           ],
           hard: [
-            { question: "I wish I ___ there", correct: "were", wrong: ["was", "am", "be"] },
-            { question: "___ you mind?", correct: "Would", wrong: ["Will", "Do", "Are"] },
-            { question: "I ___ rather stay", correct: "would", wrong: ["will", "should", "could"] },
-            { question: "Had I known, I ___ come", correct: "would have", wrong: ["will have", "had", "would"] },
+            { question: "I wish I ___ there", correct: "were", wrong: ["was", "am"] },
+            { question: "___ you mind?", correct: "Would", wrong: ["Will", "Do"] },
+            { question: "I ___ rather stay", correct: "would", wrong: ["will", "should"] },
+            { question: "Had I known, I ___ come", correct: "would have", wrong: ["will have", "had"] },
           ],
         }
 
@@ -442,9 +442,15 @@ class SnakeEnglishGame {
       questionHTML += '<div class="options-container">'
 
       this.currentQuestion.options.forEach((option) => {
+        const colorClass =
+          option.colorName.toLowerCase() === "yellow"
+            ? "apple-yellow"
+            : option.colorName.toLowerCase() === "pink"
+              ? "apple-pink"
+              : "apple-blue"
+
         questionHTML += `<div class="option-item">
-          <span class="option-letter">${option.letter}:</span>
-          <span class="option-color" style="background-color: ${option.color}; color: black; padding: 2px 8px; border-radius: 4px; font-weight: bold;">${option.colorName}</span>
+          <div class="apple-icon ${colorClass}">${option.letter}</div>
           <span class="option-text">${option.text}</span>
         </div>`
       })
@@ -680,6 +686,79 @@ class SnakeEnglishGame {
     this.ctx.fillText(message, this.CANVAS_WIDTH / 2, 70)
   }
 
+  drawAppleIcon(x, y, color, letter) {
+    const centerX = x + this.GRID_SIZE / 2
+    const centerY = y + this.GRID_SIZE / 2
+    const size = Math.min(this.GRID_SIZE - 4) // Adaptive size based on grid
+
+    this.ctx.fillStyle = color
+    this.ctx.beginPath()
+
+    // Apple body (rounded rectangle with curves)
+    const appleWidth = size * 0.8
+    const appleHeight = size * 0.9
+    const appleX = centerX - appleWidth / 2
+    const appleY = centerY - appleHeight / 2 + size * 0.1
+
+    // Create apple shape using bezier curves
+    this.ctx.beginPath()
+    this.ctx.moveTo(appleX + appleWidth * 0.5, appleY)
+    this.ctx.bezierCurveTo(
+      appleX + appleWidth * 0.2,
+      appleY,
+      appleX,
+      appleY + appleHeight * 0.3,
+      appleX,
+      appleY + appleHeight * 0.6,
+    )
+    this.ctx.bezierCurveTo(
+      appleX,
+      appleY + appleHeight * 0.9,
+      appleX + appleWidth * 0.2,
+      appleY + appleHeight,
+      appleX + appleWidth * 0.5,
+      appleY + appleHeight,
+    )
+    this.ctx.bezierCurveTo(
+      appleX + appleWidth * 0.8,
+      appleY + appleHeight,
+      appleX + appleWidth,
+      appleY + appleHeight * 0.9,
+      appleX + appleWidth,
+      appleY + appleHeight * 0.6,
+    )
+    this.ctx.bezierCurveTo(
+      appleX + appleWidth,
+      appleY + appleHeight * 0.3,
+      appleX + appleWidth * 0.8,
+      appleY,
+      appleX + appleWidth * 0.5,
+      appleY,
+    )
+    this.ctx.fill()
+
+    // Apple stem
+    this.ctx.fillStyle = "#8B4513"
+    const stemWidth = Math.max(2, size * 0.05)
+    this.ctx.fillRect(centerX - stemWidth / 2, centerY - size * 0.5, stemWidth, size * 0.2)
+
+    // Apple leaf
+    this.ctx.fillStyle = "#228B22"
+    this.ctx.beginPath()
+    this.ctx.ellipse(centerX + size * 0.15, centerY - size * 0.4, size * 0.1, size * 0.05, Math.PI / 4, 0, 2 * Math.PI)
+    this.ctx.fill()
+
+    // Letter inside apple
+    this.ctx.fillStyle = "white"
+    this.ctx.font = `bold ${Math.max(14, size * 0.4)}px Arial`
+    this.ctx.textAlign = "center"
+    this.ctx.textBaseline = "middle"
+    this.ctx.strokeStyle = "rgba(0,0,0,0.3)"
+    this.ctx.lineWidth = Math.max(1, size * 0.02)
+    this.ctx.strokeText(letter, centerX, centerY + size * 0.05)
+    this.ctx.fillText(letter, centerX, centerY + size * 0.05)
+  }
+
   draw() {
     this.ctx.fillStyle = "#1a1a1a"
     this.ctx.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT)
@@ -723,24 +802,11 @@ class SnakeEnglishGame {
     })
 
     this.apples.forEach((apple) => {
-      // Draw apple with its assigned color
-      this.ctx.fillStyle = apple.color
-      this.ctx.fillRect(
-        apple.x * this.GRID_SIZE + 1,
-        apple.y * this.GRID_SIZE + 1,
-        this.GRID_SIZE - 2,
-        this.GRID_SIZE - 2,
-      )
+      // Find the corresponding letter for this apple
+      const option = this.currentQuestion.options.find((opt) => opt.text === apple.text)
+      const letter = option ? option.letter : "?"
 
-      // Add a subtle border for better visibility
-      this.ctx.strokeStyle = "#000"
-      this.ctx.lineWidth = 1
-      this.ctx.strokeRect(
-        apple.x * this.GRID_SIZE + 1,
-        apple.y * this.GRID_SIZE + 1,
-        this.GRID_SIZE - 2,
-        this.GRID_SIZE - 2,
-      )
+      this.drawAppleIcon(apple.x * this.GRID_SIZE, apple.y * this.GRID_SIZE, apple.color, letter)
     })
 
     if (this.notification && this.notificationTimer > 0) {
