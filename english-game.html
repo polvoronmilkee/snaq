@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Snake Game - SnAQ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='index.html'">← Back to Menu</button>
+    
+    <div class="game-container">
+        <div class="game-board">
+            <h1 class="game-title">English Snake Game</h1>
+            
+            <!-- HUD -->
+            <div class="hud">
+                <div class="score">
+                    Score: <span id="score-value">0</span>
+                </div>
+                <div class="lives">
+                    Lives: <span id="lives-value">3</span>
+                </div>
+                <div class="correct">
+                    Correct: <span id="correct-value">0</span>/<span id="target-value">10</span>
+                </div>
+                <div class="timer" id="timer-display" style="display: none;">
+                    Time: <span id="timer-value">60</span>s
+                </div>
+            </div>
+
+            <!-- Question Section -->
+            <div class="question-section">
+                <div class="question" id="question-display">Loading...</div>
+                <div class="instruction">Eat the apple with the correct answer!</div>
+            </div>
+
+            <!-- Game Canvas -->
+            <div class="canvas-container">
+                <canvas id="game-canvas" width="650" height="350"></canvas>
+                
+                <!-- Game Over Overlay -->
+                <div id="game-over-overlay" class="overlay hidden">
+                    <div class="overlay-content">
+                        <h2 id="game-over-title">Game Over 💀</h2>
+                        <p id="final-score">Final Score: 0</p>
+                        <button id="play-again-btn" class="btn btn-green">Play Again</button>
+                        <button id="menu-btn" class="btn btn-red">Main Menu</button>
+                    </div>
+                </div>
+
+                <!-- Restart Confirmation -->
+                <div id="restart-confirm" class="modal hidden">
+                    <div class="modal-content">
+                        <h3>Restart Game?</h3>
+                        <p>Are you sure you want to restart the current game?</p>
+                        <div class="modal-buttons">
+                            <button id="confirm-restart" class="btn btn-green">Restart</button>
+                            <button id="cancel-restart" class="btn btn-red">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions">
+                <p>Use WASD or Arrow keys to move • Eat correct answers to grow • Avoid wrong answers!</p>
+                <p>All apples are red - look at the letters/words to find the correct answer!</p>
+                <p class="controls">Press SPACE to pause • Press R to restart</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="english-game.js"></script>
+</body>
+</html>

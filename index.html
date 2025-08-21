@@ -3,49 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Snake Game</title>
-    <link rel="stylesheet" href="style.css">
+    <title>SnAQ - Quiz Your Brain, Grow Your Snake!</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="game-container">
-        <div class="game-board">
-            <h1>Math Snake Game</h1>
-            
-            <!-- HUD -->
-            <div class="hud">
-                <div class="score">Score: <span id="score">0</span></div>
-                <div class="lives">Lives: <span id="lives">3</span></div>
-                <div class="correct">Correct: <span id="correct">0</span>/10</div>
-            </div>
+    <div class="landing-container">
+        <!-- Background jungle scene -->
+        <div class="jungle-background">
+            <div class="trees"></div>
+            <div class="grass"></div>
+        </div>
+        
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- Header with logo and tagline -->
+            <header class="game-header">
+                <h1 class="logo">
+                    <span class="sn">Sn</span><span class="aq">AQ</span>
+                </h1>
+                <p class="tagline">Quiz your brain, Grow Your Snake!</p>
+            </header>
 
-            <!-- Question -->
-            <div class="question-section">
-                <div class="question" id="question">Loading...</div>
-                <div class="instruction">Eat the apple with the correct answer!</div>
-            </div>
-
-            <!-- Game Canvas -->
-            <div class="canvas-container">
-                <canvas id="gameCanvas" width="600" height="400"></canvas>
+            <!-- Category selection -->
+            <div class="category-section">
+                <div class="wooden-sign">
+                    <h2>Choose a category</h2>
+                </div>
                 
-                <!-- Game Over Overlay -->
-                <div class="game-over-overlay" id="gameOverlay" style="display: none;">
-                    <div class="game-over-content">
-                        <h2 id="gameOverTitle">Game Over</h2>
-                        <p id="finalScore">Final Score: 0</p>
-                        <button id="playAgainBtn">Play Again</button>
-                    </div>
+                <div class="category-buttons">
+                    <button class="category-btn math-btn" data-category="math">
+                        <span>Mathematics</span>
+                    </button>
+                    <button class="category-btn english-btn" data-category="english">
+                        <span>English</span>
+                    </button>
+                </div>
+                
+                <p class="coming-soon">... more subjects coming soon!</p>
+                
+                <button class="play-btn" id="playBtn" disabled>
+                    <span>PLAY</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Snake character -->
+        <div class="snake-character">
+            <div class="snake-head"></div>
+            <div class="snake-body"></div>
+        </div>
+    </div>
+
+    <!-- Game Mode Modal -->
+    <div id="gameModeModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Game Settings</h3>
+            
+            <div class="setting-group">
+                <h4>Game Mode</h4>
+                <div class="mode-buttons">
+                    <button class="mode-btn" data-mode="quiz">Quiz Mode</button>
+                    <button class="mode-btn" data-mode="endless">Endless Mode</button>
+                    <button class="mode-btn" data-mode="timed">Timed (1 min)</button>
                 </div>
             </div>
-
-            <!-- Instructions -->
-            <div class="instructions">
-                <p>Use arrow keys to move • Eat correct answers to grow • Avoid wrong answers!</p>
-                <p>All apples are red - look at the numbers to find the correct answer!</p>
+            
+            <div class="setting-group">
+                <h4>Difficulty Level</h4>
+                <div class="difficulty-buttons">
+                    <button class="difficulty-btn" data-difficulty="easy">Easy</button>
+                    <button class="difficulty-btn" data-difficulty="medium">Medium</button>
+                    <button class="difficulty-btn" data-difficulty="hard">Hard</button>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button id="startGameBtn" class="start-btn" disabled>Start Game</button>
+                <button id="cancelBtn" class="cancel-btn">Cancel</button>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="landing.js"></script>
 </body>
 </html>
