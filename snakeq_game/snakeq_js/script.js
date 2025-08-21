@@ -276,6 +276,9 @@ class SnakeMathGame {
           this.gameState = "lost"
           this.gameRunning = false
           this.snakeFace = "dead"
+          // Set lives to 0 when game is over
+          this.lives = 0
+          this.updateUI()
           this.showGameOver()
           return
         }
@@ -596,7 +599,59 @@ class SnakeMathGame {
   }
 }
 
-// Initialize the game when the page loads
+class SnakeEnglishGame extends SnakeMathGame {
+  generateQuestion() {
+    const questions = [
+      { question: "Plural of 'cat'?", correctAnswer: "cats", options: ["cats", "catz", "cates", "cati"] },
+      { question: "Opposite of 'hot'?", correctAnswer: "cold", options: ["cold", "warm", "fire", "burn"] },
+      { question: "Synonym of 'happy'?", correctAnswer: "joyful", options: ["joyful", "angry", "tired", "sad"] },
+      { question: "Fill the blank: 'I ___ to school.'", correctAnswer: "go", options: ["go", "goed", "going", "goes"] },
+      { question: "Past tense of 'eat'?", correctAnswer: "ate", options: ["ate", "eaten", "eated", "eating"] },
+      { question: "Which is a color?", correctAnswer: "blue", options: ["blue", "blow", "blew", "bloom"] },
+      { question: "Which word is spelled correctly?", correctAnswer: "receive", options: ["receive", "recieve", "receve", "receiv"] },
+      { question: "Antonym of 'brave'?", correctAnswer: "cowardly", options: ["cowardly", "fearless", "bold", "heroic"] },
+      { question: "Homophone for 'flower'?", correctAnswer: "flour", options: ["flour", "floor", "flaw", "flare"] },
+      { question: "Complete: 'The quick brown fox jumps over the ___ dog.'", correctAnswer: "lazy", options: ["lazy", "sleepy", "tired", "old"] },
+    ];
+
+    const q = questions[Math.floor(Math.random() * questions.length)]
+
+    // Shuffle options
+    const shuffled = [...q.options]
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+
+    return { question: q.question, correctAnswer: q.correctAnswer, options: shuffled }
+  }
+}
+
+let currentGame = null
+
+function startGame(mode) {
+  // Remove any previous game instance
+  if (currentGame) {
+    cancelAnimationFrame(currentGame.gameLoopId)
+  }
+
+  // Start the selected game mode
+  if (mode === "math") {
+    currentGame = new SnakeMathGame()
+    document.getElementById("mathModeBtn").classList.add("active")
+    document.getElementById("englishModeBtn").classList.remove("active")
+  } else if (mode === "english") {
+    currentGame = new SnakeEnglishGame()
+    document.getElementById("englishModeBtn").classList.add("active")
+    document.getElementById("mathModeBtn").classList.remove("active")
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  new SnakeMathGame()
+  // Attach event listeners to mode buttons
+  document.getElementById("mathModeBtn").addEventListener("click", () => startGame("math"))
+  document.getElementById("englishModeBtn").addEventListener("click", () => startGame("english"))
+  
+  // Start with math mode by default
+  startGame("math")
 })
