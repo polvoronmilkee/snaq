@@ -260,13 +260,12 @@ class SnakeMathGame {
         }
 
         this.snakeFace = "happy"
-        this.showNotification("Correct! +10 points. Get ready!", "correct")
+        this.showNotification("Correct! +10 points", "correct")
 
         this.currentQuestion = this.generateQuestion()
         this.apples = this.generateApples(this.currentQuestion)
 
-        this.isPausedForEvent = true
-        this.pauseTimer = 90 // 1.5 seconds at 60fps
+         // 1.5 seconds at 60fps
 
         // Don't pop tail - snake grows
       } else {
