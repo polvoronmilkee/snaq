@@ -213,7 +213,7 @@ class SnakeEnglishGame {
             { question: "I have ___ this before", correct: "done", wrong: ["did", "do", "doing"] },
             { question: "She ___ been here", correct: "has", wrong: ["have", "had", "having"] },
             { question: "If I ___ you...", correct: "were", wrong: ["was", "am", "are"] },
-            { question: "He ___ working", correct: "was", wrong: ["were", "is", "are"] },
+            { question: "He ___ working yesterday", correct: "was", wrong: ["were", "is", "are"] },
           ],
           hard: [
             { question: "I wish I ___ there", correct: "were", wrong: ["was", "am", "be"] },
@@ -237,8 +237,8 @@ class SnakeEnglishGame {
       ;[options[i], options[j]] = [options[j], options[i]]
     }
 
-    const colors = ["#FFD700", "#FF69B4", "#32CD32"] // Yellow, Pink, Green
-    const colorNames = ["Yellow", "Pink", "Green"]
+    const colors = ["#FFD700", "#FF69B4", "#0b3c98ff"] // Yellow, Pink, Green
+    const colorNames = ["Yellow", "Pink", "Blue"]
     const optionsWithColors = options.slice(0, 3).map((option, index) => ({
       text: option,
       color: colors[index],
@@ -395,6 +395,7 @@ class SnakeEnglishGame {
     switch (key) {
       case "w":
       case "arrowup":
+        e.preventDefault() // Prevent page scroll
         if (!this.paused && this.direction.y === 0) {
           this.direction = { x: 0, y: -1 }
           moved = true
@@ -402,6 +403,7 @@ class SnakeEnglishGame {
         break
       case "s":
       case "arrowdown":
+        e.preventDefault() // Prevent page scroll
         if (!this.paused && this.direction.y === 0) {
           this.direction = { x: 0, y: 1 }
           moved = true
@@ -409,6 +411,7 @@ class SnakeEnglishGame {
         break
       case "a":
       case "arrowleft":
+        e.preventDefault() // Prevent page scroll
         if (!this.paused && this.direction.x === 0) {
           this.direction = { x: -1, y: 0 }
           moved = true
@@ -416,6 +419,7 @@ class SnakeEnglishGame {
         break
       case "d":
       case "arrowright":
+        e.preventDefault() // Prevent page scroll
         if (!this.paused && this.direction.x === 0) {
           this.direction = { x: 1, y: 0 }
           moved = true
@@ -509,7 +513,7 @@ class SnakeEnglishGame {
 
     const eatenApple = this.apples.find((apple) => apple.x === head.x && apple.y === head.y)
     if (eatenApple) {
-      if (eatenApple.isCorrect) {
+      if (eatenApple.text === this.currentQuestion.correctAnswer) {
         this.score += 10
         this.correctAnswers++
 

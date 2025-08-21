@@ -21,25 +21,27 @@
         /* Added styles for colored options display */
         .options-container {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            flex-direction: row;
+            gap: 8px;
             margin-top: 10px;
-            padding: 15px;
+            padding: 10px;
             background: rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            flex-wrap: wrap;
         }
         
         .option-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 16px;
-            padding: 8px;
+            gap: 8px;
+            font-size: 14px;
+            padding: 6px 10px;
             background: rgba(255, 255, 255, 0.8);
             border-radius: 6px;
+            /* Added flex properties for better spacing */
+            flex: 1;
+            min-width: 0;
         }
-        
-        /* Removed option-letter styling since we're not showing letters anymore */
         
         /* Added apple icon styling with colors */
         .apple-icon {
@@ -84,8 +86,8 @@
             background: linear-gradient(135deg, #FF69B4, #FF1493);
         }
         
-        .apple-green {
-            background: linear-gradient(135deg, #32CD32, #228B22);
+        .apple-blue {
+            background: linear-gradient(135deg, #3e33a1, #361bbe);
         }
         
         .option-text {
@@ -107,13 +109,20 @@
             }
             
             .option-item {
-                font-size: 14px;
-                padding: 6px;
+                font-size: 12px;
+                padding: 4px 6px;
+                gap: 6px;
             }
             
             .apple-icon {
-                width: 25px;
-                height: 25px;
+                width: 20px;
+                height: 20px;
+            }
+            
+            /* Added responsive behavior for options container */
+            .options-container {
+                flex-direction: column;
+                gap: 6px;
             }
         }
     </style>
@@ -144,7 +153,6 @@
             <!-- Question Section -->
             <div class="question-section">
                 <div class="question" id="question-display">Loading...</div>
-                <!-- Updated instruction to reflect colored apple system -->
                 <div class="instruction">Eat the colored apple that matches your answer choice!</div>
             </div>
 
