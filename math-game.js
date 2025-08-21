@@ -1,17 +1,17 @@
 class SnakeMathGame {
   constructor() {
     // Game constants
-    this.GRID_SIZE = 25
-    this.CANVAS_WIDTH = 650
-    this.CANVAS_HEIGHT = 350
-    this.GRID_WIDTH = Math.floor(this.CANVAS_WIDTH / this.GRID_SIZE)
-    this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
-
-    // Game settings from localStorage
     this.gameSettings = JSON.parse(localStorage.getItem("gameSettings")) || {
       mode: "quiz",
       difficulty: "easy",
     }
+
+    this.setDifficultySettings()
+
+    this.CANVAS_WIDTH = 800
+    this.CANVAS_HEIGHT = 480
+    this.GRID_WIDTH = Math.floor(this.CANVAS_WIDTH / this.GRID_SIZE)
+    this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
 
     // Game state
     this.snake = []
@@ -30,7 +30,11 @@ class SnakeMathGame {
     this.waitingForMove = true
     this.paused = false
     this.showConfirm = false
-    this.speed = 6
+
+    this.baseSpeed = this.difficultySettings.baseSpeed
+    this.speed = this.baseSpeed
+    this.speedIncrement = this.difficultySettings.speedIncrease
+
     this.pauseTimer = 0
     this.isPausedForEvent = false
 
@@ -87,7 +91,7 @@ class SnakeMathGame {
     const operation = operations[Math.floor(Math.random() * operations.length)]
 
     let num1, num2, correctAnswer, question
-    const range = difficulty === "easy" ? 10 : difficulty === "medium" ? 20 : 50
+    const range = difficulty === "easy" ? 10 : difficulty === "medium" ? 30 : 100
 
     switch (operation) {
       case "+":
@@ -103,7 +107,7 @@ class SnakeMathGame {
         question = `${num1} - ${num2} = ?`
         break
       case "*":
-        const maxMult = difficulty === "easy" ? 5 : difficulty === "medium" ? 10 : 15
+        const maxMult = difficulty === "easy" ? 5 : difficulty === "medium" ? 12 : 20
         num1 = Math.floor(Math.random() * maxMult) + 1
         num2 = Math.floor(Math.random() * maxMult) + 1
         correctAnswer = num1 * num2
@@ -147,7 +151,7 @@ class SnakeMathGame {
     this.notificationTimer = 0
     this.waitingForMove = true
     this.paused = false
-    this.speed = 6
+    this.speed = this.baseSpeed
 
     // Setup timer for timed mode
     if (this.gameSettings.mode === "timed") {
@@ -315,10 +319,22 @@ class SnakeMathGame {
 
   confirmRestart() {
     this.restartConfirm.classList.add("hidden")
+    if (this.gameLoopId) {
+      cancelAnimationFrame(this.gameLoopId)
+      this.gameLoopId = null
+    }
     if (this.timerInterval) {
       clearInterval(this.timerInterval)
+      this.timerInterval = null
     }
-    this.initGame()
+    this.gameRunning = false
+
+    // Reset game state completely
+    setTimeout(() => {
+      this.gameRunning = true
+      this.initGame()
+      this.gameLoop()
+    }, 100)
   }
 
   cancelRestart() {
@@ -361,8 +377,10 @@ class SnakeMathGame {
         this.score += 10
         this.correctAnswers++
 
-        if (this.correctAnswers % 3 === 0 && this.correctAnswers > 0) {
-          this.speed++
+        if (this.gameSettings.difficulty === "hard") {
+          this.speed += this.speedIncrement
+        } else if (this.correctAnswers % 3 === 0 && this.correctAnswers > 0) {
+          this.speed += this.speedIncrement
         }
 
         if (this.gameSettings.mode !== "endless" && this.correctAnswers >= this.targetAnswers) {
@@ -469,8 +487,8 @@ class SnakeMathGame {
 
     this.ctx.fillStyle = "white"
 
-    const eyeSize = 2
-    const eyeOffset = 4
+    const eyeSize = Math.max(2, Math.floor(this.GRID_SIZE / 12))
+    const eyeOffset = Math.max(3, Math.floor(this.GRID_SIZE / 6))
     this.ctx.fillRect(centerX - eyeOffset, centerY - 3, eyeSize, eyeSize)
     this.ctx.fillRect(centerX + eyeOffset - eyeSize, centerY - 3, eyeSize, eyeSize)
 
@@ -568,11 +586,19 @@ class SnakeMathGame {
       )
 
       this.ctx.fillStyle = "white"
-      this.ctx.font = "12px monospace"
+      const fontSize = Math.max(10, Math.floor(this.GRID_SIZE * 0.4))
+      this.ctx.font = `${fontSize}px monospace`
       this.ctx.textAlign = "center"
       this.ctx.textBaseline = "middle"
+
+      let displayText = apple.value.toString()
+      const maxLength = Math.floor(this.GRID_SIZE / 4)
+      if (displayText.length > maxLength) {
+        displayText = displayText.substring(0, maxLength - 2) + ".."
+      }
+
       this.ctx.fillText(
-        apple.value.toString(),
+        displayText,
         apple.x * this.GRID_SIZE + this.GRID_SIZE / 2,
         apple.y * this.GRID_SIZE + this.GRID_SIZE / 2,
       )
@@ -626,6 +652,29 @@ class SnakeMathGame {
 
     this.draw()
     this.gameLoopId = requestAnimationFrame((timestamp) => this.gameLoop(timestamp))
+  }
+
+  setDifficultySettings() {
+    const difficultyConfig = {
+      easy: {
+        gridSize: 25, // Small grid for easy gameplay
+        baseSpeed: 3, // Slow speed
+        speedIncrease: 0.2,
+      },
+      medium: {
+        gridSize: 40, // Larger grid size
+        baseSpeed: 5, // Medium speed
+        speedIncrease: 0.4,
+      },
+      hard: {
+        gridSize: 15, // Really small grid for maximum challenge - smaller space
+        baseSpeed: 4, // Starts moderate but increases progressively
+        speedIncrease: 0.6,
+      },
+    }
+
+    this.difficultySettings = difficultyConfig[this.gameSettings.difficulty]
+    this.GRID_SIZE = this.difficultySettings.gridSize
   }
 }
 

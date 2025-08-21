@@ -5,6 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English Snake Game - SnAQ</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Added scrollable body and container styling */
+        body {
+            overflow-y: auto;
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .game-container {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        
+        /* Added styles for colored options display */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 6px;
+        }
+        
+        /* Removed option-letter styling since we're not showing letters anymore */
+        
+        /* Added apple icon styling with colors */
+        .apple-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+        
+        .apple-icon::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: #8B4513;
+            border-radius: 2px;
+        }
+        
+        .apple-icon::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: 8px;
+            width: 12px;
+            height: 8px;
+            background: #228B22;
+            border-radius: 50%;
+            transform: rotate(45deg);
+        }
+        
+        .apple-yellow {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+        
+        .apple-pink {
+            background: linear-gradient(135deg, #FF69B4, #FF1493);
+        }
+        
+        .apple-green {
+            background: linear-gradient(135deg, #32CD32, #228B22);
+        }
+        
+        .option-text {
+            color: #333;
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        /* Added responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .canvas-container {
+                overflow-x: auto;
+            }
+            
+            .option-item {
+                font-size: 14px;
+                padding: 6px;
+            }
+            
+            .apple-icon {
+                width: 25px;
+                height: 25px;
+            }
+        }
+    </style>
 </head>
 <body>
     <button class="back-btn" onclick="window.location.href='index.html'">← Back to Menu</button>
@@ -32,12 +144,14 @@
             <!-- Question Section -->
             <div class="question-section">
                 <div class="question" id="question-display">Loading...</div>
-                <div class="instruction">Eat the apple with the correct answer!</div>
+                <!-- Updated instruction to reflect colored apple system -->
+                <div class="instruction">Eat the colored apple that matches your answer choice!</div>
             </div>
 
             <!-- Game Canvas -->
             <div class="canvas-container">
-                <canvas id="game-canvas" width="650" height="350"></canvas>
+                <!-- Updated canvas dimensions from 650x350 to 800x480 for larger English words -->
+                <canvas id="game-canvas" width="800" height="480"></canvas>
                 
                 <!-- Game Over Overlay -->
                 <div id="game-over-overlay" class="overlay hidden">
@@ -64,8 +178,9 @@
 
             <!-- Instructions -->
             <div class="instructions">
-                <p>Use WASD or Arrow keys to move • Eat correct answers to grow • Avoid wrong answers!</p>
-                <p>All apples are red - look at the letters/words to find the correct answer!</p>
+                <p>Use WASD or Arrow keys to move • Eat correct colored apples to grow • Avoid wrong answers!</p>
+                <!-- Updated instruction to explain colored apple system -->
+                <p>Look at the options above - eat the apple color that matches the correct answer!</p>
                 <p class="controls">Press SPACE to pause • Press R to restart</p>
             </div>
         </div>

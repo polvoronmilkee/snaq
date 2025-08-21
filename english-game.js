@@ -1,17 +1,17 @@
 class SnakeEnglishGame {
   constructor() {
-    // Game constants
-    this.GRID_SIZE = 25
-    this.CANVAS_WIDTH = 650
-    this.CANVAS_HEIGHT = 350
-    this.GRID_WIDTH = Math.floor(this.CANVAS_WIDTH / this.GRID_SIZE)
-    this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
-
     // Game settings from localStorage
     this.gameSettings = JSON.parse(localStorage.getItem("gameSettings")) || {
       mode: "quiz",
       difficulty: "easy",
     }
+
+    this.setDifficultySettings()
+
+    this.CANVAS_WIDTH = 800
+    this.CANVAS_HEIGHT = 480
+    this.GRID_WIDTH = Math.floor(this.CANVAS_WIDTH / this.GRID_SIZE)
+    this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
 
     // Game state
     this.snake = []
@@ -30,9 +30,11 @@ class SnakeEnglishGame {
     this.waitingForMove = true
     this.paused = false
     this.showConfirm = false
-    this.speed = 6
     this.pauseTimer = 0
     this.isPausedForEvent = false
+
+    this.baseSpeed = this.difficultySettings.baseSpeed
+    this.speed = this.baseSpeed
 
     // Timer for timed mode
     this.timeLeft = 60
@@ -45,6 +47,29 @@ class SnakeEnglishGame {
 
     this.initDOM()
     this.init()
+  }
+
+  setDifficultySettings() {
+    const difficultyConfig = {
+      easy: {
+        gridSize: 40, // Small grid for easy gameplay
+        baseSpeed: 3, // Slow speed
+        speedIncrease: 0.2,
+      },
+      medium: {
+        gridSize: 50, // Larger grid size
+        baseSpeed: 5, // Medium speed
+        speedIncrease: 0.4,
+      },
+      hard: {
+        gridSize: 90, // Really small grid for maximum challenge - smaller space
+        baseSpeed: 4, // Starts moderate but increases progressively
+        speedIncrease: 0.6,
+      },
+    }
+
+    this.difficultySettings = difficultyConfig[this.gameSettings.difficulty]
+    this.GRID_SIZE = this.difficultySettings.gridSize
   }
 
   initDOM() {
@@ -70,7 +95,6 @@ class SnakeEnglishGame {
   init() {
     this.initGame()
     this.bindEvents()
-    this.gameLoop()
   }
 
   bindEvents() {
@@ -213,7 +237,16 @@ class SnakeEnglishGame {
       ;[options[i], options[j]] = [options[j], options[i]]
     }
 
-    return { question, correctAnswer, options }
+    const colors = ["#FFD700", "#FF69B4", "#32CD32"] // Yellow, Pink, Green
+    const colorNames = ["Yellow", "Pink", "Green"]
+    const optionsWithColors = options.slice(0, 3).map((option, index) => ({
+      text: option,
+      color: colors[index],
+      colorName: colorNames[index],
+      letter: String.fromCharCode(65 + index), // A, B, C
+    }))
+
+    return { question, correctAnswer, options: optionsWithColors }
   }
 
   randInt(max) {
@@ -252,8 +285,10 @@ class SnakeEnglishGame {
       newApples.push({
         x,
         y,
-        value: option,
-        isCorrect: option === question.correctAnswer,
+        color: option.color,
+        colorName: option.colorName,
+        text: option.text,
+        isCorrect: option.text === question.correctAnswer,
       })
     })
 
@@ -266,6 +301,16 @@ class SnakeEnglishGame {
   }
 
   initGame() {
+    if (this.gameLoopId) {
+      cancelAnimationFrame(this.gameLoopId)
+      this.gameLoopId = null
+    }
+
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval)
+      this.timerInterval = null
+    }
+
     this.snake = [this.getRandomPosition()]
     this.direction = this.getRandomDirection()
     this.currentQuestion = this.generateQuestion()
@@ -280,7 +325,9 @@ class SnakeEnglishGame {
     this.notificationTimer = 0
     this.waitingForMove = true
     this.paused = false
-    this.speed = 6
+    this.speed = this.baseSpeed
+    this.isPausedForEvent = false
+    this.pauseTimer = 0
 
     if (this.gameSettings.mode === "timed") {
       this.timeLeft = 60
@@ -298,6 +345,8 @@ class SnakeEnglishGame {
 
     this.updateUI()
     this.hideOverlays()
+
+    this.gameLoop()
   }
 
   startTimer() {
@@ -383,7 +432,24 @@ class SnakeEnglishGame {
     this.scoreElement.textContent = this.score
     this.livesElement.textContent = this.lives
     this.correctElement.textContent = this.correctAnswers
-    this.questionElement.textContent = this.currentQuestion ? this.currentQuestion.question : "Loading..."
+
+    if (this.currentQuestion) {
+      let questionHTML = `<div class="question-text">${this.currentQuestion.question}</div>`
+      questionHTML += '<div class="options-container">'
+
+      this.currentQuestion.options.forEach((option) => {
+        questionHTML += `<div class="option-item">
+          <span class="option-letter">${option.letter}:</span>
+          <span class="option-color" style="background-color: ${option.color}; color: black; padding: 2px 8px; border-radius: 4px; font-weight: bold;">${option.colorName}</span>
+          <span class="option-text">${option.text}</span>
+        </div>`
+      })
+
+      questionHTML += "</div>"
+      this.questionElement.innerHTML = questionHTML
+    } else {
+      this.questionElement.innerHTML = "Loading..."
+    }
   }
 
   hideOverlays() {
@@ -397,6 +463,10 @@ class SnakeEnglishGame {
 
   confirmRestart() {
     this.restartConfirm.classList.add("hidden")
+    this.gameRunning = false
+    if (this.gameLoopId) {
+      cancelAnimationFrame(this.gameLoopId)
+    }
     if (this.timerInterval) {
       clearInterval(this.timerInterval)
     }
@@ -444,7 +514,12 @@ class SnakeEnglishGame {
         this.correctAnswers++
 
         if (this.correctAnswers % 3 === 0 && this.correctAnswers > 0) {
-          this.speed++
+          if (this.gameSettings.difficulty === "hard") {
+            // Progressive speed increase for hard mode
+            this.speed += this.difficultySettings.speedIncrease
+          } else {
+            this.speed += this.difficultySettings.speedIncrease
+          }
         }
 
         if (this.gameSettings.mode !== "endless" && this.correctAnswers >= this.targetAnswers) {
@@ -513,7 +588,7 @@ class SnakeEnglishGame {
     })
 
     const availableOptions = this.currentQuestion.options.filter(
-      (option) => !this.apples.some((apple) => apple.value === option),
+      (option) => !this.apples.some((apple) => apple.text === option.text),
     )
 
     if (availableOptions.length > 0) {
@@ -528,8 +603,10 @@ class SnakeEnglishGame {
       this.apples.push({
         x,
         y,
-        value: randomOption,
-        isCorrect: randomOption === this.currentQuestion.correctAnswer,
+        color: randomOption.color,
+        colorName: randomOption.colorName,
+        text: randomOption.text,
+        isCorrect: randomOption.text === this.currentQuestion.correctAnswer,
       })
     }
   }
@@ -551,32 +628,32 @@ class SnakeEnglishGame {
 
     this.ctx.fillStyle = "white"
 
-    const eyeSize = 2
-    const eyeOffset = 4
-    this.ctx.fillRect(centerX - eyeOffset, centerY - 3, eyeSize, eyeSize)
-    this.ctx.fillRect(centerX + eyeOffset - eyeSize, centerY - 3, eyeSize, eyeSize)
+    const eyeSize = 3 // Increased from 2
+    const eyeOffset = 6 // Increased from 4
+    this.ctx.fillRect(centerX - eyeOffset, centerY - 4, eyeSize, eyeSize)
+    this.ctx.fillRect(centerX + eyeOffset - eyeSize, centerY - 4, eyeSize, eyeSize)
 
     this.ctx.strokeStyle = "white"
-    this.ctx.lineWidth = 1
+    this.ctx.lineWidth = 2 // Increased from 1
     this.ctx.beginPath()
 
     switch (face) {
       case "happy":
-        this.ctx.arc(centerX, centerY + 1, 4, 0, Math.PI)
+        this.ctx.arc(centerX, centerY + 2, 6, 0, Math.PI) // Increased radius from 4 to 6
         break
       case "disgust":
-        this.ctx.arc(centerX, centerY + 5, 4, Math.PI, 0)
+        this.ctx.arc(centerX, centerY + 8, 6, Math.PI, 0) // Adjusted positioning
         break
       case "dead":
         this.ctx.fillStyle = "red"
-        this.ctx.fillRect(centerX - eyeOffset, centerY - 3, eyeSize, eyeSize)
-        this.ctx.fillRect(centerX + eyeOffset - eyeSize, centerY - 3, eyeSize, eyeSize)
-        this.ctx.moveTo(centerX - 3, centerY + 2)
-        this.ctx.lineTo(centerX + 3, centerY + 2)
+        this.ctx.fillRect(centerX - eyeOffset, centerY - 4, eyeSize, eyeSize)
+        this.ctx.fillRect(centerX + eyeOffset - eyeSize, centerY - 4, eyeSize, eyeSize)
+        this.ctx.moveTo(centerX - 4, centerY + 3)
+        this.ctx.lineTo(centerX + 4, centerY + 3)
         break
       default:
-        this.ctx.moveTo(centerX - 2, centerY + 2)
-        this.ctx.lineTo(centerX + 2, centerY + 2)
+        this.ctx.moveTo(centerX - 3, centerY + 3)
+        this.ctx.lineTo(centerX + 3, centerY + 3)
     }
 
     this.ctx.stroke()
@@ -629,11 +706,12 @@ class SnakeEnglishGame {
 
       if (index === 0) {
         this.ctx.fillStyle = "#22c55e"
+        const headPadding = Math.max(2, Math.floor(this.GRID_SIZE * 0.1))
         this.ctx.fillRect(
-          segment.x * this.GRID_SIZE + 3,
-          segment.y * this.GRID_SIZE + 3,
-          this.GRID_SIZE - 6,
-          this.GRID_SIZE - 6,
+          segment.x * this.GRID_SIZE + headPadding,
+          segment.y * this.GRID_SIZE + headPadding,
+          this.GRID_SIZE - headPadding * 2,
+          this.GRID_SIZE - headPadding * 2,
         )
         this.drawSnakeFace(segment.x * this.GRID_SIZE, segment.y * this.GRID_SIZE, this.snakeFace)
         this.ctx.fillStyle = "#4ade80"
@@ -641,7 +719,8 @@ class SnakeEnglishGame {
     })
 
     this.apples.forEach((apple) => {
-      this.ctx.fillStyle = "#ef4444"
+      // Draw apple with its assigned color
+      this.ctx.fillStyle = apple.color
       this.ctx.fillRect(
         apple.x * this.GRID_SIZE + 1,
         apple.y * this.GRID_SIZE + 1,
@@ -649,21 +728,14 @@ class SnakeEnglishGame {
         this.GRID_SIZE - 2,
       )
 
-      this.ctx.fillStyle = "white"
-      this.ctx.font = "10px monospace"
-      this.ctx.textAlign = "center"
-      this.ctx.textBaseline = "middle"
-
-      // Handle long text by truncating
-      let displayText = apple.value.toString()
-      if (displayText.length > 8) {
-        displayText = displayText.substring(0, 6) + ".."
-      }
-
-      this.ctx.fillText(
-        displayText,
-        apple.x * this.GRID_SIZE + this.GRID_SIZE / 2,
-        apple.y * this.GRID_SIZE + this.GRID_SIZE / 2,
+      // Add a subtle border for better visibility
+      this.ctx.strokeStyle = "#000"
+      this.ctx.lineWidth = 1
+      this.ctx.strokeRect(
+        apple.x * this.GRID_SIZE + 1,
+        apple.y * this.GRID_SIZE + 1,
+        this.GRID_SIZE - 2,
+        this.GRID_SIZE - 2,
       )
     })
 
