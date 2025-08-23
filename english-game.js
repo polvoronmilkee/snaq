@@ -1,5 +1,8 @@
 class SnakeEnglishGame {
   constructor() {
+    const bgMusic = new Audio("sounds/bg-music.mp3")
+    bgMusic.volume = 0.5
+    bgMusic.play()
     // Game settings from localStorage
     this.gameSettings = JSON.parse(localStorage.getItem("gameSettings")) || {
       mode: "quiz",
@@ -30,8 +33,10 @@ class SnakeEnglishGame {
     this.waitingForMove = true
     this.paused = false
     this.showConfirm = false
-    this.pauseTimer = 0
-    this.isPausedForEvent = false
+
+    // apple bite sounds
+    this.appleBiteSound = new Audio("sounds/apple_bite.mp3")
+    this.appleBiteSound.volume = 0.5
 
     this.baseSpeed = this.difficultySettings.baseSpeed
     this.speed = this.baseSpeed
@@ -52,14 +57,14 @@ class SnakeEnglishGame {
   setDifficultySettings() {
     const difficultyConfig = {
       easy: {
-        gridSize: 40, // Small grid for easy gameplay
+        gridSize: 62, // Small grid for easy gameplay
         baseSpeed: 3, // Slow speed
         speedIncrease: 0.2,
       },
       medium: {
-        gridSize: 50, // Larger grid size
+        gridSize: 62, // Larger grid size
         baseSpeed: 5, // Medium speed
-        speedIncrease: 0.4,
+        speedIncrease: 0.35,
       },
       hard: {
         gridSize: 90, // Really small grid for maximum challenge - smaller space
@@ -100,7 +105,7 @@ class SnakeEnglishGame {
   bindEvents() {
     document.addEventListener("keydown", (e) => this.handleKeyDown(e))
     this.playAgainBtn.addEventListener("click", () => this.showRestartConfirm())
-    this.menuBtn.addEventListener("click", () => (window.location.href = "index.html"))
+    this.menuBtn.addEventListener("click", () => (window.location.href = "landing.html"))
     this.confirmRestartBtn.addEventListener("click", () => this.confirmRestart())
     this.cancelRestartBtn.addEventListener("click", () => this.cancelRestart())
   }
@@ -117,13 +122,13 @@ class SnakeEnglishGame {
       case "synonym":
         const synonymPairs = {
           easy: [
-            { word: "happy", synonym: "glad", others: ["sad", "angry"]},
+            { word: "happy", synonym: "glad", others: ["sad", "angry"] },
             { word: "big", synonym: "large", others: ["small", "tiny"] },
             { word: "fast", synonym: "quick", others: ["slow", "lazy"] },
             { word: "smart", synonym: "clever", others: ["dumb", "silly", "weak"] },
           ],
           medium: [
-            { word: "beautiful", synonym: "gorgeous", others: ["ugly", "plain",] },
+            { word: "beautiful", synonym: "gorgeous", others: ["ugly", "plain"] },
             { word: "difficult", synonym: "hard", others: ["easy", "simple"] },
             { word: "ancient", synonym: "old", others: ["new", "modern"] },
             { word: "enormous", synonym: "huge", others: ["tiny", "small"] },
@@ -177,20 +182,20 @@ class SnakeEnglishGame {
           easy: [
             { correct: "friend", wrong: ["freind", "frend"] },
             { correct: "because", wrong: ["becuase", "becase"] },
-            { correct: "school", wrong: ["scool", "schol",] },
+            { correct: "school", wrong: ["scool", "schol"] },
             { correct: "people", wrong: ["peopel", "peple"] },
           ],
           medium: [
             { correct: "necessary", wrong: ["neccessary", "necesary"] },
-            { correct: "beautiful", wrong: ["beatiful",  "beautifull"] },
-            { correct: "separate", wrong: ["seperate", "separete", ] },
+            { correct: "beautiful", wrong: ["beatiful", "beautifull"] },
+            { correct: "separate", wrong: ["seperate", "separete"] },
             { correct: "definitely", wrong: ["definitly", "definetely"] },
           ],
           hard: [
             { correct: "accommodate", wrong: ["accomodate", "acommodate"] },
             { correct: "embarrass", wrong: ["embarass", "embbarrass"] },
             { correct: "occurrence", wrong: ["occurence", "occurrance"] },
-            { correct: "privilege", wrong: ["priviledge",  "privilige"] },
+            { correct: "privilege", wrong: ["priviledge", "privilige"] },
           ],
         }
 
@@ -205,15 +210,15 @@ class SnakeEnglishGame {
         const grammarQuestions = {
           easy: [
             { question: "I ___ going to school", correct: "am", wrong: ["is", "are"] },
-            { question: "She ___ a book", correct: "reads", wrong: ["read", "reading"]},
-            { question: "They ___ happy", correct: "are", wrong: ["is", "am",] },
+            { question: "She ___ a book", correct: "reads", wrong: ["read", "reading"] },
+            { question: "They ___ happy", correct: "are", wrong: ["is", "am"] },
             { question: "He ___ tall", correct: "is", wrong: ["are", "am"] },
           ],
           medium: [
             { question: "I have ___ this before", correct: "done", wrong: ["did", "do"] },
-            { question: "She ___ been here", correct: "has", wrong: ["have", "had",] },
+            { question: "She ___ been here", correct: "has", wrong: ["have", "had"] },
             { question: "If I ___ you...", correct: "were", wrong: ["was", "am"] },
-            { question: "He ___ working yesterday", correct: "was", wrong: ["were", "is", ] },
+            { question: "He ___ working yesterday", correct: "was", wrong: ["were", "is"] },
           ],
           hard: [
             { question: "I wish I ___ there", correct: "were", wrong: ["was", "am"] },
@@ -326,8 +331,6 @@ class SnakeEnglishGame {
     this.waitingForMove = true
     this.paused = false
     this.speed = this.baseSpeed
-    this.isPausedForEvent = false
-    this.pauseTimer = 0
 
     if (this.gameSettings.mode === "timed") {
       this.timeLeft = 60
@@ -355,7 +358,7 @@ class SnakeEnglishGame {
       this.timerValue.textContent = this.timeLeft
 
       if (this.timeLeft <= 0) {
-        this.gameState = "lost"
+        this.gameState = "timeout"
         this.gameRunning = false
         this.showGameOver()
         clearInterval(this.timerInterval)
@@ -502,14 +505,10 @@ class SnakeEnglishGame {
     if (newSnake.some((segment) => segment.x === head.x && segment.y === head.y)) {
       this.lives--
       this.snakeFace = "disgust"
-      this.showNotification("Self-bite! -1 life. Get ready!", "wrong")
 
       if (this.snake.length > 1) {
         this.snake.pop()
       }
-
-      this.isPausedForEvent = true
-      this.pauseTimer = 150
 
       this.updateUI()
       return
@@ -519,6 +518,10 @@ class SnakeEnglishGame {
 
     const eatenApple = this.apples.find((apple) => apple.x === head.x && apple.y === head.y)
     if (eatenApple) {
+      // for sound
+      this.appleBiteSound.currentTime = 0 // Reset sound to beginning
+      this.appleBiteSound.play().catch((e) => console.log("Sound play failed:", e))
+
       if (eatenApple.text === this.currentQuestion.correctAnswer) {
         this.score += 10
         this.correctAnswers++
@@ -540,13 +543,10 @@ class SnakeEnglishGame {
         }
 
         this.snakeFace = "happy"
-        this.showNotification("Correct! +10 points. Get ready!", "correct")
+        this.showNotification("Correct! +10 points", "correct")
 
         this.currentQuestion = this.generateQuestion()
         this.apples = this.generateApples(this.currentQuestion)
-
-        this.isPausedForEvent = true
-        this.pauseTimer = 90
       } else {
         this.score = Math.max(0, this.score - 5)
         this.lives--
@@ -560,7 +560,7 @@ class SnakeEnglishGame {
         }
 
         this.snakeFace = "disgust"
-        this.showNotification("Wrong! -5 points, -1 life. Get ready!", "wrong")
+        this.showNotification("Wrong! -5 points, -1 life", "wrong")
 
         if (this.snake.length > 1) {
           this.snake.pop()
@@ -568,9 +568,6 @@ class SnakeEnglishGame {
 
         this.apples = this.apples.filter((apple) => apple !== eatenApple)
         this.addNewApple()
-
-        this.isPausedForEvent = true
-        this.pauseTimer = 150
 
         this.updateUI()
         newSnake.pop()
@@ -626,8 +623,14 @@ class SnakeEnglishGame {
       clearInterval(this.timerInterval)
     }
 
-    this.gameOverTitle.textContent = this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀"
-    this.gameOverTitle.className = this.gameState === "won" ? "won" : "lost"
+    if (this.gameState === "timeout") {
+      this.gameOverTitle.textContent = "Time's up! ⏰"
+      this.gameOverTitle.className = "lost"
+    } else {
+      this.gameOverTitle.textContent = this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀"
+      this.gameOverTitle.className = this.gameState === "won" ? "won" : "lost"
+    }
+
     this.finalScoreElement.textContent = `Final Score: ${this.score}`
     this.gameOverOverlay.classList.remove("hidden")
   }
@@ -689,74 +692,49 @@ class SnakeEnglishGame {
   drawAppleIcon(x, y, color, letter) {
     const centerX = x + this.GRID_SIZE / 2
     const centerY = y + this.GRID_SIZE / 2
-    const size = Math.min(this.GRID_SIZE - 4) // Adaptive size based on grid
+    const radius = (this.GRID_SIZE - 6) / 2 // padding from edges
 
+    // Apple body (circle)
     this.ctx.fillStyle = color
     this.ctx.beginPath()
+    this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI)
+    this.ctx.fill()
 
-    // Apple body (rounded rectangle with curves)
-    const appleWidth = size * 0.8
-    const appleHeight = size * 0.9
-    const appleX = centerX - appleWidth / 2
-    const appleY = centerY - appleHeight / 2 + size * 0.1
+    // Stem
+    this.ctx.fillStyle = "#8B4513"
+    const stemWidth = Math.max(2, radius * 0.2)
+    const stemHeight = radius * 0.5
+    this.ctx.fillRect(centerX - stemWidth / 2, centerY - radius - stemHeight * 0.2, stemWidth, stemHeight)
 
-    // Create apple shape using bezier curves
+    // Leaf
+    this.ctx.fillStyle = "#228B22"
     this.ctx.beginPath()
-    this.ctx.moveTo(appleX + appleWidth * 0.5, appleY)
-    this.ctx.bezierCurveTo(
-      appleX + appleWidth * 0.2,
-      appleY,
-      appleX,
-      appleY + appleHeight * 0.3,
-      appleX,
-      appleY + appleHeight * 0.6,
-    )
-    this.ctx.bezierCurveTo(
-      appleX,
-      appleY + appleHeight * 0.9,
-      appleX + appleWidth * 0.2,
-      appleY + appleHeight,
-      appleX + appleWidth * 0.5,
-      appleY + appleHeight,
-    )
-    this.ctx.bezierCurveTo(
-      appleX + appleWidth * 0.8,
-      appleY + appleHeight,
-      appleX + appleWidth,
-      appleY + appleHeight * 0.9,
-      appleX + appleWidth,
-      appleY + appleHeight * 0.6,
-    )
-    this.ctx.bezierCurveTo(
-      appleX + appleWidth,
-      appleY + appleHeight * 0.3,
-      appleX + appleWidth * 0.8,
-      appleY,
-      appleX + appleWidth * 0.5,
-      appleY,
+    this.ctx.ellipse(
+      centerX + radius * 0.5, // leaf x
+      centerY - radius * 0.7, // leaf y
+      radius * 0.4, // leaf width
+      radius * 0.2, // leaf height
+      Math.PI / 4, // rotation
+      0,
+      2 * Math.PI,
     )
     this.ctx.fill()
 
-    // Apple stem
-    this.ctx.fillStyle = "#8B4513"
-    const stemWidth = Math.max(2, size * 0.05)
-    this.ctx.fillRect(centerX - stemWidth / 2, centerY - size * 0.5, stemWidth, size * 0.2)
-
-    // Apple leaf
-    this.ctx.fillStyle = "#228B22"
+    // gloss effect
+    this.ctx.fillStyle = "rgba(255,255,255,0.4)"
     this.ctx.beginPath()
-    this.ctx.ellipse(centerX + size * 0.15, centerY - size * 0.4, size * 0.1, size * 0.05, Math.PI / 4, 0, 2 * Math.PI)
+    this.ctx.arc(centerX - radius * 0.4, centerY - radius * 0.3, radius * 0.3, 0, 2 * Math.PI)
     this.ctx.fill()
 
     // Letter inside apple
     this.ctx.fillStyle = "white"
-    this.ctx.font = `bold ${Math.max(14, size * 0.4)}px Arial`
+    this.ctx.font = `bold ${Math.max(14, radius * 0.9)}px Arial`
     this.ctx.textAlign = "center"
     this.ctx.textBaseline = "middle"
     this.ctx.strokeStyle = "rgba(0,0,0,0.3)"
-    this.ctx.lineWidth = Math.max(1, size * 0.02)
-    this.ctx.strokeText(letter, centerX, centerY + size * 0.05)
-    this.ctx.fillText(letter, centerX, centerY + size * 0.05)
+    this.ctx.lineWidth = Math.max(1, radius * 0.1)
+    this.ctx.strokeText(letter, centerX, centerY + radius * 0.1)
+    this.ctx.fillText(letter, centerX, centerY + radius * 0.1)
   }
 
   draw() {
@@ -814,20 +792,14 @@ class SnakeEnglishGame {
       this.notificationTimer--
     }
 
-    if (this.paused || this.isPausedForEvent) {
+    if (this.paused) {
       this.ctx.fillStyle = "rgba(0,0,0,0.6)"
       this.ctx.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT)
       this.ctx.fillStyle = "white"
       this.ctx.font = "24px monospace"
       this.ctx.textAlign = "center"
       this.ctx.textBaseline = "middle"
-
-      if (this.isPausedForEvent) {
-        const secondsLeft = Math.ceil(this.pauseTimer / 60)
-        this.ctx.fillText(`GET READY! ${secondsLeft}`, this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2)
-      } else {
-        this.ctx.fillText("PAUSED", this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2)
-      }
+      this.ctx.fillText("PAUSED", this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2)
     }
   }
 
@@ -837,15 +809,7 @@ class SnakeEnglishGame {
     const delta = (timestamp - this.lastFrameTime) / 1000
     this.lastFrameTime = timestamp
 
-    if (this.isPausedForEvent) {
-      this.pauseTimer--
-      if (this.pauseTimer <= 0) {
-        this.isPausedForEvent = false
-        this.pauseTimer = 0
-      }
-    }
-
-    if (!this.waitingForMove && !this.paused && !this.isPausedForEvent) {
+    if (!this.waitingForMove && !this.paused) {
       this.moveAccumulator += delta
       const moveInterval = 1 / this.speed
 

@@ -80,7 +80,7 @@ class SnakeMathGame {
   bindEvents() {
     document.addEventListener("keydown", (e) => this.handleKeyDown(e))
     this.playAgainBtn.addEventListener("click", () => this.showRestartConfirm())
-    this.menuBtn.addEventListener("click", () => (window.location.href = "index.html"))
+    this.menuBtn.addEventListener("click", () => (window.location.href = "landing.html"))
     this.confirmRestartBtn.addEventListener("click", () => this.confirmRestart())
     this.cancelRestartBtn.addEventListener("click", () => this.cancelRestart())
   }

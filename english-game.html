@@ -43,71 +43,87 @@
             border: 2px solid rgba(0,0,0,0.1);
         }
         
-        /* Updated apple icon styling to show letters inside and better apple shape */
+        /* Updated apple icon styling to match game grid apples with realistic 3D appearance */
         .apple-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            flex-shrink: 0;
-            font-weight: bold;
-            font-size: 16px;
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        width: 50px;
+        height: 50px;              /* equal width & height for circle */
+        border-radius: 50%;        /* perfect circle */
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        font-weight: bold;
+        font-size: 25px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+
+        border: 1px solid rgba(0,0,0,0.2);
+        box-shadow: 
+            0 4px 8px rgba(0,0,0,0.3),   /* drop shadow */
+            inset -2px -2px 4px rgba(0,0,0,0.2), /* inner shading */
+            inset 2px 2px 4px rgba(255,255,255,0.3);
         }
-        
+
+        /* Stem */
         .apple-icon::before {
-            content: '';
-            position: absolute;
-            top: -4px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 6px;
-            height: 10px;
-            background: #8B4513;
-            border-radius: 2px;
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 5px;
+        height: 14px;
+        background: linear-gradient(180deg, #8B4513, #654321);
+        border-radius: 2px;
+        box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
-        
+
+
+        /* Leaf */
         .apple-icon::after {
-            content: '';
-            position: absolute;
-            top: -3px;
-            right: 12px;
-            width: 10px;
-            height: 6px;
-            background: #228B22;
-            border-radius: 50%;
-            transform: rotate(45deg);
+        content: '';
+        position: absolute;
+        top: -2px;
+        right: 4px;
+        width: 18px;   /* make it longer */
+        height: 10px;  /* keep it short to look oval */
+        background: linear-gradient(135deg, #55c455, #228B22);
+        border-radius: 50%;  /* full oval shape */
+        transform: rotate(40deg);  /* angle to look like a leaf */
+        box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
-        
+
+
+        /* Apple colors (radial gradient for depth) */
         .apple-yellow {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
+        background: radial-gradient(circle at 30% 30%, #FFFF99, #FFD700, #FFA500);
         }
-        
+
         .apple-pink {
-            background: linear-gradient(135deg, #FF69B4, #FF1493);
+        background: radial-gradient(circle at 30% 30%, #FFB6C1, #FF69B4, #FF1493);
         }
-        
+
         .apple-blue {
-            background: linear-gradient(135deg, #4169E1, #0000CD);
+        background: radial-gradient(circle at 30% 30%, #87CEEB, #4169E1, #0b3c98);
         }
-        
+
+        /* Text inside option */
         .option-text {
-            color: #333;
-            font-weight: 500;
-            flex: 1;
+        color: #333;
+        font-weight: 500;
+        flex: 1;
         }
-        
+
+        /* Question text */
         .question-text {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 5px;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 5px;
         }
-        
+
         /* Added responsive design for smaller screens */
         @media (max-width: 768px) {
             .canvas-container {
@@ -121,8 +137,22 @@
             }
             
             .apple-icon {
-                width: 20px;
-                height: 20px;
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+            
+            .apple-icon::before {
+                width: 3px;
+                height: 8px;
+                top: -4px;
+            }
+            
+            .apple-icon::after {
+                width: 8px;
+                height: 6px;
+                top: -2px;
+                right: 10px;
             }
             
             /* Added responsive behavior for options container */
@@ -193,6 +223,7 @@
             <!-- Instructions -->
             <div class="instructions">
                 <p>Use WASD or Arrow keys to move • Eat correct colored apples to grow • Avoid wrong answers!</p>
+                <!-- Updated instruction to explain colored apple system -->
                 <p>Look at the options above - eat the apple color that matches the correct answer!</p>
                 <p class="controls">Press SPACE to pause • Press R to restart</p>
             </div>
