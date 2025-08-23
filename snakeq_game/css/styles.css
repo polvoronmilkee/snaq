@@ -1,0 +1,884 @@
+/* Press Start 2P Font Import */
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+/* Global Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding-top: 60px; /* Space for sticky header */
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  font-family: "Press Start 2P", monospace;
+  color: #fff;
+  min-height: 100vh;
+  image-rendering: pixelated;
+  overflow-x: hidden;
+}
+
+/* Pixelated border utility */
+.pixel-border {
+  border: 4px solid #000;
+  border-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><rect width="8" height="8" fill="%23000"/><rect x="2" y="2" width="4" height="4" fill="transparent"/></svg>')
+    4;
+  box-shadow: 0 0 0 2px #fff inset, 0 0 0 4px #000 inset;
+}
+
+/* Sticky header styles */
+.sticky-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: #1a1a1a;
+  border-bottom: 4px solid #333;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Added header left section for back button and logo */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-btn-header {
+  background: #444;
+  border: 2px solid #666;
+  color: #fff;
+  padding: 6px 10px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 32px;
+}
+
+.back-btn-header:hover {
+  background: #555;
+  transform: translate(1px, 1px);
+}
+
+.back-btn-header:active {
+  transform: translate(2px, 2px);
+}
+
+/* Added styling for back icon in header */
+.header-icon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-logo img {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-btn {
+  background: #333;
+  border: 2px solid #555;
+  color: #fff;
+  padding: 6px 8px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+}
+
+.header-btn:hover {
+  background: #444;
+  transform: translate(1px, 1px);
+}
+
+.header-btn:active {
+  transform: translate(2px, 2px);
+}
+
+.header-btn.active {
+  background: #32cd32;
+  border-color: #228b22;
+}
+
+/* Landing Page Styles */
+.landing-container {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Updated background to use bg-landing.png image */
+.pixel-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+.pixel-trees {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 80px;
+  height: 120px;
+  background: repeating-linear-gradient(0deg, #228b22 0px, #228b22 8px, #32cd32 8px, #32cd32 16px);
+  border: 2px solid #000;
+  z-index: 2;
+}
+
+.pixel-grass {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: repeating-linear-gradient(90deg, #228b22 0px, #228b22 4px, #32cd32 4px, #32cd32 8px);
+  border-top: 2px solid #000;
+  z-index: 2;
+}
+
+.main-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 20px;
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.logo-icon {
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
+}
+
+.logo {
+  font-size: 3rem;
+  font-weight: normal;
+  text-shadow: 4px 4px 0px #000, 2px 2px 0px #fff;
+  line-height: 1;
+}
+
+.sn {
+  color: #32cd32;
+}
+
+.aq {
+  color: #ff4444;
+}
+
+.tagline {
+  font-size: 12px;
+  color: #fff;
+  background: #000;
+  padding: 8px 16px;
+  border: 2px solid #fff;
+  text-shadow: none;
+  letter-spacing: 1px;
+}
+
+.category-section {
+  text-align: center;
+}
+
+.pixel-sign {
+  background: #8b4513;
+  border: 4px solid #000;
+  padding: 16px 32px;
+  margin-bottom: 32px;
+  box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #654321;
+  transform: rotate(-1deg);
+}
+
+.pixel-sign h2 {
+  color: #fff;
+  font-size: 16px;
+  text-shadow: 2px 2px 0px #000;
+  letter-spacing: 1px;
+}
+
+.category-buttons {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.category-btn {
+  background: #333;
+  border: 4px solid #000;
+  color: #fff;
+  padding: 16px 24px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+  box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #222;
+}
+
+.category-btn:hover {
+  background: #444;
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 2px #fff inset, 2px 2px 0px #222;
+}
+
+.category-btn.selected {
+  background: #32cd32;
+  border-color: #228b22;
+  color: #000;
+}
+
+.math-btn.selected {
+  background: #4a90e2;
+}
+
+.english-btn.selected {
+  background: #ff6b6b;
+}
+
+.btn-icon {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+}
+
+.coming-soon {
+  font-size: 8px;
+  color: #888;
+  margin-bottom: 32px;
+  letter-spacing: 1px;
+}
+
+.play-btn {
+  background: #32cd32;
+  border: 4px solid #228b22;
+  color: #000;
+  padding: 16px 32px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #1e7e1e;
+}
+
+.play-btn:hover:not(:disabled) {
+  background: #3ae63a;
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 2px #fff inset, 2px 2px 0px #1e7e1e;
+}
+
+.play-btn:disabled {
+  background: #666;
+  border-color: #444;
+  color: #888;
+  cursor: not-allowed;
+  box-shadow: 0 0 0 2px #888 inset, 4px 4px 0px #333;
+}
+
+.pixel-snake-character {
+  position: absolute;
+  bottom: 60px;
+  right: 40px;
+  z-index: 4;
+}
+
+.snake-segments {
+  display: flex;
+  align-items: center;
+}
+
+.snake-head,
+.snake-body-1,
+.snake-body-2 {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #000;
+  margin-left: -2px;
+}
+
+.snake-head {
+  background: #32cd32;
+  border-radius: 0;
+  position: relative;
+  z-index: 3;
+}
+
+.snake-body-1 {
+  background: #228b22;
+  z-index: 2;
+}
+
+.snake-body-2 {
+  background: #1e7e1e;
+  z-index: 1;
+}
+
+/* Game Page Styles */
+.game-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px; /* Account for sticky header */
+  min-height: 100vh;
+  /* Added tiled background pattern using Tile.png */
+  background-image: url("../assets/Tile.png");
+  background-size: 32px 32px;
+  background-repeat: repeat;
+  image-rendering: pixelated;
+}
+
+.game-board {
+  background: #2a2a2a;
+  padding: 24px;
+  max-width: 100%;
+}
+
+.game-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.game-icon {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+
+.game-title {
+  font-size: 18px;
+  color: #32cd32;
+  text-shadow: 2px 2px 0px #000, 1px 1px 0px #fff;
+  text-align: center;
+}
+
+.pixel-hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.pixel-stat {
+  padding: 8px 12px;
+  font-size: 10px;
+  background: #000;
+  color: #fff;
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 120px;
+}
+
+.stat-icon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+}
+
+.score {
+  border-color: #4a90e2;
+  background: #1a1a2e;
+}
+
+.lives {
+  border-color: #ff4444;
+  background: #2e1a1a;
+}
+
+.correct {
+  border-color: #ffa500;
+  background: #2e2a1a;
+}
+
+.question-section {
+  margin-bottom: 16px;
+}
+
+.pixel-question {
+  background: #000;
+  color: #fff;
+  padding: 12px 16px;
+  border: 2px solid #fff;
+  font-size: 10px;
+  text-align: center;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.instruction {
+  font-size: 8px;
+  color: #ccc;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.options-container {
+  background: #1a1a1a;
+  padding: 12px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #333;
+  border: 1px solid #555;
+  font-size: 10px;
+}
+
+/* Updated apple icon styling for colored apple sprites */
+.apple-icon {
+  width: 24px;
+  height: 24px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.apple-sprite {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+.apple-letter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  color: #fff;
+  text-shadow: 1px 1px 0px #000;
+  font-weight: bold;
+}
+
+.option-text {
+  color: #fff;
+  font-size: 8px;
+  flex: 1;
+}
+
+.canvas-container {
+  position: relative;
+  background: #000;
+  margin-bottom: 16px;
+  /* Added tiled background to canvas container */
+  background-image: url("../assets/Tile.png");
+  background-size: 20px 20px;
+  background-repeat: repeat;
+  image-rendering: pixelated;
+}
+
+#game-canvas {
+  display: block;
+  border: none;
+  background: transparent;
+  image-rendering: pixelated;
+}
+
+.pixel-instructions {
+  background: #1a1a1a;
+  padding: 12px 16px;
+  border: 2px solid #333;
+  font-size: 8px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.controls {
+  color: #888;
+  margin-top: 8px;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #2a2a2a;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.modal h3 {
+  color: #32cd32;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.setting-group {
+  margin-bottom: 20px;
+}
+
+.setting-group h4 {
+  color: #fff;
+  font-size: 10px;
+  margin-bottom: 8px;
+}
+
+.mode-buttons,
+.difficulty-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pixel-btn {
+  background: #333;
+  border: 2px solid #555;
+  color: #fff;
+  padding: 8px 12px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.pixel-btn:hover {
+  background: #444;
+  transform: translate(1px, 1px);
+}
+
+.pixel-btn.selected {
+  background: #32cd32;
+  border-color: #228b22;
+  color: #000;
+}
+
+.easy.selected {
+  background: #32cd32;
+}
+
+.medium.selected {
+  background: #ffa500;
+}
+
+.hard.selected {
+  background: #ff4444;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.start-btn {
+  background: #32cd32;
+  border-color: #228b22;
+  color: #000;
+}
+
+.start-btn:disabled {
+  background: #666;
+  border-color: #444;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: #ff4444;
+  border-color: #cc3333;
+}
+
+/* Overlay Styles */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.overlay-content {
+  background: #2a2a2a;
+  padding: 24px;
+  text-align: center;
+  max-width: 300px;
+}
+
+.overlay-content h2 {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.overlay-content h2.won {
+  color: #32cd32;
+}
+
+.overlay-content h2.lost {
+  color: #ff4444;
+}
+
+.overlay-content p {
+  font-size: 10px;
+  margin-bottom: 20px;
+  color: #ccc;
+}
+
+.btn {
+  background: #333;
+  border: 2px solid #555;
+  color: #fff;
+  padding: 8px 16px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  cursor: pointer;
+  margin: 0 4px;
+  transition: all 0.1s ease;
+}
+
+.btn:hover {
+  background: #444;
+  transform: translate(1px, 1px);
+}
+
+.btn-green {
+  background: #32cd32;
+  border-color: #228b22;
+  color: #000;
+}
+
+.btn-red {
+  background: #ff4444;
+  border-color: #cc3333;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Heart-based lives display */
+.hearts-container {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.heart {
+  width: 16px;
+  height: 16px;
+  position: relative;
+  display: inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
+}
+
+.heart.filled {
+  background-image: url("../assets/Heart.png");
+}
+
+.heart.empty {
+  background-image: url("../assets/HeartEmpty.png");
+}
+
+/* Instructions modal styles */
+.instructions-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.instructions-content {
+  background: #2a2a2a;
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.instructions-content h3 {
+  color: #32cd32;
+  font-size: 14px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.instructions-content h4 {
+  color: #fff;
+  font-size: 10px;
+  margin: 12px 0 8px 0;
+}
+
+.instructions-content p,
+.instructions-content li {
+  font-size: 8px;
+  line-height: 1.4;
+  color: #ccc;
+  margin-bottom: 8px;
+}
+
+.instructions-content ul {
+  margin: 8px 0;
+  padding-left: 16px;
+}
+
+.close-instructions {
+  background: #32cd32;
+  border: 2px solid #228b22;
+  color: #000;
+  padding: 8px 16px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  cursor: pointer;
+  margin: 16px auto 0;
+  display: block;
+  transition: all 0.1s ease;
+}
+
+.close-instructions:hover {
+  background: #3ae63a;
+  transform: translate(1px, 1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .game-container {
+    padding: 80px 10px 20px;
+  }
+
+  .game-board {
+    padding: 16px;
+  }
+
+  .pixel-hud {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pixel-stat {
+    min-width: auto;
+    width: 100%;
+    justify-content: center;
+  }
+
+  #game-canvas {
+    width: 100%;
+    height: auto;
+  }
+
+  .category-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 2rem;
+  }
+
+  .main-content {
+    padding: 10px;
+  }
+
+  .option-item {
+    font-size: 8px;
+    padding: 6px 8px;
+    gap: 6px;
+  }
+
+  .apple-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 8px;
+  }
+}

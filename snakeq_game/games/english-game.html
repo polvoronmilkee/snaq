@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Snake Game - SnAQ</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Updated header with back icon and snake-icon instead of SnaQ logo -->
+    <header class="sticky-header">
+        <div class="header-left">
+            <button class="header-btn back-btn-header" onclick="window.location.href='../index.html'" title="Back to Menu">
+                <img src="../assets/back-icon.png" alt="Back" class="header-icon" />
+            </button>
+            <div class="header-logo">
+                <img src="../assets/snake-icon.png" alt="SnAQ Logo" />
+            </div>
+        </div>
+        <div class="header-controls">
+            <button class="header-btn" id="help-btn" title="Instructions">?</button>
+            <button class="header-btn" id="sound-btn" title="Sound Effects">🔊</button>
+            <button class="header-btn" id="music-btn" title="Background Music">🎵</button>
+        </div>
+    </header>
+
+    <!-- Updated instructions modal content -->
+    <div id="instructions-modal" class="instructions-modal hidden">
+        <div class="instructions-content pixel-border">
+            <h3>How to Play SnAQ - English</h3>
+            
+            <h4>🎯 Objective</h4>
+            <p>Control the snake to eat colored apples with correct answers to English questions. Grow your snake and reach the target score!</p>
+            
+            <h4>🕹️ Controls</h4>
+            <ul>
+                <li>Use WASD or Arrow Keys to move the snake</li>
+                <li>Press SPACE to pause/unpause the game</li>
+                <li>Press R to restart the current game</li>
+            </ul>
+            
+            <h4>🍎 Gameplay</h4>
+            <ul>
+                <li>Read the English question at the top</li>
+                <li>Look at the A, B, C answer options below</li>
+                <li>Find the apple with the matching letter for the correct answer</li>
+                <li>Eat correct apples to grow and score points (+10)</li>
+                <li>Avoid wrong answers or lose points (-5) and a life</li>
+                <li>Don't bite yourself or you'll lose a life</li>
+            </ul>
+            
+            <h4>❤️ Lives & Scoring</h4>
+            <ul>
+                <li>You start with 3 lives (hearts)</li>
+                <li>Lose a life for wrong answers or self-bites</li>
+                <li>Game ends when you lose all lives</li>
+                <li>Speed increases as you progress</li>
+            </ul>
+            
+            <button class="close-instructions" id="close-instructions">Got It!</button>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="game-board pixel-border">
+            <div class="game-header-bar">
+                <img src="../assets/english-icon.png" alt="English" class="game-icon" />
+                <h1 class="game-title">English Snake Quest</h1>
+            </div>
+            
+            <!-- HUD -->
+            <div class="hud pixel-hud">
+                <div class="score pixel-stat">
+                    <img src="../assets/score-icon.png" alt="Score" class="stat-icon" />
+                    Score: <span id="score-value">0</span>
+                </div>
+                <!-- Replaced lives text with heart icons -->
+                <div class="lives pixel-stat">
+                    <span>Lives:</span>
+                    <div class="hearts-container" id="hearts-container">
+                        <div class="heart filled"></div>
+                        <div class="heart filled"></div>
+                        <div class="heart filled"></div>
+                    </div>
+                </div>
+                <div class="correct pixel-stat">
+                    <img src="../assets/correct-icon.png" alt="Correct" class="stat-icon" />
+                    Correct: <span id="correct-value">0</span>/<span id="target-value">10</span>
+                </div>
+                <div class="timer pixel-stat" id="timer-display" style="display: none;">
+                    <img src="../assets/timer-icon.png" alt="Timer" class="stat-icon" />
+                    Time: <span id="timer-value">60</span>s
+                </div>
+            </div>
+
+            <!-- Question Section -->
+            <div class="question-section">
+                <div class="question pixel-question" id="question-display">Loading...</div>
+                <div class="instruction">Eat the colored apple that matches your answer choice!</div>
+                
+                <!-- Updated options display to show A, B, C format with colored apples -->
+                <div class="options-container pixel-border" id="options-display">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Game Canvas -->
+            <div class="canvas-container pixel-border">
+                <canvas id="game-canvas" width="800" height="480"></canvas>
+                
+                <!-- Game Over Overlay -->
+                <div id="game-over-overlay" class="overlay hidden">
+                    <div class="overlay-content pixel-border">
+                        <h2 id="game-over-title">Game Over</h2>
+                        <p id="final-score">Final Score: 0</p>
+                        <button id="play-again-btn" class="btn pixel-btn btn-green">Play Again</button>
+                        <button id="menu-btn" class="btn pixel-btn btn-red">Main Menu</button>
+                    </div>
+                </div>
+
+                <!-- Restart Confirmation -->
+                <div id="restart-confirm" class="modal hidden">
+                    <div class="modal-content pixel-border">
+                        <h3>Restart Game?</h3>
+                        <p>Are you sure you want to restart the current game?</p>
+                        <div class="modal-buttons">
+                            <button id="confirm-restart" class="btn pixel-btn btn-green">Restart</button>
+                            <button id="cancel-restart" class="btn pixel-btn btn-red">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions pixel-instructions">
+                <p>Use WASD or Arrow keys to move • Eat correct colored apples to grow • Avoid wrong answers!</p>
+                <p>Look at the A, B, C options above - eat the apple with the correct letter!</p>
+                <p class="controls">Press SPACE to pause • Press R to restart</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/english-game.js"></script>
+</body>
+</html>

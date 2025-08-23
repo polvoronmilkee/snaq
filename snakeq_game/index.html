@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnAQ - Quiz Your Brain, Grow Your Snake!</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="sticky-header">
+        <div class="header-left">
+            <div class="header-logo">
+                <img src="assets/snake-icon.png" alt="SnAQ Logo" />
+            </div>
+        </div>
+        <div class="header-controls">
+            <button class="header-btn" id="help-btn" title="Instructions">?</button>
+            <button class="header-btn" id="sound-btn" title="Sound Effects">🔊</button>
+            <button class="header-btn" id="music-btn" title="Background Music">🎵</button>
+        </div>
+    </header>
+
+    <!-- Added instructions modal -->
+    <div id="instructions-modal" class="instructions-modal hidden">
+        <div class="instructions-content pixel-border">
+            <h3>How to Play SnAQ</h3>
+            
+            <h4>🎯 Choose Your Quest</h4>
+            <p>Select Mathematics or English to test your knowledge while playing snake!</p>
+            
+            <h4>🕹️ Game Modes</h4>
+            <ul>
+                <li><strong>Quiz Mode:</strong> Answer 10 questions correctly to win</li>
+                <li><strong>Endless Mode:</strong> Keep playing and growing your snake</li>
+                <li><strong>Timed Mode:</strong> Answer as many as you can in 1 minute</li>
+            </ul>
+            
+            <h4>🍎 Gameplay</h4>
+            <ul>
+                <li>Control the snake with WASD or Arrow Keys</li>
+                <li>Read questions and eat the correct colored apple</li>
+                <li>Grow your snake and increase your score</li>
+                <li>Avoid wrong answers or lose lives</li>
+            </ul>
+            
+            <button class="close-instructions" id="close-instructions">Got It!</button>
+        </div>
+    </div>
+
+    <div class="landing-container">
+        <!-- Added background image -->
+        <div class="pixel-background" style="background-image: url('assets/bg-landing.png');">
+            <div class="pixel-trees"></div>
+            <div class="pixel-grass"></div>
+        </div>
+        
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- Removed SnAQ text logo, kept only snake icon in header -->
+            <header class="game-header">
+                <div class="logo-container">
+                    <img src="assets/snake-icon.png" alt="Snake" class="logo-icon" />
+                </div>
+                <p class="tagline">Quiz Your Brain, Grow Your Snake!</p>
+            </header>
+
+            <!-- Category selection -->
+            <div class="category-section">
+                <div class="pixel-sign">
+                    <h2>Choose Your Quest</h2>
+                </div>
+                
+                <div class="category-buttons">
+                    <button class="category-btn math-btn" data-category="math">
+                        <img src="assets/math-icon.png" alt="Math" class="btn-icon" />
+                        <span>Mathematics</span>
+                    </button>
+                    <button class="category-btn english-btn" data-category="english">
+                        <img src="assets/english-icon.png" alt="English" class="btn-icon" />
+                        <span>English</span>
+                    </button>
+                </div>
+                
+                <p class="coming-soon">... more quests coming soon!</p>
+                
+                <button class="play-btn" id="playBtn" disabled>
+                    <img src="assets/play-icon.png" alt="Play" class="btn-icon" />
+                    <span>START GAME</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Pixel snake character -->
+        <div class="pixel-snake-character">
+            <div class="snake-segments">
+                <div class="snake-head"></div>
+                <div class="snake-body-1"></div>
+                <div class="snake-body-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Mode Modal -->
+    <div id="gameModeModal" class="modal hidden">
+        <div class="modal-content pixel-border">
+            <h3>Game Settings</h3>
+            
+            <div class="setting-group">
+                <h4>Game Mode</h4>
+                <div class="mode-buttons">
+                    <button class="mode-btn pixel-btn" data-mode="quiz">Quiz Mode</button>
+                    <button class="mode-btn pixel-btn" data-mode="endless">Endless Mode</button>
+                    <button class="mode-btn pixel-btn" data-mode="timed">Timed (1 min)</button>
+                </div>
+            </div>
+            
+            <div class="setting-group">
+                <h4>Difficulty Level</h4>
+                <div class="difficulty-buttons">
+                    <button class="difficulty-btn pixel-btn easy" data-difficulty="easy">Easy</button>
+                    <button class="difficulty-btn pixel-btn medium" data-difficulty="medium">Medium</button>
+                    <button class="difficulty-btn pixel-btn hard" data-difficulty="hard">Hard</button>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button id="startGameBtn" class="start-btn pixel-btn" disabled>Start Game</button>
+                <button id="cancelBtn" class="cancel-btn pixel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/landing.js"></script>
+</body>
+</html>
