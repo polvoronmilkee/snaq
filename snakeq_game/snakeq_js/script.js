@@ -558,27 +558,31 @@ class SnakeMathGame {
       return
     }
 
-    // WASD movement
-    switch (key) {
-      case "w":
+    // Movement controls: WASD + Arrow keys
+    switch (code) {
+      case "KeyW":
+      case "ArrowUp":
         if (!this.paused && this.direction.y === 0) {
           this.direction = { x: 0, y: -1 }
           moved = true
         }
         break
-      case "s":
+      case "KeyS":
+      case "ArrowDown":
         if (!this.paused && this.direction.y === 0) {
           this.direction = { x: 0, y: 1 }
           moved = true
         }
         break
-      case "a":
+      case "KeyA":
+      case "ArrowLeft":
         if (!this.paused && this.direction.x === 0) {
           this.direction = { x: -1, y: 0 }
           moved = true
         }
         break
-      case "d":
+      case "KeyD":
+      case "ArrowRight":
         if (!this.paused && this.direction.x === 0) {
           this.direction = { x: 1, y: 0 }
           moved = true
