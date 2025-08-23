@@ -1,0 +1,33 @@
+/* Make header sticky */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #4CAF50; /* Playful green */
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Comic Sans MS", cursive, sans-serif; /* playful font */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Logo style */
+.site-header .logo {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+/* Nav links */
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  margin: 0 10px;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: #ffe066; /* Fun yellow hover */
+}
