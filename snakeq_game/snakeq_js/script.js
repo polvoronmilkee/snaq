@@ -7,6 +7,21 @@ class SnakeMathGame {
     this.GRID_WIDTH = Math.floor(this.CANVAS_WIDTH / this.GRID_SIZE)
     this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
 
+    //Assets
+    this.snakeHeadImg = new Image();
+    this.snakeHeadImg.src = "/snakeq_game/assets/SnakeHead.png";
+    this.snakeBodyImg = new Image();
+    this.snakeBodyImg.src = "/snakeq_game/assets/SnakeBody.png";
+    this.snakeHeadLeftImg = new Image();
+    this.snakeHeadLeftImg.src ="/snakeq_game/assets/SnakeHeadLeft.png"
+    this.snakeHeadRightImg = new Image();
+    this.snakeHeadRightImg.src = "/snakeq_game/assets/SnakeHeadRight.png";
+    this.snakeHeadDownImg = new Image();
+    this.snakeHeadDownImg.src = "/snakeq_game/assets/SnakeHeadDown.png";
+    this.appleImg = new Image();
+    this.appleImg.src = "/snakeq_game/assets/apple.png";
+
+
     // Game state
     this.snake = []
     this.direction = { x: 1, y: 0 }
@@ -432,48 +447,37 @@ class SnakeMathGame {
     }
 
     // Draw snake
-    this.ctx.fillStyle = "#4ade80"
     this.snake.forEach((segment, index) => {
-      this.ctx.fillRect(
-        segment.x * this.GRID_SIZE + 1,
-        segment.y * this.GRID_SIZE + 1,
-        this.GRID_SIZE - 2,
-        this.GRID_SIZE - 2,
-      )
-
-      if (index === 0) {
-        this.ctx.fillStyle = "#22c55e"
-        this.ctx.fillRect(
-          segment.x * this.GRID_SIZE + 3,
-          segment.y * this.GRID_SIZE + 3,
-          this.GRID_SIZE - 6,
-          this.GRID_SIZE - 6,
-        )
-        this.drawSnakeFace(segment.x * this.GRID_SIZE, segment.y * this.GRID_SIZE, this.snakeFace)
-        this.ctx.fillStyle = "#4ade80"
-      }
-    })
+      const img = index === 0 ? this.snakeHeadImg : this.snakeBodyImg;
+      this.ctx.drawImage(
+        img,
+        segment.x * this.GRID_SIZE,
+        segment.y * this.GRID_SIZE,
+        this.GRID_SIZE,
+        this.GRID_SIZE
+      );
+    });
 
     // Draw apples
     this.apples.forEach((apple) => {
-      this.ctx.fillStyle = "#ef4444"
-      this.ctx.fillRect(
-        apple.x * this.GRID_SIZE + 1,
-        apple.y * this.GRID_SIZE + 1,
-        this.GRID_SIZE - 2,
-        this.GRID_SIZE - 2,
-      )
-
-      this.ctx.fillStyle = "white"
-      this.ctx.font = "12px monospace"
-      this.ctx.textAlign = "center"
-      this.ctx.textBaseline = "middle"
+      this.ctx.drawImage(
+        this.appleImg,
+        apple.x * this.GRID_SIZE,
+        apple.y * this.GRID_SIZE,
+        this.GRID_SIZE,
+        this.GRID_SIZE
+      );
+      // Draw value on top of apple
+      this.ctx.fillStyle = "white";
+      this.ctx.font = "12px monospace";
+      this.ctx.textAlign = "center";
+      this.ctx.textBaseline = "middle";
       this.ctx.fillText(
         apple.value.toString(),
         apple.x * this.GRID_SIZE + this.GRID_SIZE / 2,
-        apple.y * this.GRID_SIZE + this.GRID_SIZE / 2,
-      )
-    })
+        apple.y * this.GRID_SIZE + this.GRID_SIZE / 2
+      );
+    });
 
     // Draw notification
     if (this.notification && this.notificationTimer > 0) {
@@ -564,24 +568,28 @@ class SnakeMathGame {
         if (!this.paused && this.direction.y === 0) {
           this.direction = { x: 0, y: -1 }
           moved = true
+          this.snakeHeadImg.src = "/snakeq_game/assets/SnakeHead.png"
         }
         break
       case "s":
         if (!this.paused && this.direction.y === 0) {
           this.direction = { x: 0, y: 1 }
           moved = true
+          this.snakeHeadImg.src = "/snakeq_game/assets/SnakeHeadDown.png"
         }
         break
       case "a":
         if (!this.paused && this.direction.x === 0) {
           this.direction = { x: -1, y: 0 }
           moved = true
+          this.snakeHeadImg.src = "/snakeq_game/assets/SnakeHeadLeft.png"
         }
         break
       case "d":
         if (!this.paused && this.direction.x === 0) {
           this.direction = { x: 1, y: 0 }
           moved = true
+          this.snakeHeadImg.src = "/snakeq_game/assets/SnakeHeadRight.png"
         }
         break
     }
