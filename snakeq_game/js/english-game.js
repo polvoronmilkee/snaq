@@ -772,56 +772,98 @@ class SnakeEnglishGame {
 
     // Draw snake using sprites
     this.snake.forEach((segment, index) => {
-      const x = segment.x * this.GRID_SIZE
-      const y = segment.y * this.GRID_SIZE
+  const x = segment.x * this.GRID_SIZE;
+  const y = segment.y * this.GRID_SIZE;
 
-      if (index === 0) {
-        // Snake head - choose sprite based on direction
-        let headSprite = this.sprites.SnakeHead // default up
-        if (this.direction.x === 1) headSprite = this.sprites.SnakeHeadRight
-        else if (this.direction.x === -1) headSprite = this.sprites.SnakeHeadLeft
-        else if (this.direction.y === 1) headSprite = this.sprites.SnakeHeadDown
+  if (index === 0) {
+    // ===== HEAD =====
+    let headSprite = this.sprites.SnakeHead; // default (up)
+    if (this.direction.x === 1) headSprite = this.sprites.SnakeHeadRight;
+    else if (this.direction.x === -1) headSprite = this.sprites.SnakeHeadLeft;
+    else if (this.direction.y === 1) headSprite = this.sprites.SnakeHeadDown;
 
-        if (headSprite && headSprite.complete) {
-          this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
-        } else {
-          // Fallback to colored rectangle
-          this.ctx.fillStyle = "#32cd32"
-          this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
-          this.drawPixelSnakeFace(x, y, this.snakeFace)
+    if (headSprite?.complete) {
+      this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+    } else {
+      this.ctx.fillStyle = "#32cd32";
+      this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+      this.drawPixelSnakeFace(x, y, this.snakeFace);
+    }
+  } 
+  else if (index === this.snake.length - 1) {
+    // ===== TAIL =====
+    const prevSegment = this.snake[index - 1];
+    const tailDir = { x: prevSegment.x - segment.x, y: prevSegment.y - segment.y };
+
+    let tailSprite = this.sprites.SnakeTail; // default up
+    if (tailDir.x === 1) tailSprite = this.sprites.SnakeTailRight;
+    else if (tailDir.x === -1) tailSprite = this.sprites.SnakeTailLeft;
+    else if (tailDir.y === 1) tailSprite = this.sprites.SnakeTailDown;
+
+    if (tailSprite?.complete) {
+      this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+    } else {
+      this.ctx.fillStyle = "#228b22";
+      this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+    }
+  } 
+  else {
+    // ===== BODY =====
+    const prev = this.snake[index - 1];
+    const next = this.snake[index + 1];
+
+    const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
+    const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
+
+    let bodySprite;
+
+    // If straight (horizontal or vertical)
+    if (dirPrev.x === dirNext.x) {
+      // horizontal
+      bodySprite = (dirPrev.x !== 0) ? this.sprites.SnakeBodyRight  : this.sprites.SnakeBody;
+    } 
+    else if (dirPrev.y === dirNext.y) {
+      // vertical
+      bodySprite = (dirPrev.y !== 0) ? this.sprites.SnakeBody : this.sprites.SnakeBodyRight;
+    } 
+    else {
+      // It's a corner
+      // Example: coming from LEFT (x=-1) to DOWN (y=1) → SnakeCornerLD
+        if (
+    (dirPrev.x === -1 && dirNext.y === -1) || // coming from left + going up
+    (dirNext.x === -1 && dirPrev.y === -1)
+    ) {
+    bodySprite = this.sprites.SnakeCornerLeftDown;
+    } else if (
+    (dirPrev.x === 1 && dirNext.y === -1) || // coming from right + going up
+    (dirNext.x === 1 && dirPrev.y === -1)
+    ) {
+    bodySprite = this.sprites.SnakeCornerLeftDown;
+    } else if (
+    (dirPrev.x === -1 && dirNext.y === 1) || // coming from left + going down
+    (dirNext.x === -1 && dirPrev.y === 1)
+    ) {
+    bodySprite = this.sprites.SnakeCornerLeftDown;
+    } else if (
+    (dirPrev.x === 1 && dirNext.y === 1) || // coming from right + going down
+    (dirNext.x === 1 && dirPrev.y === 1)
+    ) {
+    bodySprite = this.sprites.SnakeCornerRightDown;
+    }
         }
-      } else if (index === this.snake.length - 1) {
-        const prevSegment = this.snake[index - 1]
-        const tailDir = { x: prevSegment.x - segment.x, y: prevSegment.y - segment.y }
 
-        let tailSprite = this.sprites.SnakeTail // default up
-        if (tailDir.x === 1) tailSprite = this.sprites.SnakeTailRight
-        else if (tailDir.x === -1) tailSprite = this.sprites.SnakeTailLeft
-        else if (tailDir.y === 1) tailSprite = this.sprites.SnakeTailDown
+    if (bodySprite?.complete) {
+      this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+    } else {
+      this.ctx.fillStyle = "#228b22";
+      this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+      this.ctx.strokeStyle = "#000";
+      this.ctx.lineWidth = 1;
+      this.ctx.strokeRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+    }
+  }
+});
 
-        if (tailSprite && tailSprite.complete) {
-          this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
-        } else {
-          // Fallback to colored rectangle
-          this.ctx.fillStyle = "#228b22"
-          this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
-        }
-      } else {
-        const bodySprite = this.sprites.SnakeBody
-        if (bodySprite && bodySprite.complete) {
-          this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
-        } else {
-          // Fallback to colored rectangle
-          this.ctx.fillStyle = "#228b22"
-          this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
-
-          // Pixel border for body
-          this.ctx.strokeStyle = "#000"
-          this.ctx.lineWidth = 1
-          this.ctx.strokeRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
-        }
-      }
-    })
 
     this.apples.forEach((apple) => {
       const x = apple.x * this.GRID_SIZE
