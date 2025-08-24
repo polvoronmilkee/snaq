@@ -307,6 +307,7 @@ body {
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  text-align: center;
   display: flex;
   align-items: center;
   position: absolute;
