@@ -282,55 +282,97 @@ class SnakeMathGame {
   }
 
   generateQuestion() {
-    const difficulty = this.gameSettings.difficulty
-    const operations = ["+", "-", "*"]
-    const operation = operations[Math.floor(Math.random() * operations.length)]
+  const difficulty = this.gameSettings.difficulty;
+  
+  // Difficulty settings
+  const settings = {
+    easy:   { range: 10,  maxMult: 5,   allowDiv: false },
+    medium: { range: 50,  maxMult: 12,  allowDiv: true  },
+    hard:   { range: 100, maxMult: 20,  allowDiv: true  }
+  };
 
-    let num1, num2, correctAnswer, question
-    const range = difficulty === "easy" ? 10 : difficulty === "medium" ? 30 : 100
+  const { range, maxMult, allowDiv } = settings[difficulty] || settings.easy;
 
-    switch (operation) {
-      case "+":
-        num1 = Math.floor(Math.random() * range) + 1
-        num2 = Math.floor(Math.random() * range) + 1
-        correctAnswer = num1 + num2
-        question = `${num1} + ${num2} = ?`
-        break
-      case "-":
-        num1 = Math.floor(Math.random() * range) + range
-        num2 = Math.floor(Math.random() * num1) + 1
-        correctAnswer = num1 - num2
-        question = `${num1} - ${num2} = ?`
-        break
-      case "*":
-        const maxMult = difficulty === "easy" ? 5 : difficulty === "medium" ? 12 : 20
-        num1 = Math.floor(Math.random() * maxMult) + 1
-        num2 = Math.floor(Math.random() * maxMult) + 1
-        correctAnswer = num1 * num2
-        question = `${num1} × ${num2} = ?`
-        break
-      default:
-        correctAnswer = 5
-        question = "2 + 3 = ?"
-    }
+  // Pick operation
+  const operations = allowDiv ? ["+", "-", "*", "/"] : ["+", "-", "*"];
+  const operation = operations[Math.floor(Math.random() * operations.length)];
 
-    // Generate wrong options
-    const options = [correctAnswer]
-    while (options.length < 4) {
-      const wrongAnswer = correctAnswer + Math.floor(Math.random() * 20) - 10
-      if (wrongAnswer > 0 && !options.includes(wrongAnswer)) {
-        options.push(wrongAnswer)
-      }
-    }
+  let num1, num2, correctAnswer, question;
 
-    // Shuffle options
-    for (let i = options.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[options[i], options[j]] = [options[j], options[i]]
-    }
+  switch (operation) {
+    case "+":
+      num1 = Math.floor(Math.random() * range) + 1;
+      num2 = Math.floor(Math.random() * range) + 1;
+      correctAnswer = num1 + num2;
+      question = `${num1} + ${num2} = ?`;
+      break;
 
-    return { question, correctAnswer, options }
+    case "-":
+      num1 = Math.floor(Math.random() * range) + 1;
+      num2 = Math.floor(Math.random() * num1) + 1; // ensures non-negative
+      correctAnswer = num1 - num2;
+      question = `${num1} - ${num2} = ?`;
+      break;
+
+    case "*":
+      num1 = Math.floor(Math.random() * maxMult) + 1;
+      num2 = Math.floor(Math.random() * maxMult) + 1;
+      correctAnswer = num1 * num2;
+      question = `${num1} × ${num2} = ?`;
+      break;
+
+    case "/":
+      num2 = Math.floor(Math.random() * maxMult) + 1;
+      correctAnswer = Math.floor(Math.random() * maxMult) + 1;
+      num1 = num2 * correctAnswer; // ensures clean division
+      question = `${num1} ÷ ${num2} = ?`;
+      break;
+
+    default:
+      correctAnswer = 5;
+      question = "2 + 3 = ?";
   }
+
+  // ✅ Generate wrong options
+  const options = new Set([correctAnswer]);
+
+  while (options.size < 4) {
+    let wrongAnswer;
+
+    switch (Math.floor(Math.random() * 4)) {
+      case 0: // near miss
+        wrongAnswer = correctAnswer + (Math.floor(Math.random() * 5) - 2);
+        break;
+      case 1: // off by factor
+        wrongAnswer = correctAnswer * (Math.random() > 0.5 ? 2 : 0.5);
+        break;
+      case 2: // operand swap (common mistake)
+        wrongAnswer = num1 + num2; // works as distractor in non-addition
+        break;
+      default: // random within difficulty range
+        wrongAnswer = Math.floor(Math.random() * (range * 2)) + 1;
+    }
+
+    // Keep answers valid
+    if (
+      Number.isInteger(wrongAnswer) &&
+      wrongAnswer > 0 &&
+      wrongAnswer !== correctAnswer
+    ) {
+      options.add(wrongAnswer);
+    }
+  }
+
+  // Convert to array and shuffle
+  const shuffledOptions = Array.from(options);
+  for (let i = shuffledOptions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+  }
+
+  return { question, correctAnswer, options: shuffledOptions };
+}
+
 
   initGame() {
     this.snake = [this.getRandomPosition()]
@@ -719,8 +761,9 @@ showGameOver() {
     const maxLives = this.maxLives || 3; // fallback if not defined
 
     this.finalScoreElement.textContent = `Final Score: ${this.score}`;
-    if (this.finalCorrectElement) this.finalCorrectElement.textContent = `Corrects: ${this.correctAnswers}`;
-
+    if (this.finalCorrectElement) {
+    this.finalCorrectElement.innerHTML = `Corrects: ${this.correctAnswers}/${this.targetAnswers === Infinity ? '<span class="big-infinity">♾️</span>' : this.targetAnswers}`;
+    }
     // Show the overlay
     this.gameOverOverlay.classList.remove("hidden");
     }
