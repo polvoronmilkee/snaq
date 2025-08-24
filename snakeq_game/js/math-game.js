@@ -20,6 +20,8 @@ class SnakeMathGame {
       snakeLosesLife: new Audio("../sounds/snake-loses-life.mp3"),
       correct: new Audio("../sounds/correct.mp3"),
       bgMusic: new Audio("../sounds/bg-music.mp3"),
+      youWon: new Audio("../sounds/you-won.mp3"),
+      bgMusic: new Audio("../sounds/music.mp3"),
     }
 
     this.soundEnabled = true
