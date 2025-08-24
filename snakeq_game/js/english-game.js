@@ -919,62 +919,56 @@ class SnakeEnglishGame {
     }
   } 
   else {
-    // ===== BODY =====
-    const prev = this.snake[index - 1];
-    const next = this.snake[index + 1];
+  // ===== BODY =====
+  const prev = this.snake[index - 1];
+  const next = this.snake[index + 1];
 
-    const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
-    const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
+  const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
+  const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
 
-    let bodySprite;
+  let bodySprite;
 
-    // If straight (horizontal or vertical)
-    if (dirPrev.x === dirNext.x) {
-      // horizontal
-      bodySprite = (dirPrev.x !== 0) ? this.sprites.SnakeBodyRight  : this.sprites.SnakeBody;
-    } 
-    else if (dirPrev.y === dirNext.y) {
-      // vertical
-      bodySprite = (dirPrev.y !== 0) ? this.sprites.SnakeBody : this.sprites.SnakeBodyRight;
-    } 
-    else {
-      // It's a corner
-      // Example: coming from LEFT (x=-1) to DOWN (y=1) → SnakeCornerLD
+  // Straight segments
+  if (dirPrev.x === dirNext.x) {
+    // horizontal
+    bodySprite = (dirPrev.x !== 0) ? this.sprites.SnakeBodyRight : this.sprites.SnakeBody;
+  } else if (dirPrev.y === dirNext.y) {
+    // vertical
+    bodySprite = (dirPrev.y !== 0) ? this.sprites.SnakeBody : this.sprites.SnakeBodyRight;
+  } else {
+    // ===== CORNERS =====
     if (
-    (dirPrev.x === -1 && dirNext.y === -1) || // coming from left → up
-    (dirPrev.y === -1 && dirNext.x === -1)    // coming from up → left
+      (dirPrev.x === -1 && dirNext.y === -1) || // left → up
+      (dirPrev.y === -1 && dirNext.x === -1)    // up → left
     ) {
-    bodySprite = this.sprites.SnakeCornerRightUp;
+      bodySprite = this.sprites.SnakeCornerRightUp;
     } else if (
-    (dirPrev.x === 1 && dirNext.y === -1) ||  // coming from right → up
-    (dirPrev.y === -1 && dirNext.x === 1)     // coming from up → right
+      (dirPrev.x === 1 && dirNext.y === -1) ||  // right → up
+      (dirPrev.y === -1 && dirNext.x === 1)     // up → right
     ) {
-    bodySprite = this.sprites.SnakeCornerLeftUp;
+      bodySprite = this.sprites.SnakeCornerLeftUp;
     } else if (
-    (dirPrev.x === -1 && dirNext.y === 1) ||  // coming from left → down
-    (dirPrev.y === 1 && dirNext.x === -1)     // coming from down → left
+      (dirPrev.x === -1 && dirNext.y === 1) ||  // left → down
+      (dirPrev.y === 1 && dirNext.x === -1)     // down → left
     ) {
-    bodySprite = this.sprites.SnakeCornerRightDown;
+      bodySprite = this.sprites.SnakeCornerRightDown;
     } else if (
-    (dirPrev.x === 1 && dirNext.y === 1) ||   // coming from right → down
-    (dirPrev.y === 1 && dirNext.x === 1)      // coming from down → right
+      (dirPrev.x === 1 && dirNext.y === 1) ||   // right → down
+      (dirPrev.y === 1 && dirNext.x === 1)      // down → right
     ) {
-    bodySprite = this.sprites.SnakeCornerLeftDown;
-    }
-
-}
-
-
-    if (bodySprite?.complete) {
-      this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
-    } else {
-      this.ctx.fillStyle = "#228b22";
-      this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-      this.ctx.strokeStyle = "#000";
-      this.ctx.lineWidth = 1;
-      this.ctx.strokeRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+      bodySprite = this.sprites.SnakeCornerLeftDown;
     }
   }
+
+  // Draw body
+  if (bodySprite?.complete) {
+    this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+  } else {
+    this.ctx.fillStyle = "#006400";
+    this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+  }
+}
+
 });
 
     const copyrightModal = document.getElementById("copyright-modal");
