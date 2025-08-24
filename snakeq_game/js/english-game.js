@@ -19,13 +19,13 @@ class SnakeEnglishGame {
       snakeDies: new Audio("../sounds/snake-dies.mp3"),
       snakeLosesLife: new Audio("../sounds/snake-loses-life.mp3"),
       correct: new Audio("../sounds/correct.mp3"),
-      bgMusic: new Audio("../sounds/bg-music.mp3"),
       youWon: new Audio("../sounds/you-won.mp3"),
       bgMusic: new Audio("../sounds/music.mp3"),
+      click: new Audio("../sounds/click.mp3"),
     }
 
-    this.soundEnabled = true
-    this.musicEnabled = true
+    this.soundEnabled = localStorage.getItem("soundEnabled") !== "false" // default true
+    this.musicEnabled = localStorage.getItem("musicEnabled") === "true"
 
     // Load snake sprites
     this.sprites = {}
@@ -80,16 +80,7 @@ class SnakeEnglishGame {
       "SnakeTailLeft",
       "SnakeTailRight",
       "SnakeTailDown",
-      "SnakeBodyLeft",
-      "SnakeBodyRight",
-      "SnakeCornerLeftDown",
-      "SnakeCornerRightUp",
-      "SnakeCornerLeftUp",
-      "SnakeCornerRightDown",
       "apple",
-      "appleA-pink",
-      "appleB-yellow",
-      "appleC-blue",
     ]
 
     spriteNames.forEach((name) => {
@@ -107,6 +98,8 @@ class SnakeEnglishGame {
 
   toggleSound() {
     this.soundEnabled = !this.soundEnabled
+    localStorage.setItem("soundEnabled", this.soundEnabled.toString())
+
     const soundBtn = document.getElementById("sound-btn")
     soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
     soundBtn.classList.toggle("active", this.soundEnabled)
@@ -114,6 +107,8 @@ class SnakeEnglishGame {
 
   toggleMusic() {
     this.musicEnabled = !this.musicEnabled
+    localStorage.setItem("musicEnabled", this.musicEnabled.toString())
+
     const musicBtn = document.getElementById("music-btn")
     musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
     musicBtn.classList.toggle("active", this.musicEnabled)
@@ -134,6 +129,7 @@ class SnakeEnglishGame {
     this.correctElement = document.getElementById("correct-value")
     this.targetElement = document.getElementById("target-value")
     this.questionElement = document.getElementById("question-display")
+    this.optionsElement = document.getElementById("options-display")
     this.gameOverOverlay = document.getElementById("game-over-overlay")
     this.gameOverTitle = document.getElementById("game-over-title")
     this.finalScoreElement = document.getElementById("final-score")
@@ -144,7 +140,6 @@ class SnakeEnglishGame {
     this.cancelRestartBtn = document.getElementById("cancel-restart")
     this.timerDisplay = document.getElementById("timer-display")
     this.timerValue = document.getElementById("timer-value")
-    this.optionsContainer = document.getElementById("options-display")
 
     this.heartsContainer = document.getElementById("hearts-container")
     this.helpBtn = document.getElementById("help-btn")
@@ -158,6 +153,28 @@ class SnakeEnglishGame {
     this.initGame()
     this.bindEvents()
     this.gameLoop()
+
+    this.initializeAudioStates()
+  }
+
+  initializeAudioStates() {
+    const soundBtn = document.getElementById("sound-btn")
+    const musicBtn = document.getElementById("music-btn")
+
+    if (soundBtn) {
+      soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
+      soundBtn.classList.toggle("active", this.soundEnabled)
+    }
+
+    if (musicBtn) {
+      musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+      musicBtn.classList.toggle("active", this.musicEnabled)
+
+      if (this.musicEnabled) {
+        this.sounds.bgMusic.loop = true
+        this.sounds.bgMusic.play().catch((e) => console.log("Music play failed:", e))
+      }
+    }
   }
 
   bindEvents() {
@@ -191,6 +208,22 @@ class SnakeEnglishGame {
   updateUI() {
     this.scoreElement.textContent = this.score
     this.correctElement.textContent = this.correctAnswers
+    this.questionElement.textContent = this.currentQuestion ? this.currentQuestion.question : "Loading..."
+
+    // Update options display
+    if (this.currentQuestion && this.optionsElement) {
+      this.optionsElement.innerHTML = ""
+      this.currentQuestion.options.forEach((option, index) => {
+        const letter = String.fromCharCode(65 + index) // A, B, C
+        const optionDiv = document.createElement("div")
+        optionDiv.className = "option-item"
+        optionDiv.innerHTML = `
+          <span class="option-letter ${this.getAppleColor(index)}">${letter}</span>
+          <span class="option-text">${option}</span>
+        `
+        this.optionsElement.appendChild(optionDiv)
+      })
+    }
 
     // Update hearts display
     const hearts = this.heartsContainer.querySelectorAll(".heart")
@@ -203,161 +236,185 @@ class SnakeEnglishGame {
         heart.classList.add("empty")
       }
     })
-
-    if (this.currentQuestion) {
-      this.questionElement.textContent = this.currentQuestion.question
-      this.updateOptionsDisplay()
-    }
   }
 
-  updateOptionsDisplay() {
-    if (!this.optionsContainer || !this.currentQuestion) return
-
-    this.optionsContainer.innerHTML = ""
-
-    this.currentQuestion.options.forEach((option, index) => {
-      const optionDiv = document.createElement("div")
-      optionDiv.className = "option-item"
-
-      const appleIcon = document.createElement("div")
-      appleIcon.className = "apple-icon"
-
-      // Use specific colored apple sprites
-      const appleImg = document.createElement("img")
-      const appleColors = ["appleA-pink.png", "appleB-yellow.png", "appleC-blue.png"]
-      appleImg.src = `../assets/${appleColors[index] || "apple.png"}`
-      appleImg.alt = String.fromCharCode(65 + index) // A, B, C
-      appleImg.className = "apple-sprite"
-
-      const letterLabel = document.createElement("span")
-      letterLabel.className = "apple-letter"
-      letterLabel.textContent = String.fromCharCode(65 + index) // A, B, C
-
-      appleIcon.appendChild(appleImg)
-      appleIcon.appendChild(letterLabel)
-
-      const optionText = document.createElement("span")
-      optionText.className = "option-text"
-      optionText.textContent = option
-
-      optionDiv.appendChild(appleIcon)
-      optionDiv.appendChild(optionText)
-      this.optionsContainer.appendChild(optionDiv)
-    })
+  getAppleColor(index) {
+    const colors = ["red-apple", "green-apple", "blue-apple", "yellow-apple"]
+    return colors[index] || "red-apple"
   }
 
   generateQuestion() {
     const difficulty = this.gameSettings.difficulty
-    const questionTypes = ["synonym", "antonym", "definition", "spelling"]
-    const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)]
-
-    const wordSets = {
-      easy: {
-        synonym: [
-          { word: "happy", correct: "joyful", wrong: ["sad", "angry", "tired"] },
-          { word: "big", correct: "large", wrong: ["small", "tiny", "little"] },
-          { word: "fast", correct: "quick", wrong: ["slow", "lazy", "tired"] },
-          { word: "smart", correct: "clever", wrong: ["dumb", "silly", "lazy"] },
-        ],
-        antonym: [
-          { word: "hot", correct: "cold", wrong: ["warm", "cool", "mild"] },
-          { word: "up", correct: "down", wrong: ["over", "under", "above"] },
-          { word: "good", correct: "bad", wrong: ["nice", "great", "fine"] },
-          { word: "light", correct: "dark", wrong: ["bright", "clear", "white"] },
-        ],
-        definition: [
-          { word: "cat", correct: "a small furry pet", wrong: ["a big dog", "a bird", "a fish"] },
-          {
-            word: "book",
-            correct: "something to read",
-            wrong: ["something to eat", "something to wear", "something to drive"],
-          },
-        ],
-        spelling: [
-          { word: "friend", correct: "friend", wrong: ["freind", "frend", "freand"] },
-          { word: "school", correct: "school", wrong: ["scool", "schol", "skool"] },
-        ],
-      },
-      medium: {
-        synonym: [
-          { word: "beautiful", correct: "gorgeous", wrong: ["ugly", "plain", "simple"] },
-          { word: "difficult", correct: "challenging", wrong: ["easy", "simple", "basic"] },
-          { word: "ancient", correct: "old", wrong: ["new", "modern", "recent"] },
-        ],
-        antonym: [
-          { word: "expand", correct: "contract", wrong: ["grow", "increase", "enlarge"] },
-          { word: "victory", correct: "defeat", wrong: ["win", "success", "triumph"] },
-        ],
-        definition: [
-          {
-            word: "telescope",
-            correct: "device to see far objects",
-            wrong: ["device to hear sounds", "device to cook food", "device to clean"],
-          },
-        ],
-        spelling: [
-          { word: "necessary", correct: "necessary", wrong: ["neccessary", "necesary", "neccesary"] },
-          { word: "beautiful", correct: "beautiful", wrong: ["beatiful", "beutiful", "beautifull"] },
-        ],
-      },
-      hard: {
-        synonym: [
-          { word: "ubiquitous", correct: "everywhere", wrong: ["rare", "hidden", "absent"] },
-          { word: "meticulous", correct: "careful", wrong: ["careless", "sloppy", "rushed"] },
-        ],
-        antonym: [
-          { word: "benevolent", correct: "malevolent", wrong: ["kind", "generous", "helpful"] },
-          { word: "ephemeral", correct: "permanent", wrong: ["temporary", "brief", "short"] },
-        ],
-        definition: [
-          { word: "serendipity", correct: "pleasant surprise", wrong: ["bad luck", "planned event", "boring moment"] },
-        ],
-        spelling: [
-          { word: "accommodate", correct: "accommodate", wrong: ["accomodate", "acomodate", "acommodate"] },
-          { word: "definitely", correct: "definitely", wrong: ["definately", "definitly", "definetly"] },
-        ],
-      },
-    }
-
-    const difficultyWords = wordSets[difficulty][questionType]
-    const selectedWord = difficultyWords[Math.floor(Math.random() * difficultyWords.length)]
+    const questionTypes = ["vocabulary", "grammar", "reading"]
+    const type = questionTypes[Math.floor(Math.random() * questionTypes.length)]
 
     let question, correctAnswer, options
 
-    switch (questionType) {
-      case "synonym":
-        question = `What is a synonym for "${selectedWord.word}"?`
-        correctAnswer = selectedWord.correct
-        options = [correctAnswer, ...selectedWord.wrong]
+    switch (type) {
+      case "vocabulary":
+        const vocabQuestions = this.getVocabularyQuestions(difficulty)
+        const vocabQ = vocabQuestions[Math.floor(Math.random() * vocabQuestions.length)]
+        question = vocabQ.question
+        correctAnswer = vocabQ.correct
+        options = vocabQ.options
         break
-      case "antonym":
-        question = `What is the opposite of "${selectedWord.word}"?`
-        correctAnswer = selectedWord.correct
-        options = [correctAnswer, ...selectedWord.wrong]
+      case "grammar":
+        const grammarQuestions = this.getGrammarQuestions(difficulty)
+        const grammarQ = grammarQuestions[Math.floor(Math.random() * grammarQuestions.length)]
+        question = grammarQ.question
+        correctAnswer = grammarQ.correct
+        options = grammarQ.options
         break
-      case "definition":
-        question = `What is a "${selectedWord.word}"?`
-        correctAnswer = selectedWord.correct
-        options = [correctAnswer, ...selectedWord.wrong]
-        break
-      case "spelling":
-        question = `How do you spell "${selectedWord.word}"?`
-        correctAnswer = selectedWord.correct
-        options = [correctAnswer, ...selectedWord.wrong]
+      case "reading":
+        const readingQuestions = this.getReadingQuestions(difficulty)
+        const readingQ = readingQuestions[Math.floor(Math.random() * readingQuestions.length)]
+        question = readingQ.question
+        correctAnswer = readingQ.correct
+        options = readingQ.options
         break
       default:
-        question = `What is a synonym for "happy"?`
+        question = "What is the synonym of 'happy'?"
         correctAnswer = "joyful"
         options = ["joyful", "sad", "angry", "tired"]
     }
 
     // Shuffle options
-    for (let i = options.length - 1; i > 0; i--) {
+    const shuffledOptions = [...options]
+    for (let i = shuffledOptions.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))
-      ;[options[i], options[j]] = [options[j], options[i]]
+      ;[shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]]
     }
 
-    return { question, correctAnswer, options }
+    return { question, correctAnswer, options: shuffledOptions }
+  }
+
+  getVocabularyQuestions(difficulty) {
+    const easy = [
+      {
+        question: "What is the synonym of 'big'?",
+        correct: "large",
+        options: ["large", "small", "tiny", "short"],
+      },
+      {
+        question: "What is the antonym of 'hot'?",
+        correct: "cold",
+        options: ["cold", "warm", "cool", "freezing"],
+      },
+      {
+        question: "What does 'happy' mean?",
+        correct: "joyful",
+        options: ["joyful", "sad", "angry", "tired"],
+      },
+    ]
+
+    const medium = [
+      {
+        question: "What is the synonym of 'magnificent'?",
+        correct: "splendid",
+        options: ["splendid", "ordinary", "terrible", "small"],
+      },
+      {
+        question: "What is the antonym of 'abundant'?",
+        correct: "scarce",
+        options: ["scarce", "plenty", "many", "numerous"],
+      },
+      {
+        question: "What does 'persevere' mean?",
+        correct: "persist",
+        options: ["persist", "quit", "start", "ignore"],
+      },
+    ]
+
+    const hard = [
+      {
+        question: "What is the synonym of 'ubiquitous'?",
+        correct: "omnipresent",
+        options: ["omnipresent", "rare", "absent", "limited"],
+      },
+      {
+        question: "What is the antonym of 'ephemeral'?",
+        correct: "permanent",
+        options: ["permanent", "temporary", "brief", "fleeting"],
+      },
+      {
+        question: "What does 'perspicacious' mean?",
+        correct: "perceptive",
+        options: ["perceptive", "confused", "ignorant", "careless"],
+      },
+    ]
+
+    return difficulty === "easy" ? easy : difficulty === "medium" ? medium : hard
+  }
+
+  getGrammarQuestions(difficulty) {
+    const easy = [
+      {
+        question: "Choose the correct verb: 'She ___ to school every day.'",
+        correct: "goes",
+        options: ["goes", "go", "going", "gone"],
+      },
+      {
+        question: "Which is correct: 'I have ___ apples.'",
+        correct: "two",
+        options: ["two", "to", "too", "2nd"],
+      },
+    ]
+
+    const medium = [
+      {
+        question: "Choose the correct form: 'If I ___ rich, I would travel.'",
+        correct: "were",
+        options: ["were", "was", "am", "be"],
+      },
+      {
+        question: "Which is correct: 'The book ___ on the table.'",
+        correct: "lies",
+        options: ["lies", "lays", "laying", "lying"],
+      },
+    ]
+
+    const hard = [
+      {
+        question: "Choose the correct subjunctive: 'I wish I ___ there yesterday.'",
+        correct: "had been",
+        options: ["had been", "was", "were", "have been"],
+      },
+      {
+        question: "Which is correct: 'Neither of the students ___ ready.'",
+        correct: "is",
+        options: ["is", "are", "were", "have"],
+      },
+    ]
+
+    return difficulty === "easy" ? easy : difficulty === "medium" ? medium : hard
+  }
+
+  getReadingQuestions(difficulty) {
+    const easy = [
+      {
+        question: "In 'The cat sat on the mat', what did the cat do?",
+        correct: "sat",
+        options: ["sat", "ran", "jumped", "slept"],
+      },
+    ]
+
+    const medium = [
+      {
+        question: "What is the main idea of a paragraph about recycling benefits?",
+        correct: "environmental protection",
+        options: ["environmental protection", "waste creation", "pollution increase", "resource depletion"],
+      },
+    ]
+
+    const hard = [
+      {
+        question: "What literary device is used in 'The wind whispered secrets'?",
+        correct: "personification",
+        options: ["personification", "metaphor", "simile", "alliteration"],
+      },
+    ]
+
+    return difficulty === "easy" ? easy : difficulty === "medium" ? medium : hard
   }
 
   initGame() {
@@ -381,7 +438,9 @@ class SnakeEnglishGame {
     if (this.gameSettings.mode === "timed") {
       this.timeLeft = 60
       this.timerDisplay.style.display = "block"
-      this.startTimer()
+      this.showCountdown(() => {
+        this.startTimer()
+      })
     } else {
       this.timerDisplay.style.display = "none"
     }
@@ -414,6 +473,10 @@ class SnakeEnglishGame {
   handleKeyDown(e) {
     const key = e.key.toLowerCase()
     const code = e.code
+
+    if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
+      e.preventDefault()
+    }
 
     if (!this.restartConfirm.classList.contains("hidden")) {
       if (code === "Escape") {
@@ -471,8 +534,11 @@ class SnakeEnglishGame {
         break
     }
 
-    if (moved && this.waitingForMove) {
-      this.waitingForMove = false
+    if (moved) {
+      this.playSound("snakeTurns")
+      if (this.waitingForMove) {
+        this.waitingForMove = false
+      }
     }
   }
 
@@ -500,6 +566,7 @@ class SnakeEnglishGame {
   generateApples(question) {
     const newApples = []
     const usedPositions = new Set()
+    const colors = ["#ff4444", "#44ff44", "#4444ff", "#ffff44"] // Red, Green, Blue, Yellow
 
     question.options.forEach((option, index) => {
       let x, y
@@ -512,10 +579,10 @@ class SnakeEnglishGame {
       newApples.push({
         x,
         y,
-        value: option,
-        letter: String.fromCharCode(65 + index), // A, B, C
-        color: ["pink", "yellow", "blue"][index] || "red",
+        value: String.fromCharCode(65 + index), // A, B, C, D
+        originalValue: option,
         isCorrect: option === question.correctAnswer,
+        color: colors[index] || colors[0],
       })
     })
 
@@ -608,6 +675,7 @@ class SnakeEnglishGame {
           this.gameState = "won"
           this.gameRunning = false
           this.snakeFace = "happy"
+          this.playSound("youWon")
           this.showGameOver()
           return
         }
@@ -658,6 +726,7 @@ class SnakeEnglishGame {
 
   addNewApple() {
     const usedPositions = new Set()
+    const colors = ["#ff4444", "#44ff44", "#4444ff", "#ffff44"]
 
     this.apples.forEach((apple) => {
       usedPositions.add(`${apple.x},${apple.y}`)
@@ -668,11 +737,12 @@ class SnakeEnglishGame {
     })
 
     const availableOptions = this.currentQuestion.options.filter(
-      (option) => !this.apples.some((apple) => apple.value === option),
+      (option) => !this.apples.some((apple) => apple.originalValue === option),
     )
 
     if (availableOptions.length > 0) {
       const randomOption = availableOptions[Math.floor(Math.random() * availableOptions.length)]
+      const optionIndex = this.currentQuestion.options.indexOf(randomOption)
 
       let x, y
       do {
@@ -683,10 +753,10 @@ class SnakeEnglishGame {
       this.apples.push({
         x,
         y,
-        value: randomOption,
-        letter: String.fromCharCode(65 + this.apples.length), // A, B, C
-        color: ["pink", "yellow", "blue"][this.apples.length] || "red",
+        value: String.fromCharCode(65 + optionIndex),
+        originalValue: randomOption,
         isCorrect: randomOption === this.currentQuestion.correctAnswer,
+        color: colors[optionIndex] || colors[0],
       })
     }
   }
@@ -696,9 +766,26 @@ class SnakeEnglishGame {
       clearInterval(this.timerInterval)
     }
 
+    // Update the score and lives in the HUD to reflect final state
+    this.scoreElement.textContent = this.score
+    this.livesElement.textContent = this.lives
+    this.correctElement.textContent = this.correctAnswers
+
+    // Update hearts display in background
+    const hearts = this.heartsContainer.querySelectorAll(".heart")
+    hearts.forEach((heart, index) => {
+      if (index < this.lives) {
+        heart.classList.add("filled")
+        heart.classList.remove("empty")
+      } else {
+        heart.classList.remove("filled")
+        heart.classList.add("empty")
+      }
+    })
+
     this.gameOverTitle.textContent = this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀"
     this.gameOverTitle.className = this.gameState === "won" ? "won" : "lost"
-    this.finalScoreElement.textContent = `Final Score: ${this.score}`
+    this.finalScoreElement.textContent = `Final Score: ${this.score} | Lives Lost: ${3 - this.lives}/3`
     this.gameOverOverlay.classList.remove("hidden")
   }
 
@@ -742,21 +829,17 @@ class SnakeEnglishGame {
   drawPixelNotification(notification) {
     const { message, type } = notification
 
-    // Pixel-style notification box
     this.ctx.fillStyle = type === "correct" ? "#32cd32" : "#ff4444"
     this.ctx.fillRect(this.CANVAS_WIDTH / 2 - 120, 40, 240, 60)
 
-    // Pixel border
     this.ctx.strokeStyle = "#000"
     this.ctx.lineWidth = 4
     this.ctx.strokeRect(this.CANVAS_WIDTH / 2 - 120, 40, 240, 60)
 
-    // Inner border
     this.ctx.strokeStyle = "#fff"
     this.ctx.lineWidth = 2
     this.ctx.strokeRect(this.CANVAS_WIDTH / 2 - 118, 42, 236, 56)
 
-    // Pixel text with shadow
     this.ctx.font = "10px 'Press Start 2P', monospace"
     this.ctx.textAlign = "center"
     this.ctx.textBaseline = "middle"
@@ -769,127 +852,67 @@ class SnakeEnglishGame {
 
   draw() {
     this.ctx.imageSmoothingEnabled = false
-
     this.ctx.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT)
 
     // Draw snake using sprites
     this.snake.forEach((segment, index) => {
-  const x = segment.x * this.GRID_SIZE;
-  const y = segment.y * this.GRID_SIZE;
+      const x = segment.x * this.GRID_SIZE
+      const y = segment.y * this.GRID_SIZE
 
-  if (index === 0) {
-    // ===== HEAD =====
-    let headSprite = this.sprites.SnakeHead; // default (up)
-    if (this.direction.x === 1) headSprite = this.sprites.SnakeHeadRight;
-    else if (this.direction.x === -1) headSprite = this.sprites.SnakeHeadLeft;
-    else if (this.direction.y === 1) headSprite = this.sprites.SnakeHeadDown;
+      if (index === 0) {
+        let headSprite = this.sprites.SnakeHead
+        if (this.direction.x === 1) headSprite = this.sprites.SnakeHeadRight
+        else if (this.direction.x === -1) headSprite = this.sprites.SnakeHeadLeft
+        else if (this.direction.y === 1) headSprite = this.sprites.SnakeHeadDown
 
-    if (headSprite?.complete) {
-      this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
-    } else {
-      this.ctx.fillStyle = "#32cd32";
-      this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-      this.drawPixelSnakeFace(x, y, this.snakeFace);
-    }
-  } 
-  else if (index === this.snake.length - 1) {
-    // ===== TAIL =====
-    const prevSegment = this.snake[index - 1];
-    const tailDir = { x: prevSegment.x - segment.x, y: prevSegment.y - segment.y };
-
-    let tailSprite = this.sprites.SnakeTail; // default up
-    if (tailDir.x === 1) tailSprite = this.sprites.SnakeTailRight;
-    else if (tailDir.x === -1) tailSprite = this.sprites.SnakeTailLeft;
-    else if (tailDir.y === 1) tailSprite = this.sprites.SnakeTailDown;
-
-    if (tailSprite?.complete) {
-      this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
-    } else {
-      this.ctx.fillStyle = "#228b22";
-      this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-    }
-  } 
-  else {
-    // ===== BODY =====
-    const prev = this.snake[index - 1];
-    const next = this.snake[index + 1];
-
-    const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
-    const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
-
-    let bodySprite;
-
-    // If straight (horizontal or vertical)
-    if (dirPrev.x === dirNext.x) {
-      // horizontal
-      bodySprite = (dirPrev.x !== 0) ? this.sprites.SnakeBodyRight  : this.sprites.SnakeBody;
-    } 
-    else if (dirPrev.y === dirNext.y) {
-      // vertical
-      bodySprite = (dirPrev.y !== 0) ? this.sprites.SnakeBody : this.sprites.SnakeBodyRight;
-    } 
-    else {
-      // It's a corner
-      // Example: coming from LEFT (x=-1) to DOWN (y=1) → SnakeCornerLD
-        if (
-    (dirPrev.x === -1 && dirNext.y === -1) || // coming from left + going up
-    (dirNext.x === -1 && dirPrev.y === -1)
-    ) {
-    bodySprite = this.sprites.SnakeCornerLeftDown;
-    } else if (
-    (dirPrev.x === 1 && dirNext.y === -1) || // coming from right + going up
-    (dirNext.x === 1 && dirPrev.y === -1)
-    ) {
-    bodySprite = this.sprites.SnakeCornerLeftDown;
-    } else if (
-    (dirPrev.x === -1 && dirNext.y === 1) || // coming from left + going down
-    (dirNext.x === -1 && dirPrev.y === 1)
-    ) {
-    bodySprite = this.sprites.SnakeCornerLeftDown;
-    } else if (
-    (dirPrev.x === 1 && dirNext.y === 1) || // coming from right + going down
-    (dirNext.x === 1 && dirPrev.y === 1)
-    ) {
-    bodySprite = this.sprites.SnakeCornerRightDown;
-    }
+        if (headSprite && headSprite.complete) {
+          this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
+        } else {
+          this.ctx.fillStyle = "#32cd32"
+          this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
+          this.drawPixelSnakeFace(x, y, this.snakeFace)
         }
+      } else if (index === this.snake.length - 1) {
+        const prevSegment = this.snake[index - 1]
+        const tailDir = { x: prevSegment.x - segment.x, y: prevSegment.y - segment.y }
 
-    if (bodySprite?.complete) {
-      this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
-    } else {
-      this.ctx.fillStyle = "#228b22";
-      this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-      this.ctx.strokeStyle = "#000";
-      this.ctx.lineWidth = 1;
-      this.ctx.strokeRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-    }
-  }
-});
+        let tailSprite = this.sprites.SnakeTail
+        if (tailDir.x === 1) tailSprite = this.sprites.SnakeTailRight
+        else if (tailDir.x === -1) tailSprite = this.sprites.SnakeTailLeft
+        else if (tailDir.y === 1) tailSprite = this.sprites.SnakeTailDown
 
+        if (tailSprite && tailSprite.complete) {
+          this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
+        } else {
+          this.ctx.fillStyle = "#228b22"
+          this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
+        }
+      } else {
+        const bodySprite = this.sprites.SnakeBody
+        if (bodySprite && bodySprite.complete) {
+          this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
+        } else {
+          this.ctx.fillStyle = "#228b22"
+          this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
+          this.ctx.strokeStyle = "#000"
+          this.ctx.lineWidth = 1
+          this.ctx.strokeRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
+        }
+      }
+    })
 
+    // Draw colored apples
     this.apples.forEach((apple) => {
       const x = apple.x * this.GRID_SIZE
       const y = apple.y * this.GRID_SIZE
 
-      // Use colored apple sprite based on letter
-      let appleSprite
-      if (apple.letter === "A") appleSprite = this.sprites["appleA-pink"]
-      else if (apple.letter === "B") appleSprite = this.sprites["appleB-yellow"]
-      else if (apple.letter === "C") appleSprite = this.sprites["appleC-blue"]
-      else appleSprite = this.sprites.apple
+      // Draw colored apple
+      this.ctx.fillStyle = apple.color
+      this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
 
-      if (appleSprite && appleSprite.complete) {
-        this.ctx.drawImage(appleSprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
-      } else {
-        // Fallback to colored rectangle
-        const colors = { pink: "#ff69b4", yellow: "#ffd700", blue: "#4169e1", red: "#ff4444" }
-        this.ctx.fillStyle = colors[apple.color] || "#ff4444"
-        this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
-
-        this.ctx.strokeStyle = "#000"
-        this.ctx.lineWidth = 2
-        this.ctx.strokeRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
-      }
+      this.ctx.strokeStyle = "#000"
+      this.ctx.lineWidth = 2
+      this.ctx.strokeRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
 
       // Draw letter on apple
       this.ctx.fillStyle = "#fff"
@@ -898,12 +921,10 @@ class SnakeEnglishGame {
       this.ctx.textAlign = "center"
       this.ctx.textBaseline = "middle"
 
-      // Text shadow for pixel effect
       this.ctx.fillStyle = "#000"
-      this.ctx.fillText(apple.letter, x + this.GRID_SIZE / 2 + 1, y + this.GRID_SIZE / 2 + 1)
-
+      this.ctx.fillText(apple.value, x + this.GRID_SIZE / 2 + 1, y + this.GRID_SIZE / 2 + 1)
       this.ctx.fillStyle = "#fff"
-      this.ctx.fillText(apple.letter, x + this.GRID_SIZE / 2, y + this.GRID_SIZE / 2)
+      this.ctx.fillText(apple.value, x + this.GRID_SIZE / 2, y + this.GRID_SIZE / 2)
     })
 
     if (this.notification && this.notificationTimer > 0) {
@@ -968,6 +989,50 @@ class SnakeEnglishGame {
 
     this.difficultySettings = difficultyConfig[this.gameSettings.difficulty]
     this.GRID_SIZE = this.difficultySettings.gridSize
+  }
+
+  showCountdown(callback) {
+    const countdownOverlay = document.createElement("div")
+    countdownOverlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      font-family: 'Press Start 2P', monospace;
+    `
+
+    const countdownNumber = document.createElement("div")
+    countdownNumber.style.cssText = `
+      font-size: 72px;
+      color: #32cd32;
+      text-align: center;
+      text-shadow: 4px 4px 0px #000;
+    `
+    countdownNumber.textContent = "3"
+
+    countdownOverlay.appendChild(countdownNumber)
+    document.body.appendChild(countdownOverlay)
+
+    let count = 3
+    const countdownInterval = setInterval(() => {
+      count--
+      if (count > 0) {
+        countdownNumber.textContent = count
+      } else if (count === 0) {
+        countdownNumber.textContent = "GO!"
+        countdownNumber.style.color = "#ff4444"
+      } else {
+        clearInterval(countdownInterval)
+        countdownOverlay.remove()
+        if (callback) callback()
+      }
+    }, 1000)
   }
 }
 

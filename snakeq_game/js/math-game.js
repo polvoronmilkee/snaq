@@ -19,13 +19,13 @@ class SnakeMathGame {
       snakeDies: new Audio("../sounds/snake-dies.mp3"),
       snakeLosesLife: new Audio("../sounds/snake-loses-life.mp3"),
       correct: new Audio("../sounds/correct.mp3"),
-      bgMusic: new Audio("../sounds/bg-music.mp3"),
       youWon: new Audio("../sounds/you-won.mp3"),
       bgMusic: new Audio("../sounds/music.mp3"),
+      click: new Audio("../sounds/click.mp3"), // Added click sound
     }
 
-    this.soundEnabled = true
-    this.musicEnabled = true
+    this.soundEnabled = localStorage.getItem("soundEnabled") !== "false" // default true
+    this.musicEnabled = localStorage.getItem("musicEnabled") === "true"
 
     // Load snake sprites
     this.sprites = {}
@@ -98,6 +98,8 @@ class SnakeMathGame {
 
   toggleSound() {
     this.soundEnabled = !this.soundEnabled
+    localStorage.setItem("soundEnabled", this.soundEnabled.toString())
+
     const soundBtn = document.getElementById("sound-btn")
     soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
     soundBtn.classList.toggle("active", this.soundEnabled)
@@ -105,6 +107,8 @@ class SnakeMathGame {
 
   toggleMusic() {
     this.musicEnabled = !this.musicEnabled
+    localStorage.setItem("musicEnabled", this.musicEnabled.toString())
+
     const musicBtn = document.getElementById("music-btn")
     musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
     musicBtn.classList.toggle("active", this.musicEnabled)
@@ -148,19 +152,60 @@ class SnakeMathGame {
     this.initGame()
     this.bindEvents()
     this.gameLoop()
+
+    this.initializeAudioStates()
+  }
+
+  initializeAudioStates() {
+    const soundBtn = document.getElementById("sound-btn")
+    const musicBtn = document.getElementById("music-btn")
+
+    if (soundBtn) {
+      soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
+      soundBtn.classList.toggle("active", this.soundEnabled)
+    }
+
+    if (musicBtn) {
+      musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+      musicBtn.classList.toggle("active", this.musicEnabled)
+
+      if (this.musicEnabled) {
+        this.sounds.bgMusic.loop = true
+        this.sounds.bgMusic.play().catch((e) => console.log("Music play failed:", e))
+      }
+    }
   }
 
   bindEvents() {
     document.addEventListener("keydown", (e) => this.handleKeyDown(e))
-    this.playAgainBtn.addEventListener("click", () => this.showRestartConfirm())
-    this.menuBtn.addEventListener("click", () => (window.location.href = "../index.html"))
-    this.confirmRestartBtn.addEventListener("click", () => this.confirmRestart())
-    this.cancelRestartBtn.addEventListener("click", () => this.cancelRestart())
 
-    this.helpBtn.addEventListener("click", () => this.showInstructions())
+    this.playAgainBtn.addEventListener("click", () => {
+      this.playSound("click")
+      this.showRestartConfirm()
+    })
+    this.menuBtn.addEventListener("click", () => {
+      this.playSound("click")
+      window.location.href = "../index.html"
+    })
+    this.confirmRestartBtn.addEventListener("click", () => {
+      this.playSound("click")
+      this.confirmRestart()
+    })
+    this.cancelRestartBtn.addEventListener("click", () => {
+      this.playSound("click")
+      this.cancelRestart()
+    })
+
+    this.helpBtn.addEventListener("click", () => {
+      this.playSound("click")
+      this.showInstructions()
+    })
     this.soundBtn.addEventListener("click", () => this.toggleSound())
     this.musicBtn.addEventListener("click", () => this.toggleMusic())
-    this.closeInstructionsBtn.addEventListener("click", () => this.hideInstructions())
+    this.closeInstructionsBtn.addEventListener("click", () => {
+      this.playSound("click")
+      this.hideInstructions()
+    })
 
     // Close instructions modal when clicking outside
     this.instructionsModal.addEventListener("click", (e) => {
@@ -268,7 +313,9 @@ class SnakeMathGame {
     if (this.gameSettings.mode === "timed") {
       this.timeLeft = 60
       this.timerDisplay.style.display = "block"
-      this.startTimer()
+      this.startCountdown(() => {
+        this.startTimer()
+      })
     } else {
       this.timerDisplay.style.display = "none"
     }
@@ -301,6 +348,10 @@ class SnakeMathGame {
   handleKeyDown(e) {
     const key = e.key.toLowerCase()
     const code = e.code
+
+    if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
+      e.preventDefault()
+    }
 
     if (!this.restartConfirm.classList.contains("hidden")) {
       if (code === "Escape") {
@@ -358,8 +409,11 @@ class SnakeMathGame {
         break
     }
 
-    if (moved && this.waitingForMove) {
-      this.waitingForMove = false
+    if (moved) {
+      this.playSound("snakeTurns")
+      if (this.waitingForMove) {
+        this.waitingForMove = false
+      }
     }
   }
 
@@ -493,6 +547,7 @@ class SnakeMathGame {
           this.gameState = "won"
           this.gameRunning = false
           this.snakeFace = "happy"
+          this.playSound("youWon")
           this.showGameOver()
           return
         }
@@ -579,31 +634,24 @@ class SnakeMathGame {
       clearInterval(this.timerInterval)
     }
 
-    // Update the score and lives in the HUD to reflect final state
-    this.updateUI()
+    this.scoreElement.textContent = this.score
+    this.livesElement.textContent = this.lives
+    this.correctElement.textContent = this.correctAnswers
 
-    // Calculate lives lost for display
-    const livesLost = 3 - this.lives
+    const hearts = this.heartsContainer.querySelectorAll(".heart")
+    hearts.forEach((heart, index) => {
+      if (index < this.lives) {
+        heart.classList.add("filled")
+        heart.classList.remove("empty")
+      } else {
+        heart.classList.remove("filled")
+        heart.classList.add("empty")
+      }
+    })
 
     this.gameOverTitle.textContent = this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀"
     this.gameOverTitle.className = this.gameState === "won" ? "won" : "lost"
-
-    this.finalScoreElement.textContent = `Final Score: ${this.score}`
-
-    const existingLivesInfo = this.gameOverOverlay.querySelector(".lives-lost-info")
-    if (existingLivesInfo) {
-      existingLivesInfo.remove()
-    }
-
-    const livesLostElement = document.createElement("p")
-    livesLostElement.className = "lives-lost-info"
-    livesLostElement.textContent = `Lives Lost: ${livesLost}/3`
-    livesLostElement.style.color = "#ff4444"
-    livesLostElement.style.fontSize = "12px"
-    livesLostElement.style.marginTop = "10px"
-
-    this.finalScoreElement.parentNode.insertBefore(livesLostElement, this.finalScoreElement.nextSibling)
-
+    this.finalScoreElement.textContent = `Final Score: ${this.score} | Lives Lost: ${3 - this.lives}/3`
     this.gameOverOverlay.classList.remove("hidden")
   }
 
@@ -838,6 +886,54 @@ class SnakeMathGame {
 
     this.difficultySettings = difficultyConfig[this.gameSettings.difficulty]
     this.GRID_SIZE = this.difficultySettings.gridSize
+  }
+
+  startCountdown(callback) {
+    this.showCountdown(callback)
+  }
+
+  showCountdown(callback) {
+    const countdownOverlay = document.createElement("div")
+    countdownOverlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      font-family: 'Press Start 2P', monospace;
+    `
+
+    const countdownNumber = document.createElement("div")
+    countdownNumber.style.cssText = `
+      font-size: 72px;
+      color: #32cd32;
+      text-align: center;
+      text-shadow: 4px 4px 0px #000;
+    `
+    countdownNumber.textContent = "3"
+
+    countdownOverlay.appendChild(countdownNumber)
+    document.body.appendChild(countdownOverlay)
+
+    let count = 3
+    const countdownInterval = setInterval(() => {
+      count--
+      if (count > 0) {
+        countdownNumber.textContent = count
+      } else if (count === 0) {
+        countdownNumber.textContent = "GO!"
+        countdownNumber.style.color = "#ff4444"
+      } else {
+        clearInterval(countdownInterval)
+        countdownOverlay.remove()
+        if (callback) callback()
+      }
+    }, 1000)
   }
 }
 
