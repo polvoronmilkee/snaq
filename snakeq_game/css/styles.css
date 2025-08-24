@@ -21,9 +21,7 @@ body {
 }
 
 .pixel-border {
-  border: 4px solid #000;
-  border-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><rect width="8" height="8" fill="%23000"/><rect x="2" y="2" width="4" height="4" fill="transparent"/></svg>')
-    4;
+  border: 4px solid #000000;
   box-shadow: 0 0 0 2px #fff inset, 0 0 0 4px #000 inset;
 }
 
@@ -34,8 +32,8 @@ body {
   left: 0;
   right: 0;
   z-index: 100;
-  background: #1a1a1a;
-  border-bottom: 4px solid #333;
+  background: #000000;
+  border-bottom: 4px solid #382e2e;
   padding: 8px 16px;
   display: flex;
   align-items: center;
@@ -51,7 +49,7 @@ body {
 }
 
 .back-btn-header {
-  background: #444;
+  background: #444444;
   border: 2px solid #666;
   color: #fff;
   padding: 6px 10px;
@@ -76,8 +74,8 @@ body {
 }
 
 .header-icon {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   image-rendering: pixelated;
 }
 
@@ -88,9 +86,11 @@ body {
 }
 
 .header-logo img {
-  width: 32px;
-  height: 32px;
+  width: 50px;
+  height: 45px;
   image-rendering: pixelated;
+  align-items: center;
+  justify-content: center;
 }
 
 .header-controls {
@@ -105,14 +105,14 @@ body {
   color: #fff;
   padding: 6px 8px;
   font-family: "Press Start 2P", monospace;
-  font-size: 8px;
+  font-size: 13px;
   cursor: pointer;
   transition: all 0.1s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  height: 32px;
+  min-width: 35px;
+  height: 35px;
 }
 
 .header-btn:hover {
@@ -225,7 +225,7 @@ body {
 
 /*  choose your quest sign */
 .pixel-sign {
-  background: #6f3f0d;
+  background: #60380d;
   border: 4px solid #000;
   padding: 16px 5px;
   margin-bottom: 32px;
@@ -382,6 +382,8 @@ body {
   background-size: cover;       
   background-position: center;  
   image-rendering: pixelated;
+  position: relative;
+  overflow: hidden;
 }
 
 .game-board {
@@ -406,7 +408,7 @@ body {
 
 .game-title {
   font-size: 18px;
-  color: #32cd32;
+  color: #f2ff65;
   text-shadow: 2px 2px 0px #000, 1px 1px 0px #fff;
   text-align: center;
 }
@@ -458,19 +460,19 @@ body {
 }
 
 .pixel-question {
-  background: #000;
+  background: #0a612c;
   color: #fff;
   padding: 12px 16px;
   border: 2px solid #fff;
   font-size: 10px;
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: 19px;
   line-height: 1.4;
 }
 
 .instruction {
   font-size: 8px;
-  color: #ccc;
+  color: #ffffff;
   text-align: center;
   margin-bottom: 12px;
 }
@@ -544,6 +546,7 @@ body {
   border: none;
   background: transparent;
   image-rendering: pixelated;
+  padding: auto;
 }
 
 .pixel-instructions {
@@ -556,7 +559,7 @@ body {
 }
 
 .controls {
-  color: #888;
+  color: #e2c58e;
   margin-top: 8px;
 }
 
@@ -626,13 +629,13 @@ body {
 }
 
 .pixel-btn.selected {
-  background: #dbfa51;
+  background: #dbf46c;
   border-color: #228b22;
   color: #000;
 }
 
 .easy.selected {
-  background: #8ee989;
+  background: #93eb71;
 }
 
 .medium.selected {
