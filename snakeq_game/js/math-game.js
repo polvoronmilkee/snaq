@@ -614,6 +614,7 @@ class SnakeMathGame {
         this.snakeFace = "disgust"
         this.showNotification("Wrong! -5 points, -1 life", "wrong")
 
+
         if (this.snake.length > 1) {
           this.snake.pop()
         }
@@ -761,20 +762,20 @@ showGameOver() {
 
   drawPixelNotification(notification) {
     const { message, type } = notification
-
+   
     // Pixel-style notification box
     this.ctx.fillStyle = type === "correct" ? "#32cd32" : "#ff4444"
-    this.ctx.fillRect(this.CANVAS_WIDTH / 2 - 120, 40, 240, 60)
+    this.ctx.fillRect(this.CANVAS_WIDTH /2 - 150, 40, 300, 60)
 
     // Pixel border
     this.ctx.strokeStyle = "#000"
     this.ctx.lineWidth = 4
-    this.ctx.strokeRect(this.CANVAS_WIDTH / 2 - 120, 40, 240, 60)
+    this.ctx.strokeRect(this.CANVAS_WIDTH /2 - 150, 40, 300, 60)
 
     // Inner border
     this.ctx.strokeStyle = "#fff"
     this.ctx.lineWidth = 2
-    this.ctx.strokeRect(this.CANVAS_WIDTH / 2 - 118, 42, 236, 56)
+    this.ctx.strokeRect(this.CANVAS_WIDTH /  2 - 148, 42, 296, 56)
 
     // Pixel text with shadow
     this.ctx.font = "10px 'Press Start 2P', monospace"

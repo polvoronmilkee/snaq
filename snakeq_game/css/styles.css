@@ -16,7 +16,8 @@ body {
   image-rendering: pixelated;
   overflow-x: hidden;
   justify-content: center;
-  justify-items: center
+  justify-items: center;
+  align-items: center;
 }
 
 .pixel-border {
@@ -187,7 +188,7 @@ body {
 }
 
 .logo-icon {
-  width: 220px;
+  width: 290px;
   height: 200px;
   image-rendering: pixelated;
 }
@@ -210,11 +211,12 @@ body {
 .tagline {
   font-size: 19px;
   color: #fff;
-  background: #000;
+  background: #104c27dd;
   padding: 8px 16px;
   border: 2px solid #fff;
   text-shadow: none;
   letter-spacing: 1px;
+  margin-top: 50px;
 }
 
 .category-section {
@@ -223,9 +225,9 @@ body {
 
 /*  choose your quest sign */
 .pixel-sign {
-  background: #8b4513;
+  background: #6f3f0d;
   border: 4px solid #000;
-  padding: 16px 32px;
+  padding: 16px 5px;
   margin-bottom: 32px;
   box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #654321;
 }
@@ -299,7 +301,8 @@ body {
 .play-btn {
   background: #32cd32;
   display: block;
-  margin: 0 auto;
+  margin: 100px;
+
   border: 4px solid #228b22;
   color: #000;
   padding: 16px 10px;
@@ -307,11 +310,10 @@ body {
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  text-align: center;
   display: flex;
   align-items: center;
-  position: absolute;
-  gap: 8px;
+  margin-top: 50px;
+  gap: 10px;
   justify-content: center;
   box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #1e7e1e;
 }
@@ -373,13 +375,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 60px 20px; /* Account for sticky header */
+  padding: 60px 20px; 
   min-height: 100vh;
-  /* Added tiled background pattern using Tile.png */
   background-image: url("../assets/bg-game.png");
-   background-repeat: no-repeat; /* Prevent tiling */
-  background-size: cover;       /* Scale to cover full container */
-  background-position: center;  /* Center the image */
+  background-repeat: no-repeat; 
+  background-size: cover;       
+  background-position: center;  
   image-rendering: pixelated;
 }
 
@@ -571,11 +572,12 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  
 }
 
 .modal-content {
   background: #2a2a2a;
-  padding: 24px;
+  padding: 20px;
   max-width: 400px;
   width: 90%;
   text-align: center;
@@ -584,7 +586,8 @@ body {
 .modal h3 {
   color: #32cd32;
   font-size: 14px;
-  margin-bottom: 16px;
+  margin-bottom: 25px;
+    
 }
 
 .setting-group {
@@ -594,7 +597,8 @@ body {
 .setting-group h4 {
   color: #fff;
   font-size: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+
 }
 
 .mode-buttons,
@@ -650,6 +654,11 @@ body {
   background: #32cd32;
   border-color: #228b22;
   color: #000;
+  text-align: center;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  display: flex;
 }
 
 .start-btn:disabled {
@@ -676,6 +685,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 10;
+  padding: 24px;
 }
 
 .overlay-content {
@@ -683,25 +693,43 @@ body {
   padding: 24px;
   text-align: center;
   max-width: 300px;
+ 
+   
 }
 
 .overlay-content h2 {
   font-size: 16px;
   margin-bottom: 16px;
+  word-wrap: break-word;      
+  overflow-wrap: break-word; 
+  white-space: pre-line;
+  padding: 24px;
 }
 
 .overlay-content h2.won {
   color: #32cd32;
+  padding: 24px;
+  word-wrap: break-word;      
+  overflow-wrap: break-word; 
+  white-space: pre-line;  
 }
 
 .overlay-content h2.lost {
   color: #ff4444;
+  padding: 24px;
+  word-wrap: break-word;      
+  overflow-wrap: break-word; 
+  white-space: pre-line;  
+
 }
 
 .overlay-content p {
-  font-size: 10px;
-  margin-bottom: 20px;
+  font-size: 11px;
+  margin-bottom:30px;
   color: #ccc;
+  word-wrap: break-word;      
+  overflow-wrap: break-word; 
+  white-space: normal;  
 }
 
 .btn {
@@ -725,6 +753,7 @@ body {
   background: #32cd32;
   border-color: #228b22;
   color: #000;
+  margin-bottom: 10px;
 }
 
 .btn-red {
