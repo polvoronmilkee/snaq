@@ -177,33 +177,6 @@ body {
   text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
 }
 
-<<<<<<< HEAD
-.mode-selector {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.mode-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-  background: #374151;
-  color: white;
-}
-
-.mode-btn:hover {
-  background: #4b5563;
-}
-
-.mode-btn.active {
-  background: #16a34a;
-=======
 .icon-btn {
   background: none;
   border: none;
@@ -216,7 +189,6 @@ body {
 
 .icon-btn:hover {
   background: #374151;
->>>>>>> shong
 }
 
 .hud {
