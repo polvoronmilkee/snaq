@@ -577,9 +577,31 @@ class SnakeMathGame {
       clearInterval(this.timerInterval)
     }
 
+    // Update the score and lives in the HUD to reflect final state
+    this.updateUI()
+
+    // Calculate lives lost for display
+    const livesLost = 3 - this.lives
+
     this.gameOverTitle.textContent = this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀"
     this.gameOverTitle.className = this.gameState === "won" ? "won" : "lost"
+
     this.finalScoreElement.textContent = `Final Score: ${this.score}`
+
+    const existingLivesInfo = this.gameOverOverlay.querySelector(".lives-lost-info")
+    if (existingLivesInfo) {
+      existingLivesInfo.remove()
+    }
+
+    const livesLostElement = document.createElement("p")
+    livesLostElement.className = "lives-lost-info"
+    livesLostElement.textContent = `Lives Lost: ${livesLost}/3`
+    livesLostElement.style.color = "#ff4444"
+    livesLostElement.style.fontSize = "12px"
+    livesLostElement.style.marginTop = "10px"
+
+    this.finalScoreElement.parentNode.insertBefore(livesLostElement, this.finalScoreElement.nextSibling)
+
     this.gameOverOverlay.classList.remove("hidden")
   }
 

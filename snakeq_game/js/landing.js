@@ -9,7 +9,7 @@ class LandingPage {
 
   init() {
     this.bindEvents()
-  } 
+  }
 
   bindEvents() {
     // Category selection
@@ -20,15 +20,62 @@ class LandingPage {
 
     // Play button
     const playBtn = document.getElementById("playBtn")
-    playBtn.addEventListener("click", () => this.showGameModeModal())
+    if (playBtn) {
+      playBtn.addEventListener("click", () => this.showGameModeModal())
+    }
+
+    const helpBtn = document.getElementById("help-btn")
+    const soundBtn = document.getElementById("sound-btn")
+    const musicBtn = document.getElementById("music-btn")
+    const instructionsModal = document.getElementById("instructions-modal")
+    const closeInstructionsBtn = document.getElementById("close-instructions")
+
+    if (helpBtn) {
+      helpBtn.addEventListener("click", (e) => {
+        e.preventDefault()
+        this.showInstructions()
+      })
+    }
+
+    if (soundBtn) {
+      soundBtn.addEventListener("click", (e) => {
+        e.preventDefault()
+        this.toggleSound()
+      })
+    }
+
+    if (musicBtn) {
+      musicBtn.addEventListener("click", (e) => {
+        e.preventDefault()
+        this.toggleMusic()
+      })
+    }
+
+    if (closeInstructionsBtn) {
+      closeInstructionsBtn.addEventListener("click", () => this.hideInstructions())
+    }
+
+    // Close instructions modal when clicking outside
+    if (instructionsModal) {
+      instructionsModal.addEventListener("click", (e) => {
+        if (e.target === instructionsModal) {
+          this.hideInstructions()
+        }
+      })
+    }
 
     // Modal events
     const modal = document.getElementById("gameModeModal")
     const cancelBtn = document.getElementById("cancelBtn")
     const startBtn = document.getElementById("startGameBtn")
 
-    cancelBtn.addEventListener("click", () => this.hideGameModeModal())
-    startBtn.addEventListener("click", () => this.startGame())
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", () => this.hideGameModeModal())
+    }
+
+    if (startBtn) {
+      startBtn.addEventListener("click", () => this.startGame())
+    }
 
     // Mode selection
     const modeBtns = document.querySelectorAll(".mode-btn")
@@ -43,11 +90,47 @@ class LandingPage {
     })
 
     // Close modal on outside click
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) {
-        this.hideGameModeModal()
-      }
-    })
+    if (modal) {
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          this.hideGameModeModal()
+        }
+      })
+    }
+  }
+
+  showInstructions() {
+    const instructionsModal = document.getElementById("instructions-modal")
+    if (instructionsModal) {
+      instructionsModal.classList.remove("hidden")
+    }
+  }
+
+  hideInstructions() {
+    const instructionsModal = document.getElementById("instructions-modal")
+    if (instructionsModal) {
+      instructionsModal.classList.add("hidden")
+    }
+  }
+
+  toggleSound() {
+    // Simple sound toggle for landing page
+    const soundBtn = document.getElementById("sound-btn")
+    if (soundBtn) {
+      const isEnabled = soundBtn.textContent === "🔊"
+      soundBtn.textContent = isEnabled ? "🔇" : "🔊"
+      soundBtn.classList.toggle("active", !isEnabled)
+    }
+  }
+
+  toggleMusic() {
+    // Simple music toggle for landing page
+    const musicBtn = document.getElementById("music-btn")
+    if (musicBtn) {
+      const isEnabled = musicBtn.textContent === "🎵"
+      musicBtn.textContent = isEnabled ? "🔇" : "🎵"
+      musicBtn.classList.toggle("active", !isEnabled)
+    }
   }
 
   selectCategory(e) {
@@ -61,17 +144,26 @@ class LandingPage {
     this.selectedCategory = e.target.dataset.category
 
     // Enable play button
-    document.getElementById("playBtn").disabled = false
+    const playBtn = document.getElementById("playBtn")
+    if (playBtn) {
+      playBtn.disabled = false
+    }
   }
 
   showGameModeModal() {
     if (!this.selectedCategory) return
 
-    document.getElementById("gameModeModal").classList.remove("hidden")
+    const modal = document.getElementById("gameModeModal")
+    if (modal) {
+      modal.classList.remove("hidden")
+    }
   }
 
   hideGameModeModal() {
-    document.getElementById("gameModeModal").classList.add("hidden")
+    const modal = document.getElementById("gameModeModal")
+    if (modal) {
+      modal.classList.add("hidden")
+    }
     this.resetModalSelections()
   }
 
@@ -103,7 +195,9 @@ class LandingPage {
 
   updateStartButton() {
     const startBtn = document.getElementById("startGameBtn")
-    startBtn.disabled = !(this.selectedMode && this.selectedDifficulty)
+    if (startBtn) {
+      startBtn.disabled = !(this.selectedMode && this.selectedDifficulty)
+    }
   }
 
   resetModalSelections() {
@@ -113,8 +207,11 @@ class LandingPage {
     document.querySelectorAll(".mode-btn, .difficulty-btn").forEach((btn) => {
       btn.classList.remove("selected")
     })
-  
-    document.getElementById("startGameBtn").disabled = true
+
+    const startBtn = document.getElementById("startGameBtn")
+    if (startBtn) {
+      startBtn.disabled = true
+    }
   }
 
   startGame() {
