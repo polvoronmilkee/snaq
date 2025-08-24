@@ -102,7 +102,7 @@
                     <img src="../assets/score-icon.png" alt="Score" class="stat-icon" />
                     Score: <span id="score-value">0</span>
                 </div>
-                <!-- Replaced lives text with heart icons -->
+       
                 <div class="lives pixel-stat">
                     <span>Lives:</span>
                     <div class="hearts-container" id="hearts-container">
@@ -115,7 +115,7 @@
                     <img src="../assets/correct-icon.png" alt="Correct" class="stat-icon" />
                     Correct: <span id="correct-value">0</span>/<span id="target-value">10</span>
                 </div>
-                <div class="timer pixel-stat" id="timer-display" style="display: none;">
+                <div class="timer pixel-stat" id="timer-display" style="text-align: center">
                     <img src="../assets/timer-icon.png" alt="Timer" class="stat-icon" />
                     Time: <span id="timer-value">60</span>s
                 </div>
@@ -141,6 +141,8 @@
                     <div class="overlay-content pixel-border">
                         <h2 id="game-over-title">Game Over</h2>
                         <p id="final-score">Final Score: 0</p>
+                        <p id="final-correct">Corrects: 0</p>
+                        
                         <button id="play-again-btn" class="btn pixel-btn btn-green">Play Again</button>
                         <button id="menu-btn" class="btn pixel-btn btn-red">Main Menu</button>
                     </div>

@@ -912,4 +912,9 @@ body {
     height: 20px;
     font-size: 8px;
   }
+
+  .big-infinity {
+  font-size: 15px; 
+}
+
 }

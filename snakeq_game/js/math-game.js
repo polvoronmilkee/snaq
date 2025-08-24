@@ -68,7 +68,7 @@ class SnakeMathGame {
     this.score = 0
     this.lives = 3
     this.correctAnswers = 0
-    this.targetAnswers = this.gameSettings.mode === "endless" ? Number.POSITIVE_INFINITY : 10
+    this.targetAnswers = this.gameSettings.mode === "endless" ? "♾️" : 10
     this.currentQuestion = null
     this.snakeFace = "normal"
     this.notification = null
@@ -160,6 +160,7 @@ class SnakeMathGame {
     this.gameOverOverlay = document.getElementById("game-over-overlay")
     this.gameOverTitle = document.getElementById("game-over-title")
     this.finalScoreElement = document.getElementById("final-score")
+    this.finalCorrectElement = document.getElementById("final-correct")
     this.playAgainBtn = document.getElementById("play-again-btn")
     this.menuBtn = document.getElementById("menu-btn")
     this.restartConfirm = document.getElementById("restart-confirm")
@@ -361,7 +362,8 @@ class SnakeMathGame {
 
     // Set target based on mode
     if (this.gameSettings.mode === "endless") {
-      this.targetElement.textContent = "∞"
+      this.targetElement.textContent = "♾️"
+      this.targetElement.style.fontSize = "15px"
     } else {
       this.targetElement.textContent = this.targetAnswers
     }
@@ -702,19 +704,26 @@ showGameOver() {
     });
   }
 
-  // Show Game Over screen
-  if (this.gameOverTitle && this.finalScoreElement && this.gameOverOverlay) {
-    this.gameOverTitle.textContent =
-      this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀";
 
-    // Instead of overwriting ALL classes, just toggle
+    // Show Game Over screen
+    if (this.gameOverTitle && this.finalScoreElement && this.gameOverOverlay) {
+    
+    this.gameOverTitle.textContent =
+        this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀";
+
+    // Toggle classes for styling
     this.gameOverTitle.classList.remove("won", "lost");
     this.gameOverTitle.classList.add(this.gameState === "won" ? "won" : "lost");
 
+    // Update final stats
     const maxLives = this.maxLives || 3; // fallback if not defined
-    this.finalScoreElement = `Final Score: ${this.score}`;
+
+    this.finalScoreElement.textContent = `Final Score: ${this.score}`;
+    if (this.finalCorrectElement) this.finalCorrectElement.textContent = `Corrects: ${this.correctAnswers}`;
+
+    // Show the overlay
     this.gameOverOverlay.classList.remove("hidden");
-  }
+    }
 }
 
 
@@ -930,20 +939,20 @@ showGameOver() {
 
   setDifficultySettings() {
     const difficultyConfig = {
-      easy: {
-        gridSize: 25, // Small grid for easy gameplay
-        baseSpeed: 3, // Slow speed
-        speedIncrease: 0.2,
+       easy: {
+        gridSize: 40,
+        baseSpeed: 3,
+        speedIncrease: 0.35,
       },
       medium: {
-        gridSize: 40, // Larger grid size
-        baseSpeed: 5, // Medium speed
-        speedIncrease: 0.4,
+        gridSize: 40,
+        baseSpeed: 4,
+        speedIncrease: 0.55,
       },
       hard: {
-        gridSize: 15, // Really small grid for maximum challenge - smaller space
-        baseSpeed: 4, // Starts moderate but increases progressively
-        speedIncrease: 0.6,
+        gridSize: 50,
+        baseSpeed: 4.5,
+        speedIncrease: 0.65,
       },
     }
 

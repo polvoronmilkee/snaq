@@ -67,7 +67,7 @@ class SnakeEnglishGame {
     this.score = 0
     this.lives = 3
     this.correctAnswers = 0
-    this.targetAnswers = this.gameSettings.mode === "endless" ? Number.POSITIVE_INFINITY : 10
+    this.targetAnswers = this.gameSettings.mode === "endless" ? "♾️" : 10
     this.currentQuestion = null
     this.snakeFace = "normal"
     this.notification = null
@@ -91,6 +91,13 @@ class SnakeEnglishGame {
     this.lastFrameTime = 0
     this.moveAccumulator = 0
     this.gameLoopId = null
+
+    // to track questions that have been used already
+    this.usedWords = this.usedWords || {
+    easy: { synonym: [], antonym: [], definition: [], spelling: [] },
+    medium: { synonym: [], antonym: [], definition: [], spelling: [] },
+    hard: { synonym: [], antonym: [], definition: [], spelling: [] },
+    };
 
     this.initDOM()
     this.init()
@@ -170,6 +177,7 @@ class SnakeEnglishGame {
     this.gameOverOverlay = document.getElementById("game-over-overlay")
     this.gameOverTitle = document.getElementById("game-over-title")
     this.finalScoreElement = document.getElementById("final-score")
+    this.finalCorrectElement = document.getElementById("final-correct")
     this.playAgainBtn = document.getElementById("play-again-btn")
     this.menuBtn = document.getElementById("menu-btn")
     this.restartConfirm = document.getElementById("restart-confirm")
@@ -309,6 +317,7 @@ class SnakeEnglishGame {
       this.optionsContainer.appendChild(optionDiv)
     })
   }
+  
 
   generateQuestion() {
     const difficulty = this.gameSettings.difficulty
@@ -318,111 +327,207 @@ class SnakeEnglishGame {
     const wordSets = {
       easy: {
         synonym: [
-          { word: "happy", correct: "joyful", wrong: ["sad", "angry", "tired"] },
-          { word: "big", correct: "large", wrong: ["small", "tiny", "little"] },
-          { word: "fast", correct: "quick", wrong: ["slow", "lazy", "tired"] },
-          { word: "smart", correct: "clever", wrong: ["dumb", "silly", "lazy"] },
+            { word: "happy", correct: "joyful", wrong: ["sad", "angry", "tired"] },
+            { word: "big", correct: "large", wrong: ["small", "tiny", "little"] },
+            { word: "fast", correct: "quick", wrong: ["slow", "lazy", "tired"] },
+            { word: "smart", correct: "clever", wrong: ["dumb", "silly", "lazy"] },
+            { word: "angry", correct: "furious", wrong: ["happy", "calm", "joyful"] },
+            { word: "easy", correct: "simple", wrong: ["difficult", "hard", "complex"] },
+            { word: "strong", correct: "powerful", wrong: ["weak", "fragile", "small"] },
+            { word: "brave", correct: "courageous", wrong: ["scared", "timid", "weak"] },
+            { word: "quiet", correct: "silent", wrong: ["loud", "noisy", "talkative"] },
+            { word: "beautiful", correct: "gorgeous", wrong: ["ugly", "plain", "boring"] },
         ],
         antonym: [
-          { word: "hot", correct: "cold", wrong: ["warm", "cool", "mild"] },
-          { word: "up", correct: "down", wrong: ["over", "under", "above"] },
-          { word: "good", correct: "bad", wrong: ["nice", "great", "fine"] },
-          { word: "light", correct: "dark", wrong: ["bright", "clear", "white"] },
+            { word: "hot", correct: "cold", wrong: ["warm", "cool", "mild"] },
+            { word: "up", correct: "down", wrong: ["over", "under", "above"] },
+            { word: "good", correct: "bad", wrong: ["nice", "great", "fine"] },
+            { word: "light", correct: "dark", wrong: ["bright", "clear", "white"] },
+            { word: "happy", correct: "sad", wrong: ["joyful", "excited", "glad"] },
+            { word: "big", correct: "small", wrong: ["large", "huge", "gigantic"] },
+            { word: "fast", correct: "slow", wrong: ["quick", "rapid", "swift"] },
+            { word: "strong", correct: "weak", wrong: ["powerful", "mighty", "sturdy"] },
+            { word: "young", correct: "old", wrong: ["new", "fresh", "recent"] },
+            { word: "near", correct: "far", wrong: ["close", "next", "adjacent"] },
         ],
         definition: [
-          { word: "cat", correct: "a small furry pet", wrong: ["a big dog", "a bird", "a fish"] },
-          {
-            word: "book",
-            correct: "something to read",
-            wrong: ["something to eat", "something to wear", "something to drive"],
-          },
+            { word: "cat", correct: "a small furry pet", wrong: ["a big dog", "a bird", "a fish"] },
+            { word: "book", correct: "something to read", wrong: ["something to eat", "something to wear", "something to drive"] },
+            { word: "apple", correct: "a type of fruit", wrong: ["a vegetable", "a tool", "a drink"] },
+            { word: "chair", correct: "something to sit on", wrong: ["something to sleep on", "something to write with", "something to wear"] },
+            { word: "river", correct: "a flowing body of water", wrong: ["a mountain", "a tree", "a road"] },
+            { word: "car", correct: "a vehicle for transport", wrong: ["a building", "a computer", "a tool"] },
+            { word: "shoe", correct: "something worn on the foot", wrong: ["something worn on the hand", "a hat", "a glove"] },
+            { word: "pencil", correct: "something used to write", wrong: ["something used to eat", "something used to paint", "something used to clean"] },
+            { word: "dog", correct: "a domesticated animal", wrong: ["a wild animal", "a bird", "a fish"] },
+            { word: "tree", correct: "a plant with a trunk and branches", wrong: ["a flower", "a bush", "a rock"] },
         ],
         spelling: [
-          { word: "friend", correct: "friend", wrong: ["freind", "frend", "freand"] },
-          { word: "school", correct: "school", wrong: ["scool", "schol", "skool"] },
-        ],
+            { word: "friend", correct: "friend", wrong: ["freind", "frend", "freand"] },
+            { word: "school", correct: "school", wrong: ["scool", "schol", "skool"] },
+            { word: "apple", correct: "apple", wrong: ["aple", "appel", "appl"] },
+            { word: "house", correct: "house", wrong: ["hous", "houes", "hoose"] },
+            { word: "computer", correct: "computer", wrong: ["computor", "compter", "comuter"] },
+            { word: "beautiful", correct: "beautiful", wrong: ["beatiful", "beutiful", "beautifull"] },
+            { word: "library", correct: "library", wrong: ["libary", "librery", "liberry"] },
+            { word: "holiday", correct: "holiday", wrong: ["holidy", "holoday", "holidey"] },
+            { word: "together", correct: "together", wrong: ["togther", "toether", "togehter"] },
+            { word: "because", correct: "because", wrong: ["becuase", "becase", "becouse"] },
+        ]
+
       },
-      medium: {
+        medium: {
         synonym: [
-          { word: "beautiful", correct: "gorgeous", wrong: ["ugly", "plain", "simple"] },
-          { word: "difficult", correct: "challenging", wrong: ["easy", "simple", "basic"] },
-          { word: "ancient", correct: "old", wrong: ["new", "modern", "recent"] },
+            { word: "beautiful", correct: "gorgeous", wrong: ["ugly", "plain", "simple"] },
+            { word: "difficult", correct: "challenging", wrong: ["easy", "simple", "basic"] },
+            { word: "ancient", correct: "old", wrong: ["new", "modern", "recent"] },
+            { word: "quick", correct: "swift", wrong: ["slow", "lazy", "sluggish"] },
+            { word: "brave", correct: "courageous", wrong: ["scared", "timid", "weak"] },
+            { word: "smart", correct: "intelligent", wrong: ["dumb", "foolish", "slow"] },
+            { word: "strong", correct: "powerful", wrong: ["weak", "fragile", "feeble"] },
+            { word: "angry", correct: "furious", wrong: ["happy", "calm", "joyful"] },
+            { word: "funny", correct: "humorous", wrong: ["serious", "boring", "sad"] },
+            { word: "bright", correct: "luminous", wrong: ["dark", "dull", "dim"] },
         ],
         antonym: [
-          { word: "expand", correct: "contract", wrong: ["grow", "increase", "enlarge"] },
-          { word: "victory", correct: "defeat", wrong: ["win", "success", "triumph"] },
+            { word: "expand", correct: "contract", wrong: ["grow", "increase", "enlarge"] },
+            { word: "victory", correct: "defeat", wrong: ["win", "success", "triumph"] },
+            { word: "ancient", correct: "modern", wrong: ["old", "historic", "past"] },
+            { word: "strong", correct: "weak", wrong: ["powerful", "robust", "tough"] },
+            { word: "happy", correct: "sad", wrong: ["joyful", "excited", "glad"] },
+            { word: "open", correct: "closed", wrong: ["shut", "ajar", "wide"] },
+            { word: "high", correct: "low", wrong: ["tall", "elevated", "above"] },
+            { word: "fast", correct: "slow", wrong: ["quick", "rapid", "swift"] },
+            { word: "bright", correct: "dark", wrong: ["luminous", "shiny", "glowing"] },
+            { word: "near", correct: "far", wrong: ["close", "next", "adjacent"] },
         ],
         definition: [
-          {
-            word: "telescope",
-            correct: "device to see far objects",
-            wrong: ["device to hear sounds", "device to cook food", "device to clean"],
-          },
+            { word: "telescope", correct: "device to see far objects", wrong: ["device to hear sounds", "device to cook food", "device to clean"] },
+            { word: "volcano", correct: "mountain that erupts lava", wrong: ["lake", "river", "valley"] },
+            { word: "oxygen", correct: "gas we breathe", wrong: ["water", "carbon", "nitrogen"] },
+            { word: "keyboard", correct: "device to type on a computer", wrong: ["monitor", "mouse", "printer"] },
+            { word: "microscope", correct: "device to see tiny objects", wrong: ["telescope", "camera", "binoculars"] },
+            { word: "pyramid", correct: "triangular structure", wrong: ["cube", "sphere", "circle"] },
+            { word: "glacier", correct: "large ice mass", wrong: ["river", "mountain", "lake"] },
+            { word: "satellite", correct: "object orbiting a planet", wrong: ["rocket", "star", "moon"] },
+            { word: "guitar", correct: "stringed musical instrument", wrong: ["drum", "piano", "flute"] },
+            { word: "volleyball", correct: "sport played with a ball over a net", wrong: ["soccer", "tennis", "basketball"] },
         ],
         spelling: [
-          { word: "necessary", correct: "necessary", wrong: ["neccessary", "necesary", "neccesary"] },
-          { word: "beautiful", correct: "beautiful", wrong: ["beatiful", "beutiful", "beautifull"] },
+            { word: "necessary", correct: "necessary", wrong: ["neccessary", "necesary", "neccesary"] },
+            { word: "beautiful", correct: "beautiful", wrong: ["beatiful", "beutiful", "beautifull"] },
+            { word: "accommodate", correct: "accommodate", wrong: ["acommodate", "accomodate", "acomodate"] },
+            { word: "definitely", correct: "definitely", wrong: ["definately", "definitly", "definetly"] },
+            { word: "separate", correct: "separate", wrong: ["seperate", "seperete", "separite"] },
+            { word: "questionnaire", correct: "questionnaire", wrong: ["questionaire", "questinnaire", "questioner"] },
+            { word: "occurrence", correct: "occurrence", wrong: ["occurence", "ocurrence", "occurance"] },
+            { word: "acquire", correct: "acquire", wrong: ["aquire", "acqire", "acqure"] },
+            { word: "maintenance", correct: "maintenance", wrong: ["maintainance", "maintanance", "maintnance"] },
+            { word: "privilege", correct: "privilege", wrong: ["privelege", "priviledge", "privlig"] },
         ],
-      },
-      hard: {
+        },
+        hard: {
         synonym: [
-          { word: "ubiquitous", correct: "everywhere", wrong: ["rare", "hidden", "absent"] },
-          { word: "meticulous", correct: "careful", wrong: ["careless", "sloppy", "rushed"] },
+            { word: "ubiquitous", correct: "everywhere", wrong: ["rare", "hidden", "absent"] },
+            { word: "meticulous", correct: "careful", wrong: ["careless", "sloppy", "rushed"] },
+            { word: "obstinate", correct: "stubborn", wrong: ["flexible", "gentle", "yielding"] },
+            { word: "lucid", correct: "clear", wrong: ["confusing", "vague", "obscure"] },
+            { word: "tenacious", correct: "persistent", wrong: ["weak", "lazy", "indifferent"] },
+            { word: "esoteric", correct: "obscure", wrong: ["common", "famous", "popular"] },
+            { word: "ambiguous", correct: "unclear", wrong: ["obvious", "clear", "definite"] },
+            { word: "candid", correct: "honest", wrong: ["dishonest", "sly", "deceptive"] },
+            { word: "prudent", correct: "wise", wrong: ["reckless", "careless", "foolish"] },
+            { word: "profound", correct: "deep", wrong: ["shallow", "superficial", "simple"] },
         ],
         antonym: [
-          { word: "benevolent", correct: "malevolent", wrong: ["kind", "generous", "helpful"] },
-          { word: "ephemeral", correct: "permanent", wrong: ["temporary", "brief", "short"] },
+            { word: "benevolent", correct: "malevolent", wrong: ["kind", "generous", "helpful"] },
+            { word: "ephemeral", correct: "permanent", wrong: ["temporary", "brief", "short"] },
+            { word: "ascend", correct: "descend", wrong: ["rise", "climb", "soar"] },
+            { word: "opaque", correct: "transparent", wrong: ["cloudy", "dark", "murky"] },
+            { word: "scarce", correct: "abundant", wrong: ["rare", "limited", "insufficient"] },
+            { word: "chaotic", correct: "orderly", wrong: ["messy", "confused", "disorganized"] },
+            { word: "artificial", correct: "natural", wrong: ["synthetic", "man-made", "engineered"] },
+            { word: "hostile", correct: "friendly", wrong: ["aggressive", "unfriendly", "harsh"] },
+            { word: "fragile", correct: "strong", wrong: ["weak", "delicate", "brittle"] },
+            { word: "vague", correct: "specific", wrong: ["unclear", "ambiguous", "imprecise"] },
         ],
         definition: [
-          { word: "serendipity", correct: "pleasant surprise", wrong: ["bad luck", "planned event", "boring moment"] },
+            { word: "serendipity", correct: "pleasant surprise", wrong: ["bad luck", "planned event", "boring moment"] },
+            { word: "epiphany", correct: "sudden realization", wrong: ["confusion", "question", "mistake"] },
+            { word: "labyrinth", correct: "complex maze", wrong: ["simple path", "straight road", "open field"] },
+            { word: "paradox", correct: "contradictory statement", wrong: ["simple truth", "story", "fact"] },
+            { word: "quintessential", correct: "perfect example", wrong: ["worst example", "average", "rare"] },
+            { word: "mellifluous", correct: "pleasant-sounding", wrong: ["harsh", "ugly", "rough"] },
+            { word: "oblivion", correct: "state of being forgotten", wrong: ["fame", "attention", "recognition"] },
+            { word: "zenith", correct: "highest point", wrong: ["lowest point", "middle", "base"] },
+            { word: "cacophony", correct: "harsh noise", wrong: ["pleasant sound", "music", "silence"] },
+            { word: "ephemeral", correct: "short-lived", wrong: ["long-lasting", "permanent", "eternal"] },
         ],
         spelling: [
-          { word: "accommodate", correct: "accommodate", wrong: ["accomodate", "acomodate", "acommodate"] },
-          { word: "definitely", correct: "definitely", wrong: ["definately", "definitly", "definetly"] },
+            { word: "accommodate", correct: "accommodate", wrong: ["accomodate", "acomodate", "acommodate"] },
+            { word: "definitely", correct: "definitely", wrong: ["definately", "definitly", "definetly"] },
+            { word: "conscientious", correct: "conscientious", wrong: ["consciencious", "consientious", "conscientious"] },
+            { word: "pronunciation", correct: "pronunciation", wrong: ["pronounciation", "pronuntiation", "pronounciaton"] },
+            { word: "rhythm", correct: "rhythm", wrong: ["rythm", "rithm", "rhythem"] },
+            { word: "miscellaneous", correct: "miscellaneous", wrong: ["miscelaneous", "miscellanous", "micesllaneous"] },
+            { word: "occasionally", correct: "occasionally", wrong: ["ocasionally", "occassionally", "ocassionally"] },
+            { word: "embarrass", correct: "embarrass", wrong: ["embarass", "embarras", "embarrs"] },
+            { word: "harass", correct: "harass", wrong: ["harrass", "haras", "harres"] },
+            { word: "connoisseur", correct: "connoisseur", wrong: ["conaisseur", "connosieur", "connoiser"] },
         ],
-      },
+        }
+
     }
 
     const difficultyWords = wordSets[difficulty][questionType]
-    const selectedWord = difficultyWords[Math.floor(Math.random() * difficultyWords.length)]
+  // Filter out used words
+  const unusedWords = difficultyWords.filter(
+    w => !this.usedWords[difficulty][questionType].includes(w.word)
+  );
 
-    let question, correctAnswer, options
-
-    switch (questionType) {
-      case "synonym":
-        question = `What is a synonym for "${selectedWord.word}"?`
-        correctAnswer = selectedWord.correct
-        options = [correctAnswer, ...selectedWord.wrong]
-        break
-      case "antonym":
-        question = `What is the opposite of "${selectedWord.word}"?`
-        correctAnswer = selectedWord.correct
-        options = [correctAnswer, ...selectedWord.wrong]
-        break
-      case "definition":
-        question = `What is a "${selectedWord.word}"?`
-        correctAnswer = selectedWord.correct
-        options = [correctAnswer, ...selectedWord.wrong]
-        break
-      case "spelling":
-        question = `How do you spell "${selectedWord.word}"?`
-        correctAnswer = selectedWord.correct
-        options = [correctAnswer, ...selectedWord.wrong]
-        break
-      default:
-        question = `What is a synonym for "happy"?`
-        correctAnswer = "joyful"
-        options = ["joyful", "sad", "angry", "tired"]
-    }
-
-    // Shuffle options
-    for (let i = options.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[options[i], options[j]] = [options[j], options[i]]
-    }
-
-    return { question, correctAnswer, options }
+  if (unusedWords.length === 0) {
+    console.log("All questions for this type and difficulty have been used!");
+    return null; // or reset usedWords[difficulty][questionType] = [] if you want to restart
   }
+
+  // Pick a random unused word
+  const selectedWord = unusedWords[Math.floor(Math.random() * unusedWords.length)];
+
+  // Mark as used
+  this.usedWords[difficulty][questionType].push(selectedWord.word);
+
+  let question, correctAnswer, options;
+  switch (questionType) {
+    case "synonym":
+      question = `What is a synonym for "${selectedWord.word}"?`;
+      correctAnswer = selectedWord.correct;
+      options = [correctAnswer, ...selectedWord.wrong];
+      break;
+    case "antonym":
+      question = `What is the opposite of "${selectedWord.word}"?`;
+      correctAnswer = selectedWord.correct;
+      options = [correctAnswer, ...selectedWord.wrong];
+      break;
+    case "definition":
+      question = `What is a "${selectedWord.word}"?`;
+      correctAnswer = selectedWord.correct;
+      options = [correctAnswer, ...selectedWord.wrong];
+      break;
+    case "spelling":
+      question = `Which word is spelled correctly?`;
+      correctAnswer = selectedWord.correct;
+      options = [correctAnswer, ...selectedWord.wrong];
+      break;
+  }
+
+  // Shuffle options
+  for (let i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+
+  return { question, correctAnswer, options };
+}
 
   initGame() {
     this.snake = [this.getRandomPosition()]
@@ -452,7 +557,8 @@ class SnakeEnglishGame {
 
     // Set target based on mode
     if (this.gameSettings.mode === "endless") {
-      this.targetElement.textContent = "∞"
+      this.targetElement.textContent = "♾️"
+      this.targetElement.style.fontSize = "15px"
     } else {
       this.targetElement.textContent = this.targetAnswers
     }
@@ -728,39 +834,40 @@ class SnakeEnglishGame {
   }
 
   addNewApple() {
-    const usedPositions = new Set()
+  // If apples already exist, do nothing (prevent duplicates)
+  if (this.apples.length > 0) return
 
-    this.apples.forEach((apple) => {
-      usedPositions.add(`${apple.x},${apple.y}`)
+  const usedPositions = new Set()
+  this.snake.forEach((segment) => {
+    usedPositions.add(`${segment.x},${segment.y}`)
+  })
+
+  // Take up to 4 options from the current question
+  const options = this.currentQuestion.options.slice(0, 4)
+
+  options.forEach((option, index) => {
+    let x, y
+    do {
+      x = this.randInt(this.GRID_WIDTH)
+      y = this.randInt(this.GRID_HEIGHT)
+    } while (usedPositions.has(`${x},${y}`))
+
+    usedPositions.add(`${x},${y}`)
+
+    this.apples.push({
+      x,
+      y,
+      value: option,
+      letter: String.fromCharCode(65 + index), // A, B, C, D
+      color: ["pink", "yellow", "blue", "red"][index],
+      isCorrect: option === this.currentQuestion.correctAnswer,
     })
+  })
+}
 
-    this.snake.forEach((segment) => {
-      usedPositions.add(`${segment.x},${segment.y}`)
-    })
+    
 
-    const availableOptions = this.currentQuestion.options.filter(
-      (option) => !this.apples.some((apple) => apple.value === option),
-    )
 
-    if (availableOptions.length > 0) {
-      const randomOption = availableOptions[Math.floor(Math.random() * availableOptions.length)]
-
-      let x, y
-      do {
-        x = this.randInt(this.GRID_WIDTH)
-        y = this.randInt(this.GRID_HEIGHT)
-      } while (usedPositions.has(`${x},${y}`))
-
-      this.apples.push({
-        x,
-        y,
-        value: randomOption,
-        letter: String.fromCharCode(65 + this.apples.length), // A, B, C
-        color: ["pink", "yellow", "blue"][this.apples.length] || "red",
-        isCorrect: randomOption === this.currentQuestion.correctAnswer,
-      })
-    }
-  }
 
     showGameOver() {
     // Stop timer
@@ -796,18 +903,25 @@ class SnakeEnglishGame {
     }
 
     // Show Game Over screen
-    if (this.gameOverTitle && this.finalScoreElement && this.gameOverOverlay) {
+        if (this.gameOverTitle && this.finalScoreElement && this.gameOverOverlay) {
+        // Update the title
         this.gameOverTitle.textContent =
-        this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀";
+            this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀";
 
-        // Instead of overwriting ALL classes, just toggle
+        // Toggle classes for styling
         this.gameOverTitle.classList.remove("won", "lost");
         this.gameOverTitle.classList.add(this.gameState === "won" ? "won" : "lost");
 
+        // Update final stats
         const maxLives = this.maxLives || 3; // fallback if not defined
-        this.finalScoreElement= `Final Score: ${this.score}`;
+
+        this.finalScoreElement.textContent = `Final Score: ${this.score}`;
+        if (this.finalCorrectElement) {
+        this.finalCorrectElement.innerHTML = `Corrects: ${this.correctAnswers}/${this.targetAnswers === Infinity ? '<span class="big-infinity">♾️</span>' : this.targetAnswers}`;
+        }
+        // Show the overlay
         this.gameOverOverlay.classList.remove("hidden");
-    }
+        }
     }
 
 
@@ -1072,19 +1186,19 @@ class SnakeEnglishGame {
   setDifficultySettings() {
     const difficultyConfig = {
       easy: {
-        gridSize: 25,
+        gridSize: 40,
         baseSpeed: 3,
-        speedIncrease: 0.2,
+        speedIncrease: 0.35,
       },
       medium: {
         gridSize: 40,
-        baseSpeed: 5,
-        speedIncrease: 0.4,
+        baseSpeed: 4,
+        speedIncrease: 0.55,
       },
       hard: {
-        gridSize: 15,
-        baseSpeed: 4,
-        speedIncrease: 0.6,
+        gridSize: 50,
+        baseSpeed: 4.5,
+        speedIncrease: 0.65,
       },
     }
 
