@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/snakeq_game/snakeq_css/styles.css">
 </head>
 <body>
+<<<<<<< HEAD
     <div class="game-container">
         <div class="game-board">
             <h1>The Snake Game</h1>
@@ -67,6 +68,140 @@
                 <p>Use WASD or Arrow keys to move • Eat correct answers to grow • Avoid wrong answers!</p>
                 <p>All apples are red - look at the numbers to find the correct answer!</p>
                 <p class="controls">Press SPACE to pause • Press R to restart</p>
+=======
+    <!-- Main Menu Screen -->
+    <div id="main-menu" class="screen">
+        <div class="menu-container">
+            <h1>The Snake Game</h1>
+            <div class="menu-buttons">
+                <button id="play-btn" class="menu-btn">Play Game</button>
+                <button id="settings-btn" class="menu-btn">Settings</button>
+                <button id="quit-btn" class="menu-btn">Quit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Options Screen -->
+    <div id="game-options" class="screen hidden">
+        <div class="menu-container">
+            <h1>Game Options</h1>
+            <div class="options-section">
+                <h2>Select Difficulty</h2>
+                <div class="difficulty-buttons">
+                    <button class="option-btn" data-difficulty="easy">Easy</button>
+                    <button class="option-btn" data-difficulty="medium">Medium</button>
+                    <button class="option-btn" data-difficulty="hard">Hard</button>
+                </div>
+            </div>
+            <div class="options-section">
+                <h2>Select Game Mode</h2>
+                <div class="mode-buttons">
+                    <button id="mathModeBtn" class="option-btn active">Math Mode</button>
+                    <button id="englishModeBtn" class="option-btn">English Mode</button>
+                </div>
+            </div>
+            <div class="menu-buttons">
+                <button id="back-to-menu" class="menu-btn">Back to Menu</button>
+                <button id="start-game" class="menu-btn">Start Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen hidden">
+        <div class="game-container">
+            <div class="game-board">
+                <div class="game-header">
+                    <button id="pause-btn" class="icon-btn">⏸️</button>
+                    <h1>The Snake Game</h1>
+                    <button id="menu-btn" class="icon-btn">≡</button>
+                </div>
+                
+                <!-- HUD -->
+                <div class="hud">
+                    <div class="score">
+                        Score: <span id="score-value">0</span>
+                    </div>
+                    <div class="lives">
+                        Lives: <span id="lives-value">3</span>
+                    </div>
+                    <div class="correct">
+                        Correct: <span id="correct-value">0</span>/10
+                    </div>
+                </div>
+
+                <!-- Question Section -->
+                <div class="question-section">
+                    <div class="question" id="question-display">Get Ready!</div>
+                    <div class="instruction">Eat the apple with the correct answer!</div>
+                </div>
+
+                <!-- Game Canvas -->
+                <div class="canvas-container">
+                    <canvas id="game-canvas" width="650" height="350"></canvas>
+                    
+                    <!-- Game Over Overlay -->
+                    <div id="game-over-overlay" class="overlay hidden">
+                        <div class="overlay-content">
+                            <h2 id="game-over-title">Game Over 💀</h2>
+                            <p id="final-score">Final Score: 0</p>
+                            <div class="game-over-buttons">
+                                <button id="play-again-btn" class="btn btn-green">Play Again</button>
+                                <button id="main-menu-btn" class="btn btn-blue">Main Menu</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pause Menu -->
+                    <div id="pause-menu" class="overlay hidden">
+                        <div class="overlay-content">
+                            <h2>Game Paused</h2>
+                            <div class="pause-buttons">
+                                <button id="resume-btn" class="btn btn-green">Resume</button>
+                                <button id="restart-btn" class="btn btn-blue">Restart</button>
+                                <button id="settings-game-btn" class="btn">Settings</button>
+                                <button id="quit-game-btn" class="btn btn-red">Quit to Menu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="instructions">
+                    <p>Use WASD or Arrow keys to move • Eat correct answers to grow • Avoid wrong answers!</p>
+                    <p>All apples are red - look at the numbers to find the correct answer!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings-screen" class="screen hidden">
+        <div class="menu-container">
+            <h1>Settings</h1>
+            <div class="settings-section">
+                <h2>Game Settings</h2>
+                <div class="setting">
+                    <label for="sound-toggle">Sound Effects:</label>
+                    <input type="checkbox" id="sound-toggle" checked>
+                </div>
+                <div class="setting">
+                    <label for="music-toggle">Background Music:</label>
+                    <input type="checkbox" id="music-toggle" checked>
+                </div>
+                <div class="setting">
+                    <label for="controls-select">Control Scheme:</label>
+                    <select id="controls-select">
+                        <option value="both">WASD + Arrow Keys</option>
+                        <option value="wasd">WASD Only</option>
+                        <option value="arrows">Arrow Keys Only</option>
+                    </select>
+                </div>
+            </div>
+            <div class="menu-buttons">
+                <button id="back-from-settings" class="menu-btn">Back</button>
+                <button id="save-settings" class="menu-btn">Save Settings</button>
+>>>>>>> shong
             </div>
         </div>
     </div>
