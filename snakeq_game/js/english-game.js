@@ -940,28 +940,30 @@ class SnakeEnglishGame {
     else {
       // It's a corner
       // Example: coming from LEFT (x=-1) to DOWN (y=1) → SnakeCornerLD
-        if (
-    (dirPrev.x === -1 && dirNext.y === -1) || // coming from left + going up
-    (dirNext.x === -1 && dirPrev.y === -1)
+    if (
+    (dirPrev.x === -1 && dirNext.y === -1) || // coming from left → up
+    (dirPrev.y === -1 && dirNext.x === -1)    // coming from up → left
     ) {
-    bodySprite = this.sprites.SnakeCornerLeftDown;
+    bodySprite = this.sprites.SnakeCornerRightUp;
     } else if (
-    (dirPrev.x === 1 && dirNext.y === -1) || // coming from right + going up
-    (dirNext.x === 1 && dirPrev.y === -1)
+    (dirPrev.x === 1 && dirNext.y === -1) ||  // coming from right → up
+    (dirPrev.y === -1 && dirNext.x === 1)     // coming from up → right
     ) {
-    bodySprite = this.sprites.SnakeCornerLeftDown;
+    bodySprite = this.sprites.SnakeCornerLeftUp;
     } else if (
-    (dirPrev.x === -1 && dirNext.y === 1) || // coming from left + going down
-    (dirNext.x === -1 && dirPrev.y === 1)
-    ) {
-    bodySprite = this.sprites.SnakeCornerLeftDown;
-    } else if (
-    (dirPrev.x === 1 && dirNext.y === 1) || // coming from right + going down
-    (dirNext.x === 1 && dirPrev.y === 1)
+    (dirPrev.x === -1 && dirNext.y === 1) ||  // coming from left → down
+    (dirPrev.y === 1 && dirNext.x === -1)     // coming from down → left
     ) {
     bodySprite = this.sprites.SnakeCornerRightDown;
+    } else if (
+    (dirPrev.x === 1 && dirNext.y === 1) ||   // coming from right → down
+    (dirPrev.y === 1 && dirNext.x === 1)      // coming from down → right
+    ) {
+    bodySprite = this.sprites.SnakeCornerLeftDown;
     }
-        }
+
+}
+
 
     if (bodySprite?.complete) {
       this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
