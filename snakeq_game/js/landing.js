@@ -3,25 +3,76 @@ class LandingPage {
     this.selectedCategory = null
     this.selectedMode = null
     this.selectedDifficulty = null
+    this.backgroundMusic = new Audio("sounds/music.mp3")
+    this.backgroundMusic.loop = true
+    this.musicEnabled = localStorage.getItem("musicEnabled") === "true"
+    this.soundEnabled = localStorage.getItem("soundEnabled") !== "false" // default true
+    this.clickSound = new Audio("sounds/click.mp3")
 
     this.init()
   }
 
+  
+
   init() {
     this.bindEvents()
+    this.initializeAudioStates()
+  }
+
+  initializeAudioStates() {
+    const soundBtn = document.getElementById("sound-btn")
+    const musicBtn = document.getElementById("music-btn")
+
+    if (soundBtn) {
+      soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
+      soundBtn.classList.toggle("active", this.soundEnabled)
+    }
+
+    if (musicBtn) {
+      musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+      musicBtn.classList.toggle("active", this.musicEnabled)
+      this.sounds.click.volume = 0.5
+
+
+      if (this.musicEnabled) {
+        this.backgroundMusic.volume = 0.2;
+        this.backgroundMusic.play().catch((e) => console.log("Music play failed:", e))
+      }
+    }
+
+    document.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+        if (this.soundEnabled && this.sounds.click) {
+        this.sounds.click.currentTime = 0 // restart if spam clicked
+        this.sounds.click.play()
+        }
+    })
+    })
+
+  }
+
+  playClickSound() {
+    if (this.soundEnabled) {
+      this.clickSound.currentTime = 0
+      this.clickSound.play().catch((e) => console.log("Click sound failed:", e))
+    }
   }
 
   bindEvents() {
-    // Category selection
     const categoryBtns = document.querySelectorAll(".category-btn")
     categoryBtns.forEach((btn) => {
-      btn.addEventListener("click", (e) => this.selectCategory(e))
+      btn.addEventListener("click", (e) => {
+        this.playClickSound()
+        this.selectCategory(e)
+      })
     })
 
-    // Play button
     const playBtn = document.getElementById("playBtn")
     if (playBtn) {
-      playBtn.addEventListener("click", () => this.showGameModeModal())
+      playBtn.addEventListener("click", () => {
+        this.playClickSound()
+        this.showGameModeModal()
+      })
     }
 
     const helpBtn = document.getElementById("help-btn")
@@ -33,6 +84,7 @@ class LandingPage {
     if (helpBtn) {
       helpBtn.addEventListener("click", (e) => {
         e.preventDefault()
+        this.playClickSound()
         this.showInstructions()
       })
     }
@@ -52,10 +104,12 @@ class LandingPage {
     }
 
     if (closeInstructionsBtn) {
-      closeInstructionsBtn.addEventListener("click", () => this.hideInstructions())
+      closeInstructionsBtn.addEventListener("click", () => {
+        this.playClickSound()
+        this.hideInstructions()
+      })
     }
 
-    // Close instructions modal when clicking outside
     if (instructionsModal) {
       instructionsModal.addEventListener("click", (e) => {
         if (e.target === instructionsModal) {
@@ -64,32 +118,57 @@ class LandingPage {
       })
     }
 
-    // Modal events
+    const copyrightModal = document.getElementById("copyright-modal");
+    const closeCopyright = document.getElementById("close-copyright");
+    const copyrightBtn = document.getElementById("copyright-btn"); // You can place a button in header/footer
+
+    if (copyrightBtn) {
+    copyrightBtn.addEventListener("click", () => {
+        copyrightModal.classList.remove("hidden");
+    });
+    }
+
+    if (closeCopyright) {
+    closeCopyright.addEventListener("click", () => {
+        copyrightModal.classList.add("hidden");
+    });
+    }
+
+
     const modal = document.getElementById("gameModeModal")
     const cancelBtn = document.getElementById("cancelBtn")
     const startBtn = document.getElementById("startGameBtn")
 
     if (cancelBtn) {
-      cancelBtn.addEventListener("click", () => this.hideGameModeModal())
+      cancelBtn.addEventListener("click", () => {
+        this.playClickSound()
+        this.hideGameModeModal()
+      })
     }
 
     if (startBtn) {
-      startBtn.addEventListener("click", () => this.startGame())
+      startBtn.addEventListener("click", () => {
+        this.playClickSound()
+        this.startGame()
+      })
     }
 
-    // Mode selection
     const modeBtns = document.querySelectorAll(".mode-btn")
     modeBtns.forEach((btn) => {
-      btn.addEventListener("click", (e) => this.selectMode(e))
+      btn.addEventListener("click", (e) => {
+        this.playClickSound()
+        this.selectMode(e)
+      })
     })
 
-    // Difficulty selection
     const difficultyBtns = document.querySelectorAll(".difficulty-btn")
     difficultyBtns.forEach((btn) => {
-      btn.addEventListener("click", (e) => this.selectDifficulty(e))
+      btn.addEventListener("click", (e) => {
+        this.playClickSound()
+        this.selectDifficulty(e)
+      })
     })
 
-    // Close modal on outside click
     if (modal) {
       modal.addEventListener("click", (e) => {
         if (e.target === modal) {
@@ -114,36 +193,42 @@ class LandingPage {
   }
 
   toggleSound() {
-    // Simple sound toggle for landing page
+    this.soundEnabled = !this.soundEnabled
+    localStorage.setItem("soundEnabled", this.soundEnabled.toString())
+
     const soundBtn = document.getElementById("sound-btn")
     if (soundBtn) {
-      const isEnabled = soundBtn.textContent === "🔊"
-      soundBtn.textContent = isEnabled ? "🔇" : "🔊"
-      soundBtn.classList.toggle("active", !isEnabled)
+      soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
+      soundBtn.classList.toggle("active", this.soundEnabled)
     }
   }
 
   toggleMusic() {
-    // Simple music toggle for landing page
+    this.musicEnabled = !this.musicEnabled
+    localStorage.setItem("musicEnabled", this.musicEnabled.toString())
+
     const musicBtn = document.getElementById("music-btn")
+
     if (musicBtn) {
-      const isEnabled = musicBtn.textContent === "🎵"
-      musicBtn.textContent = isEnabled ? "🔇" : "🎵"
-      musicBtn.classList.toggle("active", !isEnabled)
+      musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+      musicBtn.classList.toggle("active", this.musicEnabled)
+
+      if (this.musicEnabled) {
+        this.backgroundMusic.play().catch((e) => console.log("Music play failed:", e))
+      } else {
+        this.backgroundMusic.pause()
+      }
     }
   }
 
   selectCategory(e) {
-    // Remove previous selection
     document.querySelectorAll(".category-btn").forEach((btn) => {
       btn.classList.remove("selected")
     })
 
-    // Add selection to clicked button
     e.target.classList.add("selected")
     this.selectedCategory = e.target.dataset.category
 
-    // Enable play button
     const playBtn = document.getElementById("playBtn")
     if (playBtn) {
       playBtn.disabled = false
@@ -168,12 +253,10 @@ class LandingPage {
   }
 
   selectMode(e) {
-    // Remove previous selection
     document.querySelectorAll(".mode-btn").forEach((btn) => {
       btn.classList.remove("selected")
     })
 
-    // Add selection to clicked button
     e.target.classList.add("selected")
     this.selectedMode = e.target.dataset.mode
 
@@ -181,12 +264,10 @@ class LandingPage {
   }
 
   selectDifficulty(e) {
-    // Remove previous selection
     document.querySelectorAll(".difficulty-btn").forEach((btn) => {
       btn.classList.remove("selected")
     })
 
-    // Add selection to clicked button
     e.target.classList.add("selected")
     this.selectedDifficulty = e.target.dataset.difficulty
 
@@ -215,7 +296,6 @@ class LandingPage {
   }
 
   startGame() {
-    // Store game settings in localStorage
     const gameSettings = {
       category: this.selectedCategory,
       mode: this.selectedMode,
@@ -224,7 +304,10 @@ class LandingPage {
 
     localStorage.setItem("gameSettings", JSON.stringify(gameSettings))
 
-    // Navigate to appropriate game page
+    if (this.musicEnabled) {
+      this.backgroundMusic.pause()
+    }
+
     if (this.selectedCategory === "math") {
       window.location.href = "games/math-game.html"
     } else if (this.selectedCategory === "english") {
@@ -233,7 +316,6 @@ class LandingPage {
   }
 }
 
-// Initialize landing page when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
   new LandingPage()
 })

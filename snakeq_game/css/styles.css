@@ -783,6 +783,7 @@ body {
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
+  text-align: center;
 }
 
 .instructions-content h3 {

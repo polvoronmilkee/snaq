@@ -1,3 +1,26 @@
+document.addEventListener("keydown", (e) => {
+  // Stop page from scrolling when using arrow keys
+  if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+    e.preventDefault()
+  }
+
+  // Your game controls here
+  switch (e.key) {
+    case "ArrowUp":
+      // move up
+      break
+    case "ArrowDown":
+      // move down
+      break
+    case "ArrowLeft":
+      // move left
+      break
+    case "ArrowRight":
+      // move right
+      break
+  }
+})
+
 class SnakeEnglishGame {
   constructor() {
     // Game constants
@@ -21,11 +44,15 @@ class SnakeEnglishGame {
       correct: new Audio("../sounds/correct.mp3"),
       bgMusic: new Audio("../sounds/bg-music.mp3"),
       youWon: new Audio("../sounds/you-won.mp3"),
-      bgMusic: new Audio("../sounds/music.mp3"),
+      click: new Audio("../sounds/click.mp3"),
     }
 
-    this.soundEnabled = true
-    this.musicEnabled = true
+    this.sounds.bgMusic.volume = 0.2
+    this.sounds.bgMusic.loop = true
+    this.sounds.click.volume = 0.5
+
+    this.soundEnabled = localStorage.getItem("soundEnabled") !== "false" // default true
+    this.musicEnabled = localStorage.getItem("musicEnabled") !== "false"
 
     // Load snake sprites
     this.sprites = {}
@@ -69,6 +96,8 @@ class SnakeEnglishGame {
     this.init()
   }
 
+  
+
   loadSprites() {
     const spriteNames = [
       "SnakeHead",
@@ -105,26 +134,30 @@ class SnakeEnglishGame {
     }
   }
 
-  toggleSound() {
-    this.soundEnabled = !this.soundEnabled
-    const soundBtn = document.getElementById("sound-btn")
-    soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
-    soundBtn.classList.toggle("active", this.soundEnabled)
-  }
+    toggleSound() {
+        this.soundEnabled = !this.soundEnabled
+        localStorage.setItem("soundEnabled", this.soundEnabled.toString())
 
-  toggleMusic() {
-    this.musicEnabled = !this.musicEnabled
-    const musicBtn = document.getElementById("music-btn")
-    musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
-    musicBtn.classList.toggle("active", this.musicEnabled)
-
-    if (this.musicEnabled) {
-      this.sounds.bgMusic.loop = true
-      this.sounds.bgMusic.play().catch((e) => console.log("Music play failed:", e))
-    } else {
-      this.sounds.bgMusic.pause()
+        const soundBtn = document.getElementById("sound-btn")
+        soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
+        soundBtn.classList.toggle("active", this.soundEnabled)
     }
-  }
+
+    toggleMusic() {
+        this.musicEnabled = !this.musicEnabled
+        localStorage.setItem("musicEnabled", this.musicEnabled.toString())
+
+        const musicBtn = document.getElementById("music-btn")
+        musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+        musicBtn.classList.toggle("active", this.musicEnabled)
+
+        if (this.musicEnabled) {
+        this.sounds.bgMusic.loop = true
+        this.sounds.bgMusic.play().catch((e) => console.log("Music play failed:", e))
+        } else {
+        this.sounds.bgMusic.pause()
+        }
+    }
 
   initDOM() {
     this.canvas = document.getElementById("game-canvas")
@@ -158,6 +191,37 @@ class SnakeEnglishGame {
     this.initGame()
     this.bindEvents()
     this.gameLoop()
+    this.initializeAudioStates()
+  }
+
+    initializeAudioStates() {
+    const soundBtn = document.getElementById("sound-btn")
+    const musicBtn = document.getElementById("music-btn")
+
+    if (soundBtn) {
+      soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
+      soundBtn.classList.toggle("active", this.soundEnabled)
+    }
+
+    if (musicBtn) {
+      musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+      musicBtn.classList.toggle("active", this.musicEnabled)
+
+      if (this.musicEnabled) {
+        this.sounds.bgMusic.loop = true
+        this.sounds.bgMusic.play().catch((e) => console.log("Music play failed:", e))
+      }
+    }
+
+    document.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+        if (this.soundEnabled && this.sounds.click) {
+        this.sounds.click.currentTime = 0 // restart if spam clicked
+        this.sounds.click.play()
+        }
+    })
+    })
+
   }
 
   bindEvents() {
@@ -474,6 +538,13 @@ class SnakeEnglishGame {
     if (moved && this.waitingForMove) {
       this.waitingForMove = false
     }
+
+     if (moved) {
+      this.playSound("snakeTurns")
+      if (this.waitingForMove) {
+        this.waitingForMove = false
+      }
+    }
   }
 
   randInt(max) {
@@ -691,16 +762,54 @@ class SnakeEnglishGame {
     }
   }
 
-  showGameOver() {
+    showGameOver() {
+    // Stop timer
     if (this.timerInterval) {
-      clearInterval(this.timerInterval)
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
     }
 
-    this.gameOverTitle.textContent = this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀"
-    this.gameOverTitle.className = this.gameState === "won" ? "won" : "lost"
-    this.finalScoreElement.textContent = `Final Score: ${this.score}`
-    this.gameOverOverlay.classList.remove("hidden")
-  }
+    // Play appropriate sound
+    if (this.gameState === "won") {
+        this.playSound("youWon");
+    } else {
+        this.playSound("snakeDies");
+    }
+
+    // Update HUD values
+    if (this.scoreElement) this.scoreElement.textContent = this.score;
+    if (this.livesElement) this.livesElement.textContent = this.lives;
+    if (this.correctElement) this.correctElement.textContent = this.correctAnswers;
+
+    // Update hearts in background
+    if (this.heartsContainer) {
+        const hearts = this.heartsContainer.querySelectorAll(".heart");
+        hearts.forEach((heart, index) => {
+        if (index < this.lives) {
+            heart.classList.add("filled");
+            heart.classList.remove("empty");
+        } else {
+            heart.classList.remove("filled");
+            heart.classList.add("empty");
+        }
+        });
+    }
+
+    // Show Game Over screen
+    if (this.gameOverTitle && this.finalScoreElement && this.gameOverOverlay) {
+        this.gameOverTitle.textContent =
+        this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀";
+
+        // Instead of overwriting ALL classes, just toggle
+        this.gameOverTitle.classList.remove("won", "lost");
+        this.gameOverTitle.classList.add(this.gameState === "won" ? "won" : "lost");
+
+        const maxLives = this.maxLives || 3; // fallback if not defined
+        this.finalScoreElement= `Final Score: ${this.score}`;
+        this.gameOverOverlay.classList.remove("hidden");
+    }
+    }
+
 
   drawPixelSnakeFace(x, y, face) {
     const centerX = x + this.GRID_SIZE / 2
@@ -865,6 +974,23 @@ class SnakeEnglishGame {
     }
   }
 });
+
+    const copyrightModal = document.getElementById("copyright-modal");
+    const closeCopyright = document.getElementById("close-copyright");
+    const copyrightBtn = document.getElementById("copyright-btn"); // You can place a button in header/footer
+
+    if (copyrightBtn) {
+    copyrightBtn.addEventListener("click", () => {
+        copyrightModal.classList.remove("hidden");
+    });
+    }
+
+    if (closeCopyright) {
+    closeCopyright.addEventListener("click", () => {
+        copyrightModal.classList.add("hidden");
+    });
+    }
+
 
 
     this.apples.forEach((apple) => {
