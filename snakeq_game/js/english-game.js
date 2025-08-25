@@ -203,6 +203,9 @@ class SnakeEnglishGame {
       this.finalScoreElement = document.getElementById("final-score")
       this.finalCorrectElement = document.getElementById("final-correct")
       this.playAgainBtn = document.getElementById("play-again-btn")
+      this.playAgainConfirm = document.getElementById("play-again-confirm")
+      this.playAgainConfirmBtn = document.getElementById("confirm-play-again")
+      this.cancelPlayAgain = document.getElementById("cancel-play-again")
       this.menuBtn = document.getElementById("menu-btn")
       this.restartConfirm = document.getElementById("restart-confirm")
       this.confirmRestartBtn = document.getElementById("confirm-restart")
@@ -212,6 +215,7 @@ class SnakeEnglishGame {
       this.optionsContainer = document.getElementById("options-display")
       this.heartsContainer = document.getElementById("hearts-container")
       this.helpBtn = document.getElementById("help-btn")
+      this.helpBtnEsc = document.getElementById("help-btn-esc")
       this.soundBtn = document.getElementById("sound-btn")
       this.musicBtn = document.getElementById("music-btn")
       this.instructionsModal = document.getElementById("instructions-modal")
@@ -268,7 +272,20 @@ class SnakeEnglishGame {
           this.sprint.active = false
       }
       })
-      this.playAgainBtn.addEventListener("click", () => this.showRestartConfirm())
+        this.playAgainBtn.addEventListener("click", () => {
+            this.playSound("click")
+            this.playAgainConfirm.classList.remove("hidden");
+        })   
+        this.playAgainConfirmBtn.addEventListener("click", () => {
+            this.playSound("click")
+            this.playAgainConfirm.classList.add("hidden") 
+            this.gameOverOverlay.classList.add("hidden")
+            this.confirmRestart() 
+        }) 
+        this.cancelPlayAgain.addEventListener("click", () => {
+            this.playSound("click")  
+            this.playAgainConfirm.classList.add("hidden");
+        });  
       this.menuBtn.addEventListener("click", () => (window.location.href = "../index.html"))
       this.confirmRestartBtn.addEventListener("click", () => this.confirmRestart())
       this.cancelRestartBtn.addEventListener("click", () => this.cancelRestart())
@@ -276,7 +293,10 @@ class SnakeEnglishGame {
       this.soundBtn.addEventListener("click", () => this.toggleSound())
       this.musicBtn.addEventListener("click", () => this.toggleMusic())
       this.closeInstructionsBtn.addEventListener("click", () => this.hideInstructions())
-
+        this.helpBtnEsc.addEventListener("click", () => {
+      this.playSound("click")
+      this.showInstructions()
+        })
       // Close instructions modal when clicking outside
       this.instructionsModal.addEventListener("click", (e) => {
       if (e.target === this.instructionsModal) {
