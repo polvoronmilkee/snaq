@@ -138,7 +138,7 @@ class SnakeMathGame {
       "SnakeCornerLeftUp",
       "SnakeCornerRightDown",
       "apple",
-
+      "shield"
     ]
 
     spriteNames.forEach((name) => {
@@ -706,7 +706,7 @@ class SnakeMathGame {
     if (this.shieldPickup && head.x === this.shieldPickup.x && head.y === this.shieldPickup.y) {
       this.hasShield = true
       this.shieldPickup = null
-      this.showNotification("Shield acquired! 🛡️", "correct")
+      this.showNotification("Shield acquired!✨", "correct")
     }
 
     const eatenApple = this.apples.find((apple) => apple.x === head.x && apple.y === head.y)
@@ -745,7 +745,7 @@ class SnakeMathGame {
           // Shield blocks the penalty once
           this.hasShield = false
           this.snakeFace = "normal"
-          this.showNotification("Shield saved you! 🛡️", "correct")
+          this.showNotification("Shield saved you!✨", "correct")
 
           // Remove the eaten wrong apple and replace with a new option
           this.apples = this.apples.filter((apple) => apple !== eatenApple)
@@ -851,7 +851,7 @@ class SnakeMathGame {
       } while (used.has(`${x},${y}`))
       this.shieldPickup = { x, y }
       this.shieldSpawned = true
-      this.showNotification("Shield appeared! 🛡️", "correct")
+      this.showNotification("Shield appeared!✨", "correct")
     }
   }
 
@@ -1095,32 +1095,14 @@ showGameOver() {
 
       });
 
-    // Draw shield pickup if present
+    // Use shield pickup icon if present
     if (this.shieldPickup) {
       const px = this.shieldPickup.x * this.GRID_SIZE
       const py = this.shieldPickup.y * this.GRID_SIZE
-      // Pixel-style shield token (larger)
-      this.ctx.fillStyle = "#1e90ff"
-      this.ctx.fillRect(px, py, this.GRID_SIZE, this.GRID_SIZE)
-      // Thicker outer border
-      this.ctx.strokeStyle = "#000"
-      this.ctx.lineWidth = 3
-      this.ctx.strokeRect(px, py, this.GRID_SIZE, this.GRID_SIZE)
-      // Inner highlight border
-      this.ctx.strokeStyle = "#a6d8ff"
-      this.ctx.lineWidth = 2
-      this.ctx.strokeRect(px + 2, py + 2, this.GRID_SIZE - 4, this.GRID_SIZE - 4)
-      // Bigger shield icon
-      const iconSize = Math.max(12, Math.floor(this.GRID_SIZE * 0.8))
-      this.ctx.font = `${iconSize}px "Press Start 2P", monospace`
-      this.ctx.textAlign = "center"
-      this.ctx.textBaseline = "middle"
-      // Drop shadow
-      this.ctx.fillStyle = "#000"
-      this.ctx.fillText("🛡️", px + this.GRID_SIZE / 2 + 1, py + this.GRID_SIZE / 2 + 1)
-      this.ctx.fillStyle = "#fff"
-      this.ctx.fillText("🛡️", px + this.GRID_SIZE / 2, py + this.GRID_SIZE / 2)
-    }
+
+      const shieldSprite = this.sprites["shield"]
+      this.ctx.drawImage(shieldSprite, px, py, this.GRID_SIZE, this.GRID_SIZE)
+      }
 
 
     this.apples.forEach((apple) => {
