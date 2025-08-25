@@ -211,6 +211,11 @@ initDOM() {
     this.musicBtn = document.getElementById("music-btn")
     this.instructionsModal = document.getElementById("instructions-modal")
     this.closeInstructionsBtn = document.getElementById("close-instructions")
+
+    if (this.questionElement) {
+    this.questionElement.style.fontSize = "15px"
+    this.questionElement.style.lineHeight = "1.4"
+    }
 }
 
 init() {
@@ -336,6 +341,10 @@ updateOptionsDisplay() {
     optionText.textContent = option
     // Make answers larger and more readable
     optionText.style.fontSize = "20px"
+    optionText.style.lineHeight = "1.4"
+    optionText.style.fontWeight = "600"
+
+    optionText.style.fontSize = "15px"
     optionText.style.lineHeight = "1.4"
     optionText.style.fontWeight = "600"
 
