@@ -206,6 +206,12 @@ class SnakeMathGame {
     this.musicBtn = document.getElementById("music-btn")
     this.instructionsModal = document.getElementById("instructions-modal")
     this.closeInstructionsBtn = document.getElementById("close-instructions")
+
+    // Slightly larger question text for readability
+    if (this.questionElement) {
+      this.questionElement.style.fontSize = "16px"
+      this.questionElement.style.lineHeight = "1.4"
+    }
   }
 
   init() {
