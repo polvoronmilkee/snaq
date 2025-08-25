@@ -35,8 +35,8 @@ constructor() {
     this.CANVAS_HEIGHT = 480
     this.GRID_WIDTH = Math.floor(this.CANVAS_WIDTH / this.GRID_SIZE)
     this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
-    // Playfield margins to avoid border artifacts (grid cells)
-    this.playMargin = 1
+    // Playfield margin (0 = use full grid; prevents early wrap)
+    this.playMargin = 0
 
     this.sounds = {
     biteApple: new Audio("../sounds/bite-apple.mp3"),
@@ -78,6 +78,7 @@ constructor() {
     this.waitingForMove = true
     this.paused = false
     this.showConfirm = false
+    this.inputLocked = false
 
     this.baseSpeed = this.difficultySettings.baseSpeed
     this.speed = this.baseSpeed
@@ -669,6 +670,10 @@ handleKeyDown(e) {
     return
     }
 
+    // If an input already processed this frame, ignore movement keys
+    const isMovementKey = ["w","arrowup","s","arrowdown","a","arrowleft","d","arrowright"].includes(key)
+    if (this.inputLocked && isMovementKey) return
+
     // WASD and Arrow key movement
     switch (key) {
     case "w":
@@ -702,6 +707,7 @@ handleKeyDown(e) {
     }
 
     if (moved) {
+    this.inputLocked = true
     this.playSound("snakeTurns")
     if (this.waitingForMove) {
         this.waitingForMove = false
@@ -924,6 +930,7 @@ moveSnake() {
 
     this.snake = newSnake
     this.updateUI()
+    this.inputLocked = false
 }
 
 addNewApple() {
@@ -1115,6 +1122,26 @@ draw() {
     this.ctx.imageSmoothingEnabled = false
 
     this.ctx.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT)
+
+    // Draw playfield bounds matching logic
+    const pfLeft = this.playMargin * this.GRID_SIZE
+    const pfTop = this.playMargin * this.GRID_SIZE
+    const pfRight = (this.GRID_WIDTH - this.playMargin) * this.GRID_SIZE
+    const pfBottom = (this.GRID_HEIGHT - this.playMargin) * this.GRID_SIZE
+    const pfWidth = pfRight - pfLeft
+    const pfHeight = pfBottom - pfTop
+
+    if (this.playMargin > 0) {
+    this.ctx.fillStyle = "rgba(0,0,0,0.15)"
+    this.ctx.fillRect(0, 0, pfLeft, this.CANVAS_HEIGHT)
+    this.ctx.fillRect(pfRight, 0, this.CANVAS_WIDTH - pfRight, this.CANVAS_HEIGHT)
+    this.ctx.fillRect(pfLeft, 0, pfWidth, pfTop)
+    this.ctx.fillRect(pfLeft, pfBottom, pfWidth, this.CANVAS_HEIGHT - pfBottom)
+    }
+
+    this.ctx.strokeStyle = "#000"
+    this.ctx.lineWidth = 2
+    this.ctx.strokeRect(pfLeft, pfTop, pfWidth, pfHeight)
 
     // Draw snake using sprites
     this.snake.forEach((segment, index) => {
@@ -1436,7 +1463,7 @@ showCountdown(callback) {
     } else if (count === 0) {
         countdownNumber.textContent = "GO!"
         countdownNumber.style.color = "#ff4444"
-    } else {t
+    } else {
         clearInterval(countdownInterval)
         countdownOverlay.remove()
         if (callback) callback()
