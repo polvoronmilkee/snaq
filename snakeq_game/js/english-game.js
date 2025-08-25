@@ -1,32 +1,32 @@
 document.addEventListener("keydown", (e) => {
-  // Stop page from scrolling when using arrow keys
-  if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+// Stop page from scrolling when using arrow keys
+if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
     e.preventDefault()
-  }
+}
 
-  // Your game controls here
-  switch (e.key) {
+// Your game controls here
+switch (e.key) {
     case "ArrowUp":
-      // move up
-      break
+    // move up
+    break
     case "ArrowDown":
-      // move down
-      break
+    // move down
+    break
     case "ArrowLeft":
-      // move left
-      break
+    // move left
+    break
     case "ArrowRight":
-      // move right
-      break
-  }
+    // move right
+    break
+}
 })
 
 class SnakeEnglishGame {
-  constructor() {
+constructor() {
     // Game constants
     this.gameSettings = JSON.parse(localStorage.getItem("gameSettings")) || {
-      mode: "quiz",
-      difficulty: "easy",
+    mode: "quiz",
+    difficulty: "easy",
     }
 
     this.setDifficultySettings()
@@ -37,15 +37,15 @@ class SnakeEnglishGame {
     this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
 
     this.sounds = {
-      biteApple: new Audio("../sounds/bite-apple.mp3"),
-      snakeTurns: new Audio("../sounds/snake-turns.mp3"),
-      snakeDies: new Audio("../sounds/snake-dies.mp3"),
-      snakeLosesLife: new Audio("../sounds/snake-loses-life.mp3"),
-      correct: new Audio("../sounds/correct.mp3"),
-      bgMusic: new Audio("../sounds/bg-music.mp3"),
-      youWon: new Audio("../sounds/you-won.mp3"),
-      click: new Audio("../sounds/click.mp3"),
-      countdown: new Audio("../sounds/countdown.mp3") 
+    biteApple: new Audio("../sounds/bite-apple.mp3"),
+    snakeTurns: new Audio("../sounds/snake-turns.mp3"),
+    snakeDies: new Audio("../sounds/snake-dies.mp3"),
+    snakeLosesLife: new Audio("../sounds/snake-loses-life.mp3"),
+    correct: new Audio("../sounds/correct.mp3"),
+    bgMusic: new Audio("../sounds/bg-music.mp3"),
+    youWon: new Audio("../sounds/you-won.mp3"),
+    click: new Audio("../sounds/click.mp3"),
+    countdown: new Audio("../sounds/countdown.mp3") 
     }
 
     this.sounds.bgMusic.volume = 0.2
@@ -100,47 +100,62 @@ class SnakeEnglishGame {
     hard: { synonym: [], antonym: [], definition: [], spelling: [] },
     };
 
+    // Sprint (temporary speed boost)
+    this.sprint = {
+    active: false,
+    energy: 1,
+    maxEnergy: 1,
+    drainPerSecond: 1.2,
+    regenPerSecond: 0.18,
+    multiplier: 1.8
+    }
+
+    // Shield (one-time wrong-answer protection)
+    this.hasShield = false
+    this.shieldPickup = null
+    this.shieldSpawned = false
+
     this.initDOM()
     this.init()
-  }
+}
 
-  
 
-  loadSprites() {
+
+loadSprites() {
     const spriteNames = [
-      "SnakeHead",
-      "SnakeHeadLeft",
-      "SnakeHeadRight",
-      "SnakeHeadDown",
-      "SnakeBody",
-      "SnakeTail",
-      "SnakeTailLeft",
-      "SnakeTailRight",
-      "SnakeTailDown",
-      "SnakeBodyLeft",
-      "SnakeBodyRight",
-      "SnakeCornerLeftDown",
-      "SnakeCornerRightUp",
-      "SnakeCornerLeftUp",
-      "SnakeCornerRightDown",
-      "apple",
-      "appleA-pink",
-      "appleB-yellow",
-      "appleC-blue",
+    "SnakeHead",
+    "SnakeHeadLeft",
+    "SnakeHeadRight",
+    "SnakeHeadDown",
+    "SnakeBody",
+    "SnakeTail",
+    "SnakeTailLeft",
+    "SnakeTailRight",
+    "SnakeTailDown",
+    "SnakeBodyLeft",
+    "SnakeBodyRight",
+    "SnakeCornerLeftDown",
+    "SnakeCornerRightUp",
+    "SnakeCornerLeftUp",
+    "SnakeCornerRightDown",
+    "apple",
+    "appleA-pink",
+    "appleB-yellow",
+    "appleC-blue",
     ]
 
     spriteNames.forEach((name) => {
-      this.sprites[name] = new Image()
-      this.sprites[name].src = `../assets/${name}.png`
+    this.sprites[name] = new Image()
+    this.sprites[name].src = `../assets/${name}.png`
     })
-  }
+}
 
-  playSound(soundName) {
+playSound(soundName) {
     if (this.soundEnabled && this.sounds[soundName]) {
-      this.sounds[soundName].currentTime = 0
-      this.sounds[soundName].play().catch((e) => console.log("Audio play failed:", e))
+    this.sounds[soundName].currentTime = 0
+    this.sounds[soundName].play().catch((e) => console.log("Audio play failed:", e))
     }
-  }
+}
 
     toggleSound() {
         this.soundEnabled = !this.soundEnabled
@@ -167,7 +182,7 @@ class SnakeEnglishGame {
         }
     }
 
-  initDOM() {
+initDOM() {
     this.canvas = document.getElementById("game-canvas")
     this.ctx = this.canvas.getContext("2d")
     this.scoreElement = document.getElementById("score-value")
@@ -193,32 +208,32 @@ class SnakeEnglishGame {
     this.musicBtn = document.getElementById("music-btn")
     this.instructionsModal = document.getElementById("instructions-modal")
     this.closeInstructionsBtn = document.getElementById("close-instructions")
-  }
+}
 
-  init() {
+init() {
     this.initGame()
     this.bindEvents()
     this.gameLoop()
     this.initializeAudioStates()
-  }
+}
 
     initializeAudioStates() {
     const soundBtn = document.getElementById("sound-btn")
     const musicBtn = document.getElementById("music-btn")
 
     if (soundBtn) {
-      soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
-      soundBtn.classList.toggle("active", this.soundEnabled)
+    soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
+    soundBtn.classList.toggle("active", this.soundEnabled)
     }
 
     if (musicBtn) {
-      musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
-      musicBtn.classList.toggle("active", this.musicEnabled)
+    musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+    musicBtn.classList.toggle("active", this.musicEnabled)
 
-      if (this.musicEnabled) {
+    if (this.musicEnabled) {
         this.sounds.bgMusic.loop = true
         this.sounds.bgMusic.play().catch((e) => console.log("Music play failed:", e))
-      }
+    }
     }
 
     document.querySelectorAll("button").forEach((btn) => {
@@ -230,10 +245,16 @@ class SnakeEnglishGame {
     })
     })
 
-  }
+}
 
-  bindEvents() {
+bindEvents() {
     document.addEventListener("keydown", (e) => this.handleKeyDown(e))
+    // Keyup to stop sprint
+    document.addEventListener("keyup", (e) => {
+    if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+        this.sprint.active = false
+    }
+    })
     this.playAgainBtn.addEventListener("click", () => this.showRestartConfirm())
     this.menuBtn.addEventListener("click", () => (window.location.href = "../index.html"))
     this.confirmRestartBtn.addEventListener("click", () => this.confirmRestart())
@@ -245,86 +266,86 @@ class SnakeEnglishGame {
 
     // Close instructions modal when clicking outside
     this.instructionsModal.addEventListener("click", (e) => {
-      if (e.target === this.instructionsModal) {
+    if (e.target === this.instructionsModal) {
         this.hideInstructions()
-      }
+    }
     })
-  }
+}
 
-  showInstructions() {
+showInstructions() {
     this.instructionsModal.classList.remove("hidden")
-  }
+}
 
-  hideInstructions() {
+hideInstructions() {
     this.instructionsModal.classList.add("hidden")
-  }
+}
 
-  updateUI() {
+updateUI() {
     this.scoreElement.textContent = this.score
     this.correctElement.textContent = this.correctAnswers
 
     // Update hearts display
     const hearts = this.heartsContainer.querySelectorAll(".heart")
     hearts.forEach((heart, index) => {
-      if (index < this.lives) {
+    if (index < this.lives) {
         heart.classList.add("filled")
         heart.classList.remove("empty")
-      } else {
+    } else {
         heart.classList.remove("filled")
         heart.classList.add("empty")
-      }
+    }
     })
 
     if (this.currentQuestion) {
-      this.questionElement.textContent = this.currentQuestion.question
-      this.updateOptionsDisplay()
+    this.questionElement.textContent = this.currentQuestion.question
+    this.updateOptionsDisplay()
     }
-  }
+}
 
-  updateOptionsDisplay() {
+updateOptionsDisplay() {
     if (!this.optionsContainer || !this.currentQuestion) return
 
     this.optionsContainer.innerHTML = ""
 
     this.currentQuestion.options.forEach((option, index) => {
-      const optionDiv = document.createElement("div")
-      optionDiv.className = "option-item"
+    const optionDiv = document.createElement("div")
+    optionDiv.className = "option-item"
 
-      const appleIcon = document.createElement("div")
-      appleIcon.className = "apple-icon"
+    const appleIcon = document.createElement("div")
+    appleIcon.className = "apple-icon"
 
-      // Use specific colored apple sprites
-      const appleImg = document.createElement("img")
-      const appleColors = ["appleA-pink.png", "appleB-yellow.png", "appleC-blue.png"]
-      appleImg.src = `../assets/${appleColors[index] || "apple.png"}`
-      appleImg.alt = String.fromCharCode(65 + index) // A, B, C
-      appleImg.className = "apple-sprite"
+    // Use specific colored apple sprites
+    const appleImg = document.createElement("img")
+    const appleColors = ["appleA-pink.png", "appleB-yellow.png", "appleC-blue.png"]
+    appleImg.src = `../assets/${appleColors[index] || "apple.png"}`
+    appleImg.alt = String.fromCharCode(65 + index) // A, B, C
+    appleImg.className = "apple-sprite"
 
-      const letterLabel = document.createElement("span")
-      letterLabel.className = "apple-letter"
-      letterLabel.textContent = String.fromCharCode(65 + index) // A, B, C
+    const letterLabel = document.createElement("span")
+    letterLabel.className = "apple-letter"
+    letterLabel.textContent = String.fromCharCode(65 + index) // A, B, C
 
-      appleIcon.appendChild(appleImg)
-      appleIcon.appendChild(letterLabel)
+    appleIcon.appendChild(appleImg)
+    appleIcon.appendChild(letterLabel)
 
-      const optionText = document.createElement("span")
-      optionText.className = "option-text"
-      optionText.textContent = option
+    const optionText = document.createElement("span")
+    optionText.className = "option-text"
+    optionText.textContent = option
 
-      optionDiv.appendChild(appleIcon)
-      optionDiv.appendChild(optionText)
-      this.optionsContainer.appendChild(optionDiv)
+    optionDiv.appendChild(appleIcon)
+    optionDiv.appendChild(optionText)
+    this.optionsContainer.appendChild(optionDiv)
     })
-  }
-  
+}
 
-  generateQuestion() {
+
+generateQuestion() {
     const difficulty = this.gameSettings.difficulty
     const questionTypes = ["synonym", "antonym", "definition", "spelling"]
     const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)]
 
     const wordSets = {
-      easy: {
+    easy: {
         synonym: [
             { word: "happy", correct: "joyful", wrong: ["sad", "angry", "tired"] },
             { word: "big", correct: "large", wrong: ["small", "tiny", "little"] },
@@ -374,7 +395,7 @@ class SnakeEnglishGame {
             { word: "because", correct: "because", wrong: ["becuase", "becase", "becouse"] },
         ]
 
-      },
+    },
         medium: {
         synonym: [
             { word: "beautiful", correct: "gorgeous", wrong: ["ugly", "plain", "simple"] },
@@ -479,56 +500,56 @@ class SnakeEnglishGame {
     }
 
     const difficultyWords = wordSets[difficulty][questionType]
-  // Filter out used words
-  const unusedWords = difficultyWords.filter(
+// Filter out used words
+const unusedWords = difficultyWords.filter(
     w => !this.usedWords[difficulty][questionType].includes(w.word)
-  );
+);
 
-  if (unusedWords.length === 0) {
+if (unusedWords.length === 0) {
     console.log("All questions for this type and difficulty have been used!");
     return null; // or reset usedWords[difficulty][questionType] = [] if you want to restart
-  }
-
-  // Pick a random unused word
-  const selectedWord = unusedWords[Math.floor(Math.random() * unusedWords.length)];
-
-  // Mark as used
-  this.usedWords[difficulty][questionType].push(selectedWord.word);
-
-  let question, correctAnswer, options;
-  switch (questionType) {
-    case "synonym":
-      question = `What is a synonym for "${selectedWord.word}"?`;
-      correctAnswer = selectedWord.correct;
-      options = [correctAnswer, ...selectedWord.wrong];
-      break;
-    case "antonym":
-      question = `What is the opposite of "${selectedWord.word}"?`;
-      correctAnswer = selectedWord.correct;
-      options = [correctAnswer, ...selectedWord.wrong];
-      break;
-    case "definition":
-      question = `What is a "${selectedWord.word}"?`;
-      correctAnswer = selectedWord.correct;
-      options = [correctAnswer, ...selectedWord.wrong];
-      break;
-    case "spelling":
-      question = `Which word is spelled correctly?`;
-      correctAnswer = selectedWord.correct;
-      options = [correctAnswer, ...selectedWord.wrong];
-      break;
-  }
-
-  // Shuffle options
-  for (let i = options.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [options[i], options[j]] = [options[j], options[i]];
-  }
-
-  return { question, correctAnswer, options };
 }
 
-  initGame() {
+// Pick a random unused word
+const selectedWord = unusedWords[Math.floor(Math.random() * unusedWords.length)];
+
+// Mark as used
+this.usedWords[difficulty][questionType].push(selectedWord.word);
+
+let question, correctAnswer, options;
+switch (questionType) {
+    case "synonym":
+    question = `What is a synonym for "${selectedWord.word}"?`;
+    correctAnswer = selectedWord.correct;
+    options = [correctAnswer, ...selectedWord.wrong];
+    break;
+    case "antonym":
+    question = `What is the opposite of "${selectedWord.word}"?`;
+    correctAnswer = selectedWord.correct;
+    options = [correctAnswer, ...selectedWord.wrong];
+    break;
+    case "definition":
+    question = `What is a "${selectedWord.word}"?`;
+    correctAnswer = selectedWord.correct;
+    options = [correctAnswer, ...selectedWord.wrong];
+    break;
+    case "spelling":
+    question = `Which word is spelled correctly?`;
+    correctAnswer = selectedWord.correct;
+    options = [correctAnswer, ...selectedWord.wrong];
+    break;
+}
+
+// Shuffle options
+for (let i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+}
+
+return { question, correctAnswer, options };
+}
+
+initGame() {
     this.snake = [this.getRandomPosition()]
     this.direction = this.getRandomDirection()
     this.currentQuestion = this.generateQuestion()
@@ -547,56 +568,63 @@ class SnakeEnglishGame {
 
     // Setup timer for timed mode
     if (this.gameSettings.mode === "timed") {
-      this.timeLeft = 60
-      this.timerDisplay.style.display = "block"
-      this.startCountdown(() => {
+    this.timeLeft = 60
+    this.timerDisplay.style.display = "block"
+    this.startCountdown(() => {
         this.startTimer()
-      })
+    })
     } else {
-      this.timerDisplay.style.display = "none"
+    this.timerDisplay.style.display = "none"
     }
 
     // Set target based on mode
     if (this.gameSettings.mode === "endless") {
-      this.targetElement.textContent = "♾️"
-      this.targetElement.style.fontSize = "15px"
+    this.targetElement.textContent = "♾️"
+    this.targetElement.style.fontSize = "15px"
     } else {
-      this.targetElement.textContent = this.targetAnswers
+    this.targetElement.textContent = this.targetAnswers
     }
+
+    // Reset sprint and shield
+    this.sprint.active = false
+    this.sprint.energy = this.sprint.maxEnergy
+    this.hasShield = false
+    this.shieldPickup = null
+    this.shieldSpawned = false
 
     this.updateUI()
     this.hideOverlays()
-  }
+}
 
-  startTimer() {
+startTimer() {
     this.timerInterval = setInterval(() => {
-      this.timeLeft--
-      this.timerValue.textContent = this.timeLeft
+    this.timeLeft--
+    this.timerValue.textContent = this.timeLeft
 
-      if (this.timeLeft <= 0) {
+    if (this.timeLeft <= 0) {
         this.gameState = "lost"
         this.gameRunning = false
         this.showGameOver()
         clearInterval(this.timerInterval)
-      }
+    }
     }, 1000)
-  }
+}
 
- handleKeyDown(e) {
+handleKeyDown(e) {
     const key = e.key.toLowerCase()
     const code = e.code
 
     if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
-      e.preventDefault()
+    e.preventDefault()
     }
 
     if (!this.restartConfirm.classList.contains("hidden")) {
-      if (code === "Escape") {
+    if (code === "Escape") {
         this.cancelRestart()
-      } else if (code === "Enter") {
+    } else if (code === "Enter") {
         this.confirmRestart()
-      }
-      return
+    }
+    return
     }
 
     if (!this.gameRunning && key !== "r") return
@@ -604,141 +632,147 @@ class SnakeEnglishGame {
     let moved = false
 
     if (code === "Space" || key === " ") {
-      e.preventDefault()
-      this.paused = !this.paused
-      return
+    e.preventDefault()
+    this.paused = !this.paused
+    return
     }
 
     if (code === "KeyR" || key === "r") {
-      this.showRestartConfirm()
-      return
+    this.showRestartConfirm()
+    return
+    }
+
+    // Sprint activation (hold Shift)
+    if ((code === "ShiftLeft" || code === "ShiftRight") && !this.paused) {
+    if (this.sprint.energy > 0) this.sprint.active = true
+    return
     }
 
     // WASD and Arrow key movement
     switch (key) {
-      case "w":
-      case "arrowup":
+    case "w":
+    case "arrowup":
         if (!this.paused && this.direction.y === 0) {
-          this.direction = { x: 0, y: -1 }
-          moved = true
+        this.direction = { x: 0, y: -1 }
+        moved = true
         }
         break
-      case "s":
-      case "arrowdown":
+    case "s":
+    case "arrowdown":
         if (!this.paused && this.direction.y === 0) {
-          this.direction = { x: 0, y: 1 }
-          moved = true
+        this.direction = { x: 0, y: 1 }
+        moved = true
         }
         break
-      case "a":
-      case "arrowleft":
+    case "a":
+    case "arrowleft":
         if (!this.paused && this.direction.x === 0) {
-          this.direction = { x: -1, y: 0 }
-          moved = true
+        this.direction = { x: -1, y: 0 }
+        moved = true
         }
         break
-      case "d":
-      case "arrowright":
+    case "d":
+    case "arrowright":
         if (!this.paused && this.direction.x === 0) {
-          this.direction = { x: 1, y: 0 }
-          moved = true
+        this.direction = { x: 1, y: 0 }
+        moved = true
         }
         break
     }
 
     if (moved) {
-      this.playSound("snakeTurns")
-      if (this.waitingForMove) {
+    this.playSound("snakeTurns")
+    if (this.waitingForMove) {
         this.waitingForMove = false
-      }
     }
-  }
+    }
+}
 
-  randInt(max) {
+randInt(max) {
     return Math.floor(Math.random() * max)
-  }
+}
 
-  getRandomPosition() {
+getRandomPosition() {
     return {
-      x: this.randInt(this.GRID_WIDTH),
-      y: this.randInt(this.GRID_HEIGHT),
+    x: this.randInt(this.GRID_WIDTH),
+    y: this.randInt(this.GRID_HEIGHT),
     }
-  }
+}
 
-  getRandomDirection() {
+getRandomDirection() {
     const dirs = [
-      { x: 1, y: 0 },
-      { x: -1, y: 0 },
-      { x: 0, y: 1 },
-      { x: 0, y: -1 },
+    { x: 1, y: 0 },
+    { x: -1, y: 0 },
+    { x: 0, y: 1 },
+    { x: 0, y: -1 },
     ]
     return dirs[Math.floor(Math.random() * dirs.length)]
-  }
+}
 
-  generateApples(question) {
+generateApples(question) {
     const newApples = []
     const usedPositions = new Set()
 
     question.options.forEach((option, index) => {
-      let x, y
-      do {
+    let x, y
+    do {
         x = this.randInt(this.GRID_WIDTH)
         y = this.randInt(this.GRID_HEIGHT)
-      } while (usedPositions.has(`${x},${y}`) || this.snake.some((segment) => segment.x === x && segment.y === y))
+    } while (usedPositions.has(`${x},${y}`) || this.snake.some((segment) => segment.x === x && segment.y === y))
 
-      usedPositions.add(`${x},${y}`)
-      newApples.push({
+    usedPositions.add(`${x},${y}`)
+    newApples.push({
         x,
         y,
         value: option,
         letter: String.fromCharCode(65 + index), // A, B, C
         color: ["pink", "yellow", "blue"][index] || "red",
         isCorrect: option === question.correctAnswer,
-      })
+    })
     })
 
     return newApples
-  }
+}
 
-  showNotification(message, type) {
+showNotification(message, type) {
     this.notification = { message, type }
     this.notificationTimer = 60
-  }
+}
 
-  hideOverlays() {
+hideOverlays() {
     this.gameOverOverlay.classList.add("hidden")
     this.restartConfirm.classList.add("hidden")
-  }
+}
 
-  showRestartConfirm() {
+showRestartConfirm() {
     this.restartConfirm.classList.remove("hidden")
-  }
+}
 
-  confirmRestart() {
+confirmRestart() {
     this.restartConfirm.classList.add("hidden")
     if (this.gameLoopId) {
-      cancelAnimationFrame(this.gameLoopId)
-      this.gameLoopId = null
+    cancelAnimationFrame(this.gameLoopId)
+    this.gameLoopId = null
     }
     if (this.timerInterval) {
-      clearInterval(this.timerInterval)
-      this.timerInterval = null
+    clearInterval(this.timerInterval)
+    this.timerInterval = null
     }
     this.gameRunning = false
 
     // Reset game state completely
     setTimeout(() => {
-      this.gameRunning = true
-      this.initGame()
-      this.gameLoop()
+    this.gameRunning = true
+    this.initGame()
+    this.gameLoop()
     }, 100)
-  }
+}
 
-  cancelRestart() {
+cancelRestart() {
     this.restartConfirm.classList.add("hidden")
-  }
+}
 
-  moveSnake() {
+moveSnake() {
     if (this.isCountdownActive) return  // 🚫 don’t move while countdown is running
     const newSnake = [...this.snake]
     const head = { ...newSnake[0] }
@@ -752,25 +786,32 @@ class SnakeEnglishGame {
     if (head.y >= this.GRID_HEIGHT) head.y = 0
 
     if (newSnake.some((segment) => segment.x === head.x && segment.y === head.y)) {
-      this.lives--
-      this.snakeFace = "disgust"
-      this.showNotification("Self-bite! -1 life", "wrong")
+    this.lives--
+    this.snakeFace = "disgust"
+    this.showNotification("Self-bite! -1 life", "wrong")
 
-      this.playSound("snakeLosesLife")
+    this.playSound("snakeLosesLife")
 
-      if (this.snake.length > 1) {
+    if (this.snake.length > 1) {
         this.snake.pop()
-      }
+    }
 
-      this.updateUI()
-      return
+    this.updateUI()
+    return
     }
 
     newSnake.unshift(head)
 
+    // Collect shield pickup if present at head
+    if (this.shieldPickup && head.x === this.shieldPickup.x && head.y === this.shieldPickup.y) {
+    this.hasShield = true
+    this.shieldPickup = null
+    this.showNotification("Shield acquired! 🛡️", "correct")
+    }
+
     const eatenApple = this.apples.find((apple) => apple.x === head.x && apple.y === head.y)
     if (eatenApple) {
-      if (eatenApple.isCorrect) {
+    if (eatenApple.isCorrect) {
         this.score += 10
         this.correctAnswers++
 
@@ -778,17 +819,17 @@ class SnakeEnglishGame {
         this.playSound("biteApple")
 
         if (this.gameSettings.difficulty === "hard") {
-          this.speed += this.speedIncrement
+        this.speed += this.speedIncrement
         } else if (this.correctAnswers % 3 === 0 && this.correctAnswers > 0) {
-          this.speed += this.speedIncrement
+        this.speed += this.speedIncrement
         }
 
         if (this.gameSettings.mode !== "endless" && this.correctAnswers >= this.targetAnswers) {
-          this.gameState = "won"
-          this.gameRunning = false
-          this.snakeFace = "happy"
-          this.showGameOver()
-          return
+        this.gameState = "won"
+        this.gameRunning = false
+        this.snakeFace = "happy"
+        this.showGameOver()
+        return
         }
 
         this.snakeFace = "happy"
@@ -796,75 +837,110 @@ class SnakeEnglishGame {
 
         this.currentQuestion = this.generateQuestion()
         this.apples = this.generateApples(this.currentQuestion)
-      } else {
+    } else {
+        // Wrong answer: shield blocks once
+        if (this.hasShield) {
+        this.hasShield = false
+        this.snakeFace = "normal"
+        this.showNotification("Shield saved you! 🛡️", "correct")
+        // Remove the eaten wrong apple and replace
+        this.apples = this.apples.filter((apple) => apple !== eatenApple)
+        this.addNewApple()
+        this.updateUI()
+        newSnake.pop()
+        } else {
         this.score = Math.max(0, this.score - 5)
         this.lives--
 
         this.playSound("snakeLosesLife")
 
         if (this.lives <= 0) {
-          this.gameState = "lost"
-          this.gameRunning = false
-          this.snakeFace = "dead"
-          this.playSound("snakeDies")
-          this.showGameOver()
-          return
+            this.gameState = "lost"
+            this.gameRunning = false
+            this.snakeFace = "dead"
+            this.playSound("snakeDies")
+            this.showGameOver()
+            return
         }
 
         this.snakeFace = "disgust"
         this.showNotification("Wrong! -5 points, -1 life", "wrong")
 
         if (this.snake.length > 1) {
-          this.snake.pop()
+            this.snake.pop()
         }
 
         this.apples = this.apples.filter((apple) => apple !== eatenApple)
         this.addNewApple()
 
+        // Spawn shield when reaching 1 life (only once)
+        this.spawnShieldIfEligible()
+
         this.updateUI()
         newSnake.pop()
-      }
+        }
+    }
     } else {
-      newSnake.pop()
-      if (this.snakeFace !== "dead") {
+    newSnake.pop()
+    if (this.snakeFace !== "dead") {
         this.snakeFace = "normal"
-      }
+    }
     }
 
     this.snake = newSnake
     this.updateUI()
-  }
+}
 
-  addNewApple() {
-  // If apples already exist, do nothing (prevent duplicates)
-  if (this.apples.length > 0) return
+addNewApple() {
+// If apples already exist, do nothing (prevent duplicates)
+if (this.apples.length > 0) return
 
-  const usedPositions = new Set()
-  this.snake.forEach((segment) => {
+const usedPositions = new Set()
+this.snake.forEach((segment) => {
     usedPositions.add(`${segment.x},${segment.y}`)
-  })
+})
 
-  // Take up to 4 options from the current question
-  const options = this.currentQuestion.options.slice(0, 4)
+// Prevent overlap with shield
+if (this.shieldPickup) usedPositions.add(`${this.shieldPickup.x},${this.shieldPickup.y}`)
 
-  options.forEach((option, index) => {
+// Take up to 4 options from the current question
+const options = this.currentQuestion.options.slice(0, 4)
+
+options.forEach((option, index) => {
     let x, y
     do {
-      x = this.randInt(this.GRID_WIDTH)
-      y = this.randInt(this.GRID_HEIGHT)
+    x = this.randInt(this.GRID_WIDTH)
+    y = this.randInt(this.GRID_HEIGHT)
     } while (usedPositions.has(`${x},${y}`))
 
     usedPositions.add(`${x},${y}`)
 
     this.apples.push({
-      x,
-      y,
-      value: option,
-      letter: String.fromCharCode(65 + index), // A, B, C, D
-      color: ["pink", "yellow", "blue", "red"][index],
-      isCorrect: option === this.currentQuestion.correctAnswer,
+    x,
+    y,
+    value: option,
+    letter: String.fromCharCode(65 + index), // A, B, C, D
+    color: ["pink", "yellow", "blue", "red"][index],
+    isCorrect: option === this.currentQuestion.correctAnswer,
     })
-  })
+})
+}
+
+// Spawn shield pickup when lives reach 1, only once per game
+spawnShieldIfEligible() {
+    if (this.lives === 1 && !this.shieldSpawned && !this.hasShield && !this.shieldPickup) {
+    const used = new Set()
+    this.snake.forEach((s) => used.add(`${s.x},${s.y}`))
+    this.apples.forEach((a) => used.add(`${a.x},${a.y}`))
+    let x, y
+    do {
+        x = this.randInt(this.GRID_WIDTH)
+        y = this.randInt(this.GRID_HEIGHT)
+    } while (used.has(`${x},${y}`))
+    this.shieldPickup = { x, y }
+    this.shieldSpawned = true
+    this.showNotification("Shield appeared! 🛡️", "correct")
+    }
 }
 
     
@@ -927,7 +1003,7 @@ class SnakeEnglishGame {
     }
 
 
-  drawPixelSnakeFace(x, y, face) {
+drawPixelSnakeFace(x, y, face) {
     const centerX = x + this.GRID_SIZE / 2
     const centerY = y + this.GRID_SIZE / 2
 
@@ -942,29 +1018,29 @@ class SnakeEnglishGame {
     // Pixel mouth
     this.ctx.fillStyle = "#000"
     switch (face) {
-      case "happy":
+    case "happy":
         this.ctx.fillRect(centerX - 3, centerY + 2, 2, 2)
         this.ctx.fillRect(centerX - 1, centerY + 3, 2, 2)
         this.ctx.fillRect(centerX + 1, centerY + 2, 2, 2)
         break
-      case "disgust":
+    case "disgust":
         this.ctx.fillRect(centerX - 3, centerY + 4, 2, 2)
         this.ctx.fillRect(centerX - 1, centerY + 3, 2, 2)
         this.ctx.fillRect(centerX + 1, centerY + 4, 2, 2)
         break
-      case "dead":
+    case "dead":
         this.ctx.fillStyle = "#ff0000"
         this.ctx.fillRect(centerX - eyeOffset, centerY - 4, eyeSize, eyeSize)
         this.ctx.fillRect(centerX + eyeOffset - eyeSize, centerY - 4, eyeSize, eyeSize)
         this.ctx.fillStyle = "#000"
         this.ctx.fillRect(centerX - 4, centerY + 2, 8, 2)
         break
-      default:
+    default:
         this.ctx.fillRect(centerX - 3, centerY + 2, 6, 2)
     }
-  }
+}
 
-  drawPixelNotification(notification) {
+drawPixelNotification(notification) {
     const { message, type } = notification
 
     // Pixel-style notification box
@@ -990,17 +1066,17 @@ class SnakeEnglishGame {
     this.ctx.fillText(message, this.CANVAS_WIDTH / 2 + 1, 71)
     this.ctx.fillStyle = "#fff"
     this.ctx.fillText(message, this.CANVAS_WIDTH / 2, 70)
-  }
+}
 
-  draw() {
+draw() {
     this.ctx.imageSmoothingEnabled = false
 
     this.ctx.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT)
 
     // Draw snake using sprites
     this.snake.forEach((segment, index) => {
-      const x = segment.x * this.GRID_SIZE;
-      const y = segment.y * this.GRID_SIZE;
+    const x = segment.x * this.GRID_SIZE;
+    const y = segment.y * this.GRID_SIZE;
 
     if (index === 0) {
     // ===== HEAD =====
@@ -1010,14 +1086,14 @@ class SnakeEnglishGame {
         else if (this.direction.y === 1) headSprite = this.sprites.SnakeHeadDown;
 
     if (headSprite?.complete && headSprite) {
-      this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+    this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
     } else {
-      this.ctx.fillStyle = "#32cd32";
-      this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-      this.drawPixelSnakeFace(x, y, this.snakeFace);
+    this.ctx.fillStyle = "#32cd32";
+    this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+    this.drawPixelSnakeFace(x, y, this.snakeFace);
     }
-  } 
-  else if (index === this.snake.length - 1) {
+} 
+else if (index === this.snake.length - 1) {
     // ===== TAIL =====
     const prevSegment = this.snake[index - 1];
     const tailDir = { x: prevSegment.x - segment.x, y: prevSegment.y - segment.y };
@@ -1028,79 +1104,101 @@ class SnakeEnglishGame {
     else if (tailDir.y === 1) tailSprite = this.sprites.SnakeTailDown;
 
     if (tailSprite?.complete) {
-      this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+    this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
     } else {
-      this.ctx.fillStyle = "#228b22";
-      this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+    this.ctx.fillStyle = "#228b22";
+    this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
     }
-  } 
-  else {
-  // ===== BODY =====
-  const prev = this.snake[index - 1];
-  const next = this.snake[index + 1];
+} 
+else {
+// ===== BODY =====
+const prev = this.snake[index - 1];
+const next = this.snake[index + 1];
 
-  const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
-  const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
+const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
+const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
 
-  let bodySprite;
+let bodySprite;
 
-  // Straight segments
-  if (dirPrev.x === dirNext.x) {
+// Straight segments
+if (dirPrev.x === dirNext.x) {
     // horizontal
     bodySprite = (dirPrev.x !== 0) ? this.sprites.SnakeBodyRight : this.sprites.SnakeBody;
-  } else if (dirPrev.y === dirNext.y) {
+} else if (dirPrev.y === dirNext.y) {
     // vertical
     bodySprite = (dirPrev.y !== 0) ? this.sprites.SnakeBody : this.sprites.SnakeBodyRight;
-  } else {
+} else {
     // ===== CORNERS =====
     if (
-      (dirPrev.x === -1 && dirNext.y === -1) || // left → up
-      (dirPrev.y === 1 && dirNext.x === 1)    // down → right
+    (dirPrev.x === -1 && dirNext.y === -1) || // left → up
+    (dirPrev.y === 1 && dirNext.x === 1)    // down → right
     ) {
-      bodySprite = this.sprites.SnakeCornerLeftDown;
+    bodySprite = this.sprites.SnakeCornerLeftDown;
     } else if (
-      (dirPrev.x === 1 && dirNext.y === -1) ||  // right → up
-      (dirPrev.y === 1 && dirNext.x === -1)     // down → left
+    (dirPrev.x === 1 && dirNext.y === -1) ||  // right → up
+    (dirPrev.y === 1 && dirNext.x === -1)     // down → left
     ) {
-      bodySprite = this.sprites.SnakeCornerRightDown;
+    bodySprite = this.sprites.SnakeCornerRightDown;
     } else if (
-      (dirPrev.x === -1 && dirNext.y === 1) ||  // left → down
-      (dirPrev.y === -1 && dirNext.x === 1)     // up → right
+    (dirPrev.x === -1 && dirNext.y === 1) ||  // left → down
+    (dirPrev.y === -1 && dirNext.x === 1)     // up → right
     ) {
-      bodySprite = this.sprites.SnakeCornerLeftUp;
+    bodySprite = this.sprites.SnakeCornerLeftUp;
     } else if (
-      (dirPrev.x === 1 && dirNext.y === 1) ||   // right → down
-      (dirPrev.y === -1 && dirNext.x === -1)      // up → left
+    (dirPrev.x === 1 && dirNext.y === 1) ||   // right → down
+    (dirPrev.y === -1 && dirNext.x === -1)      // up → left
     ) {
-      bodySprite = this.sprites.SnakeCornerRightUp;
+    bodySprite = this.sprites.SnakeCornerRightUp;
     }
-  }
+}
 
-  // Draw body
-  if (bodySprite?.complete) {
+// Draw body
+if (bodySprite?.complete) {
     this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
-  } else {
+} else {
     this.ctx.fillStyle = "#006400";
     this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-  }
+}
 }
 
 });
 
+    // Draw shield pickup if present
+    if (this.shieldPickup) {
+    const px = this.shieldPickup.x * this.GRID_SIZE
+    const py = this.shieldPickup.y * this.GRID_SIZE
+    this.ctx.fillStyle = "#1e90ff"
+    this.ctx.fillRect(px, py, this.GRID_SIZE, this.GRID_SIZE)
+    this.ctx.strokeStyle = "#000"
+    this.ctx.lineWidth = 3
+    this.ctx.strokeRect(px, py, this.GRID_SIZE, this.GRID_SIZE)
+    this.ctx.strokeStyle = "#a6d8ff"
+    this.ctx.lineWidth = 2
+    this.ctx.strokeRect(px + 2, py + 2, this.GRID_SIZE - 4, this.GRID_SIZE - 4)
+    const iconSize = Math.max(12, Math.floor(this.GRID_SIZE * 0.8))
+    this.ctx.font = `${iconSize}px "Press Start 2P", monospace`
+    this.ctx.textAlign = "center"
+    this.ctx.textBaseline = "middle"
+    this.ctx.fillStyle = "#000"
+    this.ctx.fillText("🛡️", px + this.GRID_SIZE / 2 + 1, py + this.GRID_SIZE / 2 + 1)
+    this.ctx.fillStyle = "#fff"
+    this.ctx.fillText("🛡️", px + this.GRID_SIZE / 2, py + this.GRID_SIZE / 2)
+    }
+
     this.apples.forEach((apple) => {
-      const x = apple.x * this.GRID_SIZE
-      const y = apple.y * this.GRID_SIZE
+    const x = apple.x * this.GRID_SIZE
+    const y = apple.y * this.GRID_SIZE
 
-      // Use colored apple sprite based on letter
-      let appleSprite
-      if (apple.letter === "A") appleSprite = this.sprites["appleA-pink"]
-      else if (apple.letter === "B") appleSprite = this.sprites["appleB-yellow"]
-      else if (apple.letter === "C") appleSprite = this.sprites["appleC-blue"]
-      else appleSprite = this.sprites.apple
+    // Use colored apple sprite based on letter
+    let appleSprite
+    if (apple.letter === "A") appleSprite = this.sprites["appleA-pink"]
+    else if (apple.letter === "B") appleSprite = this.sprites["appleB-yellow"]
+    else if (apple.letter === "C") appleSprite = this.sprites["appleC-blue"]
+    else appleSprite = this.sprites.apple
 
-      if (appleSprite && appleSprite.complete) {
+    if (appleSprite && appleSprite.complete) {
         this.ctx.drawImage(appleSprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
-      } else {
+    } else {
         // Fallback to colored rectangle
         const colors = { pink: "#ff69b4", yellow: "#ffd700", blue: "#4169e1", red: "#ff4444" }
         this.ctx.fillStyle = colors[apple.color] || "#ff4444"
@@ -1109,125 +1207,164 @@ class SnakeEnglishGame {
         this.ctx.strokeStyle = "#000"
         this.ctx.lineWidth = 2
         this.ctx.strokeRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
-      }
+    }
 
-      // Draw letter on apple
-      this.ctx.fillStyle = "#fff"
-      const fontSize = Math.max(8, Math.floor(this.GRID_SIZE * 0.4))
-      this.ctx.font = `${fontSize}px "Press Start 2P", monospace`
-      this.ctx.textAlign = "center"
-      this.ctx.textBaseline = "middle"
+    // Draw letter on apple
+    this.ctx.fillStyle = "#fff"
+    const fontSize = Math.max(8, Math.floor(this.GRID_SIZE * 0.4))
+    this.ctx.font = `${fontSize}px "Press Start 2P", monospace`
+    this.ctx.textAlign = "center"
+    this.ctx.textBaseline = "middle"
 
-      // Text shadow for pixel effect
-      this.ctx.fillStyle = "#000"
-      this.ctx.fillText(apple.letter, x + this.GRID_SIZE / 2 + 1, y + this.GRID_SIZE / 2 + 1)
+    // Text shadow for pixel effect
+    this.ctx.fillStyle = "#000"
+    this.ctx.fillText(apple.letter, x + this.GRID_SIZE / 2 + 1, y + this.GRID_SIZE / 2 + 1)
 
-      this.ctx.fillStyle = "#fff"
-      this.ctx.fillText(apple.letter, x + this.GRID_SIZE / 2, y + this.GRID_SIZE / 2)
+    this.ctx.fillStyle = "#fff"
+    this.ctx.fillText(apple.letter, x + this.GRID_SIZE / 2, y + this.GRID_SIZE / 2)
     })
 
     if (this.notification && this.notificationTimer > 0) {
-      this.drawPixelNotification(this.notification)
-      this.notificationTimer--
+    this.drawPixelNotification(this.notification)
+    this.notificationTimer--
     }
 
     if (this.paused) {
-      this.ctx.fillStyle = "rgba(0,0,0,0.8)"
-      this.ctx.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT)
+    this.ctx.fillStyle = "rgba(0,0,0,0.8)"
+    this.ctx.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT)
 
-      this.ctx.fillStyle = "#fff"
-      this.ctx.font = "16px 'Press Start 2P', monospace"
-      this.ctx.textAlign = "center"
-      this.ctx.textBaseline = "middle"
+    this.ctx.fillStyle = "#fff"
+    this.ctx.font = "16px 'Press Start 2P', monospace"
+    this.ctx.textAlign = "center"
+    this.ctx.textBaseline = "middle"
 
-      this.ctx.fillStyle = "#000"
-      this.ctx.fillText("PAUSED", this.CANVAS_WIDTH / 2 + 2, this.CANVAS_HEIGHT / 2 + 2)
-      this.ctx.fillStyle = "#fff"
-      this.ctx.fillText("PAUSED", this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2)
+    this.ctx.fillStyle = "#000"
+    this.ctx.fillText("PAUSED", this.CANVAS_WIDTH / 2 + 2, this.CANVAS_HEIGHT / 2 + 2)
+    this.ctx.fillStyle = "#fff"
+    this.ctx.fillText("PAUSED", this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2)
     }
-  }
 
-  gameLoop(timestamp = 0) {
+    // Sprint/stamina bar
+    const barWidth = 160
+    const barHeight = 14
+    const barX = 16
+    const barY = 16
+    this.ctx.fillStyle = "#222"
+    this.ctx.fillRect(barX, barY, barWidth, barHeight)
+    this.ctx.strokeStyle = "#000"
+    this.ctx.lineWidth = 3
+    this.ctx.strokeRect(barX, barY, barWidth, barHeight)
+    const fillWidth = Math.floor(barWidth * (this.sprint.energy / this.sprint.maxEnergy))
+    this.ctx.fillStyle = this.sprint.active ? "#ffd166" : "#06d6a0"
+    this.ctx.fillRect(barX, barY, fillWidth, barHeight)
+    this.ctx.strokeStyle = "#fff"
+    this.ctx.lineWidth = 1
+    this.ctx.strokeRect(barX + 2, barY + 2, barWidth - 4, barHeight - 4)
+    this.ctx.font = "10px 'Press Start 2P', monospace"
+    this.ctx.textAlign = "left"
+    this.ctx.textBaseline = "bottom"
+    this.ctx.fillStyle = "#000"
+    this.ctx.fillText("SPRINT", barX + 7, barY - 1)
+    this.ctx.fillStyle = "#fff"
+    this.ctx.fillText("SPRINT", barX + 6, barY - 2)
+}
+
+gameLoop(timestamp = 0) {
     if (!this.gameRunning) return
 
     const delta = (timestamp - this.lastFrameTime) / 1000
     this.lastFrameTime = timestamp
 
-    if (!this.waitingForMove && !this.paused) {
-      this.moveAccumulator += delta
-      const moveInterval = 1 / this.speed
+    // Update sprint energy
+    if (!this.paused) {
+    if (this.sprint.active) {
+        this.sprint.energy -= this.sprint.drainPerSecond * delta
+        if (this.sprint.energy <= 0) {
+        this.sprint.energy = 0
+        this.sprint.active = false
+        }
+    } else {
+        this.sprint.energy += this.sprint.regenPerSecond * delta
+        if (this.sprint.energy > this.sprint.maxEnergy) this.sprint.energy = this.sprint.maxEnergy
+    }
+    }
 
-      while (this.moveAccumulator >= moveInterval) {
+    if (!this.waitingForMove && !this.paused) {
+    this.moveAccumulator += delta
+    const effectiveSpeed = this.speed * (this.sprint.active && this.sprint.energy > 0 ? this.sprint.multiplier : 1)
+    const moveInterval = 1 / effectiveSpeed
+
+    while (this.moveAccumulator >= moveInterval) {
         this.moveSnake()
         this.moveAccumulator -= moveInterval
-      }
+    }
     }
 
     this.draw()
     this.gameLoopId = requestAnimationFrame((timestamp) => this.gameLoop(timestamp))
-  }
+}
 
-  setDifficultySettings() {
+setDifficultySettings() {
     const difficultyConfig = {
-      easy: {
+    easy: {
         gridSize: 40,
-        baseSpeed: 3,
+        baseSpeed: 5.5,
         speedIncrease: 0.35,
-      },
-      medium: {
+    },
+    medium: {
         gridSize: 40,
-        baseSpeed: 4,
+        baseSpeed: 6.5,
         speedIncrease: 0.55,
-      },
-      hard: {
+    },
+    hard: {
         gridSize: 50,
-        baseSpeed: 4.5,
+        baseSpeed: 7.5,
         speedIncrease: 0.65,
-      },
+    },
     }
 
     this.difficultySettings = difficultyConfig[this.gameSettings.difficulty]
     this.GRID_SIZE = this.difficultySettings.gridSize
-  }
+}
 
-  startCountdown(callback) {
+startCountdown(callback) {
     this.isCountdownActive = true  // lock movement
 
-      // play countdown sound effect
+    // play countdown sound effect
     if (this.soundEnabled && this.sounds.countdown) {
-      this.sounds.countdown.currentTime = 0
-      this.sounds.countdown.play()
+    this.sounds.countdown.currentTime = 0
+    this.sounds.countdown.play()
         .catch(e => console.log("Countdown sound failed:", e))
     }
     
     this.showCountdown(() => {
-      this.isCountdownActive = false // unlock after countdown
-      if (callback) callback()
+    this.isCountdownActive = false // unlock after countdown
+    if (callback) callback()
     })
-  }
+}
 
-  showCountdown(callback) {
+showCountdown(callback) {
     const countdownOverlay = document.createElement("div")
     countdownOverlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      font-family: 'Press Start 2P', monospace;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    font-family: 'Press Start 2P', monospace;
     `
 
     const countdownNumber = document.createElement("div")
     countdownNumber.style.cssText = `
-      font-size: 72px;
-      color: #32cd32;
-      text-align: center;
-      text-shadow: 4px 4px 0px #000;
+    font-size: 72px;
+    color: #32cd32;
+    text-align: center;
+    text-shadow: 4px 4px 0px #000;
     `
     countdownNumber.textContent = "3"
 
@@ -1236,19 +1373,19 @@ class SnakeEnglishGame {
 
     let count = 3
     const countdownInterval = setInterval(() => {
-      count--
-      if (count > 0) {
+    count--
+    if (count > 0) {
         countdownNumber.textContent = count
-      } else if (count === 0) {
+    } else if (count === 0) {
         countdownNumber.textContent = "GO!"
         countdownNumber.style.color = "#ff4444"
-      } else {
+    } else {t
         clearInterval(countdownInterval)
         countdownOverlay.remove()
         if (callback) callback()
-      }
+    }
     }, 1000)
-  }
+}
 }
 
     const copyrightModal = document.getElementById("copyright-modal");
@@ -1268,5 +1405,5 @@ class SnakeEnglishGame {
     }
 
 document.addEventListener("DOMContentLoaded", () => {
-  new SnakeEnglishGame()
+new SnakeEnglishGame()
 })
