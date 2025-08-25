@@ -261,6 +261,8 @@ body {
   gap: 8px;
   min-width: 120px;
   box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #222;
+  position: relative;
+  overflow: hidden;
 }
 
 .category-btn:hover {
@@ -273,14 +275,17 @@ body {
   background: #32cd32;
   border-color: #228b22;
   color: #000;
+  box-shadow: 0 0 0 2px #fff inset, 0 0 10px rgba(50, 205, 50, 0.7);
 }
 
 .math-btn.selected {
   background: #4a90e2;
+  border-color: #3578c5;
 }
 
 .english-btn.selected {
   background: #ff6b6b;
+  border-color: #e05252;
 }
 
 .btn-icon {
@@ -299,7 +304,7 @@ body {
 .play-btn {
   background: #32cd32;
   display: block;
-  margin: 0 auto;
+  margin: 20px auto;
   border: 4px solid #228b22;
   color: #000;
   padding: 16px 10px;
@@ -310,7 +315,7 @@ body {
   text-align: center;
   display: flex;
   align-items: center;
-  position: absolute;
+  position: relative;
   gap: 8px;
   justify-content: center;
   box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #1e7e1e;
@@ -856,10 +861,25 @@ body {
   }
 
   .category-buttons {
-    flex-direction: column;
-    align-items: center;
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
+  .menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .menu-options .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
   .logo {
     font-size: 2rem;
   }

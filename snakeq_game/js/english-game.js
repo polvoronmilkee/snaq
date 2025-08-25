@@ -48,6 +48,8 @@ class SnakeEnglishGame {
     this.waitingForMove = true
     this.paused = false
     this.showConfirm = false
+    this.countdownActive = false
+    this.escMenuActive = false
 
     this.baseSpeed = this.difficultySettings.baseSpeed
     this.speed = this.baseSpeed
@@ -55,6 +57,7 @@ class SnakeEnglishGame {
 
     this.pauseTimer = 0
     this.isPausedForEvent = false
+    this.countdownActive = false
 
     // Timer for timed mode
     this.timeLeft = 60
@@ -195,6 +198,36 @@ class SnakeEnglishGame {
         this.hideInstructions()
       }
     })
+
+    // NEW: ESC menu event listeners - use event delegation
+    document.addEventListener('click', (e) => {
+      if (e.target.id === 'resume-btn') {
+        this.playSound("click");
+        this.hideEscMenu();
+      } else if (e.target.id === 'settings-btn') {
+        this.playSound("click");
+        this.showNotification("Settings feature coming soon!", "correct");
+        this.hideEscMenu();
+      } else if (e.target.id === 'main-menu-btn') {
+        this.playSound("click");
+        window.location.href = "../index.html";
+      }
+    });
+  }
+
+  showEscMenu() {
+    if (this.gameRunning && !this.paused && !this.countdownActive && 
+        this.restartConfirm.classList.contains("hidden")) {
+      this.escMenuActive = true;
+      this.paused = true;
+      document.getElementById("esc-menu").classList.remove("hidden");
+    }
+  }
+
+  hideEscMenu() {
+    this.escMenuActive = false;
+    this.paused = false;
+    document.getElementById("esc-menu").classList.add("hidden");
   }
 
   showInstructions() {
@@ -457,22 +490,40 @@ class SnakeEnglishGame {
   }
 
   startTimer() {
-    this.timerInterval = setInterval(() => {
-      this.timeLeft--
-      this.timerValue.textContent = this.timeLeft
+  // Set a flag to indicate we're in countdown
+  this.isPausedForEvent = true;
+  
+  this.timerInterval = setInterval(() => {
+    this.timeLeft--;
+    this.timerValue.textContent = this.timeLeft;
 
-      if (this.timeLeft <= 0) {
-        this.gameState = "lost"
-        this.gameRunning = false
-        this.showGameOver()
-        clearInterval(this.timerInterval)
-      }
-    }, 1000)
-  }
+    if (this.timeLeft <= 0) {
+      this.isPausedForEvent = false; // Allow movement again
+      this.gameState = "lost";
+      this.gameRunning = false;
+      this.showGameOver();
+      clearInterval(this.timerInterval);
+    } else if (this.timeLeft === 58) { // Small delay after countdown
+      this.isPausedForEvent = false; // Allow movement
+    }
+  }, 1000);
+}
 
   handleKeyDown(e) {
     const key = e.key.toLowerCase()
     const code = e.code
+
+    // Prevent all key actions when ESC menu is active, except ESC itself
+    if (this.escMenuActive && key !== "escape") {
+      e.preventDefault();
+      return;
+    }
+
+    // Prevent snake from moving during countdown
+    if (this.countdownActive) {
+      e.preventDefault();
+      return;
+    }
 
     if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
       e.preventDefault()
@@ -500,6 +551,17 @@ class SnakeEnglishGame {
     if (code === "KeyR" || key === "r") {
       this.showRestartConfirm()
       return
+    }
+
+    // Handle ESC key for menu
+    if (code === "Escape" || key === "escape") {
+      e.preventDefault();
+      if (this.escMenuActive) {
+        this.hideEscMenu();
+      } else {
+        this.showEscMenu();
+      }
+      return;
     }
 
     // WASD and Arrow key movement
@@ -532,6 +594,14 @@ class SnakeEnglishGame {
           moved = true
         }
         break
+      case "escape":
+        e.preventDefault();
+        if (this.escMenuActive) {
+          this.hideEscMenu();
+        } else {
+          this.showEscMenu();
+        }
+        break;
     }
 
     if (moved) {
@@ -992,6 +1062,7 @@ class SnakeEnglishGame {
   }
 
   showCountdown(callback) {
+    this.countdownActive = true;
     const countdownOverlay = document.createElement("div")
     countdownOverlay.style.cssText = `
       position: fixed;
@@ -1030,6 +1101,7 @@ class SnakeEnglishGame {
       } else {
         clearInterval(countdownInterval)
         countdownOverlay.remove()
+        this.countdownActive = false;
         if (callback) callback()
       }
     }, 1000)

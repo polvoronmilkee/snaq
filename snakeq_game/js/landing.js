@@ -190,16 +190,20 @@ class LandingPage {
   }
 
   selectCategory(e) {
+    // Find the actual button element (handles clicks on child elements)
+    const btn = e.target.closest('.category-btn');
+    if (!btn) return;
+    
     document.querySelectorAll(".category-btn").forEach((btn) => {
-      btn.classList.remove("selected")
-    })
+      btn.classList.remove("selected");
+    });
 
-    e.target.classList.add("selected")
-    this.selectedCategory = e.target.dataset.category
+    btn.classList.add("selected");
+    this.selectedCategory = btn.dataset.category;
 
-    const playBtn = document.getElementById("playBtn")
+    const playBtn = document.getElementById("playBtn");
     if (playBtn) {
-      playBtn.disabled = false
+      playBtn.disabled = false;
     }
   }
 
