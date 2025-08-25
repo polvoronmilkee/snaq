@@ -80,7 +80,3 @@ Pick your subject, answer questions by munching the correct apples, and grow you
 
 ---
 
-## 📜 License
-
-This project is licensed under the MIT License.  
-Feel free to learn, build, and improve it!  
