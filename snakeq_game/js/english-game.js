@@ -1312,18 +1312,18 @@ setDifficultySettings() {
     const difficultyConfig = {
     easy: {
         gridSize: 40,
-        baseSpeed: 3,
+        baseSpeed: 5,
         speedIncrease: 0.35,
     },
     medium: {
         gridSize: 40,
-        baseSpeed: 4,
-        speedIncrease: 0.55,
+        baseSpeed: 5.5,
+        speedIncrease: 0.45,
     },
     hard: {
         gridSize: 50,
-        baseSpeed: 4.5,
-        speedIncrease: 0.65,
+        baseSpeed: 6,
+        speedIncrease: 0.55,
     },
     }
 
