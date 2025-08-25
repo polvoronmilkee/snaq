@@ -212,7 +212,7 @@ body {
   font-size: 16px;
   color: #fff;
   background: #104c27dd;
-  padding: 8px 16px;
+  padding: 12px 25px;
   border: 2px solid #fff;
   text-shadow: none;
   letter-spacing: 1px;
@@ -227,7 +227,7 @@ body {
   font-size: 1px;
   background: #60380d;
   border: 4px solid #000;
-  padding: 5px 2px;
+  padding: 5px 40px;
   margin-bottom: 32px;
   box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #654321;
 }
@@ -589,6 +589,7 @@ body {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.8);
+    background-image: url('pixel-frame.png'); /* custom frame sprite */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -596,13 +597,42 @@ body {
   
 }
 
-.modal-content {
-  background: #2a2a2a;
-  padding: 20px;
-  max-width: 400px;
-  width: 90%;
-  text-align: center;
+.modal h2 {
+    font-size: 18px;
+    color: #4fff4f; /* Bright green retro color */
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 0px #000;
 }
+
+.modal h3 {
+    font-size: 14px;
+    margin: 16px 0 10px;
+    color: #fff;
+    text-shadow: 1px 1px 0px #000;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.modal-content {
+  background: #1e1e1e;             /* dark game background */
+  border: 2px solid #2f2f2f;       /* chunky pixel frame */
+  padding: 24px;
+  max-width: 360px;
+  margin: auto;
+  text-align: center;
+  box-shadow: 6px 6px 0px #000;    /* hard pixel shadow */
+}
+.modal-content h3 {
+  font-size: 20px;
+  color: #32cd32;
+  text-shadow: 0px 0px 6px #45745c, 2px 2px 0px #000;
+  margin-bottom: 28px;
+  letter-spacing: 1px;
+}}
 
 .modal h3 {
   color: #32cd32;
@@ -616,34 +646,54 @@ body {
 }
 
 .setting-group h4 {
-  color: #fff;
-  font-size: 10px;
-  margin-bottom: 10px;
-
+  font-size: 12px;
+  color: #ffffff;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0px #000, 0 0 5px #888;
+  margin: 18px 0 12px;
+  position: relative;
 }
 
+
+.setting-group h4::before,
+.setting-group h4::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 2px;
+  background: #555;
+}
+.setting-group h4::before {
+  left: -50px;
+}
+.setting-group h4::after {
+  right: -50px;
+}
 .mode-buttons,
 .difficulty-buttons {
   display: flex;
-  gap: 8px;
   justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
   flex-wrap: wrap;
 }
-
 .pixel-btn {
-  background: #333;
-  border: 2px solid #555;
+  background: #2a2a2a;
+  border: 2px solid #666;
   color: #fff;
-  padding: 8px 12px;
+  padding: 11px 14px;
   font-family: "Press Start 2P", monospace;
-  font-size: 8px;
+  font-size: 11px;
   cursor: pointer;
-  transition: all 0.1s ease;
+  transition: all 0.12s ease;
+  min-width: 120px;
+  box-shadow: 3px 3px 0 #000;
 }
-
 .pixel-btn:hover {
   background: #444;
-  transform: translate(1px, 1px);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
 }
 
 .pixel-btn.selected {
@@ -663,13 +713,13 @@ body {
 .hard.selected {
   background: #ff4444;
 }
-
 .modal-actions {
   display: flex;
-  gap: 12px;
   justify-content: center;
-  margin-top: 20px;
+  gap: 18px;
+  margin-top: 30px;
 }
+
 
 .start-btn {
   background: #32cd32;
