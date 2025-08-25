@@ -1053,24 +1053,24 @@ class SnakeEnglishGame {
     // ===== CORNERS =====
     if (
       (dirPrev.x === -1 && dirNext.y === -1) || // left → up
-      (dirPrev.y === -1 && dirNext.x === -1)    // up → left
+      (dirPrev.y === 1 && dirNext.x === 1)    // down → right
     ) {
-      bodySprite = this.sprites.SnakeCornerRightUp;
+      bodySprite = this.sprites.SnakeCornerLeftDown;
     } else if (
       (dirPrev.x === 1 && dirNext.y === -1) ||  // right → up
-      (dirPrev.y === -1 && dirNext.x === 1)     // up → right
-    ) {
-      bodySprite = this.sprites.SnakeCornerLeftUp;
-    } else if (
-      (dirPrev.x === -1 && dirNext.y === 1) ||  // left → down
       (dirPrev.y === 1 && dirNext.x === -1)     // down → left
     ) {
       bodySprite = this.sprites.SnakeCornerRightDown;
     } else if (
-      (dirPrev.x === 1 && dirNext.y === 1) ||   // right → down
-      (dirPrev.y === 1 && dirNext.x === 1)      // down → right
+      (dirPrev.x === -1 && dirNext.y === 1) ||  // left → down
+      (dirPrev.y === -1 && dirNext.x === 1)     // up → right
     ) {
-      bodySprite = this.sprites.SnakeCornerLeftDown;
+      bodySprite = this.sprites.SnakeCornerLeftUp;
+    } else if (
+      (dirPrev.x === 1 && dirNext.y === 1) ||   // right → down
+      (dirPrev.y === -1 && dirNext.x === -1)      // up → left
+    ) {
+      bodySprite = this.sprites.SnakeCornerRightUp;
     }
   }
 
