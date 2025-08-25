@@ -729,6 +729,7 @@ getRandomDirection() {
 generateApples(question) {
     const newApples = []
     const usedPositions = new Set()
+    const minDistanceFromSnake = 3 // Minimum distance from snake head to prevent accidental deaths
 
     question.options.forEach((option, index) => {
     let x, y
@@ -738,7 +739,8 @@ generateApples(question) {
     } while (
         usedPositions.has(`${x},${y}`) ||
         this.snake.some((segment) => segment.x === x && segment.y === y) ||
-        this.cellIntersectsRect(x, y, this.sprintBar)
+        this.cellIntersectsRect(x, y, this.sprintBar) ||
+        this.isTooCloseToSnake(x, y, minDistanceFromSnake)
     )
 
     usedPositions.add(`${x},${y}`)
@@ -926,13 +928,14 @@ if (this.shieldPickup) usedPositions.add(`${this.shieldPickup.x},${this.shieldPi
 
 // Take up to 4 options from the current question
 const options = this.currentQuestion.options.slice(0, 4)
+const minDistanceFromSnake = 3 // Minimum distance from snake head to prevent accidental deaths
 
 options.forEach((option, index) => {
     let x, y
     do {
     x = this.randInt(this.GRID_WIDTH)
     y = this.randInt(this.GRID_HEIGHT)
-    } while (usedPositions.has(`${x},${y}`) || this.cellIntersectsRect(x, y, this.sprintBar))
+    } while (usedPositions.has(`${x},${y}`) || this.cellIntersectsRect(x, y, this.sprintBar) || this.isTooCloseToSnake(x, y, minDistanceFromSnake))
 
     usedPositions.add(`${x},${y}`)
 
@@ -1212,7 +1215,7 @@ if (bodySprite?.complete) {
 });
 
     // Use shield pickup icon if present
-   if (this.shieldPickup) {
+    if (this.shieldPickup) {
     const px = this.shieldPickup.x * this.GRID_SIZE
     const py = this.shieldPickup.y * this.GRID_SIZE
 
@@ -1432,6 +1435,16 @@ cellIntersectsRect(gridX, gridY, rect) {
     const cX2 = cellX + cellW
     const cY2 = cellY + cellH
     return !(cX2 <= rect.x || rX2 <= cellX || cY2 <= rect.y || rY2 <= cellY)
+}
+
+// Helper: check if a position is too close to the snake's head
+isTooCloseToSnake(x, y, minDistance) {
+    if (this.snake.length === 0) return false
+    
+    const head = this.snake[0]
+    const distance = Math.abs(x - head.x) + Math.abs(y - head.y) // Manhattan distance
+    
+    return distance < minDistance
 }
 }
 
