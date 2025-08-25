@@ -1,7 +1,3 @@
-function $$(id) {
-  return document.getElementById(id);
-}
-
 document.addEventListener("keydown", (e) => {
 // Stop page from scrolling when using arrow keys
 if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
@@ -122,6 +118,9 @@ constructor() {
     // Sprint bar UI rectangle (pixels)
     this.sprintBar = { x: 16, y: 16, width: 160, height: 14 }
 
+    // Minimum spawn distance for apples from the snake head (grid cells)
+    this.minAppleDistanceFromHead = 3
+
     this.initDOM()
     this.init()
 }
@@ -168,7 +167,7 @@ playSound(soundName) {
         this.soundEnabled = !this.soundEnabled
         localStorage.setItem("soundEnabled", this.soundEnabled.toString())
 
-        const soundBtn = $$("sound-btn")
+        const soundBtn = document.getElementById("sound-btn")
         soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
         soundBtn.classList.toggle("active", this.soundEnabled)
     }
@@ -177,7 +176,7 @@ playSound(soundName) {
         this.musicEnabled = !this.musicEnabled
         localStorage.setItem("musicEnabled", this.musicEnabled.toString())
 
-        const musicBtn = $$("music-btn")
+        const musicBtn = document.getElementById("music-btn")
         musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
         musicBtn.classList.toggle("active", this.musicEnabled)
 
@@ -190,31 +189,31 @@ playSound(soundName) {
     }
 
 initDOM() {
-    this.canvas = $$("game-canvas")
+    this.canvas = document.getElementById("game-canvas")
     this.ctx = this.canvas.getContext("2d")
-    this.scoreElement = $$("score-value")
-    this.livesElement = $$("lives-value")
-    this.correctElement = $$("correct-value")
-    this.targetElement = $$("target-value")
-    this.questionElement = $$("question-display")
-    this.gameOverOverlay = $$("game-over-overlay")
-    this.gameOverTitle = $$("game-over-title")
-    this.finalScoreElement = $$("final-score")
-    this.finalCorrectElement = $$("final-correct")
-    this.playAgainBtn = $$("play-again-btn")
-    this.menuBtn = $$("menu-btn")
-    this.restartConfirm = $$("restart-confirm")
-    this.confirmRestartBtn = $$("confirm-restart")
-    this.cancelRestartBtn = $$("cancel-restart")
-    this.timerDisplay = $$("timer-display")
-    this.timerValue = $$("timer-value")
-    this.optionsContainer = $$("options-display")
-    this.heartsContainer = $$("hearts-container")
-    this.helpBtn = $$("help-btn")
-    this.soundBtn = $$("sound-btn")
-    this.musicBtn = $$("music-btn")
-    this.instructionsModal = $$("instructions-modal")
-    this.closeInstructionsBtn = $$("close-instructions")
+    this.scoreElement = document.getElementById("score-value")
+    this.livesElement = document.getElementById("lives-value")
+    this.correctElement = document.getElementById("correct-value")
+    this.targetElement = document.getElementById("target-value")
+    this.questionElement = document.getElementById("question-display")
+    this.gameOverOverlay = document.getElementById("game-over-overlay")
+    this.gameOverTitle = document.getElementById("game-over-title")
+    this.finalScoreElement = document.getElementById("final-score")
+    this.finalCorrectElement = document.getElementById("final-correct")
+    this.playAgainBtn = document.getElementById("play-again-btn")
+    this.menuBtn = document.getElementById("menu-btn")
+    this.restartConfirm = document.getElementById("restart-confirm")
+    this.confirmRestartBtn = document.getElementById("confirm-restart")
+    this.cancelRestartBtn = document.getElementById("cancel-restart")
+    this.timerDisplay = document.getElementById("timer-display")
+    this.timerValue = document.getElementById("timer-value")
+    this.optionsContainer = document.getElementById("options-display")
+    this.heartsContainer = document.getElementById("hearts-container")
+    this.helpBtn = document.getElementById("help-btn")
+    this.soundBtn = document.getElementById("sound-btn")
+    this.musicBtn = document.getElementById("music-btn")
+    this.instructionsModal = document.getElementById("instructions-modal")
+    this.closeInstructionsBtn = document.getElementById("close-instructions")
 
     if (this.questionElement) {
     this.questionElement.style.fontSize = "18px"
@@ -230,8 +229,8 @@ init() {
 }
 
     initializeAudioStates() {
-    const soundBtn = $$("sound-btn")
-    const musicBtn = $$("music-btn")
+    const soundBtn = document.getElementById("sound-btn")
+    const musicBtn = document.getElementById("music-btn")
 
     if (soundBtn) {
     soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
@@ -741,7 +740,8 @@ generateApples(question) {
     } while (
         usedPositions.has(`${x},${y}`) ||
         this.snake.some((segment) => segment.x === x && segment.y === y) ||
-        this.cellIntersectsRect(x, y, this.sprintBar)
+        this.cellIntersectsRect(x, y, this.sprintBar) ||
+        this.isCellTooCloseToHead(x, y, this.minAppleDistanceFromHead)
     )
 
     usedPositions.add(`${x},${y}`)
@@ -935,7 +935,11 @@ options.forEach((option, index) => {
     do {
     x = this.randInt(this.GRID_WIDTH)
     y = this.randInt(this.GRID_HEIGHT)
-    } while (usedPositions.has(`${x},${y}`) || this.cellIntersectsRect(x, y, this.sprintBar))
+    } while (
+    usedPositions.has(`${x},${y}`) ||
+    this.cellIntersectsRect(x, y, this.sprintBar) ||
+    this.isCellTooCloseToHead(x, y, this.minAppleDistanceFromHead)
+    )
 
     usedPositions.add(`${x},${y}`)
 
@@ -1437,11 +1441,23 @@ cellIntersectsRect(gridX, gridY, rect) {
     const cY2 = cellY + cellH
     return !(cX2 <= rect.x || rX2 <= cellX || cY2 <= rect.y || rY2 <= cellY)
 }
+  
+  // Prevent apples spawning too close to the snake's head (wrap-aware Manhattan distance)
+  isCellTooCloseToHead(gridX, gridY, minDistance) {
+    if (!this.snake || this.snake.length === 0) return false
+    const head = this.snake[0]
+    const dx = Math.abs(gridX - head.x)
+    const dy = Math.abs(gridY - head.y)
+    const wrapDx = Math.min(dx, this.GRID_WIDTH - dx)
+    const wrapDy = Math.min(dy, this.GRID_HEIGHT - dy)
+    const manhattan = wrapDx + wrapDy
+    return manhattan <= (minDistance ?? 2)
+  }
 }
 
-    const copyrightModal = $$("copyright-modal");
-    const closeCopyright = $$("close-copyright");
-    const copyrightBtn = $$("copyright-btn"); // You can place a button in header/footer
+    const copyrightModal = document.getElementById("copyright-modal");
+    const closeCopyright = document.getElementById("close-copyright");
+    const copyrightBtn = document.getElementById("copyright-btn"); // You can place a button in header/footer
 
     if (copyrightBtn) {
     copyrightBtn.addEventListener("click", () => {

@@ -1,3 +1,7 @@
+function $$(id) {
+  return document.getElementById(id);
+}
+
 class LandingPage {
   constructor() {
     this.selectedCategory = null
@@ -19,8 +23,8 @@ class LandingPage {
   }
 
   initializeAudioStates() {
-    const soundBtn = document.getElementById("sound-btn")
-    const musicBtn = document.getElementById("music-btn")
+    const soundBtn = $$("sound-btn")
+    const musicBtn = $$("music-btn")
 
     if (soundBtn) {
       soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
@@ -71,7 +75,7 @@ class LandingPage {
       })
     })
 
-    const playBtn = document.getElementById("playBtn")
+    const playBtn = $$("playBtn")
     if (playBtn) {
       playBtn.addEventListener("click", () => {
         this.playClickSound()
@@ -79,11 +83,11 @@ class LandingPage {
       })
     }
 
-    const helpBtn = document.getElementById("help-btn")
-    const soundBtn = document.getElementById("sound-btn")
-    const musicBtn = document.getElementById("music-btn")
-    const instructionsModal = document.getElementById("instructions-modal")
-    const closeInstructionsBtn = document.getElementById("close-instructions")
+    const helpBtn = $$("help-btn")
+    const soundBtn = $$("sound-btn")
+    const musicBtn = $$("music-btn")
+    const instructionsModal = $$("instructions-modal")
+    const closeInstructionsBtn = $$("close-instructions")
 
     if (helpBtn) {
       helpBtn.addEventListener("click", (e) => {
@@ -122,9 +126,9 @@ class LandingPage {
       })
     }
 
-    const copyrightModal = document.getElementById("copyright-modal");
-    const closeCopyright = document.getElementById("close-copyright");
-    const copyrightBtn = document.getElementById("copyright-btn"); // You can place a button in header/footer
+    const copyrightModal = $$("copyright-modal");
+    const closeCopyright = $$("close-copyright");
+    const copyrightBtn = $$("copyright-btn"); // You can place a button in header/footer
 
     if (copyrightBtn) {
     copyrightBtn.addEventListener("click", () => {
@@ -139,9 +143,9 @@ class LandingPage {
     }
 
 
-    const modal = document.getElementById("gameModeModal")
-    const cancelBtn = document.getElementById("cancelBtn")
-    const startBtn = document.getElementById("startGameBtn")
+    const modal = $$("gameModeModal")
+    const cancelBtn = $$("cancelBtn")
+    const startBtn = $$("startGameBtn")
 
     if (startBtn) {
       startBtn.addEventListener("click", () => {
@@ -212,14 +216,14 @@ class LandingPage {
   }
 
   showInstructions() {
-    const instructionsModal = document.getElementById("instructions-modal")
+    const instructionsModal = $$("instructions-modal")
     if (instructionsModal) {
       instructionsModal.classList.remove("hidden")
     }
   }
 
   hideInstructions() {
-    const instructionsModal = document.getElementById("instructions-modal")
+    const instructionsModal = $$("instructions-modal")
     if (instructionsModal) {
       instructionsModal.classList.add("hidden")
     }
@@ -229,7 +233,7 @@ class LandingPage {
     this.soundEnabled = !this.soundEnabled
     localStorage.setItem("soundEnabled", this.soundEnabled.toString())
 
-    const soundBtn = document.getElementById("sound-btn")
+    const soundBtn = $$("sound-btn")
     if (soundBtn) {
       soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
       soundBtn.classList.toggle("active", this.soundEnabled)
@@ -240,7 +244,7 @@ class LandingPage {
     this.musicEnabled = !this.musicEnabled
     localStorage.setItem("musicEnabled", this.musicEnabled.toString())
 
-    const musicBtn = document.getElementById("music-btn")
+    const musicBtn = $$("music-btn")
 
     if (musicBtn) {
       musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
@@ -262,7 +266,7 @@ class LandingPage {
     e.target.classList.add("selected")
     this.selectedCategory = e.target.dataset.category
 
-    const playBtn = document.getElementById("playBtn")
+    const playBtn = $$("playBtn")
     if (playBtn) {
       playBtn.disabled = false
     }
@@ -271,14 +275,14 @@ class LandingPage {
   showGameModeModal() {
     if (!this.selectedCategory) return
 
-    const modal = document.getElementById("gameModeModal")
+    const modal = $$("gameModeModal")
     if (modal) {
       modal.classList.remove("hidden")
     }
   }
 
   hideGameModeModal() {
-    const modal = document.getElementById("gameModeModal")
+    const modal = $$("gameModeModal")
     if (modal) {
       modal.classList.add("hidden")
     }
@@ -308,7 +312,7 @@ class LandingPage {
   }
 
   updateStartButton() {
-    const startBtn = document.getElementById("startGameBtn")
+    const startBtn = $$("startGameBtn")
     if (startBtn) {
       startBtn.disabled = !(this.selectedMode && this.selectedDifficulty)
     }
@@ -322,7 +326,7 @@ class LandingPage {
       btn.classList.remove("selected")
     })
 
-    const startBtn = document.getElementById("startGameBtn")
+    const startBtn = $$("startGameBtn")
     if (startBtn) {
       startBtn.disabled = true
     }
