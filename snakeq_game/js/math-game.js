@@ -1202,7 +1202,9 @@ showGameOver() {
     }
 
     // Draw sprint/stamina bar (top-left)
+    const marginDown = 20
     const bar = this.sprintBar
+    const barY = bar.y + marginDown
     // Background
     this.ctx.fillStyle = "#222"
     this.ctx.fillRect(bar.x, bar.y, bar.width, bar.height)
@@ -1222,9 +1224,9 @@ showGameOver() {
     this.ctx.textAlign = "left"
     this.ctx.textBaseline = "bottom"
     this.ctx.fillStyle = "#000"
-    this.ctx.fillText("SPRINT", bar.x + 7, bar.y - 1)
+    this.ctx.fillText("SPRINT", bar.x + 7, barY - 5.4)
     this.ctx.fillStyle = "#fff"
-    this.ctx.fillText("SPRINT", bar.x + 6, bar.y - 2)
+    this.ctx.fillText("SPRINT", bar.x + 6, barY - 7)
   }
 
   gameLoop(timestamp = 0) {
