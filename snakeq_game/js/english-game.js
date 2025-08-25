@@ -45,6 +45,7 @@ class SnakeEnglishGame {
       bgMusic: new Audio("../sounds/bg-music.mp3"),
       youWon: new Audio("../sounds/you-won.mp3"),
       click: new Audio("../sounds/click.mp3"),
+      countdown: new Audio("../sounds/countdown.mp3") 
     }
 
     this.sounds.bgMusic.volume = 0.2
@@ -186,7 +187,6 @@ class SnakeEnglishGame {
     this.timerDisplay = document.getElementById("timer-display")
     this.timerValue = document.getElementById("timer-value")
     this.optionsContainer = document.getElementById("options-display")
-
     this.heartsContainer = document.getElementById("hearts-container")
     this.helpBtn = document.getElementById("help-btn")
     this.soundBtn = document.getElementById("sound-btn")
@@ -549,7 +549,9 @@ class SnakeEnglishGame {
     if (this.gameSettings.mode === "timed") {
       this.timeLeft = 60
       this.timerDisplay.style.display = "block"
-      this.startTimer()
+      this.startCountdown(() => {
+        this.startTimer()
+      })
     } else {
       this.timerDisplay.style.display = "none"
     }
@@ -580,9 +582,13 @@ class SnakeEnglishGame {
     }, 1000)
   }
 
-  handleKeyDown(e) {
+ handleKeyDown(e) {
     const key = e.key.toLowerCase()
     const code = e.code
+
+    if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
+      e.preventDefault()
+    }
 
     if (!this.restartConfirm.classList.contains("hidden")) {
       if (code === "Escape") {
@@ -640,11 +646,7 @@ class SnakeEnglishGame {
         break
     }
 
-    if (moved && this.waitingForMove) {
-      this.waitingForMove = false
-    }
-
-     if (moved) {
+    if (moved) {
       this.playSound("snakeTurns")
       if (this.waitingForMove) {
         this.waitingForMove = false
@@ -1085,24 +1087,6 @@ class SnakeEnglishGame {
 
 });
 
-    const copyrightModal = document.getElementById("copyright-modal");
-    const closeCopyright = document.getElementById("close-copyright");
-    const copyrightBtn = document.getElementById("copyright-btn"); // You can place a button in header/footer
-
-    if (copyrightBtn) {
-    copyrightBtn.addEventListener("click", () => {
-        copyrightModal.classList.remove("hidden");
-    });
-    }
-
-    if (closeCopyright) {
-    closeCopyright.addEventListener("click", () => {
-        copyrightModal.classList.add("hidden");
-    });
-    }
-
-
-
     this.apples.forEach((apple) => {
       const x = apple.x * this.GRID_SIZE
       const y = apple.y * this.GRID_SIZE
@@ -1206,61 +1190,82 @@ class SnakeEnglishGame {
     this.GRID_SIZE = this.difficultySettings.gridSize
   }
 
+  startCountdown(callback) {
+    this.isCountdownActive = true  // lock movement
 
-    startCountdown(callback) {
-      this.isCountdownActive = true  // lock movement
-      this.showCountdown(() => {
-        this.isCountdownActive = false // unlock after countdown
-        if (callback) callback()
-      })
+      // play countdown sound effect
+    if (this.soundEnabled && this.sounds.countdown) {
+      this.sounds.countdown.currentTime = 0
+      this.sounds.countdown.play()
+        .catch(e => console.log("Countdown sound failed:", e))
     }
-
-    showCountdown(callback) {
-      const countdownOverlay = document.createElement("div")
-      countdownOverlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        font-family: 'Press Start 2P', monospace;
-      `
-
-      const countdownNumber = document.createElement("div")
-      countdownNumber.style.cssText = `
-        font-size: 72px;
-        color: #32cd32;
-        text-align: center;
-        text-shadow: 4px 4px 0px #000;
-      `
-      countdownNumber.textContent = "3"
-
-      countdownOverlay.appendChild(countdownNumber)
-      document.body.appendChild(countdownOverlay)
-
-      let count = 3
-      const countdownInterval = setInterval(() => {
-        count--
-        if (count > 0) {
-          countdownNumber.textContent = count
-        } else if (count === 0) {
-          countdownNumber.textContent = "GO!"
-          countdownNumber.style.color = "#ff4444"
-        } else {
-          clearInterval(countdownInterval)
-          countdownOverlay.remove()
-          if (callback) callback()
-        }
-      }, 1000)
-    }
+    
+    this.showCountdown(() => {
+      this.isCountdownActive = false // unlock after countdown
+      if (callback) callback()
+    })
   }
 
+  showCountdown(callback) {
+    const countdownOverlay = document.createElement("div")
+    countdownOverlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      font-family: 'Press Start 2P', monospace;
+    `
 
+    const countdownNumber = document.createElement("div")
+    countdownNumber.style.cssText = `
+      font-size: 72px;
+      color: #32cd32;
+      text-align: center;
+      text-shadow: 4px 4px 0px #000;
+    `
+    countdownNumber.textContent = "3"
+
+    countdownOverlay.appendChild(countdownNumber)
+    document.body.appendChild(countdownOverlay)
+
+    let count = 3
+    const countdownInterval = setInterval(() => {
+      count--
+      if (count > 0) {
+        countdownNumber.textContent = count
+      } else if (count === 0) {
+        countdownNumber.textContent = "GO!"
+        countdownNumber.style.color = "#ff4444"
+      } else {
+        clearInterval(countdownInterval)
+        countdownOverlay.remove()
+        if (callback) callback()
+      }
+    }, 1000)
+  }
+}
+
+    const copyrightModal = document.getElementById("copyright-modal");
+    const closeCopyright = document.getElementById("close-copyright");
+    const copyrightBtn = document.getElementById("copyright-btn"); // You can place a button in header/footer
+
+    if (copyrightBtn) {
+    copyrightBtn.addEventListener("click", () => {
+        copyrightModal.classList.remove("hidden");
+    });
+    }
+
+    if (closeCopyright) {
+    closeCopyright.addEventListener("click", () => {
+        copyrightModal.classList.add("hidden");
+    });
+    }
 
 document.addEventListener("DOMContentLoaded", () => {
   new SnakeEnglishGame()

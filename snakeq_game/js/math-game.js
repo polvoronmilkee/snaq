@@ -46,6 +46,7 @@ class SnakeMathGame {
       youWon: new Audio("../sounds/you-won.mp3"),
       bgMusic: new Audio("../sounds/music.mp3"),
       click: new Audio("../sounds/click.mp3"),
+      countdown: new Audio("../sounds/countdown.mp3"),
     }
 
     this.sounds.bgMusic.volume = 0.2
@@ -176,7 +177,6 @@ class SnakeMathGame {
     this.cancelRestartBtn = document.getElementById("cancel-restart")
     this.timerDisplay = document.getElementById("timer-display")
     this.timerValue = document.getElementById("timer-value")
-
     this.heartsContainer = document.getElementById("hearts-container")
     this.helpBtn = document.getElementById("help-btn")
     this.soundBtn = document.getElementById("sound-btn")
@@ -189,7 +189,6 @@ class SnakeMathGame {
     this.initGame()
     this.bindEvents()
     this.gameLoop()
-
     this.initializeAudioStates()
   }
 
@@ -1052,6 +1051,14 @@ showGameOver() {
 
   startCountdown(callback) {
     this.isCountdownActive = true  // lock movement
+
+     // play countdown sound effect
+    if (this.soundEnabled && this.sounds.countdown) {
+      this.sounds.countdown.currentTime = 0
+      this.sounds.countdown.play()
+        .catch(e => console.log("Countdown sound failed:", e))
+    }
+    
     this.showCountdown(() => {
       this.isCountdownActive = false // unlock after countdown
       if (callback) callback()
