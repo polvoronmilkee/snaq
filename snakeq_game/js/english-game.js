@@ -997,17 +997,17 @@ class SnakeEnglishGame {
 
     // Draw snake using sprites
     this.snake.forEach((segment, index) => {
-  const x = segment.x * this.GRID_SIZE;
-  const y = segment.y * this.GRID_SIZE;
+      const x = segment.x * this.GRID_SIZE;
+      const y = segment.y * this.GRID_SIZE;
 
-  if (index === 0) {
+    if (index === 0) {
     // ===== HEAD =====
-    let headSprite = this.sprites.SnakeHead; // default (up)
-    if (this.direction.x === 1) headSprite = this.sprites.SnakeHeadRight;
-    else if (this.direction.x === -1) headSprite = this.sprites.SnakeHeadLeft;
-    else if (this.direction.y === 1) headSprite = this.sprites.SnakeHeadDown;
+        let headSprite = this.sprites.SnakeHead; // default (up)
+        if (this.direction.x === 1) headSprite = this.sprites.SnakeHeadRight;
+        else if (this.direction.x === -1) headSprite = this.sprites.SnakeHeadLeft;
+        else if (this.direction.y === 1) headSprite = this.sprites.SnakeHeadDown;
 
-    if (headSprite?.complete) {
+    if (headSprite?.complete && headSprite) {
       this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
     } else {
       this.ctx.fillStyle = "#32cd32";

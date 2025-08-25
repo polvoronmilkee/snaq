@@ -5,10 +5,9 @@ class LandingPage {
     this.selectedDifficulty = null
     this.backgroundMusic = new Audio("sounds/music.mp3")
     this.backgroundMusic.loop = true
-    this.musicEnabled = localStorage.getItem("musicEnabled") === "true"
+    this.musicEnabled = localStorage.getItem("musicEnabled") !==  "false"
     this.soundEnabled = localStorage.getItem("soundEnabled") !== "false" // default true
     this.clickSound = new Audio("sounds/click.mp3")
-
     this.init()
   }
 

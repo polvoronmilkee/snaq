@@ -108,7 +108,14 @@ class SnakeMathGame {
       "SnakeTailLeft",
       "SnakeTailRight",
       "SnakeTailDown",
-      "apple", // Changed to lowercase to match asset filename
+      "SnakeBodyLeft",
+      "SnakeBodyRight",
+      "SnakeCornerLeftDown",
+      "SnakeCornerRightUp",
+      "SnakeCornerLeftUp",
+      "SnakeCornerRightDown",
+      "apple",
+
     ]
 
     spriteNames.forEach((name) => {
@@ -116,6 +123,7 @@ class SnakeMathGame {
       this.sprites[name].src = `../assets/${name}.png`
     })
   }
+
 
   playSound(soundName) {
     if (this.soundEnabled && this.sounds[soundName]) {
@@ -867,6 +875,7 @@ showGameOver() {
           this.drawPixelSnakeFace(x, y, this.snakeFace)
         }
       } else if (index === this.snake.length - 1) {
+        // TAIL
         const prevSegment = this.snake[index - 1]
         const tailDir = { x: prevSegment.x - segment.x, y: prevSegment.y - segment.y }
 
@@ -875,7 +884,7 @@ showGameOver() {
         else if (tailDir.x === -1) tailSprite = this.sprites.SnakeTailLeft
         else if (tailDir.y === 1) tailSprite = this.sprites.SnakeTailDown
 
-        if (tailSprite && tailSprite.complete) {
+        if (tailSprite?.complete) {
           this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
         } else {
           // Fallback to colored rectangle
@@ -883,21 +892,58 @@ showGameOver() {
           this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
         }
       } else {
-        const bodySprite = this.sprites.SnakeBody
-        if (bodySprite && bodySprite.complete) {
-          this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
-        } else {
-          // Fallback to colored rectangle
-          this.ctx.fillStyle = "#228b22"
-          this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
+      // ===== BODY =====
+        const prev = this.snake[index - 1];
+        const next = this.snake[index + 1];
 
-          // Pixel border for body
-          this.ctx.strokeStyle = "#000"
-          this.ctx.lineWidth = 1
-          this.ctx.strokeRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
+        const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
+        const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
+
+        let bodySprite;
+
+        // Straight segments
+        if (dirPrev.x === dirNext.x) {
+          // horizontal
+          bodySprite = (dirPrev.x !== 0) ? this.sprites.SnakeBodyRight : this.sprites.SnakeBody;
+        } else if (dirPrev.y === dirNext.y) {
+          // vertical
+          bodySprite = (dirPrev.y !== 0) ? this.sprites.SnakeBody : this.sprites.SnakeBodyRight;
+        } else {
+          // ===== CORNERS =====
+          if (
+            (dirPrev.x === -1 && dirNext.y === -1) || // left → up
+            (dirPrev.y === 1 && dirNext.x === 1)    // down → right
+          ) {
+            bodySprite = this.sprites.SnakeCornerLeftDown;
+          } else if (
+            (dirPrev.x === 1 && dirNext.y === -1) ||  // right → up
+            (dirPrev.y === 1 && dirNext.x === -1)     // down → left
+          ) {
+            bodySprite = this.sprites.SnakeCornerRightDown;
+          } else if (
+            (dirPrev.x === -1 && dirNext.y === 1) ||  // left → down
+            (dirPrev.y === -1 && dirNext.x === 1)     // up → right
+          ) {
+            bodySprite = this.sprites.SnakeCornerLeftUp;
+          } else if (
+            (dirPrev.x === 1 && dirNext.y === 1) ||   // right → down
+            (dirPrev.y === -1 && dirNext.x === -1)      // up → left
+          ) {
+            bodySprite = this.sprites.SnakeCornerRightUp;
+          }
+        }
+
+        // Draw body
+        if (bodySprite?.complete) {
+          this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+        } else {
+          this.ctx.fillStyle = "#006400";
+          this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
         }
       }
-    })
+
+      });
+
 
     this.apples.forEach((apple) => {
       const x = apple.x * this.GRID_SIZE
