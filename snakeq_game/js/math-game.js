@@ -209,7 +209,7 @@ class SnakeMathGame {
 
     // Slightly larger question text for readability
     if (this.questionElement) {
-      this.questionElement.style.fontSize = "16px"
+      this.questionElement.style.fontSize = "18px"
       this.questionElement.style.lineHeight = "1.4"
     }
   }
@@ -371,7 +371,6 @@ class SnakeMathGame {
       question = "2 + 3 = ?";
   }
 
-  // ✅ Generate wrong options
   const options = new Set([correctAnswer]);
 
   while (options.size < 4) {

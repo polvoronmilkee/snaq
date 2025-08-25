@@ -213,7 +213,7 @@ initDOM() {
     this.closeInstructionsBtn = document.getElementById("close-instructions")
 
     if (this.questionElement) {
-    this.questionElement.style.fontSize = "15px"
+    this.questionElement.style.fontSize = "18px"
     this.questionElement.style.lineHeight = "1.4"
     }
 }
