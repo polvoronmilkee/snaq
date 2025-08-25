@@ -331,6 +331,10 @@ updateOptionsDisplay() {
     const optionText = document.createElement("span")
     optionText.className = "option-text"
     optionText.textContent = option
+    // Make answers larger and more readable
+    optionText.style.fontSize = "17px"
+    optionText.style.lineHeight = "1.4"
+    optionText.style.fontWeight = "600"
 
     optionDiv.appendChild(appleIcon)
     optionDiv.appendChild(optionText)
@@ -1308,17 +1312,17 @@ setDifficultySettings() {
     const difficultyConfig = {
     easy: {
         gridSize: 40,
-        baseSpeed: 5.5,
+        baseSpeed: 3,
         speedIncrease: 0.35,
     },
     medium: {
         gridSize: 40,
-        baseSpeed: 6.5,
+        baseSpeed: 4,
         speedIncrease: 0.55,
     },
     hard: {
         gridSize: 50,
-        baseSpeed: 7.5,
+        baseSpeed: 4.5,
         speedIncrease: 0.65,
     },
     }
