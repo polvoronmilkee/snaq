@@ -23,7 +23,7 @@ Pick your subject, answer questions by munching the correct apples, and grow you
 
 - **Power-Ups**
   - **Shield** – Blocks one mistake when lives are low  
-  - **Sprint Bar** – Refills over time  
+  - **Sprint Bar** – Makes your snake fast, refills over time  
 
 ---
 
