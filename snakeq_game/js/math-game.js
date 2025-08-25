@@ -209,6 +209,7 @@ class SnakeMathGame {
 
     this.heartsContainer = document.getElementById("hearts-container")
     this.helpBtn = document.getElementById("help-btn")
+    this.helpBtnEsc = document.getElementById("help-btn-esc"); // ESC menu button
     this.soundBtn = document.getElementById("sound-btn")
     this.musicBtn = document.getElementById("music-btn")
     this.instructionsModal = document.getElementById("instructions-modal")
@@ -282,6 +283,11 @@ class SnakeMathGame {
     })
 
     this.helpBtn.addEventListener("click", () => {
+      this.playSound("click")
+      document.getElementById("esc-menu").classList.add("hidden"); 
+      this.showInstructions()
+    })
+    this.helpBtnEsc.addEventListener("click", () => {
       this.playSound("click")
       this.showInstructions()
     })
