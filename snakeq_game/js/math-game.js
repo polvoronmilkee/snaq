@@ -76,6 +76,7 @@ class SnakeMathGame {
     this.waitingForMove = true
     this.paused = false
     this.showConfirm = false
+    this.inputLocked = false
 
     this.baseSpeed = this.difficultySettings.baseSpeed
     this.speed = this.baseSpeed
@@ -444,6 +445,9 @@ class SnakeMathGame {
       e.preventDefault()
     }
 
+    // Ignore auto-repeat when holding a key
+    if (e.repeat) return
+
     if (!this.restartConfirm.classList.contains("hidden")) {
       if (code === "Escape") {
         this.cancelRestart()
@@ -467,6 +471,10 @@ class SnakeMathGame {
       this.showRestartConfirm()
       return
     }
+
+    // If an input has already been processed for this move window, ignore further movement keys
+    const isMovementKey = ["w","arrowup","s","arrowdown","a","arrowleft","d","arrowright"].includes(key)
+    if (this.inputLocked && isMovementKey) return
 
     // WASD and Arrow key movement
     switch (key) {
@@ -501,6 +509,7 @@ class SnakeMathGame {
     }
 
     if (moved) {
+      this.inputLocked = true
       this.playSound("snakeTurns")
       if (this.waitingForMove) {
         this.waitingForMove = false
@@ -615,6 +624,7 @@ class SnakeMathGame {
       }
 
       this.updateUI()
+      this.inputLocked = false
       return
     }
 
@@ -641,6 +651,7 @@ class SnakeMathGame {
           this.snakeFace = "happy"
           this.playSound("youWon")
           this.showGameOver()
+          this.inputLocked = false
           return
         }
 
@@ -661,6 +672,7 @@ class SnakeMathGame {
           this.snakeFace = "dead"
           this.playSound("snakeDies")
           this.showGameOver()
+          this.inputLocked = false
           return
         }
 
@@ -687,6 +699,8 @@ class SnakeMathGame {
 
     this.snake = newSnake
     this.updateUI()
+    // Unlock input after completing a move step
+    this.inputLocked = false
   }
 
   addNewApple() {
@@ -823,7 +837,7 @@ showGameOver() {
 
   drawPixelNotification(notification) {
     const { message, type } = notification
-   
+    
     // Pixel-style notification box
     this.ctx.fillStyle = type === "correct" ? "#32cd32" : "#ff4444"
     this.ctx.fillRect(this.CANVAS_WIDTH /2 - 150, 40, 300, 60)
@@ -1029,19 +1043,19 @@ showGameOver() {
 
   setDifficultySettings() {
     const difficultyConfig = {
-       easy: {
+        easy: {
         gridSize: 40,
-        baseSpeed: 3,
+        baseSpeed: 5.5,
         speedIncrease: 0.35,
       },
       medium: {
         gridSize: 40,
-        baseSpeed: 4,
+        baseSpeed: 6.5,
         speedIncrease: 0.55,
       },
       hard: {
         gridSize: 50,
-        baseSpeed: 4.5,
+        baseSpeed: 7.5,
         speedIncrease: 0.65,
       },
     }
