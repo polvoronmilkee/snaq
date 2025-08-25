@@ -109,6 +109,13 @@ class SnakeMathGame {
     this.shieldPickup = null        // {x,y} pickup position if spawned
     this.shieldSpawned = false      // ensure only one spawn per game
 
+    // Self-bite immunity (prevents repeated self-bite for a short window)
+    this.selfBiteImmunityTimer = 0   // seconds remaining
+    this.selfBiteImmunityDuration = 2.5
+
+    // Sprint bar UI rectangle
+    this.sprintBar = { x: 16, y: 16, width: 160, height: 14 }
+
     this.initDOM()
     this.init()
   }
@@ -444,6 +451,9 @@ class SnakeMathGame {
     this.shieldPickup = null
     this.shieldSpawned = false
 
+    // Reset self-bite immunity
+    this.selfBiteImmunityTimer = 0
+
     this.updateUI()
     this.hideOverlays()
   }
@@ -587,7 +597,11 @@ class SnakeMathGame {
       do {
         x = this.randInt(this.GRID_WIDTH)
         y = this.randInt(this.GRID_HEIGHT)
-      } while (usedPositions.has(`${x},${y}`) || this.snake.some((segment) => segment.x === x && segment.y === y))
+      } while (
+        usedPositions.has(`${x},${y}`) ||
+        this.snake.some((segment) => segment.x === x && segment.y === y) ||
+        this.cellIntersectsRect(x, y, this.sprintBar)
+      )
 
       usedPositions.add(`${x},${y}`)
       newApples.push({
@@ -652,23 +666,32 @@ class SnakeMathGame {
     if (head.y < 0) head.y = this.GRID_HEIGHT - 1
     if (head.y >= this.GRID_HEIGHT) head.y = 0
 
+    // Self-collision handling with temporary immunity
     if (newSnake.some((segment) => segment.x === head.x && segment.y === head.y)) {
-      this.lives--
-      this.snakeFace = "disgust"
-      this.showNotification("Self-bite! -1 life", "wrong")
+      // If currently immune, allow passing through self without penalty once per frame
+      if (this.selfBiteImmunityTimer > 0) {
+        // Proceed without penalty (acts like body is intangible during immunity)
+      } else {
+        this.lives--
+        this.snakeFace = "disgust"
+        this.showNotification("Self-bite! -1 life", "wrong")
 
-      this.playSound("snakeLosesLife")
+        this.playSound("snakeLosesLife")
 
-      if (this.snake.length > 1) {
-        this.snake.pop()
+        if (this.snake.length > 1) {
+          this.snake.pop()
+        }
+
+        // Spawn shield pickup if eligible after losing a life
+        this.spawnShieldIfEligible()
+
+        // Start immunity window to avoid repeated instant self-bites
+        this.selfBiteImmunityTimer = this.selfBiteImmunityDuration
+
+        this.updateUI()
+        this.inputLocked = false
+        return
       }
-
-      // Spawn shield pickup if eligible after losing a life
-      this.spawnShieldIfEligible()
-
-      this.updateUI()
-      this.inputLocked = false
-      return
     }
 
     newSnake.unshift(head)
@@ -798,7 +821,7 @@ class SnakeMathGame {
       do {
         x = this.randInt(this.GRID_WIDTH)
         y = this.randInt(this.GRID_HEIGHT)
-      } while (usedPositions.has(`${x},${y}`))
+      } while (usedPositions.has(`${x},${y}`) || this.cellIntersectsRect(x, y, this.sprintBar))
 
       this.apples.push({
         x,
@@ -1138,32 +1161,29 @@ showGameOver() {
     }
 
     // Draw sprint/stamina bar (top-left)
-    const barWidth = 160
-    const barHeight = 14
-    const barX = 16
-    const barY = 16
+    const bar = this.sprintBar
     // Background
     this.ctx.fillStyle = "#222"
-    this.ctx.fillRect(barX, barY, barWidth, barHeight)
+    this.ctx.fillRect(bar.x, bar.y, bar.width, bar.height)
     this.ctx.strokeStyle = "#000"
     this.ctx.lineWidth = 3
-    this.ctx.strokeRect(barX, barY, barWidth, barHeight)
+    this.ctx.strokeRect(bar.x, bar.y, bar.width, bar.height)
     // Fill
-    const fillWidth = Math.floor(barWidth * (this.sprint.energy / this.sprint.maxEnergy))
+    const fillWidth = Math.floor(bar.width * (this.sprint.energy / this.sprint.maxEnergy))
     this.ctx.fillStyle = this.sprint.active ? "#ffd166" : "#06d6a0"
-    this.ctx.fillRect(barX, barY, fillWidth, barHeight)
+    this.ctx.fillRect(bar.x, bar.y, fillWidth, bar.height)
     // Inner border
     this.ctx.strokeStyle = "#fff"
     this.ctx.lineWidth = 1
-    this.ctx.strokeRect(barX + 2, barY + 2, barWidth - 4, barHeight - 4)
+    this.ctx.strokeRect(bar.x + 2, bar.y + 2, bar.width - 4, bar.height - 4)
     // Label
     this.ctx.font = "10px 'Press Start 2P', monospace"
     this.ctx.textAlign = "left"
     this.ctx.textBaseline = "bottom"
     this.ctx.fillStyle = "#000"
-    this.ctx.fillText("SPRINT", barX + 7, barY - 1)
+    this.ctx.fillText("SPRINT", bar.x + 7, bar.y - 1)
     this.ctx.fillStyle = "#fff"
-    this.ctx.fillText("SPRINT", barX + 6, barY - 2)
+    this.ctx.fillText("SPRINT", bar.x + 6, bar.y - 2)
   }
 
   gameLoop(timestamp = 0) {
@@ -1186,6 +1206,12 @@ showGameOver() {
       }
     }
 
+    // Tick down self-bite immunity timer
+    if (this.selfBiteImmunityTimer > 0) {
+      this.selfBiteImmunityTimer -= delta
+      if (this.selfBiteImmunityTimer < 0) this.selfBiteImmunityTimer = 0
+    }
+
     if (!this.waitingForMove && !this.paused) {
       this.moveAccumulator += delta
       const effectiveSpeed = this.speed * (this.sprint.active && this.sprint.energy > 0 ? this.sprint.multiplier : 1)
@@ -1205,18 +1231,18 @@ showGameOver() {
     const difficultyConfig = {
         easy: {
         gridSize: 40,
-        baseSpeed: 5,
+        baseSpeed: 5.5,
         speedIncrease: 0.35,
       },
       medium: {
         gridSize: 40,
-        baseSpeed: 5.5,
-        speedIncrease: 0.45,
+        baseSpeed: 6.5,
+        speedIncrease: 0.55,
       },
       hard: {
         gridSize: 50,
-        baseSpeed: 6,
-        speedIncrease: 0.55,
+        baseSpeed: 7.5,
+        speedIncrease: 0.65,
       },
     }
 
@@ -1274,6 +1300,19 @@ showGameOver() {
         if (callback) callback()
       }
     }, 1000)
+  }
+
+  // Helper: check if a grid cell intersects a pixel rect
+  cellIntersectsRect(gridX, gridY, rect) {
+    const cellX = gridX * this.GRID_SIZE
+    const cellY = gridY * this.GRID_SIZE
+    const cellW = this.GRID_SIZE
+    const cellH = this.GRID_SIZE
+    const rX2 = rect.x + rect.width
+    const rY2 = rect.y + rect.height
+    const cX2 = cellX + cellW
+    const cY2 = cellY + cellH
+    return !(cX2 <= rect.x || rX2 <= cellX || cY2 <= rect.y || rY2 <= cellY)
   }
 }
 

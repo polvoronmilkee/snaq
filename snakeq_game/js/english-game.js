@@ -115,6 +115,9 @@ constructor() {
     this.shieldPickup = null
     this.shieldSpawned = false
 
+    // Sprint bar UI rectangle (pixels)
+    this.sprintBar = { x: 16, y: 16, width: 160, height: 14 }
+
     this.initDOM()
     this.init()
 }
@@ -332,7 +335,7 @@ updateOptionsDisplay() {
     optionText.className = "option-text"
     optionText.textContent = option
     // Make answers larger and more readable
-    optionText.style.fontSize = "17px"
+    optionText.style.fontSize = "20px"
     optionText.style.lineHeight = "1.4"
     optionText.style.fontWeight = "600"
 
@@ -722,7 +725,11 @@ generateApples(question) {
     do {
         x = this.randInt(this.GRID_WIDTH)
         y = this.randInt(this.GRID_HEIGHT)
-    } while (usedPositions.has(`${x},${y}`) || this.snake.some((segment) => segment.x === x && segment.y === y))
+    } while (
+        usedPositions.has(`${x},${y}`) ||
+        this.snake.some((segment) => segment.x === x && segment.y === y) ||
+        this.cellIntersectsRect(x, y, this.sprintBar)
+    )
 
     usedPositions.add(`${x},${y}`)
     newApples.push({
@@ -904,7 +911,7 @@ this.snake.forEach((segment) => {
     usedPositions.add(`${segment.x},${segment.y}`)
 })
 
-// Prevent overlap with shield
+// Prevent overlap with shield and sprint bar
 if (this.shieldPickup) usedPositions.add(`${this.shieldPickup.x},${this.shieldPickup.y}`)
 
 // Take up to 4 options from the current question
@@ -915,7 +922,7 @@ options.forEach((option, index) => {
     do {
     x = this.randInt(this.GRID_WIDTH)
     y = this.randInt(this.GRID_HEIGHT)
-    } while (usedPositions.has(`${x},${y}`))
+    } while (usedPositions.has(`${x},${y}`) || this.cellIntersectsRect(x, y, this.sprintBar))
 
     usedPositions.add(`${x},${y}`)
 
@@ -1249,28 +1256,25 @@ if (bodySprite?.complete) {
     }
 
     // Sprint/stamina bar
-    const barWidth = 160
-    const barHeight = 14
-    const barX = 16
-    const barY = 16
+    const bar = this.sprintBar
     this.ctx.fillStyle = "#222"
-    this.ctx.fillRect(barX, barY, barWidth, barHeight)
+    this.ctx.fillRect(bar.x, bar.y, bar.width, bar.height)
     this.ctx.strokeStyle = "#000"
     this.ctx.lineWidth = 3
-    this.ctx.strokeRect(barX, barY, barWidth, barHeight)
-    const fillWidth = Math.floor(barWidth * (this.sprint.energy / this.sprint.maxEnergy))
+    this.ctx.strokeRect(bar.x, bar.y, bar.width, bar.height)
+    const fillWidth = Math.floor(bar.width * (this.sprint.energy / this.sprint.maxEnergy))
     this.ctx.fillStyle = this.sprint.active ? "#ffd166" : "#06d6a0"
-    this.ctx.fillRect(barX, barY, fillWidth, barHeight)
+    this.ctx.fillRect(bar.x, bar.y, fillWidth, bar.height)
     this.ctx.strokeStyle = "#fff"
     this.ctx.lineWidth = 1
-    this.ctx.strokeRect(barX + 2, barY + 2, barWidth - 4, barHeight - 4)
+    this.ctx.strokeRect(bar.x + 2, bar.y + 2, bar.width - 4, bar.height - 4)
     this.ctx.font = "10px 'Press Start 2P', monospace"
     this.ctx.textAlign = "left"
     this.ctx.textBaseline = "bottom"
     this.ctx.fillStyle = "#000"
-    this.ctx.fillText("SPRINT", barX + 7, barY - 1)
+    this.ctx.fillText("SPRINT", bar.x + 7, bar.y - 1)
     this.ctx.fillStyle = "#fff"
-    this.ctx.fillText("SPRINT", barX + 6, barY - 2)
+    this.ctx.fillText("SPRINT", bar.x + 6, bar.y - 2)
 }
 
 gameLoop(timestamp = 0) {
@@ -1318,12 +1322,12 @@ setDifficultySettings() {
     medium: {
         gridSize: 40,
         baseSpeed: 5.5,
-        speedIncrease: 0.45,
+        speedIncrease: 0.55,
     },
     hard: {
         gridSize: 50,
         baseSpeed: 6,
-        speedIncrease: 0.55,
+        speedIncrease: 0.65,
     },
     }
 
@@ -1389,6 +1393,19 @@ showCountdown(callback) {
         if (callback) callback()
     }
     }, 1000)
+}
+
+// Helper: check if a grid cell intersects a pixel rect
+cellIntersectsRect(gridX, gridY, rect) {
+    const cellX = gridX * this.GRID_SIZE
+    const cellY = gridY * this.GRID_SIZE
+    const cellW = this.GRID_SIZE
+    const cellH = this.GRID_SIZE
+    const rX2 = rect.x + rect.width
+    const rY2 = rect.y + rect.height
+    const cX2 = cellX + cellW
+    const cY2 = cellY + cellH
+    return !(cX2 <= rect.x || rX2 <= cellX || cY2 <= rect.y || rY2 <= cellY)
 }
 }
 
