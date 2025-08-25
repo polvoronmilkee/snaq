@@ -99,10 +99,15 @@ class SnakeMathGame {
       active: false,
       energy: 1,            // 0..1 current stamina
       maxEnergy: 1,
-      drainPerSecond: 1.2,  // stamina drain while sprinting (faster burn)
+      drainPerSecond: 1.2,  // stamina drain while sprinting (moderate burn)
       regenPerSecond: 0.18, // stamina regen while not sprinting (slower refill)
       multiplier: 1.8       // speed multiplier while sprinting
     }
+
+    // Shield state
+    this.hasShield = false          // player currently protected?
+    this.shieldPickup = null        // {x,y} pickup position if spawned
+    this.shieldSpawned = false      // ensure only one spawn per game
 
     this.initDOM()
     this.init()
@@ -434,6 +439,11 @@ class SnakeMathGame {
     this.sprint.active = false
     this.sprint.energy = this.sprint.maxEnergy
 
+    // Reset shield state each new game
+    this.hasShield = false
+    this.shieldPickup = null
+    this.shieldSpawned = false
+
     this.updateUI()
     this.hideOverlays()
   }
@@ -653,12 +663,22 @@ class SnakeMathGame {
         this.snake.pop()
       }
 
+      // Spawn shield pickup if eligible after losing a life
+      this.spawnShieldIfEligible()
+
       this.updateUI()
       this.inputLocked = false
       return
     }
 
     newSnake.unshift(head)
+
+    // Collect shield pickup if present at head
+    if (this.shieldPickup && head.x === this.shieldPickup.x && head.y === this.shieldPickup.y) {
+      this.hasShield = true
+      this.shieldPickup = null
+      this.showNotification("Shield acquired! 🛡️", "correct")
+    }
 
     const eatenApple = this.apples.find((apple) => apple.x === head.x && apple.y === head.y)
     if (eatenApple) {
@@ -691,34 +711,52 @@ class SnakeMathGame {
         this.currentQuestion = this.generateQuestion()
         this.apples = this.generateApples(this.currentQuestion)
       } else {
-        this.score = Math.max(0, this.score - 5)
-        this.lives--
+        // WRONG ANSWER
+        if (this.hasShield) {
+          // Shield blocks the penalty once
+          this.hasShield = false
+          this.snakeFace = "normal"
+          this.showNotification("Shield saved you! 🛡️", "correct")
 
-        this.playSound("snakeLosesLife")
+          // Remove the eaten wrong apple and replace with a new option
+          this.apples = this.apples.filter((apple) => apple !== eatenApple)
+          this.addNewApple()
 
-        if (this.lives <= 0) {
-          this.gameState = "lost"
-          this.gameRunning = false
-          this.snakeFace = "dead"
-          this.playSound("snakeDies")
-          this.showGameOver()
-          this.inputLocked = false
-          return
+          this.updateUI()
+          // Keep length the same (consume cell but no growth)
+          newSnake.pop()
+        } else {
+          this.score = Math.max(0, this.score - 5)
+          this.lives--
+
+          this.playSound("snakeLosesLife")
+
+          if (this.lives <= 0) {
+            this.gameState = "lost"
+            this.gameRunning = false
+            this.snakeFace = "dead"
+            this.playSound("snakeDies")
+            this.showGameOver()
+            this.inputLocked = false
+            return
+          }
+
+          this.snakeFace = "disgust"
+          this.showNotification("Wrong! -5 points, -1 life", "wrong")
+
+          if (this.snake.length > 1) {
+            this.snake.pop()
+          }
+
+          this.apples = this.apples.filter((apple) => apple !== eatenApple)
+          this.addNewApple()
+
+          // After losing a life, see if we should spawn the shield pickup
+          this.spawnShieldIfEligible()
+
+          this.updateUI()
+          newSnake.pop()
         }
-
-        this.snakeFace = "disgust"
-        this.showNotification("Wrong! -5 points, -1 life", "wrong")
-
-
-        if (this.snake.length > 1) {
-          this.snake.pop()
-        }
-
-        this.apples = this.apples.filter((apple) => apple !== eatenApple)
-        this.addNewApple()
-
-        this.updateUI()
-        newSnake.pop()
       }
     } else {
       newSnake.pop()
@@ -744,6 +782,11 @@ class SnakeMathGame {
       usedPositions.add(`${segment.x},${segment.y}`)
     })
 
+    // Prevent spawning on an existing shield pickup
+    if (this.shieldPickup) {
+      usedPositions.add(`${this.shieldPickup.x},${this.shieldPickup.y}`)
+    }
+
     const availableOptions = this.currentQuestion.options.filter(
       (option) => !this.apples.some((apple) => apple.value === option),
     )
@@ -763,6 +806,23 @@ class SnakeMathGame {
         value: randomOption,
         isCorrect: randomOption === this.currentQuestion.correctAnswer,
       })
+    }
+  }
+
+  // Spawn shield pickup if player has exactly 1 life and no shield spawned yet
+  spawnShieldIfEligible() {
+    if (this.lives === 1 && !this.shieldSpawned && !this.hasShield && !this.shieldPickup) {
+      const used = new Set()
+      this.snake.forEach((s) => used.add(`${s.x},${s.y}`))
+      this.apples.forEach((a) => used.add(`${a.x},${a.y}`))
+      let x, y
+      do {
+        x = this.randInt(this.GRID_WIDTH)
+        y = this.randInt(this.GRID_HEIGHT)
+      } while (used.has(`${x},${y}`))
+      this.shieldPickup = { x, y }
+      this.shieldSpawned = true
+      this.showNotification("Shield appeared! 🛡️", "correct")
     }
   }
 
@@ -988,6 +1048,33 @@ showGameOver() {
       }
 
       });
+
+    // Draw shield pickup if present
+    if (this.shieldPickup) {
+      const px = this.shieldPickup.x * this.GRID_SIZE
+      const py = this.shieldPickup.y * this.GRID_SIZE
+      // Pixel-style shield token (larger)
+      this.ctx.fillStyle = "#1e90ff"
+      this.ctx.fillRect(px, py, this.GRID_SIZE, this.GRID_SIZE)
+      // Thicker outer border
+      this.ctx.strokeStyle = "#000"
+      this.ctx.lineWidth = 3
+      this.ctx.strokeRect(px, py, this.GRID_SIZE, this.GRID_SIZE)
+      // Inner highlight border
+      this.ctx.strokeStyle = "#a6d8ff"
+      this.ctx.lineWidth = 2
+      this.ctx.strokeRect(px + 2, py + 2, this.GRID_SIZE - 4, this.GRID_SIZE - 4)
+      // Bigger shield icon
+      const iconSize = Math.max(12, Math.floor(this.GRID_SIZE * 0.8))
+      this.ctx.font = `${iconSize}px "Press Start 2P", monospace`
+      this.ctx.textAlign = "center"
+      this.ctx.textBaseline = "middle"
+      // Drop shadow
+      this.ctx.fillStyle = "#000"
+      this.ctx.fillText("🛡️", px + this.GRID_SIZE / 2 + 1, py + this.GRID_SIZE / 2 + 1)
+      this.ctx.fillStyle = "#fff"
+      this.ctx.fillText("🛡️", px + this.GRID_SIZE / 2, py + this.GRID_SIZE / 2)
+    }
 
 
     this.apples.forEach((apple) => {
