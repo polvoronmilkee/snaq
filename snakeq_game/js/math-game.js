@@ -415,9 +415,32 @@ class SnakeMathGame {
 }
 
 
-  initGame() {
-    this.snake = [this.getRandomPosition()]
-    this.direction = this.getRandomDirection()
+  initGame() { 
+    const headPosition = this.getRandomPosition()
+
+    // Keep head at least 1 cell away from edges
+    if (headPosition.x === 0) headPosition.x = 1
+    if (headPosition.x === this.GRID_WIDTH - 1) headPosition.x = this.GRID_WIDTH - 2
+    if (headPosition.y === 0) headPosition.y = 1
+    if (headPosition.y === this.GRID_HEIGHT - 1) headPosition.y = this.GRID_HEIGHT - 2
+
+    // Pick a random direction for the snake to face
+    const directions = [
+      { x: 1, y: 0 },   // right
+      { x: -1, y: 0 },  // left
+      { x: 0, y: 1 },   // down
+      { x: 0, y: -1 }   // up
+    ]
+    this.direction = directions[Math.floor(Math.random() * directions.length)]
+
+    // Place tail behind the head, opposite to direction
+    const tailPosition = {
+      x: headPosition.x - this.direction.x,
+      y: headPosition.y - this.direction.y
+    }
+
+    this.snake = [headPosition, tailPosition]
+
     this.currentQuestion = this.generateQuestion()
     this.apples = this.generateApples(this.currentQuestion)
     this.score = 0
@@ -442,6 +465,7 @@ class SnakeMathGame {
     } else {
       this.timerDisplay.style.display = "none"
     }
+  
 
     // Set target based on mode
     if (this.gameSettings.mode === "endless") {
