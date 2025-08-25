@@ -238,7 +238,6 @@ class SnakeEnglishGame {
     this.menuBtn.addEventListener("click", () => (window.location.href = "../index.html"))
     this.confirmRestartBtn.addEventListener("click", () => this.confirmRestart())
     this.cancelRestartBtn.addEventListener("click", () => this.cancelRestart())
-
     this.helpBtn.addEventListener("click", () => this.showInstructions())
     this.soundBtn.addEventListener("click", () => this.toggleSound())
     this.musicBtn.addEventListener("click", () => this.toggleMusic())
@@ -738,6 +737,7 @@ class SnakeEnglishGame {
   }
 
   moveSnake() {
+    if (this.isCountdownActive) return  // 🚫 don’t move while countdown is running
     const newSnake = [...this.snake]
     const head = { ...newSnake[0] }
 
@@ -1205,7 +1205,62 @@ class SnakeEnglishGame {
     this.difficultySettings = difficultyConfig[this.gameSettings.difficulty]
     this.GRID_SIZE = this.difficultySettings.gridSize
   }
-}
+
+
+    startCountdown(callback) {
+      this.isCountdownActive = true  // lock movement
+      this.showCountdown(() => {
+        this.isCountdownActive = false // unlock after countdown
+        if (callback) callback()
+      })
+    }
+
+    showCountdown(callback) {
+      const countdownOverlay = document.createElement("div")
+      countdownOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        font-family: 'Press Start 2P', monospace;
+      `
+
+      const countdownNumber = document.createElement("div")
+      countdownNumber.style.cssText = `
+        font-size: 72px;
+        color: #32cd32;
+        text-align: center;
+        text-shadow: 4px 4px 0px #000;
+      `
+      countdownNumber.textContent = "3"
+
+      countdownOverlay.appendChild(countdownNumber)
+      document.body.appendChild(countdownOverlay)
+
+      let count = 3
+      const countdownInterval = setInterval(() => {
+        count--
+        if (count > 0) {
+          countdownNumber.textContent = count
+        } else if (count === 0) {
+          countdownNumber.textContent = "GO!"
+          countdownNumber.style.color = "#ff4444"
+        } else {
+          clearInterval(countdownInterval)
+          countdownOverlay.remove()
+          if (callback) callback()
+        }
+      }, 1000)
+    }
+  }
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
   new SnakeEnglishGame()

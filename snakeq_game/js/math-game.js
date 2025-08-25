@@ -591,6 +591,7 @@ class SnakeMathGame {
   }
 
   moveSnake() {
+    if (this.isCountdownActive) return  // 🚫 don’t move while countdown is running
     const newSnake = [...this.snake]
     const head = { ...newSnake[0] }
 
@@ -1050,7 +1051,11 @@ showGameOver() {
   }
 
   startCountdown(callback) {
-    this.showCountdown(callback)
+    this.isCountdownActive = true  // lock movement
+    this.showCountdown(() => {
+      this.isCountdownActive = false // unlock after countdown
+      if (callback) callback()
+    })
   }
 
   showCountdown(callback) {

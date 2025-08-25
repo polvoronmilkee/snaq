@@ -51,11 +51,16 @@ class LandingPage {
   }
 
   playClickSound() {
-    if (this.soundEnabled) {
-      this.clickSound.currentTime = 0
-      this.clickSound.play().catch((e) => console.log("Click sound failed:", e))
+    if (this.soundEnabled && this.clickSound) {
+      const sfx = this.clickSound.cloneNode(true) // new audio element
+      sfx.volume = 0.5
+      sfx.play().catch(e => console.log("Click sound failed:", e))
+
+      // optional cleanup once it’s done playing
+      sfx.addEventListener("ended", () => sfx.remove())
     }
   }
+
 
   bindEvents() {
     const categoryBtns = document.querySelectorAll(".category-btn")
@@ -137,6 +142,35 @@ class LandingPage {
     const modal = document.getElementById("gameModeModal")
     const cancelBtn = document.getElementById("cancelBtn")
     const startBtn = document.getElementById("startGameBtn")
+
+    if (startBtn) {
+      startBtn.addEventListener("click", () => {
+        this.playClickSound()
+        this.startGame()
+      })
+    }
+
+    if (startGameBtn) {
+      startGameBtn.addEventListener("click", () => {
+        this.playClickSound()
+        setTimeout(() => this.startGame(), 500)
+
+      })
+    }
+
+    if (copyrightBtn) {
+      copyrightBtn.addEventListener("click", () => {
+        this.playClickSound()
+        this.showCopyright()
+      })
+    }
+
+    if (closeCopyright) {
+      closeCopyright.addEventListener("click", () => {
+        this.playClickSound()
+        copyrightModal.classList.add("hidden")
+      })
+    }
 
     if (cancelBtn) {
       cancelBtn.addEventListener("click", () => {
