@@ -202,6 +202,9 @@ class SnakeMathGame {
     this.playAgainBtn = document.getElementById("play-again-btn")
     this.menuBtn = document.getElementById("menu-btn")
     this.restartConfirm = document.getElementById("restart-confirm")
+    this.playAgainConfirm = document.getElementById("play-again-confirm")
+    this.playAgainConfirmBtn = document.getElementById("confirm-play-again")
+    this.cancelPlayAgain = document.getElementById("cancel-play-again")
     this.confirmRestartBtn = document.getElementById("confirm-restart")
     this.cancelRestartBtn = document.getElementById("cancel-restart")
     this.timerDisplay = document.getElementById("timer-display")
@@ -267,11 +270,17 @@ class SnakeMathGame {
 
     this.playAgainBtn.addEventListener("click", () => {
       this.playSound("click")
-      this.showRestartConfirm()
+      this.playAgainConfirm.classList.remove("hidden");
     })
     this.menuBtn.addEventListener("click", () => {
       this.playSound("click")
       window.location.href = "../index.html"
+    })
+    this.playAgainConfirmBtn.addEventListener("click", () => {
+      this.playSound("click")
+      this.playAgainConfirm.classList.add("hidden") // ✅
+      this.gameOverOverlay.classList.add("hidden")  // ✅
+      this.confirmRestart() // ✅ call method properly
     })
     this.confirmRestartBtn.addEventListener("click", () => {
       this.playSound("click")
@@ -281,7 +290,10 @@ class SnakeMathGame {
       this.playSound("click")
       this.cancelRestart()
     })
-
+    this.cancelPlayAgain.addEventListener("click", () => {
+      this.playSound("click")  
+      this.playAgainConfirm.classList.add("hidden");
+    });
     this.helpBtn.addEventListener("click", () => {
       this.playSound("click")
       document.getElementById("esc-menu").classList.add("hidden"); 
@@ -732,7 +744,9 @@ class SnakeMathGame {
     this.gameOverOverlay.classList.add("hidden")
     this.restartConfirm.classList.add("hidden")
   }
-
+  showPlayAgainConfirm() {
+    this.restartConfirm.classList.remove("hidden")
+  }
   showRestartConfirm() {
     this.restartConfirm.classList.remove("hidden")
   }
