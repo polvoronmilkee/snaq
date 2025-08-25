@@ -35,8 +35,6 @@ constructor() {
     this.CANVAS_HEIGHT = 480
     this.GRID_WIDTH = Math.floor(this.CANVAS_WIDTH / this.GRID_SIZE)
     this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
-    // Playfield margin (0 = use full grid; prevents early wrap)
-    this.playMargin = 0
 
     this.sounds = {
     biteApple: new Audio("../sounds/bite-apple.mp3"),
@@ -78,7 +76,6 @@ constructor() {
     this.waitingForMove = true
     this.paused = false
     this.showConfirm = false
-    this.inputLocked = false
 
     this.baseSpeed = this.difficultySettings.baseSpeed
     this.speed = this.baseSpeed
@@ -121,9 +118,6 @@ constructor() {
     // Sprint bar UI rectangle (pixels)
     this.sprintBar = { x: 16, y: 16, width: 160, height: 14 }
 
-    // Minimum spawn distance for apples from the snake head (grid cells)
-    this.minAppleDistanceFromHead = 3
-
     this.initDOM()
     this.init()
 }
@@ -145,12 +139,13 @@ loadSprites() {
     "SnakeBodyRight",
     "SnakeCornerLeftDown",
     "SnakeCornerRightUp",
-    "SnakeCornerLeftUp", 
+    "SnakeCornerLeftUp",
     "SnakeCornerRightDown",
     "apple",
     "appleA-pink",
     "appleB-yellow",
     "appleC-blue",
+    "shield"
     ]
 
     spriteNames.forEach((name) => {
@@ -219,7 +214,7 @@ initDOM() {
     this.closeInstructionsBtn = document.getElementById("close-instructions")
 
     if (this.questionElement) {
-    this.questionElement.style.fontSize = "18px"
+    this.questionElement.style.fontSize = "15px"
     this.questionElement.style.lineHeight = "1.4"
     }
 }
@@ -670,10 +665,6 @@ handleKeyDown(e) {
     return
     }
 
-    // If an input already processed this frame, ignore movement keys
-    const isMovementKey = ["w","arrowup","s","arrowdown","a","arrowleft","d","arrowright"].includes(key)
-    if (this.inputLocked && isMovementKey) return
-
     // WASD and Arrow key movement
     switch (key) {
     case "w":
@@ -707,7 +698,6 @@ handleKeyDown(e) {
     }
 
     if (moved) {
-    this.inputLocked = true
     this.playSound("snakeTurns")
     if (this.waitingForMove) {
         this.waitingForMove = false
@@ -720,11 +710,10 @@ randInt(max) {
 }
 
 getRandomPosition() {
-    const minX = this.playMargin
-    const maxX = this.GRID_WIDTH - 1 - this.playMargin
-    const minY = this.playMargin
-    const maxY = this.GRID_HEIGHT - 1 - this.playMargin
-    return { x: minX + this.randInt(maxX - minX + 1), y: minY + this.randInt(maxY - minY + 1) }
+    return {
+    x: this.randInt(this.GRID_WIDTH),
+    y: this.randInt(this.GRID_HEIGHT),
+    }
 }
 
 getRandomDirection() {
@@ -744,17 +733,12 @@ generateApples(question) {
     question.options.forEach((option, index) => {
     let x, y
     do {
-        const minX = this.playMargin
-        const maxX = this.GRID_WIDTH - 1 - this.playMargin
-        const minY = this.playMargin
-        const maxY = this.GRID_HEIGHT - 1 - this.playMargin
-        x = minX + this.randInt(maxX - minX + 1)
-        y = minY + this.randInt(maxY - minY + 1)
+        x = this.randInt(this.GRID_WIDTH)
+        y = this.randInt(this.GRID_HEIGHT)
     } while (
         usedPositions.has(`${x},${y}`) ||
         this.snake.some((segment) => segment.x === x && segment.y === y) ||
-        this.cellIntersectsRect(x, y, this.sprintBar) ||
-        this.isCellTooCloseToHead(x, y, this.minAppleDistanceFromHead)
+        this.cellIntersectsRect(x, y, this.sprintBar)
     )
 
     usedPositions.add(`${x},${y}`)
@@ -817,14 +801,10 @@ moveSnake() {
     head.x += this.direction.x
     head.y += this.direction.y
 
-    const minX = this.playMargin
-    const maxX = this.GRID_WIDTH - 1 - this.playMargin
-    const minY = this.playMargin
-    const maxY = this.GRID_HEIGHT - 1 - this.playMargin
-    if (head.x < minX) head.x = maxX
-    if (head.x > maxX) head.x = minX
-    if (head.y < minY) head.y = maxY
-    if (head.y > maxY) head.y = minY
+    if (head.x < 0) head.x = this.GRID_WIDTH - 1
+    if (head.x >= this.GRID_WIDTH) head.x = 0
+    if (head.y < 0) head.y = this.GRID_HEIGHT - 1
+    if (head.y >= this.GRID_HEIGHT) head.y = 0
 
     if (newSnake.some((segment) => segment.x === head.x && segment.y === head.y)) {
     this.lives--
@@ -847,7 +827,7 @@ moveSnake() {
     if (this.shieldPickup && head.x === this.shieldPickup.x && head.y === this.shieldPickup.y) {
     this.hasShield = true
     this.shieldPickup = null
-    this.showNotification("Shield acquired! 🛡️", "correct")
+    this.showNotification("Shield acquired! ✨", "correct")
     }
 
     const eatenApple = this.apples.find((apple) => apple.x === head.x && apple.y === head.y)
@@ -883,7 +863,7 @@ moveSnake() {
         if (this.hasShield) {
         this.hasShield = false
         this.snakeFace = "normal"
-        this.showNotification("Shield saved you! 🛡️", "correct")
+        this.showNotification("Shield saved you!✨", "correct")
         // Remove the eaten wrong apple and replace
         this.apples = this.apples.filter((apple) => apple !== eatenApple)
         this.addNewApple()
@@ -930,7 +910,6 @@ moveSnake() {
 
     this.snake = newSnake
     this.updateUI()
-    this.inputLocked = false
 }
 
 addNewApple() {
@@ -951,17 +930,9 @@ const options = this.currentQuestion.options.slice(0, 4)
 options.forEach((option, index) => {
     let x, y
     do {
-    const minX = this.playMargin
-    const maxX = this.GRID_WIDTH - 1 - this.playMargin
-    const minY = this.playMargin
-    const maxY = this.GRID_HEIGHT - 1 - this.playMargin
-    x = minX + this.randInt(maxX - minX + 1)
-    y = minY + this.randInt(maxY - minY + 1)
-    } while (
-    usedPositions.has(`${x},${y}`) ||
-    this.cellIntersectsRect(x, y, this.sprintBar) ||
-    this.isCellTooCloseToHead(x, y, this.minAppleDistanceFromHead)
-    )
+    x = this.randInt(this.GRID_WIDTH)
+    y = this.randInt(this.GRID_HEIGHT)
+    } while (usedPositions.has(`${x},${y}`) || this.cellIntersectsRect(x, y, this.sprintBar))
 
     usedPositions.add(`${x},${y}`)
 
@@ -989,7 +960,7 @@ spawnShieldIfEligible() {
     } while (used.has(`${x},${y}`))
     this.shieldPickup = { x, y }
     this.shieldSpawned = true
-    this.showNotification("Shield appeared! 🛡️", "correct")
+    this.showNotification("Shield appeared!✨", "correct")
     }
 }
 
@@ -1123,26 +1094,6 @@ draw() {
 
     this.ctx.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT)
 
-    // Draw playfield bounds matching logic
-    const pfLeft = this.playMargin * this.GRID_SIZE
-    const pfTop = this.playMargin * this.GRID_SIZE
-    const pfRight = (this.GRID_WIDTH - this.playMargin) * this.GRID_SIZE
-    const pfBottom = (this.GRID_HEIGHT - this.playMargin) * this.GRID_SIZE
-    const pfWidth = pfRight - pfLeft
-    const pfHeight = pfBottom - pfTop
-
-    if (this.playMargin > 0) {
-    this.ctx.fillStyle = "rgba(0,0,0,0.15)"
-    this.ctx.fillRect(0, 0, pfLeft, this.CANVAS_HEIGHT)
-    this.ctx.fillRect(pfRight, 0, this.CANVAS_WIDTH - pfRight, this.CANVAS_HEIGHT)
-    this.ctx.fillRect(pfLeft, 0, pfWidth, pfTop)
-    this.ctx.fillRect(pfLeft, pfBottom, pfWidth, this.CANVAS_HEIGHT - pfBottom)
-    }
-
-    this.ctx.strokeStyle = "#000"
-    this.ctx.lineWidth = 2
-    this.ctx.strokeRect(pfLeft, pfTop, pfWidth, pfHeight)
-
     // Draw snake using sprites
     this.snake.forEach((segment, index) => {
     const x = segment.x * this.GRID_SIZE;
@@ -1250,26 +1201,13 @@ if (bodySprite?.complete) {
 
 });
 
-    // Draw shield pickup if present
-    if (this.shieldPickup) {
+    // Use shield pickup icon if present
+   if (this.shieldPickup) {
     const px = this.shieldPickup.x * this.GRID_SIZE
     const py = this.shieldPickup.y * this.GRID_SIZE
-    this.ctx.fillStyle = "#1e90ff"
-    this.ctx.fillRect(px, py, this.GRID_SIZE, this.GRID_SIZE)
-    this.ctx.strokeStyle = "#000"
-    this.ctx.lineWidth = 3
-    this.ctx.strokeRect(px, py, this.GRID_SIZE, this.GRID_SIZE)
-    this.ctx.strokeStyle = "#a6d8ff"
-    this.ctx.lineWidth = 2
-    this.ctx.strokeRect(px + 2, py + 2, this.GRID_SIZE - 4, this.GRID_SIZE - 4)
-    const iconSize = Math.max(12, Math.floor(this.GRID_SIZE * 0.8))
-    this.ctx.font = `${iconSize}px "Press Start 2P", monospace`
-    this.ctx.textAlign = "center"
-    this.ctx.textBaseline = "middle"
-    this.ctx.fillStyle = "#000"
-    this.ctx.fillText("🛡️", px + this.GRID_SIZE / 2 + 1, py + this.GRID_SIZE / 2 + 1)
-    this.ctx.fillStyle = "#fff"
-    this.ctx.fillText("🛡️", px + this.GRID_SIZE / 2, py + this.GRID_SIZE / 2)
+
+    const shieldSprite = this.sprites["shield"]
+    this.ctx.drawImage(shieldSprite, px, py, this.GRID_SIZE, this.GRID_SIZE)
     }
 
     this.apples.forEach((apple) => {
@@ -1332,7 +1270,9 @@ if (bodySprite?.complete) {
     }
 
     // Sprint/stamina bar
+    const marginDown = 20 
     const bar = this.sprintBar
+    const barY = bar.y + marginDown
     this.ctx.fillStyle = "#222"
     this.ctx.fillRect(bar.x, bar.y, bar.width, bar.height)
     this.ctx.strokeStyle = "#000"
@@ -1348,9 +1288,9 @@ if (bodySprite?.complete) {
     this.ctx.textAlign = "left"
     this.ctx.textBaseline = "bottom"
     this.ctx.fillStyle = "#000"
-    this.ctx.fillText("SPRINT", bar.x + 7, bar.y - 1)
+    this.ctx.fillText("SPRINT", bar.x + 7, barY - 5.4)
     this.ctx.fillStyle = "#fff"
-    this.ctx.fillText("SPRINT", bar.x + 6, bar.y - 2)
+    this.ctx.fillText("SPRINT", bar.x + 6, barY - 7)
 }
 
 gameLoop(timestamp = 0) {
@@ -1463,7 +1403,7 @@ showCountdown(callback) {
     } else if (count === 0) {
         countdownNumber.textContent = "GO!"
         countdownNumber.style.color = "#ff4444"
-    } else {
+    } else {t
         clearInterval(countdownInterval)
         countdownOverlay.remove()
         if (callback) callback()
@@ -1483,18 +1423,6 @@ cellIntersectsRect(gridX, gridY, rect) {
     const cY2 = cellY + cellH
     return !(cX2 <= rect.x || rX2 <= cellX || cY2 <= rect.y || rY2 <= cellY)
 }
-  
-  // Prevent apples spawning too close to the snake's head (wrap-aware Manhattan distance)
-  isCellTooCloseToHead(gridX, gridY, minDistance) {
-    if (!this.snake || this.snake.length === 0) return false
-    const head = this.snake[0]
-    const dx = Math.abs(gridX - head.x)
-    const dy = Math.abs(gridY - head.y)
-    const wrapDx = Math.min(dx, this.GRID_WIDTH - dx)
-    const wrapDy = Math.min(dy, this.GRID_HEIGHT - dy)
-    const manhattan = wrapDx + wrapDy
-    return manhattan <= (minDistance ?? 2)
-  }
 }
 
     const copyrightModal = document.getElementById("copyright-modal");
