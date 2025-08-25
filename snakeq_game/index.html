@@ -3,146 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Snake Game</title>
-    <link rel="stylesheet" href="/snakeq_game/snakeq_css/styles.css">
+    <title>SnaQ - Quiz Your Brain, Grow Your Snake!</title>
+    <link rel="icon" type="image/png" href="/snakeq_game/assets/snake-icon.png">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Main Menu Screen -->
-    <div id="main-menu" class="screen">
-        <div class="menu-container">
-            <h1>The Snake Game</h1>
-            <div class="menu-buttons">
-                <button id="play-btn" class="menu-btn">Play Game</button>
-                <button id="settings-btn" class="menu-btn">Settings</button>
-                <button id="quit-btn" class="menu-btn">Quit</button>
+    <header class="sticky-header">
+        <div class="header-left">
+            <div class="header-logo">
+                <img src="assets/snake-icon.png" alt="SnaQ Logo" />
             </div>
+        </div>
+        <div class="header-controls">
+            <button class="header-btn" id="help-btn" title="Instructions">?</button>
+            <button class="header-btn" id="sound-btn" title="Sound Effects">🔊</button>
+            <button class="header-btn" id="music-btn" title="Background Music">🎵</button>
+            <button class="header-btn" id="copyright-btn" title="Copyright Credits">©️</button>
+        </div>
+    </header>
+
+    <!-- Instructions modal -->
+    <div id="instructions-modal" class="instructions-modal hidden">
+        <div class="instructions-content pixel-border">
+            <h3>How to Play SnaQ</h3>
+            
+            <h4>🎯 Pick Your Adventure</h4>
+            <p>Choose Mathematics or English. Answer questions to help your hungry snake grow!</p>
+            
+            <h4>🕹️ Controls</h4>
+            <ul>
+                <li>Use WASD or Arrow Keys to slither around</li>
+                <li>Hold Shift to turbo sprint (don’t run out of energy!)</li>
+            </ul>
+            
+            <h4>🍎 Your Mission</h4>
+            <ul>
+                <li>Read the question at the top</li>
+                <li><strong>Eat the colored apple that matches your answer choice!</strong></li>
+                <li>Correct bites give points and make your snake longer</li>
+                <li>Wrong bites make your snake say “yuck!” and cost a life</li>
+            </ul>
+            
+            <h4>🛡️ Power‑Ups</h4>
+            <ul>
+                <li>Shield: Spawns when you’re low on lives. Grab it to block one mistake!</li>
+                <li>Sprint Bar: Refills over time. Zoom carefully so you don’t miss apples.</li>
+            </ul>
+            
+            <h4>🏆 Game Modes</h4>
+            <ul>
+                <li><strong>Quiz:</strong> Get 10 right to win</li>
+                <li><strong>Endless:</strong> How long can you grow?</li>
+                <li><strong>Timed:</strong> 60 seconds of speedy snacking</li>
+            </ul>
+            
+            <p>Tip: Think fast, slither smart, and have fun. Let’s make your brain and snake super strong!</p>
+            
+            <button class="close-instructions" id="close-instructions">Got It!</button>
         </div>
     </div>
 
-    <!-- Game Options Screen -->
-    <div id="game-options" class="screen hidden">
-        <div class="menu-container">
-            <h1>Game Options</h1>
-            <div class="options-section">
-                <h2>Select Difficulty</h2>
-                <div class="difficulty-buttons">
-                    <button class="option-btn" data-difficulty="easy">Easy</button>
-                    <button class="option-btn" data-difficulty="medium">Medium</button>
-                    <button class="option-btn" data-difficulty="hard">Hard</button>
-                </div>
-            </div>
-            <div class="options-section">
-                <h2>Select Game Mode</h2>
-                <div class="mode-buttons">
-                    <button id="mathModeBtn" class="option-btn active">Math Mode</button>
-                    <button id="englishModeBtn" class="option-btn">English Mode</button>
-                </div>
-            </div>
-            <div class="menu-buttons">
-                <button id="start-game" class="menu-btn">Start Game</button>
-                <button id="back-to-menu" class="menu-btn">Back to Menu</button>
-            </div>
-        </div>
+    <!-- COPYRIGHT MODAL -->
+    <div id="copyright-modal" class="instructions-modal hidden">
+    <div class="instructions-content pixel-border">
+        <h3>Copyright & Credits</h3>
+
+        <h4>🎵 Music Credit</h4>
+        <p>
+        ► Music Credit: <strong>Artificial.Music</strong><br>
+        Track Name: <em>"And So It Begins"</em><br>
+        Music By: Artificial Music @ <a href="https://www.youtube.com/c/artificial-music" target="_blank">/ artificial-music</a><br>
+        YT Channel HERE: <a href="https://www.youtube.com/c/smarttoaster" target="_blank">/ smarttoaster</a><br>
+        Original upload HERE: <a href="https://youtu.be/JpoEFiAJdxo" target="_blank">/ and-so-it-begins</a><br>
+        License for commercial use: Creative Commons Attribution 3.0 Unported (CC BY 3.0).<br>
+        Full License HERE: <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">View License</a><br>
+        Music promoted by <a href="https://goo.gl/fh3rEJ" target="_blank">NCM</a>
+        </p>
+
+        <button class="close-instructions" id="close-copyright">Close</button>
+    </div>
     </div>
 
-    <!-- Game Screen -->
-    <div id="game-screen" class="screen hidden">
-        <div class="game-container">
-            <div class="game-board">
-                <div class="game-header">
-                    <button id="pause-btn" class="icon-btn">⏸️</button>
-                    <h1>The Snake Game</h1>
-                    <button id="menu-btn" class="icon-btn">≡</button>
+
+    <div class="landing-container">
+        <!-- Added background image -->
+        <div class="pixel-background" style="background-image: url('assets/bgback.png');">
+            <div class="pixel-trees"></div>
+            <div class="pixel-grass"></div>
+        </div>
+        <!-- Main content -->
+        <div class="main-content">
+            <header class="game-header">
+                <div class="logo-container">
+                    <img src="assets/snake-icon-boxed.png" alt="Snake" class="logo-icon" />
+                </div>
+                <p class="tagline">Quiz Your Brain, Grow Your Snake!</p>
+            </header>
+
+            <!-- Category selection -->
+            <div class="category-section">
+                <div class="pixel-sign">
+                    <h2>Choose Your Quest</h2>
                 </div>
                 
-                <!-- HUD -->
-                <div class="hud">
-                    <div class="score">
-                        Score: <span id="score-value">0</span>
-                    </div>
-                    <div class="lives">
-                        Lives: <span id="lives-value">3</span>
-                    </div>
-                    <div class="correct">
-                        Correct: <span id="correct-value">0</span>/10
-                    </div>
+                <div class="category-buttons">
+                    <button class="category-btn math-btn" data-category="math">
+                        <img src="assets/math-icon.png" alt="Math" class="btn-icon" />
+                        <span>Mathematics</span>
+                    </button>
+                    <button class="category-btn english-btn" data-category="english">
+                        <img src="assets/english-icon.png" alt="English" class="btn-icon" />
+                        <span>English</span>
+                    </button>
                 </div>
-
-                <!-- Question Section -->
-                <div class="question-section">
-                    <div class="question" id="question-display">Get Ready!</div>
-                    <div class="instruction">Eat the apple with the correct answer!</div>
-                </div>
-
-                <!-- Game Canvas -->
-                <div class="canvas-container">
-                    <canvas id="game-canvas" width="650" height="350"></canvas>
-                    
-                    <!-- Game Over Overlay -->
-                    <div id="game-over-overlay" class="overlay hidden">
-                        <div class="overlay-content">
-                            <h2 id="game-over-title">Game Over 💀</h2>
-                            <p id="final-score">Final Score: 0</p>
-                            <div class="game-over-buttons">
-                                <button id="play-again-btn" class="btn btn-green">Play Again</button>
-                                <button id="main-menu-btn" class="btn btn-blue">Main Menu</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Pause Menu -->
-                    <div id="pause-menu" class="overlay hidden">
-                        <div class="overlay-content">
-                            <h2>Game Paused</h2>
-                            <div class="pause-buttons">
-                                <button id="resume-btn" class="btn btn-green">Resume</button>
-                                <button id="restart-btn" class="btn btn-blue">Restart</button>
-                                <button id="settings-game-btn" class="btn">Settings</button>
-                                <button id="quit-game-btn" class="btn btn-red">Quit to Menu</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Instructions -->
-                <div class="instructions">
-                    <p>Use WASD or Arrow keys to move • Eat correct answers to grow • Avoid wrong answers!</p>
-                    <p>All apples are red - look at the numbers to find the correct answer!</p>
-                </div>
+                
+                <p class="coming-soon">... more quests coming soon!</p>
+                
+                <button class="play-btn" id="playBtn" disabled>
+                    <img src="assets/play-icon.png" alt="Play" class="btn-icon" />
+                    <span>START GAME</span>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Settings Screen -->
-    <div id="settings-screen" class="screen hidden">
-        <div class="menu-container">
-            <h1>Settings</h1>
-            <div class="settings-section">
-                <h2>Game Settings</h2>
-                <div class="setting">
-                    <label for="sound-toggle">Sound Effects:</label>
-                    <input type="checkbox" id="sound-toggle" checked>
-                </div>
-                <div class="setting">
-                    <label for="music-toggle">Background Music:</label>
-                    <input type="checkbox" id="music-toggle" checked>
-                </div>
-                <div class="setting">
-                    <label for="controls-select">Control Scheme:</label>
-                    <select id="controls-select">
-                        <option value="both">WASD + Arrow Keys</option>
-                        <option value="wasd">WASD Only</option>
-                        <option value="arrows">Arrow Keys Only</option>
-                    </select>
+    <div id="gameModeModal" class="modal hidden">
+        <div class="modal-content pixel-border">
+            <h3>Game Settings</h3>
+            
+            <div class="setting-group">
+                <h4>Game Mode</h4>
+                <div class="mode-buttons">
+                    <button class="mode-btn pixel-btn" data-mode="quiz">Quiz Mode</button>
+                    <button class="mode-btn pixel-btn" data-mode="endless">Endless Mode</button>
+                    <button class="mode-btn pixel-btn" data-mode="timed">Timed (1 min)</button>
                 </div>
             </div>
-            <div class="menu-buttons">
-                <button id="back-from-settings" class="menu-btn">Back</button>
-                <button id="save-settings" class="menu-btn">Save Settings</button>
+            
+            <div class="setting-group">
+                <h4>Difficulty Level</h4>
+                <div class="difficulty-buttons">
+                    <button class="difficulty-btn pixel-btn easy" data-difficulty="easy">Easy</button>
+                    <button class="difficulty-btn pixel-btn medium" data-difficulty="medium">Medium</button>
+                    <button class="difficulty-btn pixel-btn hard" data-difficulty="hard">Hard</button>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button id="startGameBtn" class="start-btn pixel-btn" disabled>Start Game</button>
+                <button id="cancelBtn" class="cancel-btn pixel-btn">Cancel</button>
             </div>
         </div>
     </div>
 
-    <script src="/snakeq_game/snakeq_js/script.js"></script>
+    <script src="js/landing.js"></script>
 </body>
 </html>
