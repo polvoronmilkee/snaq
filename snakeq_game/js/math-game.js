@@ -46,7 +46,6 @@ class SnakeMathGame {
       youWon: new Audio("../sounds/you-won.mp3"),
       bgMusic: new Audio("../sounds/music.mp3"),
       click: new Audio("../sounds/click.mp3"),
-      countdown: new Audio("../sounds/countdown.mp3"),
     }
 
     this.sounds.bgMusic.volume = 0.2
@@ -94,6 +93,16 @@ class SnakeMathGame {
     this.lastFrameTime = 0
     this.moveAccumulator = 0
     this.gameLoopId = null
+
+    // Sprint (temporary speed boost)
+    this.sprint = {
+      active: false,
+      energy: 1,            // 0..1 current stamina
+      maxEnergy: 1,
+      drainPerSecond: 1.2,  // stamina drain while sprinting (faster burn)
+      regenPerSecond: 0.18, // stamina regen while not sprinting (slower refill)
+      multiplier: 1.8       // speed multiplier while sprinting
+    }
 
     this.initDOM()
     this.init()
@@ -178,6 +187,7 @@ class SnakeMathGame {
     this.cancelRestartBtn = document.getElementById("cancel-restart")
     this.timerDisplay = document.getElementById("timer-display")
     this.timerValue = document.getElementById("timer-value")
+
     this.heartsContainer = document.getElementById("hearts-container")
     this.helpBtn = document.getElementById("help-btn")
     this.soundBtn = document.getElementById("sound-btn")
@@ -190,6 +200,7 @@ class SnakeMathGame {
     this.initGame()
     this.bindEvents()
     this.gameLoop()
+
     this.initializeAudioStates()
   }
 
@@ -226,6 +237,7 @@ class SnakeMathGame {
 
   bindEvents() {
     document.addEventListener("keydown", (e) => this.handleKeyDown(e))
+    document.addEventListener("keyup", (e) => this.handleKeyUp(e))
 
     this.playAgainBtn.addEventListener("click", () => {
       this.playSound("click")
@@ -418,6 +430,10 @@ class SnakeMathGame {
       this.targetElement.textContent = this.targetAnswers
     }
 
+    // Reset sprint state each new game
+    this.sprint.active = false
+    this.sprint.energy = this.sprint.maxEnergy
+
     this.updateUI()
     this.hideOverlays()
   }
@@ -471,6 +487,14 @@ class SnakeMathGame {
       return
     }
 
+    // Sprint activation with Shift (left or right)
+    if ((code === "ShiftLeft" || code === "ShiftRight") && !this.paused) {
+      if (this.sprint.energy > 0) {
+        this.sprint.active = true
+      }
+      return
+    }
+
     // If an input has already been processed for this move window, ignore further movement keys
     const isMovementKey = ["w","arrowup","s","arrowdown","a","arrowleft","d","arrowright"].includes(key)
     if (this.inputLocked && isMovementKey) return
@@ -513,6 +537,13 @@ class SnakeMathGame {
       if (this.waitingForMove) {
         this.waitingForMove = false
       }
+    }
+  }
+
+  handleKeyUp(e) {
+    const code = e.code
+    if (code === "ShiftLeft" || code === "ShiftRight") {
+      this.sprint.active = false
     }
   }
 
@@ -1018,6 +1049,34 @@ showGameOver() {
       this.ctx.fillStyle = "#fff"
       this.ctx.fillText("PAUSED", this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2)
     }
+
+    // Draw sprint/stamina bar (top-left)
+    const barWidth = 160
+    const barHeight = 14
+    const barX = 16
+    const barY = 16
+    // Background
+    this.ctx.fillStyle = "#222"
+    this.ctx.fillRect(barX, barY, barWidth, barHeight)
+    this.ctx.strokeStyle = "#000"
+    this.ctx.lineWidth = 3
+    this.ctx.strokeRect(barX, barY, barWidth, barHeight)
+    // Fill
+    const fillWidth = Math.floor(barWidth * (this.sprint.energy / this.sprint.maxEnergy))
+    this.ctx.fillStyle = this.sprint.active ? "#ffd166" : "#06d6a0"
+    this.ctx.fillRect(barX, barY, fillWidth, barHeight)
+    // Inner border
+    this.ctx.strokeStyle = "#fff"
+    this.ctx.lineWidth = 1
+    this.ctx.strokeRect(barX + 2, barY + 2, barWidth - 4, barHeight - 4)
+    // Label
+    this.ctx.font = "10px 'Press Start 2P', monospace"
+    this.ctx.textAlign = "left"
+    this.ctx.textBaseline = "bottom"
+    this.ctx.fillStyle = "#000"
+    this.ctx.fillText("SPRINT", barX + 7, barY - 1)
+    this.ctx.fillStyle = "#fff"
+    this.ctx.fillText("SPRINT", barX + 6, barY - 2)
   }
 
   gameLoop(timestamp = 0) {
@@ -1026,9 +1085,24 @@ showGameOver() {
     const delta = (timestamp - this.lastFrameTime) / 1000
     this.lastFrameTime = timestamp
 
+    // Update sprint energy each frame
+    if (!this.paused) {
+      if (this.sprint.active) {
+        this.sprint.energy -= this.sprint.drainPerSecond * delta
+        if (this.sprint.energy <= 0) {
+          this.sprint.energy = 0
+          this.sprint.active = false
+        }
+      } else {
+        this.sprint.energy += this.sprint.regenPerSecond * delta
+        if (this.sprint.energy > this.sprint.maxEnergy) this.sprint.energy = this.sprint.maxEnergy
+      }
+    }
+
     if (!this.waitingForMove && !this.paused) {
       this.moveAccumulator += delta
-      const moveInterval = 1 / this.speed
+      const effectiveSpeed = this.speed * (this.sprint.active && this.sprint.energy > 0 ? this.sprint.multiplier : 1)
+      const moveInterval = 1 / effectiveSpeed
 
       while (this.moveAccumulator >= moveInterval) {
         this.moveSnake()
@@ -1065,14 +1139,6 @@ showGameOver() {
 
   startCountdown(callback) {
     this.isCountdownActive = true  // lock movement
-
-     // play countdown sound effect
-    if (this.soundEnabled && this.sounds.countdown) {
-      this.sounds.countdown.currentTime = 0
-      this.sounds.countdown.play()
-        .catch(e => console.log("Countdown sound failed:", e))
-    }
-    
     this.showCountdown(() => {
       this.isCountdownActive = false // unlock after countdown
       if (callback) callback()
