@@ -1163,7 +1163,9 @@ if (dirPrev.x === dirNext.x) {
       (dirNext.y === this.GRID_HEIGHT - 1 && dirPrev.x === -1) || // lower edge → upper edge → right
       (dirNext.x === - (this.GRID_WIDTH - 1) && dirPrev.y === 1) || // left edge → right edge → up
       (dirNext.y === -1 && dirPrev.x === this.GRID_WIDTH - 1) || // down → right edge → left edge
-      (dirNext.x === 1 && dirPrev.y === - (this.GRID_HEIGHT - 1)) // left → upper edge → lower edge
+      (dirNext.x === 1 && dirPrev.y === - (this.GRID_HEIGHT - 1)) || // left → upper edge → lower edge
+      (dirNext.y === this.GRID_HEIGHT - 1 && dirPrev.x === this.GRID_WIDTH - 1) || // Righter Up
+      (dirNext.x === - (this.GRID_WIDTH - 1) && dirPrev.y === - (this.GRID_HEIGHT - 1)) // Upper Right
     ) {
       bodySprite = this.sprites.SnakeCornerLeftDown;
 
@@ -1173,7 +1175,9 @@ if (dirPrev.x === dirNext.x) {
       (dirNext.y === this.GRID_HEIGHT - 1 && dirPrev.x === 1) || // lower edge → upper edge → left
       (dirNext.x === this.GRID_WIDTH - 1 && dirPrev.y === 1) || // right edge → left edge → up
       (dirNext.y === -1 && dirPrev.x === - (this.GRID_WIDTH - 1)) || // down → left edge → right edge
-      (dirNext.x === -1 && dirPrev.y === - (this.GRID_HEIGHT - 1)) // right → upper edge → lower edge
+      (dirNext.x === -1 && dirPrev.y === - (this.GRID_HEIGHT - 1)) || // right → upper edge → lower edge
+      (dirNext.y === this.GRID_HEIGHT - 1 && dirPrev.x === - (this.GRID_WIDTH - 1)) || // Lefter Down
+      (dirNext.x === this.GRID_WIDTH - 1 && dirPrev.y === - (this.GRID_HEIGHT - 1)) // Lower Left
     ) {
     bodySprite = this.sprites.SnakeCornerRightDown;
     } else if (
@@ -1182,7 +1186,9 @@ if (dirPrev.x === dirNext.x) {
     (dirNext.y === - (this.GRID_HEIGHT - 1) && dirPrev.x === -1) || // upper edge → lower edge → right
     (dirNext.x === - (this.GRID_WIDTH - 1) && dirPrev.y === -1) || // left edge → right edge → down
     (dirNext.y === 1 && dirPrev.x === this.GRID_WIDTH - 1) || // up → right edge → left edge
-    (dirNext.x === 1 && dirPrev.y === this.GRID_HEIGHT - 1) // left → lower edge → upper edge
+    (dirNext.x === 1 && dirPrev.y === this.GRID_HEIGHT - 1) || // left → lower edge → upper edge
+    (dirNext.y === - (this.GRID_HEIGHT - 1) && dirPrev.x === this.GRID_WIDTH - 1) || // Righter Down
+    (dirNext.x === - (this.GRID_WIDTH - 1) && dirPrev.y === this.GRID_HEIGHT - 1) // Lower Right
     ) {
     bodySprite = this.sprites.SnakeCornerLeftUp;
     } else if (
@@ -1191,7 +1197,9 @@ if (dirPrev.x === dirNext.x) {
     (dirNext.y === - (this.GRID_HEIGHT - 1) && dirPrev.x === 1) || // upper edge → lower edge → left
     (dirNext.x === this.GRID_WIDTH - 1 && dirPrev.y === -1) || // right edge → left edge → down
     (dirNext.y === 1 && dirPrev.x === - (this.GRID_WIDTH - 1)) || // up → left edge → right edge
-    (dirNext.x === -1 && dirPrev.y === this.GRID_HEIGHT - 1) // right → lower edge → upper edge
+    (dirNext.x === -1 && dirPrev.y === this.GRID_HEIGHT - 1) || // right → lower edge → upper edge
+    (dirNext.y === - (this.GRID_HEIGHT - 1) && dirPrev.x === - (this.GRID_WIDTH - 1)) || // Lefter Up
+    (dirNext.x === this.GRID_WIDTH - 1 && dirPrev.y === this.GRID_HEIGHT - 1) // Upper Left
     ) {
     bodySprite = this.sprites.SnakeCornerRightUp;
     }
