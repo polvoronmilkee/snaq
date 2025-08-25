@@ -77,6 +77,8 @@ class SnakeMathGame {
     this.paused = false
     this.showConfirm = false
     this.inputLocked = false
+    this.countdownActive = false
+    this.escMenuActive = false
 
     this.baseSpeed = this.difficultySettings.baseSpeed
     this.speed = this.baseSpeed
@@ -84,6 +86,7 @@ class SnakeMathGame {
 
     this.pauseTimer = 0
     this.isPausedForEvent = false
+    this.countdownActive = false
 
     // Timer for timed mode
     this.timeLeft = 60
@@ -291,6 +294,36 @@ class SnakeMathGame {
         this.hideInstructions()
       }
     })
+
+    // NEW: ESC menu event listeners - use event delegation
+    document.addEventListener('click', (e) => {
+      if (e.target.id === 'resume-btn') {
+        this.playSound("click");
+        this.hideEscMenu();
+      } else if (e.target.id === 'settings-btn') {
+        this.playSound("click");
+        this.showNotification("Settings feature coming soon!", "correct");
+        this.hideEscMenu();
+      } else if (e.target.id === 'main-menu-btn') {
+        this.playSound("click");
+        window.location.href = "../index.html";
+      }
+    });
+  }
+
+  showEscMenu() {
+    if (this.gameRunning && !this.paused && !this.countdownActive && 
+        this.restartConfirm.classList.contains("hidden")) {
+      this.escMenuActive = true;
+      this.paused = true;
+      document.getElementById("esc-menu").classList.remove("hidden");
+    }
+  }
+
+  hideEscMenu() {
+    this.escMenuActive = false;
+    this.paused = false;
+    document.getElementById("esc-menu").classList.add("hidden");
   }
 
   showInstructions() {
@@ -465,23 +498,39 @@ class SnakeMathGame {
   }
 
   startTimer() {
+    // Set flag to prevent movement during countdown
+    this.isPausedForEvent = true;
+    
     this.timerInterval = setInterval(() => {
-      this.timeLeft--
-      this.timerValue.textContent = this.timeLeft
+      this.timeLeft--;
+      this.timerValue.textContent = this.timeLeft;
 
       if (this.timeLeft <= 0) {
-        this.gameState = "lost"
-        this.gameRunning = false
-        this.showGameOver()
-        clearInterval(this.timerInterval)
+        this.isPausedForEvent = false; // Allow movement again
+        this.gameState = "lost";
+        this.gameRunning = false;
+        this.showGameOver();
+        clearInterval(this.timerInterval);
       }
-    }, 1000)
+    }, 1000);
   }
 
   handleKeyDown(e) {
     const key = e.key.toLowerCase()
     const code = e.code
 
+    // Prevent all key actions when ESC menu is active, except ESC itself
+      if (this.escMenuActive && key !== "escape") {
+      e.preventDefault();
+      return;
+    }
+
+    // Prevent snake from moving during countdown
+    if (this.countdownActive) {
+      e.preventDefault();
+      return;
+    }
+    
     if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
       e.preventDefault()
     }
@@ -525,6 +574,17 @@ class SnakeMathGame {
     const isMovementKey = ["w","arrowup","s","arrowdown","a","arrowleft","d","arrowright"].includes(key)
     if (this.inputLocked && isMovementKey) return
 
+    // Handle ESC key for menu
+    if (code === "Escape" || key === "escape") {
+      e.preventDefault();
+      if (this.escMenuActive) {
+        this.hideEscMenu();
+      } else {
+        this.showEscMenu();
+      }
+      return;
+    }
+
     // WASD and Arrow key movement
     switch (key) {
       case "w":
@@ -555,6 +615,14 @@ class SnakeMathGame {
           moved = true
         }
         break
+      case "escape":
+        e.preventDefault();
+        if (this.escMenuActive) {
+          this.hideEscMenu();
+        } else {
+          this.showEscMenu();
+        }
+        break;
     }
 
     if (moved) {
@@ -1267,6 +1335,7 @@ showGameOver() {
   }
 
   showCountdown(callback) {
+    this.countdownActive = true;
     const countdownOverlay = document.createElement("div")
     countdownOverlay.style.cssText = `
       position: fixed;
@@ -1305,6 +1374,7 @@ showGameOver() {
       } else {
         clearInterval(countdownInterval)
         countdownOverlay.remove()
+        this.countdownActive = false;
         if (callback) callback()
       }
     }, 1000)
