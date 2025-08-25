@@ -520,7 +520,7 @@ class SnakeMathGame {
     const code = e.code
 
     // Prevent all key actions when ESC menu is active, except ESC itself
-      if (this.escMenuActive && key !== "escape") {
+    if (this.escMenuActive && key !== "escape") {
       e.preventDefault();
       return;
     }
