@@ -46,6 +46,7 @@ class SnakeMathGame {
       youWon: new Audio("../sounds/you-won.mp3"),
       bgMusic: new Audio("../sounds/music.mp3"),
       click: new Audio("../sounds/click.mp3"),
+      // goodJob: new Audio("../sounds/good-job.mp3")
     }
 
     this.sounds.bgMusic.volume = 0.2
@@ -84,6 +85,10 @@ class SnakeMathGame {
     this.inBossChallenge = false
     this.bossAppleSpawned = false
     this.nextBossAt = 5 // spawn boss after this many correct answers, then every +5
+
+    // Endless rewards: every N correct answers grant life or shield
+    this.lifeRewardInterval = 10
+    this.nextLifeRewardAt = 10
 
     // Minimum spawn distance for apples from the snake head (in grid cells)
     // Helps prevent immediate accidental collisions after eating
@@ -550,6 +555,10 @@ class SnakeMathGame {
     this.bossAppleSpawned = false
     this.nextBossAt = 5
 
+    // Reset endless rewards
+    this.lifeRewardInterval = 10
+    this.nextLifeRewardAt = 10
+
     this.updateUI()
     this.hideOverlays()
   }
@@ -1002,6 +1011,27 @@ class SnakeMathGame {
           this.spawnBossApple()
           this.nextBossAt += 5
         }
+
+        // Endless reward: every 10 correct answers -> +1 life, or shield if full
+        if (this.gameSettings.mode === 'endless' && this.correctAnswers >= this.nextLifeRewardAt) {
+          // Determine max lives (default 3)
+          const maxLives = this.maxLives || 3
+          if (this.lives < maxLives) {
+            this.lives = Math.min(maxLives, this.lives + 1)
+            if (this.sounds?.goodJob) this.playSound('goodJob')
+            this.showNotification('Extra life! ❤️', 'correct')
+          } else if (!this.hasShield) {
+            this.hasShield = true
+            if (this.sounds?.goodJob) this.playSound('goodJob')
+            this.showNotification('Shield granted!✨', 'correct')
+          } else {
+            // Already full life and shield: small score bonus
+            this.score += 10
+            this.showNotification('Bonus +10 points', 'correct')
+          }
+          this.updateUI()
+          this.nextLifeRewardAt += this.lifeRewardInterval
+        }
       } else {
         // WRONG ANSWER
         if (this.hasShield) {
@@ -1141,6 +1171,7 @@ showGameOver() {
   // Play appropriate sound
   if (this.gameState === "won") {
     this.playSound("youWon");
+    // this.playSound("goodJob")
   } else {
     this.playSound("snakeDies");
   }
