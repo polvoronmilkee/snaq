@@ -720,6 +720,8 @@ class SnakeEnglishGame {
       if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
       e.preventDefault()
       }
+    
+      if (e.repeat) return
 
       if (!this.restartConfirm.classList.contains("hidden")) {
       if (code === "Escape") {
@@ -762,6 +764,9 @@ class SnakeEnglishGame {
         return;
       }
 
+      const isMovementKey = ["w","arrowup","s","arrowdown","a","arrowleft","d","arrowright"].includes(key)
+          if (this.inputLocked && isMovementKey) return
+
       // WASD and Arrow key movement
       switch (key) {
         case "w":
@@ -803,6 +808,7 @@ class SnakeEnglishGame {
       }
 
       if (moved) {
+      this.inputLocked = false
       this.playSound("snakeTurns")
       if (this.waitingForMove) {
           this.waitingForMove = false
@@ -923,6 +929,7 @@ generateApples(question) {
       }
 
       this.updateUI()
+      this.inputLocked = false
       return
       }
 
@@ -986,6 +993,7 @@ generateApples(question) {
               this.snakeFace = "dead"
               this.playSound("snakeDies")
               this.showGameOver()
+              this.inputLocked = false
               return
           }
 
@@ -1015,6 +1023,7 @@ generateApples(question) {
 
       this.snake = newSnake
       this.updateUI()
+      this.inputLocked = false
   }
 
   addNewApple() {
