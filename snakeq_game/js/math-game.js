@@ -80,6 +80,11 @@ class SnakeMathGame {
     this.countdownActive = false
     this.escMenuActive = false
 
+    // Boss challenge state (Endless mode)
+    this.inBossChallenge = false
+    this.bossAppleSpawned = false
+    this.nextBossAt = 5 // spawn boss after this many correct answers, then every +5
+
     // Minimum spawn distance for apples from the snake head (in grid cells)
     // Helps prevent immediate accidental collisions after eating
     this.minAppleDistanceFromHead = 3
@@ -356,7 +361,12 @@ class SnakeMathGame {
   updateUI() {
     this.scoreElement.textContent = this.score
     this.correctElement.textContent = this.correctAnswers
-    this.questionElement.textContent = this.currentQuestion ? this.currentQuestion.question : "Loading..."
+    // Show label only while the boss apple is visible; once eaten (inBossChallenge), show equation
+    if (this.bossAppleSpawned && !this.inBossChallenge) {
+      this.questionElement.textContent = "Boss Challenge"
+    } else {
+      this.questionElement.textContent = this.currentQuestion ? this.currentQuestion.question : "Loading..."
+    }
 
     // Update hearts display
     const hearts = this.heartsContainer.querySelectorAll(".heart")
@@ -534,6 +544,11 @@ class SnakeMathGame {
 
     // Reset self-bite immunity
     this.selfBiteImmunityTimer = 0
+
+    // Reset boss challenge state
+    this.inBossChallenge = false
+    this.bossAppleSpawned = false
+    this.nextBossAt = 5
 
     this.updateUI()
     this.hideOverlays()
@@ -732,6 +747,103 @@ class SnakeMathGame {
     return newApples
   }
 
+  // Boss apple spawns a single special apple labeled "2B2". When eaten, it
+  // switches the game to a multi-operator hard question until solved.
+  spawnBossApple() {
+    if (this.bossAppleSpawned || this.inBossChallenge) return
+
+    const usedPositions = new Set()
+    this.apples.forEach((a) => {
+      const w = a.width || 1
+      const h = a.height || 1
+      for (let dx = 0; dx < w; dx++) {
+        for (let dy = 0; dy < h; dy++) {
+          usedPositions.add(`${a.x + dx},${a.y 
+            + dy}`)
+        }
+      }
+    })
+    this.snake.forEach((s) => usedPositions.add(`${s.x},${s.y}`))
+    if (this.shieldPickup) usedPositions.add(`${this.shieldPickup.x},${this.shieldPickup.y}`)
+
+    let x, y
+    do {
+      x = this.randInt(Math.max(1, this.GRID_WIDTH - 1))
+      y = this.randInt(Math.max(1, this.GRID_HEIGHT - 1))
+    } while (
+      usedPositions.has(`${x},${y}`) ||
+      usedPositions.has(`${x+1},${y}`) ||
+      usedPositions.has(`${x},${y+1}`) ||
+      usedPositions.has(`${x+1},${y+1}`) ||
+      this.cellIntersectsRect(x, y, this.sprintBar) ||
+      this.cellIntersectsRect(x+1, y, this.sprintBar) ||
+      this.cellIntersectsRect(x, y+1, this.sprintBar) ||
+      this.cellIntersectsRect(x+1, y+1, this.sprintBar) ||
+      this.isCellTooCloseToHead(x, y, this.minAppleDistanceFromHead) ||
+      this.isCellTooCloseToHead(x+1, y, this.minAppleDistanceFromHead) ||
+      this.isCellTooCloseToHead(x, y+1, this.minAppleDistanceFromHead) ||
+      this.isCellTooCloseToHead(x+1, y+1, this.minAppleDistanceFromHead)
+    )
+
+    this.apples.push({ x, y, value: 'BOSS', isCorrect: false, type: 'boss', width: 2, height: 2 })
+    this.bossAppleSpawned = true
+    this.showNotification('SnaQ boss apple appeared!', 'correct')
+  }
+
+  // Create a hard 3-4 term expression with multiple operators and parentheses
+  generateBossQuestion() {
+    const ops = ['+', '-', '*'] // avoid division to keep integer results predictable
+    const randIn = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
+
+    // Build between 3 and 5 numbers
+    const termsCount = randIn(4, 5) // 4-5 numbers → 3-4 operators
+    const nums = Array.from({ length: termsCount }, () => randIn(1, 12))
+    const operators = Array.from({ length: termsCount - 1 }, () => ops[this.randInt(ops.length)])
+
+    // Randomly add one set of parentheses around a sub-range
+    let open = this.randInt(termsCount - 1)
+    let close = randIn(open + 1, termsCount - 1)
+
+    // Build expression string with parentheses
+    let expr = ''
+    for (let i = 0; i < termsCount; i++) {
+      const isOpen = i === open
+      const isClose = i === close
+      if (isOpen) expr += '('
+      expr += nums[i]
+      if (isClose) expr += ')'
+      if (i < operators.length) expr += ` ${operators[i]} `
+    }
+
+    // Evaluate safely using Function
+    let correctAnswer
+    try {
+      // eslint-disable-next-line no-new-func
+      correctAnswer = Number(Function(`"use strict"; return (${expr});`)())
+    } catch (e) {
+      // Fallback simple expression if something goes wrong
+      expr = '1 + 2 * 3 - 1'
+      correctAnswer = 1 + 2 * 3 - 1
+    }
+
+    // Build option set around the result
+    const options = new Set([correctAnswer])
+    const variance = [1, 2, 3, 4, 5, -1, -2, -3]
+    while (options.size < 4) {
+      const delta = variance[this.randInt(variance.length)]
+      options.add(correctAnswer + delta)
+    }
+
+    // Shuffle options
+    const shuffled = Array.from(options)
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+
+    return { question: `${expr} = ?`, correctAnswer, options: shuffled }
+  }
+
   showNotification(message, type) {
     this.notification = { message, type }
     this.notificationTimer = 60
@@ -819,11 +931,28 @@ class SnakeMathGame {
     if (this.shieldPickup && head.x === this.shieldPickup.x && head.y === this.shieldPickup.y) {
       this.hasShield = true
       this.shieldPickup = null
+      this.playSound("correct")
       this.showNotification("Shield acquired!✨", "correct")
     }
 
-    const eatenApple = this.apples.find((apple) => apple.x === head.x && apple.y === head.y)
+    const eatenApple = this.getAppleAt(head.x, head.y)
     if (eatenApple) {
+      // Boss apple trigger: starts hard multi-operator challenge
+      if (eatenApple.type === 'boss') {
+        // Remove the boss apple and start boss challenge
+        this.playSound("correct")
+        this.apples = this.apples.filter((a) => a !== eatenApple)
+        this.inBossChallenge = true
+        this.bossAppleSpawned = false
+        this.currentQuestion = this.generateBossQuestion()
+        this.apples = this.generateApples(this.currentQuestion)
+        this.showNotification("SnaQ Boss Challenge!", "correct")
+        // Grow by one like a normal apple pickup
+        this.snake = newSnake
+        this.updateUI()
+        this.inputLocked = false
+        return
+      }
       if (eatenApple.isCorrect) {
         this.score += 10
         this.correctAnswers++
@@ -847,11 +976,32 @@ class SnakeMathGame {
           return
         }
 
-        this.snakeFace = "happy"
-        this.showNotification("Correct! +10 points", "correct")
+        // If inside boss challenge, grant bonus and exit boss mode
+        if (this.inBossChallenge) {
+          this.snakeFace = "happy"
+          this.score += 15 // extra bonus for boss (total +25)
+          this.showNotification("Boss cleared! +25 points", "correct")
+          this.inBossChallenge = false
+          this.currentQuestion = this.generateQuestion()
+          this.apples = this.generateApples(this.currentQuestion)
+        } else {
+          this.snakeFace = "happy"
+          this.showNotification("Correct! +10 points", "correct")
+          this.currentQuestion = this.generateQuestion()
+          this.apples = this.generateApples(this.currentQuestion)
+        }
 
-        this.currentQuestion = this.generateQuestion()
-        this.apples = this.generateApples(this.currentQuestion)
+        // Consider spawning next boss apple in endless mode
+        if (
+          this.gameSettings.mode === 'endless' &&
+          !this.inBossChallenge &&
+          !this.bossAppleSpawned &&
+          this.correctAnswers >= this.nextBossAt
+        ) {
+          this.apples = []
+          this.spawnBossApple()
+          this.nextBossAt += 5
+        }
       } else {
         // WRONG ANSWER
         if (this.hasShield) {
@@ -953,6 +1103,15 @@ class SnakeMathGame {
         isCorrect: randomOption === this.currentQuestion.correctAnswer,
       })
     }
+  }
+
+  // Return apple occupying a position; supports 2x2 boss apple cells
+  getAppleAt(gridX, gridY) {
+    return this.apples.find((apple) => {
+      const w = apple.width || 1
+      const h = apple.height || 1
+      return gridX >= apple.x && gridX < apple.x + w && gridY >= apple.y && gridY < apple.y + h
+    })
   }
 
   // Spawn shield pickup if player has exactly 1 life and no shield spawned yet
@@ -1237,39 +1396,53 @@ showGameOver() {
       const y = apple.y * this.GRID_SIZE
 
       const appleSprite = this.sprites.apple
+      const drawW = (apple.width || 1) * this.GRID_SIZE
+      const drawH = (apple.height || 1) * this.GRID_SIZE
 
       if (appleSprite && appleSprite.complete) {
-        this.ctx.drawImage(appleSprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
+        this.ctx.drawImage(appleSprite, x, y, drawW, drawH)
       } else {
         // Fallback to red rectangle if sprite not loaded
         this.ctx.fillStyle = "#ff4444"
-        this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
+        this.ctx.fillRect(x, y, drawW, drawH)
 
         // Pixel border
         this.ctx.strokeStyle = "#000"
         this.ctx.lineWidth = 2
-        this.ctx.strokeRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
+        this.ctx.strokeRect(x, y, drawW, drawH)
       }
 
-      // Draw answer text on top of apple
-      this.ctx.fillStyle = "#fff"
+      // Draw label on top of apple
       const fontSize = Math.max(8, Math.floor(this.GRID_SIZE * 0.3))
       this.ctx.font = `${fontSize}px "Press Start 2P", monospace`
       this.ctx.textAlign = "center"
       this.ctx.textBaseline = "middle"
 
-      let displayText = apple.value.toString()
-      const maxLength = Math.floor(this.GRID_SIZE / 6)
+      let displayText
+      if (apple.type === 'boss') {
+        // Boss apple label
+        displayText = 'BOSS'
+        // Glow outline
+        this.ctx.strokeStyle = '#ffd700'
+        this.ctx.lineWidth = 3
+        this.ctx.strokeRect(x + 1, y + 1, drawW - 2, drawH - 2)
+      } else {
+        displayText = apple.value.toString()
+      }
+
+      const centerX = x + drawW / 2
+      const centerY = y + drawH / 2
+      const maxLength = Math.floor(((apple.width || 1) * this.GRID_SIZE) / 6)
       if (displayText.length > maxLength) {
-        displayText = displayText.substring(0, maxLength - 1) + "."
+        displayText = displayText.substring(0, maxLength - 1) + '.'
       }
 
       // Text shadow for pixel effect
-      this.ctx.fillStyle = "#000"
-      this.ctx.fillText(displayText, x + this.GRID_SIZE / 2 + 1, y + this.GRID_SIZE / 2 + 1)
+      this.ctx.fillStyle = '#000'
+      this.ctx.fillText(displayText, centerX + 1, centerY + 1)
 
-      this.ctx.fillStyle = "#fff"
-      this.ctx.fillText(displayText, x + this.GRID_SIZE / 2, y + this.GRID_SIZE / 2)
+      this.ctx.fillStyle = '#fff'
+      this.ctx.fillText(displayText, centerX, centerY)
     })
 
     if (this.notification && this.notificationTimer > 0) {
