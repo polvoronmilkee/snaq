@@ -362,6 +362,7 @@ class SnakeEnglishGame {
       this.questionElement.textContent = this.currentQuestion.question
       this.updateOptionsDisplay()
       }
+      this.updateShieldUI();
   }
 
   updateOptionsDisplay() {
@@ -686,22 +687,28 @@ class SnakeEnglishGame {
 
       this.updateUI()
       this.hideOverlays()
+      this.updateShieldUI();
   }
 
-  startTimer() {
-      this.timerInterval = setInterval(() => {
-      this.timeLeft--
-      this.timerValue.textContent = this.timeLeft
-
-      if (this.timeLeft <= 0) {
-          this.isPausedForEvent = false;
-          this.gameState = "lost"
-          this.gameRunning = false
-          this.showGameOver()
-          clearInterval(this.timerInterval)
-      }
-      }, 1000)
-  }
+    startTimer() {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+        }
+        
+        this.timerInterval = setInterval(() => {
+            if (!this.paused) {  // Only decrement if not paused
+                this.timeLeft--;
+                this.timerValue.textContent = this.timeLeft;
+                
+                if (this.timeLeft <= 0) {
+                    this.gameState = "lost";
+                    this.gameRunning = false;
+                    this.showGameOver();
+                    clearInterval(this.timerInterval);
+                }
+            }
+        }, 1000);
+    }
 
   handleKeyDown(e) {
       const key = e.key.toLowerCase()
@@ -974,6 +981,7 @@ generateApples(question) {
           // Wrong answer: shield blocks once
           if (this.hasShield) {
           this.hasShield = false
+          this.updateShieldUI();
           this.snakeFace = "normal"
           this.showNotification("Shield saved you!✨", "correct")
           // Remove the eaten wrong apple and replace
@@ -1024,6 +1032,17 @@ generateApples(question) {
       this.snake = newSnake
       this.updateUI()
       this.inputLocked = false
+  }
+
+  updateShieldUI() {
+    const shieldIndicator = document.getElementById('shield-indicator');
+    if (shieldIndicator) {
+        if (this.hasShield) {
+            shieldIndicator.innerHTML = '<img src="../assets/shield.png" class="shield-icon" alt="Shield">';
+        } else {
+            shieldIndicator.innerHTML = '';
+        }
+    }
   }
 
   addNewApple() {

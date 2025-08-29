@@ -930,6 +930,19 @@ body {
   transform: translate(1px, 1px);
 }
 
+.shield-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 10px;
+}
+
+.shield-icon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .game-container {

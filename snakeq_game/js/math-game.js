@@ -384,6 +384,7 @@ class SnakeMathGame {
         heart.classList.add("empty")
       }
     })
+    this.updateShieldUI();
   }
 
   generateQuestion() {
@@ -561,23 +562,28 @@ class SnakeMathGame {
 
     this.updateUI()
     this.hideOverlays()
+    this.updateShieldUI();
   }
 
   startTimer() {
-    // Set flag to prevent movement during countdown
     this.isPausedForEvent = true;
+
+    if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+    }
     
     this.timerInterval = setInterval(() => {
-      this.timeLeft--;
-      this.timerValue.textContent = this.timeLeft;
-
-      if (this.timeLeft <= 0) {
-        this.isPausedForEvent = false; // Allow movement again
-        this.gameState = "lost";
-        this.gameRunning = false;
-        this.showGameOver();
-        clearInterval(this.timerInterval);
-      }
+        if (!this.paused) {  
+            this.timeLeft--;
+            this.timerValue.textContent = this.timeLeft;
+            
+            if (this.timeLeft <= 0) {
+                this.gameState = "lost";
+                this.gameRunning = false;
+                this.showGameOver();
+                clearInterval(this.timerInterval);
+            }
+        }
     }, 1000);
   }
 
@@ -1037,6 +1043,7 @@ class SnakeMathGame {
         if (this.hasShield) {
           // Shield blocks the penalty once
           this.hasShield = false
+          this.updateShieldUI();  
           this.snakeFace = "normal"
           this.showNotification("Shield saved you!✨", "correct")
 
@@ -1091,6 +1098,17 @@ class SnakeMathGame {
     this.updateUI()
     // Unlock input after completing a move step
     this.inputLocked = false
+  }
+
+  updateShieldUI() {
+    const shieldIndicator = document.getElementById('shield-indicator');
+    if (shieldIndicator) {
+      if (this.hasShield) {
+        shieldIndicator.innerHTML = '<img src="../assets/shield.png" class="shield-icon" alt="Shield">';
+      } else {
+        shieldIndicator.innerHTML = '';
+      }
+    }
   }
 
   addNewApple() {
