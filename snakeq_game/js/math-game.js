@@ -46,6 +46,7 @@ class SnakeMathGame {
       youWon: new Audio("../sounds/you-won.mp3"),
       bgMusic: new Audio("../sounds/music.mp3"),
       click: new Audio("../sounds/click.mp3"),
+      countdown: new Audio("../sounds/countdown.mp3"),
       // goodJob: new Audio("../sounds/good-job.mp3")
     }
 
@@ -861,7 +862,7 @@ class SnakeMathGame {
 
   showNotification(message, type) {
     this.notification = { message, type }
-    this.notificationTimer = 60
+    this.notificationTimer = 75
   }
 
   hideOverlays() {
@@ -1608,6 +1609,7 @@ showGameOver() {
 
   startCountdown(callback) {
     this.isCountdownActive = true  // lock movement
+    this.countdownActive = true;
     this.showCountdown(() => {
       this.isCountdownActive = false // unlock after countdown
       if (callback) callback()
@@ -1642,6 +1644,8 @@ showGameOver() {
 
     countdownOverlay.appendChild(countdownNumber)
     document.body.appendChild(countdownOverlay)
+
+    this.playSound("countdown")
 
     let count = 3
     const countdownInterval = setInterval(() => {

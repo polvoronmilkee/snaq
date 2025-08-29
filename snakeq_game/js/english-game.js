@@ -232,6 +232,11 @@ class SnakeEnglishGame {
       this.bindEvents()
       this.gameLoop()
       this.initializeAudioStates()
+
+      // Ensure countdown doesn't get stuck
+      setTimeout(() => {
+        this.ensureCountdownComplete();
+      }, 5000); // After 5 seconds, force countdown to complete
   }
 
       initializeAudioStates() {
@@ -662,7 +667,7 @@ class SnakeEnglishGame {
     // Setup timer for timed mode
     if (this.gameSettings.mode === "timed") {
     this.timeLeft = 60
-    this.timerDisplay.style.display = "block"
+    this.timerDisplay.style.display = "flex"
     this.startCountdown(() => {
         this.startTimer()
     })
@@ -693,6 +698,7 @@ class SnakeEnglishGame {
     startTimer() {
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
+            this.timerInterval = null;
         }
         
         this.timerInterval = setInterval(() => {
@@ -875,7 +881,7 @@ generateApples(question) {
 
   showNotification(message, type) {
       this.notification = { message, type }
-      this.notificationTimer = 60
+      this.notificationTimer = 75
   }
 
   hideOverlays() {
@@ -907,6 +913,22 @@ generateApples(question) {
       }, 100)
   }
 
+  ensureCountdownComplete() {
+    // If countdown gets stuck, force it to complete
+    if (this.countdownActive) {
+        const overlay = document.getElementById("countdown-overlay");
+        if (overlay) {
+            overlay.remove();
+        }
+        this.isCountdownActive = false;
+        this.countdownActive = false;
+        
+        // Start the timer if in timed mode
+        if (this.gameSettings.mode === "timed") {
+            this.startTimer();
+        }
+    }
+  }
   cancelRestart() {
       this.restartConfirm.classList.add("hidden")
   }
@@ -1486,6 +1508,7 @@ if (dirPrev.x === dirNext.x) {
 
   startCountdown(callback) {
       this.isCountdownActive = true  // lock movement
+      this.countdownActive = true
 
       // play countdown sound effect
       if (this.soundEnabled && this.sounds.countdown) {
@@ -1515,6 +1538,7 @@ if (dirPrev.x === dirNext.x) {
       z-index: 1000;
       font-family: 'Press Start 2P', monospace;
       `
+      countdownOverlay.id = "countdown-overlay"
 
       const countdownNumber = document.createElement("div")
       countdownNumber.style.cssText = `
@@ -1524,7 +1548,7 @@ if (dirPrev.x === dirNext.x) {
       text-shadow: 4px 4px 0px #000;
       `
       countdownNumber.textContent = "3"
-
+      
       countdownOverlay.appendChild(countdownNumber)
       document.body.appendChild(countdownOverlay)
 
@@ -1536,9 +1560,12 @@ if (dirPrev.x === dirNext.x) {
       } else if (count === 0) {
           countdownNumber.textContent = "GO!"
           countdownNumber.style.color = "#ff4444"
-      } else {t
+          this.playSound("countdownGo")
+      } else {
           clearInterval(countdownInterval)
           countdownOverlay.remove()
+          this.iscountdownActive = false
+          this.countdownActive = false
           if (callback) callback()
       }
       }, 1000)
