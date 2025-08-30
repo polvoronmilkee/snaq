@@ -605,7 +605,7 @@ class SnakeEnglishGame {
       options = [correctAnswer, ...selectedWord.wrong];
       break;
       case "definition":
-      question = `What is a/an "${selectedWord.word}"?`;
+      question = `What is a/an   "${selectedWord.word}"?`;
       correctAnswer = selectedWord.correct;
       options = [correctAnswer, ...selectedWord.wrong];
       break;
