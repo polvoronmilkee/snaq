@@ -477,16 +477,7 @@ body::before {
   margin-bottom: 16px;
 }
 
-.pixel-question {
-  background: #0a612c;
-  color: #fff;
-  padding: 12px 16px;
-  border: 2px solid #fff;
-  font-size: 10px;
-  text-align: center;
-  margin-bottom: 19px;
-  line-height: 1.4;
-}
+
 
 .instruction {
   font-size: 12px;
