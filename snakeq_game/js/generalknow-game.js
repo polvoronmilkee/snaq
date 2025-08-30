@@ -486,8 +486,8 @@ generateQuestion() {
   );
 
   if (unused.length === 0) {
-    console.log("All questions for this type and difficulty have been used!");
-    return null;
+    console.log("All questions have been used! You're one Brainy SnaQ! Resetting...");
+
   }
 
   const selected = unused[Math.floor(Math.random() * unused.length)];
