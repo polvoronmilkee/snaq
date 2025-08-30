@@ -619,6 +619,7 @@ body {
   margin: auto;
   text-align: center;
   box-shadow: 6px 6px 0px #000;  
+  padding: 16px;
 }
 .modal-content h3 {
   font-size: 20px;
@@ -944,6 +945,7 @@ body {
     max-width: 900px;
     margin: 0 auto;
     padding: 20px;
+    margin-top: auto;
 }
 
 
