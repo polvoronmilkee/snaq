@@ -1517,33 +1517,30 @@ showGameOver() {
       this.ctx.fillText("PAUSED", this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2)
     }
 
-    // Draw sprint/stamina bar (top-left)
-    const marginDown = 20 
-    const bar = this.sprintBar
-    const barY = bar.y + marginDown
-    // Background
-    this.ctx.fillStyle = "#222"
-    this.ctx.fillRect(bar.x, bar.y, bar.width, bar.height)
-    this.ctx.strokeStyle = "#000"
-    this.ctx.lineWidth = 3
-    this.ctx.strokeRect(bar.x, bar.y, bar.width, bar.height)
-    // Fill
-    const fillWidth = Math.floor(bar.width * (this.sprint.energy / this.sprint.maxEnergy))
-    this.ctx.fillStyle = this.sprint.active ? "#ffd166" : "#06d6a0"
-    this.ctx.fillRect(bar.x, bar.y, fillWidth, bar.height)
-    // Inner border
-    this.ctx.strokeStyle = "#fff"
-    this.ctx.lineWidth = 1
-    this.ctx.strokeRect(bar.x + 2, bar.y + 2, bar.width - 4, bar.height - 4)
-    // Label
-    this.ctx.font = "10px 'Press Start 2P', monospace"
-    this.ctx.textAlign = "left"
-    this.ctx.textBaseline = "bottom"
-    this.ctx.fillStyle = "#000"
-    this.ctx.fillText("SPRINT", bar.x + 7, barY - 5.4)
-    this.ctx.fillStyle = "#fff"
-    this.ctx.fillText("SPRINT", bar.x + 6, barY - 7)
-  }
+  if (!this.paused) {
+      const marginDown = 20 
+      const bar = this.sprintBar
+      const barY = bar.y + marginDown
+      this.ctx.fillStyle = "#222"
+      this.ctx.fillRect(bar.x, bar.y, bar.width, bar.height)
+      this.ctx.strokeStyle = "#000"
+      this.ctx.lineWidth = 3
+      this.ctx.strokeRect(bar.x, bar.y, bar.width, bar.height)
+      const fillWidth = Math.floor(bar.width * (this.sprint.energy / this.sprint.maxEnergy))
+      this.ctx.fillStyle = this.sprint.active ? "#ffd166" : "#06d6a0"
+      this.ctx.fillRect(bar.x, bar.y, fillWidth, bar.height)
+      this.ctx.strokeStyle = "#fff"
+      this.ctx.lineWidth = 1
+      this.ctx.strokeRect(bar.x + 2, bar.y + 2, bar.width - 4, bar.height - 4)
+      this.ctx.font = "10px 'Press Start 2P', monospace"
+      this.ctx.textAlign = "left"
+      this.ctx.textBaseline = "bottom"
+      this.ctx.fillStyle = "#000"
+      this.ctx.fillText("SPRINT", bar.x + 7, barY - 5.4)
+      this.ctx.fillStyle = "#fff"
+      this.ctx.fillText("SPRINT", bar.x + 6, barY - 7)
+    }
+}
 
   gameLoop(timestamp = 0) {
     if (!this.gameRunning) return
