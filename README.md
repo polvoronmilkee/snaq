@@ -1,6 +1,7 @@
 # 🐍 SnaQ – Quiz Your Brain, Grow Your Snake!
 
 **SnaQ** is a retro-style pixel game that fuses the classic Snake experience with educational quiz challenges.  
+
 Pick your subject, answer questions by munching the correct apples, and grow your snake as your knowledge grows!  
 
 ---
