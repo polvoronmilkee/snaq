@@ -510,16 +510,10 @@ generateQuestion() {
     q => !this.usedWords[difficulty][questionType].includes(q.question)
   );
 
-  
-    if (unusedWords.length === 0) {
-        console.log("All questions have been used! You're one Brainy SnaQ! Resetting...");
-
-        // Reset so we can reuse all questions
-        this.usedWords[difficulty][questionType] = [];
-
-        // After reset, all words are available again
-        unusedWords = [...difficultyWords];
-    }
+  if (unused.length === 0) {
+    console.log("All questions for this type and difficulty have been used!");
+    return null;
+  }
 
   const selected = unused[Math.floor(Math.random() * unused.length)];
   this.usedWords[difficulty][questionType].push(selected.question);
