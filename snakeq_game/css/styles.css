@@ -544,11 +544,7 @@ body::before {
   background: #000;
   margin-bottom: 16px;
   background-image: url("../assets/Tile.png");
-<<<<<<< HEAD
   background-size: 80px 80px;
-=======
-  background-size: 40px 40px;
->>>>>>> d4adfab07843f9e7afede765be8c59e1d7aef5cc
   background-repeat: repeat;
   image-rendering: pixelated;
 }
