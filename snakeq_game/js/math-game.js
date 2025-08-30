@@ -47,7 +47,7 @@ class SnakeMathGame {
       bgMusic: new Audio("../sounds/music.mp3"),
       click: new Audio("../sounds/click.mp3"),
       countdown: new Audio("../sounds/countdown.mp3"),
-      // goodJob: new Audio("../sounds/good-job.mp3")
+      shift: new Audio("../sounds/shift.mp3")
     }
 
     this.sounds.bgMusic.volume = 0.2
@@ -642,6 +642,10 @@ class SnakeMathGame {
       if (this.sprint.energy > 0) {
         this.sprint.active = true
       }
+
+      this.sounds.shift.currentTime = 0
+      this.sounds.shift.play()
+      
       return
     }
 

@@ -306,6 +306,17 @@ body::before {
   border-color: #e05252;
 }
 
+.science-btn.selected {
+  background: #5ebdcc;
+  border-color: #43a0ba;
+}
+
+.genknow-btn.selected {
+  background: #fffc58;
+  border-color: #dadd5a;
+}
+
+
 .btn-icon {
   width: 24px;
   height: 24px;

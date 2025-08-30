@@ -45,7 +45,8 @@ class SnakeEnglishGame {
       bgMusic: new Audio("../sounds/bg-music.mp3"),
       youWon: new Audio("../sounds/you-won.mp3"),
       click: new Audio("../sounds/click.mp3"),
-      countdown: new Audio("../sounds/countdown.mp3") 
+      countdown: new Audio("../sounds/countdown.mp3"),
+      shift: new Audio("../sounds/shift.mp3")
       }
 
       this.sounds.bgMusic.volume = 0.2
@@ -764,6 +765,9 @@ class SnakeEnglishGame {
       // Sprint activation (hold Shift)
       if ((code === "ShiftLeft" || code === "ShiftRight") && !this.paused) {
       if (this.sprint.energy > 0) this.sprint.active = true
+
+      this.sounds.shift.currentTime = 0 
+      this.sounds.shift.play()
       return
       }
 
