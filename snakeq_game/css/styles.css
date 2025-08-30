@@ -537,7 +537,7 @@ body {
   margin-bottom: 16px;
   /* Added tiled background to canvas container */
   background-image: url("../assets/Tile.png");
-  background-size: 25px 35px;
+  background-size: 80px 80px;
   background-repeat: repeat;
   image-rendering: pixelated;
 }
