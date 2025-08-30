@@ -88,6 +88,8 @@ Learning & Literacy – SnaQ builds foundational knowledge in math, language, an
 
 ## 💪 Designed and Developed by Team APPLE JUICE 🧃
 
+We are 2nd Year BS Software Engineering students from Central Philippine University (CPU), Iloilo City, Philippines — passionate about building fun and meaningful tech projects. For this hackathon, we combined creativity, coding, and teamwork to create SnaQ, a game that makes learning exciting and engaging.
+
 - Danielle Poral
 - Lemuel Luceño
 - Ahron Alera
