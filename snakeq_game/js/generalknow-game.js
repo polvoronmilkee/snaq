@@ -46,7 +46,8 @@ class SnakeGeneralKnowledgeGame {
       youWon: new Audio("../sounds/you-won.mp3"),
       click: new Audio("../sounds/click.mp3"),
       countdown: new Audio("../sounds/countdown.mp3"),
-      shift: new Audio("../sounds/shift.mp3")
+      shift: new Audio("../sounds/shift.mp3"),
+      pause: new Audio("../sounds/pause.mp3")
       }
 
       this.sounds.bgMusic.volume = 0.2
@@ -632,6 +633,8 @@ generateQuestion() {
       if (code === "Space" || key === " ") {
       e.preventDefault()
       this.paused = !this.paused
+      this.sounds.pause.currentTime = 0
+      this.sounds.pause.play()
       return
       }
 
