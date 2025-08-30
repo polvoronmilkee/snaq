@@ -286,6 +286,7 @@ class SnakeMathGame {
     this.menuBtn.addEventListener("click", () => {
       this.playSound("click")
       window.location.href = "../index.html"
+
     })
     this.playAgainConfirmBtn.addEventListener("click", () => {
       this.playSound("click")
@@ -305,11 +306,12 @@ class SnakeMathGame {
       this.playSound("click")  
       this.playAgainConfirm.classList.add("hidden");
     });
-    this.helpBtn.addEventListener("click", () => {
+    this.helpBtnEsc.addEventListener("click", () => {
       this.playSound("click")
       document.getElementById("esc-menu").classList.add("hidden"); 
       this.showInstructions()
     })
+    
     
     this.soundBtn.addEventListener("click", () => this.toggleSound())
     this.musicBtn.addEventListener("click", () => this.toggleMusic())
