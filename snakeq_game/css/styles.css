@@ -554,8 +554,9 @@ body::before {
   position: relative;
   background: #000;
   margin-bottom: 16px;
+  max-width: 808px;
   background-image: url("../assets/Tile.png");
-  background-size: 80px 80px;
+  background-size: 10% ;
   background-repeat: repeat;
   image-rendering: pixelated;
   width: 100%;

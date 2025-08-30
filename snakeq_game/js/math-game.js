@@ -1651,7 +1651,7 @@ showGameOver() {
         speedIncrease: 0.55,
       },
       hard: {
-        gridSize: 50,
+        gridSize: 40,
         baseSpeed: 7.5,
         speedIncrease: 0.65,
       },

@@ -1685,7 +1685,7 @@ options.forEach((option, index) => {
           speedIncrease: 0.55,
       },
       hard: {
-          gridSize: 50,
+          gridSize: 40,
           baseSpeed: 6,
           speedIncrease: 0.65,
       },
