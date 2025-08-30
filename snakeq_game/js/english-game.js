@@ -605,7 +605,6 @@ class SnakeEnglishGame {
             { word: "supersede", correct: "supersede", wrong: ["supercede", "supersceed", "suparseed"] },
         ],
         },
-
         hard: {
         synonym: [
             { word: "ubiquitous", correct: "everywhere", wrong: ["rare", "hidden", "absent"] },
@@ -618,6 +617,16 @@ class SnakeEnglishGame {
             { word: "candid", correct: "honest", wrong: ["dishonest", "sly", "deceptive"] },
             { word: "prudent", correct: "wise", wrong: ["reckless", "careless", "foolish"] },
             { word: "profound", correct: "deep", wrong: ["shallow", "superficial", "simple"] },
+            { word: "arduous", correct: "difficult", wrong: ["easy", "simple", "effortless"] },
+            { word: "eloquent", correct: "fluent", wrong: ["awkward", "clumsy", "mute"] },
+            { word: "frugal", correct: "thrifty", wrong: ["wasteful", "lavish", "extravagant"] },
+            { word: "gregarious", correct: "sociable", wrong: ["shy", "introverted", "solitary"] },
+            { word: "incessant", correct: "continuous", wrong: ["intermittent", "rare", "occasional"] },
+            { word: "malevolent", correct: "evil", wrong: ["kind", "benevolent", "generous"] },
+            { word: "mundane", correct: "ordinary", wrong: ["extraordinary", "unique", "special"] },
+            { word: "succinct", correct: "brief", wrong: ["wordy", "lengthy", "long"] },
+            { word: "altruistic", correct: "selfless", wrong: ["selfish", "greedy", "egoistic"] },
+            { word: "capricious", correct: "unpredictable", wrong: ["consistent", "stable", "reliable"] },
         ],
         antonym: [
             { word: "benevolent", correct: "malevolent", wrong: ["kind", "generous", "helpful"] },
@@ -630,6 +639,16 @@ class SnakeEnglishGame {
             { word: "hostile", correct: "friendly", wrong: ["aggressive", "unfriendly", "harsh"] },
             { word: "fragile", correct: "strong", wrong: ["weak", "delicate", "brittle"] },
             { word: "vague", correct: "specific", wrong: ["unclear", "ambiguous", "imprecise"] },
+            { word: "timid", correct: "bold", wrong: ["fearful", "nervous", "shy"] },
+            { word: "ancient", correct: "modern", wrong: ["old", "antique", "historic"] },
+            { word: "expand", correct: "contract", wrong: ["grow", "enlarge", "stretch"] },
+            { word: "humble", correct: "arrogant", wrong: ["modest", "simple", "shy"] },
+            { word: "optimistic", correct: "pessimistic", wrong: ["hopeful", "cheerful", "positive"] },
+            { word: "tranquil", correct: "chaotic", wrong: ["calm", "peaceful", "quiet"] },
+            { word: "vivid", correct: "dull", wrong: ["bright", "colorful", "lively"] },
+            { word: "prosperity", correct: "poverty", wrong: ["wealth", "fortune", "abundance"] },
+            { word: "lenient", correct: "strict", wrong: ["forgiving", "kind", "merciful"] },
+            { word: "affirm", correct: "deny", wrong: ["accept", "agree", "confirm"] },
         ],
         definition: [
             { word: "serendipity", correct: "pleasant surprise", wrong: ["bad luck", "planned event", "boring moment"] },
@@ -642,6 +661,16 @@ class SnakeEnglishGame {
             { word: "zenith", correct: "highest point", wrong: ["lowest point", "middle", "base"] },
             { word: "cacophony", correct: "harsh noise", wrong: ["pleasant sound", "music", "silence"] },
             { word: "ephemeral", correct: "short-lived", wrong: ["long-lasting", "permanent", "eternal"] },
+            { word: "facetious", correct: "not serious", wrong: ["serious", "genuine", "honest"] },
+            { word: "anachronism", correct: "out of place in time", wrong: ["timely", "modern", "current"] },
+            { word: "aesthetic", correct: "related to beauty", wrong: ["ugly", "plain", "ordinary"] },
+            { word: "eloquence", correct: "fluent speaking", wrong: ["silence", "awkwardness", "clumsiness"] },
+            { word: "hubris", correct: "excessive pride", wrong: ["humility", "kindness", "modesty"] },
+            { word: "ineffable", correct: "too great to express", wrong: ["obvious", "simple", "easy"] },
+            { word: "juxtapose", correct: "place side by side", wrong: ["separate", "ignore", "remove"] },
+            { word: "nostalgia", correct: "longing for the past", wrong: ["future hope", "present joy", "disinterest"] },
+            { word: "reverie", correct: "daydream", wrong: ["nightmare", "focus", "work"] },
+            { word: "sagacious", correct: "wise", wrong: ["foolish", "reckless", "ignorant"] },
         ],
         spelling: [
             { word: "accommodate", correct: "accommodate", wrong: ["accomodate", "acomodate", "acommodate"] },
@@ -654,9 +683,19 @@ class SnakeEnglishGame {
             { word: "embarrass", correct: "embarrass", wrong: ["embarass", "embarras", "embarrs"] },
             { word: "harass", correct: "harass", wrong: ["harrass", "haras", "harres"] },
             { word: "connoisseur", correct: "connoisseur", wrong: ["conaisseur", "connosieur", "connoiser"] },
+            { word: "supersede", correct: "supersede", wrong: ["supercede", "supersaid", "supersaid"] },
+            { word: "millennium", correct: "millennium", wrong: ["milenium", "millenium", "millennum"] },
+            { word: "indict", correct: "indict", wrong: ["indite", "indigt", "indickt"] },
+            { word: "pharaoh", correct: "pharaoh", wrong: ["pharoah", "pharoh", "pharow"] },
+            { word: "weird", correct: "weird", wrong: ["wierd", "weard", "waird"] },
+            { word: "guarantee", correct: "guarantee", wrong: ["garantee", "guarentee", "garente"] },
+            { word: "liaison", correct: "liaison", wrong: ["liason", "laiasone", "layazon"] },
+            { word: "recommend", correct: "recommend", wrong: ["reccomend", "recomend", "reccommand"] },
+            { word: "necessary", correct: "necessary", wrong: ["neccesary", "necesary", "nessesary"] },
+            { word: "questionnaire", correct: "questionnaire", wrong: ["questionare", "questonaire", "questionnare"] },
         ],
     }
-}
+};
 
       const difficultyWords = wordSets[difficulty][questionType]
   // Filter out used words
