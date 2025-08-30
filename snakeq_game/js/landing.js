@@ -357,8 +357,8 @@ class LandingPage {
     else if (this.selectedCategory === "science") {
       window.location.href = "games/science-game.html"
     }
-    else if (this.selectedCategory === "genknow") {
-      window.location.href = "games/genknow-game.html"
+    else if (this.selectedCategory === "generalknow") {
+      window.location.href = "games/generalknow-game.html"
     }
   }
 }
