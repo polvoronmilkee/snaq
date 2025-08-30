@@ -21,6 +21,23 @@ body {
   flex-direction: column;
 }
 
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("../assets/pixelForestBg.png");
+  background-repeat: no-repeat;
+  background-size: 130% 110%;
+  background-position: center;
+  image-rendering: pixelated;
+  filter: blur(4px);
+  transform: scale(1.05);
+  z-index: -1; 
+}
+
 .pixel-border {
   border: 4px solid #000000;
   box-shadow: 0 0 0 2px #fff inset, 0 0 0 4px #000 inset;
@@ -383,22 +400,7 @@ body {
   overflow: hidden;
 }
 
-.game-container::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url("../assets/pixelForestBg.png");
-  background-repeat: no-repeat;
-  background-size: 130% 110%; 
-  background-position: center;
-  image-rendering: pixelated;
-  filter: blur(4px); 
-  transform: scale(1.05); 
-  z-index: 0;
-}
+
 
 .game-board {
   position: relative;
