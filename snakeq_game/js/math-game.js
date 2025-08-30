@@ -292,7 +292,7 @@ class SnakeMathGame {
       this.playSound("click")
       this.playAgainConfirm.classList.add("hidden") // ✅
       this.gameOverOverlay.classList.add("hidden")  // ✅
-      this.confirmRestart() // ✅ call method properly
+      this.confirmRestart() 
     })
     this.confirmRestartBtn.addEventListener("click", () => {
       this.playSound("click")
