@@ -582,10 +582,15 @@ class SnakeEnglishGame {
       w => !this.usedWords[difficulty][questionType].includes(w.word)
   );
 
-  if (unusedWords.length === 0) {
-      console.log("All questions for this type and difficulty have been used!");
-      return null; // or reset usedWords[difficulty][questionType] = [] if you want to restart
-  }
+    if (unusedWords.length === 0) {
+        console.log("All questions have been used! You're one Brainy SnaQ! Resetting...");
+
+        // Reset so we can reuse all questions
+        this.usedWords[difficulty][questionType] = [];
+
+        // After reset, all words are available again
+        unusedWords = [...difficultyWords];
+    }
 
   // Pick a random unused word
   const selectedWord = unusedWords[Math.floor(Math.random() * unusedWords.length)];

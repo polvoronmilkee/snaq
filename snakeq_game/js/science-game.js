@@ -99,11 +99,11 @@ class SnakeScienceGame {
       this.gameLoopId = null
 
       // to track questions that have been used already
-      this.usedWords = this.usedWords || {
-      easy: { synonym: [], antonym: [], definition: [], spelling: [] },
-      medium: { synonym: [], antonym: [], definition: [], spelling: [] },
-      hard: { synonym: [], antonym: [], definition: [], spelling: [] },
-      };
+    this.usedWords = this.usedWords || {
+    easy: { biology: [], physics: [], chemistry: [], earth: [] },
+    medium: { biology: [], physics: [], chemistry: [], earth: [] },
+    hard: { biology: [], physics: [], chemistry: [], earth: [] },
+    };
 
       // Sprint (temporary speed boost)
       this.sprint = {
@@ -416,215 +416,117 @@ class SnakeScienceGame {
   }
 
 
-  generateQuestion() {
-      const difficulty = this.gameSettings.difficulty
-      const questionTypes = ["synonym", "antonym", "definition", "spelling"]
-      const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)]
+generateQuestion() {
+  const difficulty = this.gameSettings.difficulty;
+  const questionTypes = ["biology", "physics", "chemistry", "earth"];
+  const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
 
-      const wordSets = {
-      easy: {
-          synonym: [
-              { word: "happy", correct: "joyful", wrong: ["sad", "angry", "tired"] },
-              { word: "big", correct: "large", wrong: ["small", "tiny", "little"] },
-              { word: "fast", correct: "quick", wrong: ["slow", "lazy", "tired"] },
-              { word: "smart", correct: "clever", wrong: ["dumb", "silly", "lazy"] },
-              { word: "angry", correct: "furious", wrong: ["happy", "calm", "joyful"] },
-              { word: "easy", correct: "simple", wrong: ["difficult", "hard", "complex"] },
-              { word: "strong", correct: "powerful", wrong: ["weak", "fragile", "small"] },
-              { word: "brave", correct: "courageous", wrong: ["scared", "timid", "weak"] },
-              { word: "quiet", correct: "silent", wrong: ["loud", "noisy", "talkative"] },
-              { word: "beautiful", correct: "gorgeous", wrong: ["ugly", "plain", "boring"] },
-          ],
-          antonym: [
-              { word: "hot", correct: "cold", wrong: ["warm", "cool", "mild"] },
-              { word: "up", correct: "down", wrong: ["over", "under", "above"] },
-              { word: "good", correct: "bad", wrong: ["nice", "great", "fine"] },
-              { word: "light", correct: "dark", wrong: ["bright", "clear", "white"] },
-              { word: "happy", correct: "sad", wrong: ["joyful", "excited", "glad"] },
-              { word: "big", correct: "small", wrong: ["large", "huge", "gigantic"] },
-              { word: "fast", correct: "slow", wrong: ["quick", "rapid", "swift"] },
-              { word: "strong", correct: "weak", wrong: ["powerful", "mighty", "sturdy"] },
-              { word: "young", correct: "old", wrong: ["new", "fresh", "recent"] },
-              { word: "near", correct: "far", wrong: ["close", "next", "adjacent"] },
-          ],
-          definition: [
-              { word: "cat", correct: "a small furry pet", wrong: ["a big dog", "a bird", "a fish"] },
-              { word: "book", correct: "something to read", wrong: ["something to eat", "something to wear", "something to drive"] },
-              { word: "apple", correct: "a type of fruit", wrong: ["a vegetable", "a tool", "a drink"] },
-              { word: "chair", correct: "something to sit on", wrong: ["something to sleep on", "something to write with", "something to wear"] },
-              { word: "river", correct: "a flowing body of water", wrong: ["a mountain", "a tree", "a road"] },
-              { word: "car", correct: "a vehicle for transport", wrong: ["a building", "a computer", "a tool"] },
-              { word: "shoe", correct: "something worn on the foot", wrong: ["something worn on the hand", "a hat", "a glove"] },
-              { word: "pencil", correct: "something used to write", wrong: ["something used to eat", "something used to paint", "something used to clean"] },
-              { word: "dog", correct: "a domesticated animal", wrong: ["a wild animal", "a bird", "a fish"] },
-              { word: "tree", correct: "a plant with a trunk and branches", wrong: ["a flower", "a bush", "a rock"] },
-          ],
-          spelling: [
-              { word: "friend", correct: "friend", wrong: ["freind", "frend", "freand"] },
-              { word: "school", correct: "school", wrong: ["scool", "schol", "skool"] },
-              { word: "apple", correct: "apple", wrong: ["aple", "appel", "appl"] },
-              { word: "house", correct: "house", wrong: ["hous", "houes", "hoose"] },
-              { word: "computer", correct: "computer", wrong: ["computor", "compter", "comuter"] },
-              { word: "beautiful", correct: "beautiful", wrong: ["beatiful", "beutiful", "beautifull"] },
-              { word: "library", correct: "library", wrong: ["libary", "librery", "liberry"] },
-              { word: "holiday", correct: "holiday", wrong: ["holidy", "holoday", "holidey"] },
-              { word: "together", correct: "together", wrong: ["togther", "toether", "togehter"] },
-              { word: "because", correct: "because", wrong: ["becuase", "becase", "becouse"] },
-          ]
+  const scienceSets = {
+    easy: {
+      biology: [
+        { question: "What part of the plant makes food?", correct: "Leaf", wrong: ["Root", "Stem", "Flower"] },
+        { question: "What do humans need to breathe?", correct: "Oxygen", wrong: ["Carbon dioxide", "Nitrogen", "Hydrogen"] },
+        { question: "What is the basic unit of life?", correct: "Cell", wrong: ["Tissue", "Organ", "Organism"] },
+        { question: "What do bees collect from flowers?", correct: "Nectar", wrong: ["Leaves", "Seeds", "Roots"] },
+      ],
+      physics: [
+        { question: "What force pulls objects toward Earth?", correct: "Gravity", wrong: ["Magnetism", "Friction", "Electricity"] },
+        { question: "What is the source of light on Earth?", correct: "The Sun", wrong: ["Moon", "Stars", "Fire"] },
+        { question: "Which device is used to see far objects?", correct: "Telescope", wrong: ["Microscope", "Binoculars", "Camera"] },
+        { question: "What energy makes things hot?", correct: "Heat", wrong: ["Light", "Sound", "Magnetism"] },
+      ],
+      chemistry: [
+        { question: "What is H₂O?", correct: "Water", wrong: ["Oxygen", "Hydrogen", "Carbon dioxide"] },
+        { question: "What do we call the simplest type of substance?", correct: "Element", wrong: ["Compound", "Mixture", "Solution"] },
+        { question: "What gas do plants release?", correct: "Oxygen", wrong: ["Carbon dioxide", "Nitrogen", "Hydrogen"] },
+        { question: "What taste does an acid usually have?", correct: "Sour", wrong: ["Bitter", "Sweet", "Salty"] },
+      ],
+      earth: [
+        { question: "What planet do we live on?", correct: "Earth", wrong: ["Mars", "Venus", "Jupiter"] },
+        { question: "What natural satellite orbits Earth?", correct: "The Moon", wrong: ["The Sun", "Asteroid", "Star"] },
+        { question: "What covers most of Earth's surface?", correct: "Water", wrong: ["Land", "Mountains", "Ice"] },
+        { question: "What do we call frozen water?", correct: "Ice", wrong: ["Steam", "Salt", "Gas"] },
+      ],
+    },
+    medium: {
+      biology: [
+        { question: "What part of the cell contains genetic material?", correct: "Nucleus", wrong: ["Cytoplasm", "Membrane", "Ribosome"] },
+        { question: "Which blood cells fight infection?", correct: "White blood cells", wrong: ["Red blood cells", "Platelets", "Plasma"] },
+        { question: "What gas do humans exhale?", correct: "Carbon dioxide", wrong: ["Oxygen", "Nitrogen", "Hydrogen"] },
+        { question: "Which organ pumps blood?", correct: "Heart", wrong: ["Lungs", "Brain", "Liver"] },
+      ],
+      physics: [
+        { question: "What is the speed of light?", correct: "300,000 km/s", wrong: ["30,000 km/s", "300 km/s", "3,000 km/s"] },
+        { question: "What energy is stored in food?", correct: "Chemical energy", wrong: ["Heat energy", "Nuclear energy", "Light energy"] },
+        { question: "What is measured in Newtons?", correct: "Force", wrong: ["Energy", "Mass", "Temperature"] },
+        { question: "What type of energy does a moving car have?", correct: "Kinetic", wrong: ["Potential", "Thermal", "Nuclear"] },
+      ],
+      chemistry: [
+        { question: "What is NaCl?", correct: "Salt", wrong: ["Sugar", "Water", "Vinegar"] },
+        { question: "What particle has a negative charge?", correct: "Electron", wrong: ["Proton", "Neutron", "Atom"] },
+        { question: "What is the chemical symbol for gold?", correct: "Au", wrong: ["Ag", "Fe", "Gd"] },
+        { question: "Which gas is used in balloons?", correct: "Helium", wrong: ["Hydrogen", "Oxygen", "Nitrogen"] },
+      ],
+      earth: [
+        { question: "What is the largest ocean?", correct: "Pacific Ocean", wrong: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean"] },
+        { question: "Which layer of Earth do we live on?", correct: "Crust", wrong: ["Mantle", "Core", "Lithosphere"] },
+        { question: "What type of rock is formed from lava?", correct: "Igneous", wrong: ["Sedimentary", "Metamorphic", "Fossil"] },
+        { question: "What causes day and night?", correct: "Earth's rotation", wrong: ["Earth's revolution", "Moon's orbit", "Sun's rotation"] },
+      ],
+    },
+    hard: {
+      biology: [
+        { question: "What sugar is found in DNA?", correct: "Deoxyribose", wrong: ["Ribose", "Glucose", "Sucrose"] },
+        { question: "What organelle is the powerhouse of the cell?", correct: "Mitochondria", wrong: ["Nucleus", "Ribosome", "Golgi body"] },
+        { question: "What process makes gametes?", correct: "Meiosis", wrong: ["Mitosis", "Fertilization", "Replication"] },
+        { question: "What pigment captures light in photosynthesis?", correct: "Chlorophyll", wrong: ["Hemoglobin", "Carotene", "Melanin"] },
+      ],
+      physics: [
+        { question: "Who proposed the theory of relativity?", correct: "Einstein", wrong: ["Newton", "Galileo", "Tesla"] },
+        { question: "What is absolute zero in Celsius?", correct: "-273°C", wrong: ["0°C", "-100°C", "-459°C"] },
+        { question: "What subatomic particle has no charge?", correct: "Neutron", wrong: ["Proton", "Electron", "Positron"] },
+        { question: "What law explains action and reaction?", correct: "Newton’s Third Law", wrong: ["First Law", "Second Law", "Law of Gravity"] },
+      ],
+      chemistry: [
+        { question: "What is the pH of pure water?", correct: "7", wrong: ["0", "14", "5"] },
+        { question: "Which element has atomic number 6?", correct: "Carbon", wrong: ["Oxygen", "Nitrogen", "Helium"] },
+        { question: "What bond shares electrons?", correct: "Covalent", wrong: ["Ionic", "Hydrogen", "Metallic"] },
+        { question: "Which acid is found in the stomach?", correct: "Hydrochloric acid", wrong: ["Sulfuric acid", "Nitric acid", "Carbonic acid"] },
+      ],
+      earth: [
+        { question: "What type of rock forms from pressure and heat?", correct: "Metamorphic", wrong: ["Igneous", "Sedimentary", "Volcanic"] },
+        { question: "Which layer of Earth is liquid?", correct: "Outer core", wrong: ["Inner core", "Mantle", "Crust"] },
+        { question: "What is the largest planet in our solar system?", correct: "Jupiter", wrong: ["Saturn", "Earth", "Neptune"] },
+        { question: "What causes tides on Earth?", correct: "Moon's gravity", wrong: ["Sun's heat", "Earth's spin", "Wind"] },
+      ],
+    },
+  };
 
-      },
-          medium: {
-          synonym: [
-              { word: "beautiful", correct: "gorgeous", wrong: ["ugly", "plain", "simple"] },
-              { word: "difficult", correct: "challenging", wrong: ["easy", "simple", "basic"] },
-              { word: "ancient", correct: "old", wrong: ["new", "modern", "recent"] },
-              { word: "quick", correct: "swift", wrong: ["slow", "lazy", "sluggish"] },
-              { word: "brave", correct: "courageous", wrong: ["scared", "timid", "weak"] },
-              { word: "smart", correct: "intelligent", wrong: ["dumb", "foolish", "slow"] },
-              { word: "strong", correct: "powerful", wrong: ["weak", "fragile", "feeble"] },
-              { word: "angry", correct: "furious", wrong: ["happy", "calm", "joyful"] },
-              { word: "funny", correct: "humorous", wrong: ["serious", "boring", "sad"] },
-              { word: "bright", correct: "luminous", wrong: ["dark", "dull", "dim"] },
-          ],
-          antonym: [
-              { word: "expand", correct: "contract", wrong: ["grow", "increase", "enlarge"] },
-              { word: "victory", correct: "defeat", wrong: ["win", "success", "triumph"] },
-              { word: "ancient", correct: "modern", wrong: ["old", "historic", "past"] },
-              { word: "strong", correct: "weak", wrong: ["powerful", "robust", "tough"] },
-              { word: "happy", correct: "sad", wrong: ["joyful", "excited", "glad"] },
-              { word: "open", correct: "closed", wrong: ["shut", "ajar", "wide"] },
-              { word: "high", correct: "low", wrong: ["tall", "elevated", "above"] },
-              { word: "fast", correct: "slow", wrong: ["quick", "rapid", "swift"] },
-              { word: "bright", correct: "dark", wrong: ["luminous", "shiny", "glowing"] },
-              { word: "near", correct: "far", wrong: ["close", "next", "adjacent"] },
-          ],
-          definition: [
-              { word: "telescope", correct: "device to see far objects", wrong: ["device to hear sounds", "device to cook food", "device to clean"] },
-              { word: "volcano", correct: "mountain that erupts lava", wrong: ["lake", "river", "valley"] },
-              { word: "oxygen", correct: "gas we breathe", wrong: ["water", "carbon", "nitrogen"] },
-              { word: "keyboard", correct: "device to type on a computer", wrong: ["monitor", "mouse", "printer"] },
-              { word: "microscope", correct: "device to see tiny objects", wrong: ["telescope", "camera", "binoculars"] },
-              { word: "pyramid", correct: "triangular structure", wrong: ["cube", "sphere", "circle"] },
-              { word: "glacier", correct: "large ice mass", wrong: ["river", "mountain", "lake"] },
-              { word: "satellite", correct: "object orbiting a planet", wrong: ["rocket", "star", "moon"] },
-              { word: "guitar", correct: "stringed musical instrument", wrong: ["drum", "piano", "flute"] },
-              { word: "volleyball", correct: "sport played with a ball over a net", wrong: ["soccer", "tennis", "basketball"] },
-          ],
-          spelling: [
-              { word: "necessary", correct: "necessary", wrong: ["neccessary", "necesary", "neccesary"] },
-              { word: "beautiful", correct: "beautiful", wrong: ["beatiful", "beutiful", "beautifull"] },
-              { word: "accommodate", correct: "accommodate", wrong: ["acommodate", "accomodate", "acomodate"] },
-              { word: "definitely", correct: "definitely", wrong: ["definately", "definitly", "definetly"] },
-              { word: "separate", correct: "separate", wrong: ["seperate", "seperete", "separite"] },
-              { word: "questionnaire", correct: "questionnaire", wrong: ["questionaire", "questinnaire", "questioner"] },
-              { word: "occurrence", correct: "occurrence", wrong: ["occurence", "ocurrence", "occurance"] },
-              { word: "acquire", correct: "acquire", wrong: ["aquire", "acqire", "acqure"] },
-              { word: "maintenance", correct: "maintenance", wrong: ["maintainance", "maintanance", "maintnance"] },
-              { word: "privilege", correct: "privilege", wrong: ["privelege", "priviledge", "privlig"] },
-          ],
-          },
-          hard: {
-          synonym: [
-              { word: "ubiquitous", correct: "everywhere", wrong: ["rare", "hidden", "absent"] },
-              { word: "meticulous", correct: "careful", wrong: ["careless", "sloppy", "rushed"] },
-              { word: "obstinate", correct: "stubborn", wrong: ["flexible", "gentle", "yielding"] },
-              { word: "lucid", correct: "clear", wrong: ["confusing", "vague", "obscure"] },
-              { word: "tenacious", correct: "persistent", wrong: ["weak", "lazy", "indifferent"] },
-              { word: "esoteric", correct: "obscure", wrong: ["common", "famous", "popular"] },
-              { word: "ambiguous", correct: "unclear", wrong: ["obvious", "clear", "definite"] },
-              { word: "candid", correct: "honest", wrong: ["dishonest", "sly", "deceptive"] },
-              { word: "prudent", correct: "wise", wrong: ["reckless", "careless", "foolish"] },
-              { word: "profound", correct: "deep", wrong: ["shallow", "superficial", "simple"] },
-          ],
-          antonym: [
-              { word: "benevolent", correct: "malevolent", wrong: ["kind", "generous", "helpful"] },
-              { word: "ephemeral", correct: "permanent", wrong: ["temporary", "brief", "short"] },
-              { word: "ascend", correct: "descend", wrong: ["rise", "climb", "soar"] },
-              { word: "opaque", correct: "transparent", wrong: ["cloudy", "dark", "murky"] },
-              { word: "scarce", correct: "abundant", wrong: ["rare", "limited", "insufficient"] },
-              { word: "chaotic", correct: "orderly", wrong: ["messy", "confused", "disorganized"] },
-              { word: "artificial", correct: "natural", wrong: ["synthetic", "man-made", "engineered"] },
-              { word: "hostile", correct: "friendly", wrong: ["aggressive", "unfriendly", "harsh"] },
-              { word: "fragile", correct: "strong", wrong: ["weak", "delicate", "brittle"] },
-              { word: "vague", correct: "specific", wrong: ["unclear", "ambiguous", "imprecise"] },
-          ],
-          definition: [
-              { word: "serendipity", correct: "pleasant surprise", wrong: ["bad luck", "planned event", "boring moment"] },
-              { word: "epiphany", correct: "sudden realization", wrong: ["confusion", "question", "mistake"] },
-              { word: "labyrinth", correct: "complex maze", wrong: ["simple path", "straight road", "open field"] },
-              { word: "paradox", correct: "contradictory statement", wrong: ["simple truth", "story", "fact"] },
-              { word: "quintessential", correct: "perfect example", wrong: ["worst example", "average", "rare"] },
-              { word: "mellifluous", correct: "pleasant-sounding", wrong: ["harsh", "ugly", "rough"] },
-              { word: "oblivion", correct: "state of being forgotten", wrong: ["fame", "attention", "recognition"] },
-              { word: "zenith", correct: "highest point", wrong: ["lowest point", "middle", "base"] },
-              { word: "cacophony", correct: "harsh noise", wrong: ["pleasant sound", "music", "silence"] },
-              { word: "ephemeral", correct: "short-lived", wrong: ["long-lasting", "permanent", "eternal"] },
-          ],
-          spelling: [
-              { word: "accommodate", correct: "accommodate", wrong: ["accomodate", "acomodate", "acommodate"] },
-              { word: "definitely", correct: "definitely", wrong: ["definately", "definitly", "definetly"] },
-              { word: "conscientious", correct: "conscientious", wrong: ["consciencious", "consientious", "conscientious"] },
-              { word: "pronunciation", correct: "pronunciation", wrong: ["pronounciation", "pronuntiation", "pronounciaton"] },
-              { word: "rhythm", correct: "rhythm", wrong: ["rythm", "rithm", "rhythem"] },
-              { word: "miscellaneous", correct: "miscellaneous", wrong: ["miscelaneous", "miscellanous", "micesllaneous"] },
-              { word: "occasionally", correct: "occasionally", wrong: ["ocasionally", "occassionally", "ocassionally"] },
-              { word: "embarrass", correct: "embarrass", wrong: ["embarass", "embarras", "embarrs"] },
-              { word: "harass", correct: "harass", wrong: ["harrass", "haras", "harres"] },
-              { word: "connoisseur", correct: "connoisseur", wrong: ["conaisseur", "connosieur", "connoiser"] },
-          ],
-          }
+  const difficultyWords = scienceSets[difficulty][questionType];
 
-      }
-
-      const difficultyWords = wordSets[difficulty][questionType]
-  // Filter out used words
-  const unusedWords = difficultyWords.filter(
-      w => !this.usedWords[difficulty][questionType].includes(w.word)
+  // Filter unused questions
+  const unused = difficultyWords.filter(
+    q => !this.usedWords[difficulty][questionType].includes(q.question)
   );
 
-  if (unusedWords.length === 0) {
-      console.log("All questions for this type and difficulty have been used!");
-      return null; // or reset usedWords[difficulty][questionType] = [] if you want to restart
+  if (unused.length === 0) {
+    console.log("All questions for this type and difficulty have been used!");
+    return null;
   }
 
-  // Pick a random unused word
-  const selectedWord = unusedWords[Math.floor(Math.random() * unusedWords.length)];
+  const selected = unused[Math.floor(Math.random() * unused.length)];
+  this.usedWords[difficulty][questionType].push(selected.question);
 
-  // Mark as used
-  this.usedWords[difficulty][questionType].push(selectedWord.word);
-
-  let question, correctAnswer, options;
-  switch (questionType) {
-      case "synonym":
-      question = `What is a synonym for "${selectedWord.word}"?`;
-      correctAnswer = selectedWord.correct;
-      options = [correctAnswer, ...selectedWord.wrong];
-      break;
-      case "antonym":
-      question = `What is the opposite of "${selectedWord.word}"?`;
-      correctAnswer = selectedWord.correct;
-      options = [correctAnswer, ...selectedWord.wrong];
-      break;
-      case "definition":
-      question = `What is a/an   "${selectedWord.word}"?`;
-      correctAnswer = selectedWord.correct;
-      options = [correctAnswer, ...selectedWord.wrong];
-      break;
-      case "spelling":
-      question = `Which word is spelled correctly?`;
-      correctAnswer = selectedWord.correct;
-      options = [correctAnswer, ...selectedWord.wrong];
-      break;
-  }
-
-  // Shuffle options
+  // shuffle options
+  let options = [selected.correct, ...selected.wrong];
   for (let i = options.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [options[i], options[j]] = [options[j], options[i]];
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
   }
 
-  return { question, correctAnswer, options };
-  }
+  return { question: selected.question, correctAnswer: selected.correct, options };
+}
+
 
     initGame() { 
       const headPosition = this.getRandomPosition()
