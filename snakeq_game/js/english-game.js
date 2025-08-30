@@ -1455,92 +1455,92 @@ options.forEach((option, index) => {
                 this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
                 this.drawPixelSnakeFace(x, y, this.snakeFace);
             }
-        } else if (index === this.snake.length - 1) {
-            // ===== TAIL =====
-            const prev = this.snake[index - 1];
-            const dirPrev = { x: segment.x - prev.x , y: segment.y - prev.y };
+            } else if (index === this.snake.length - 1) {
+                // ===== TAIL =====
+                const prev = this.snake[index - 1];
+                const dirPrev = { x: segment.x - prev.x , y: segment.y - prev.y };
 
-            let outOfBoundPrevX;
-            if (dirPrev.x === - (this.GRID_WIDTH - 1) || dirPrev.x === 1) outOfBoundPrevX = 1; else if (dirPrev.x === this.GRID_WIDTH - 1 || dirPrev.x === -1) outOfBoundPrevX = -1;
+                let outOfBoundPrevX;
+                if (dirPrev.x === - (this.GRID_WIDTH - 1) || dirPrev.x === 1) outOfBoundPrevX = 1; else if (dirPrev.x === this.GRID_WIDTH - 1 || dirPrev.x === -1) outOfBoundPrevX = -1;
 
-            let outOfBoundPrevY;
-            if (dirPrev.y === - (this.GRID_HEIGHT - 1) || dirPrev.y === 1) outOfBoundPrevY = 1; else if (dirPrev.y === this.GRID_HEIGHT - 1 || dirPrev.y === -1) outOfBoundPrevY = -1;
+                let outOfBoundPrevY;
+                if (dirPrev.y === - (this.GRID_HEIGHT - 1) || dirPrev.y === 1) outOfBoundPrevY = 1; else if (dirPrev.y === this.GRID_HEIGHT - 1 || dirPrev.y === -1) outOfBoundPrevY = -1;
 
-            let tailSprite = this.sprites.SnakeTail; // default (North)
-            if (outOfBoundPrevX === -1) tailSprite = this.sprites.SnakeTailRight;
-            else if (outOfBoundPrevX === 1) tailSprite = this.sprites.SnakeTailLeft;
-            else if (outOfBoundPrevY === -1) tailSprite = this.sprites.SnakeTailDown;
-            else tailSprite = this.sprites.SnakeTail;
+                let tailSprite = this.sprites.SnakeTail; // default (North)
+                if (outOfBoundPrevX === -1) tailSprite = this.sprites.SnakeTailRight;
+                else if (outOfBoundPrevX === 1) tailSprite = this.sprites.SnakeTailLeft;
+                else if (outOfBoundPrevY === -1) tailSprite = this.sprites.SnakeTailDown;
+                else tailSprite = this.sprites.SnakeTail;
 
-            if (tailSprite?.complete) {
-                this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+                if (tailSprite?.complete) {
+                    this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+                } else {
+                    this.ctx.fillStyle = "#228b22";
+                    this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+                }
             } else {
-                this.ctx.fillStyle = "#228b22";
-                this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-            }
-        } else {
-            // ===== BODY =====
-            const prev = this.snake[index - 1];
-            const next = this.snake[index + 1];
+                // ===== BODY =====
+                const prev = this.snake[index - 1];
+                const next = this.snake[index + 1];
 
-            const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
-            const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
+                const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
+                const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
 
-            let outOfBoundPrevX;
-            if (dirPrev.x === - (this.GRID_WIDTH - 1) || dirPrev.x === 1) outOfBoundPrevX = 1; else if (dirPrev.x === this.GRID_WIDTH - 1 || dirPrev.x === -1) outOfBoundPrevX = -1;
+                let outOfBoundPrevX;
+                if (dirPrev.x === - (this.GRID_WIDTH - 1) || dirPrev.x === 1) outOfBoundPrevX = 1; else if (dirPrev.x === this.GRID_WIDTH - 1 || dirPrev.x === -1) outOfBoundPrevX = -1;
 
-            let outOfBoundPrevY;
-            if (dirPrev.y === - (this.GRID_HEIGHT - 1) || dirPrev.y === 1) outOfBoundPrevY = 1; else if (dirPrev.y === this.GRID_HEIGHT - 1 || dirPrev.y === -1) outOfBoundPrevY = -1;
-            
-            let outOfBoundNextX;
-            if (dirNext.x === - (this.GRID_WIDTH - 1) || dirNext.x === 1) outOfBoundNextX = 1; else if (dirNext.x === this.GRID_WIDTH - 1 || dirNext.x === -1) outOfBoundNextX = -1;
+                let outOfBoundPrevY;
+                if (dirPrev.y === - (this.GRID_HEIGHT - 1) || dirPrev.y === 1) outOfBoundPrevY = 1; else if (dirPrev.y === this.GRID_HEIGHT - 1 || dirPrev.y === -1) outOfBoundPrevY = -1;
+                
+                let outOfBoundNextX;
+                if (dirNext.x === - (this.GRID_WIDTH - 1) || dirNext.x === 1) outOfBoundNextX = 1; else if (dirNext.x === this.GRID_WIDTH - 1 || dirNext.x === -1) outOfBoundNextX = -1;
 
-            let outOfBoundNextY;
-            if (dirNext.y === - (this.GRID_HEIGHT - 1) || dirNext.y === 1) outOfBoundNextY = 1; else if (dirNext.y === this.GRID_HEIGHT - 1 || dirNext.y === -1) outOfBoundNextY = -1;
+                let outOfBoundNextY;
+                if (dirNext.y === - (this.GRID_HEIGHT - 1) || dirNext.y === 1) outOfBoundNextY = 1; else if (dirNext.y === this.GRID_HEIGHT - 1 || dirNext.y === -1) outOfBoundNextY = -1;
 
-            let bodySprite;
+                let bodySprite;
 
-            // Straight segments
-            if (dirPrev.x === dirNext.x) {
-                // horizontal
-                bodySprite = (dirPrev.x !== 0) ? this.sprites.SnakeBodyRight : this.sprites.SnakeBody;
-            } else if (dirPrev.y === dirNext.y) {
-                // vertical
-                bodySprite = (dirPrev.y !== 0) ? this.sprites.SnakeBody : this.sprites.SnakeBodyRight;
-            } else {
-                // ===== CORNERS =====
-                if (
-                (outOfBoundNextY === -1 && outOfBoundPrevX === -1) ||
-                (outOfBoundNextX === 1 && outOfBoundPrevY === 1) 
-                ) {
-                bodySprite = this.sprites.SnakeCornerLeftDown;
+                // Straight segments
+                if (dirPrev.x === dirNext.x) {
+                    // horizontal
+                    bodySprite = (dirPrev.x !== 0) ? this.sprites.SnakeBodyRight : this.sprites.SnakeBody;
+                } else if (dirPrev.y === dirNext.y) {
+                    // vertical
+                    bodySprite = (dirPrev.y !== 0) ? this.sprites.SnakeBody : this.sprites.SnakeBodyRight;
+                } else {
+                    // ===== CORNERS =====
+                    if (
+                    (outOfBoundNextY === -1 && outOfBoundPrevX === -1) ||
+                    (outOfBoundNextX === 1 && outOfBoundPrevY === 1) 
+                    ) {
+                    bodySprite = this.sprites.SnakeCornerLeftDown;
 
-                } else if (
-                (outOfBoundNextY === -1 && outOfBoundPrevX === 1) ||
-                (outOfBoundNextX === -1 && outOfBoundPrevY === 1) 
-                ) {
-                bodySprite = this.sprites.SnakeCornerRightDown;
-                } else if (
-                (outOfBoundNextY === 1 && outOfBoundPrevX === -1) ||
-                (outOfBoundNextX === 1 && outOfBoundPrevY === -1) 
-                ) {
-                bodySprite = this.sprites.SnakeCornerLeftUp;
-                } else if (
-                (outOfBoundNextY === 1 && outOfBoundPrevX === 1) ||
-                (outOfBoundNextX === -1 && outOfBoundPrevY === -1) 
-                ) {
-                bodySprite = this.sprites.SnakeCornerRightUp;
+                    } else if (
+                    (outOfBoundNextY === -1 && outOfBoundPrevX === 1) ||
+                    (outOfBoundNextX === -1 && outOfBoundPrevY === 1) 
+                    ) {
+                    bodySprite = this.sprites.SnakeCornerRightDown;
+                    } else if (
+                    (outOfBoundNextY === 1 && outOfBoundPrevX === -1) ||
+                    (outOfBoundNextX === 1 && outOfBoundPrevY === -1) 
+                    ) {
+                    bodySprite = this.sprites.SnakeCornerLeftUp;
+                    } else if (
+                    (outOfBoundNextY === 1 && outOfBoundPrevX === 1) ||
+                    (outOfBoundNextX === -1 && outOfBoundPrevY === -1) 
+                    ) {
+                    bodySprite = this.sprites.SnakeCornerRightUp;
+                    }
+                }
+
+                // Draw body
+                if (bodySprite?.complete) {
+                    this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+                } else {
+                    this.ctx.fillStyle = "#006400";
+                    this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
                 }
             }
-
-            // Draw body
-            if (bodySprite?.complete) {
-                this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
-            } else {
-                this.ctx.fillStyle = "#006400";
-                this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-            }
-        }
   });
 
     // Use shield pickup icon if present
