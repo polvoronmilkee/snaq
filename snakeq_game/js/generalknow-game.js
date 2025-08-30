@@ -224,6 +224,10 @@ class SnakeGeneralKnowledgeGame {
       this.instructionsModal = document.getElementById("instructions-modal")
       this.closeInstructionsBtn = document.getElementById("close-instructions")
 
+      this.aboutModal = document.getElementById("about-modal")
+      this.closeAbout = document.getElementById("close-about")
+      this.aboutBtn = document.getElementById("about-btn")
+
       if (this.questionElement) {
       this.questionElement.style.fontSize = "15px"
       this.questionElement.style.lineHeight = "1.4"
@@ -1703,6 +1707,23 @@ cellIntersectsRect(gridX, gridY, rect) {
     return !(cX2 <= rect.x || rX2 <= cellX || cY2 <= rect.y || rY2 <= cellY)
 }
 }
+
+    const aboutModal = document.getElementById("about-modal");
+    const closeAbout = document.getElementById("close-about");
+    const aboutBtn = document.getElementById("about-btn");
+
+    if (aboutBtn) {
+    aboutBtn.addEventListener("click", () => {
+        aboutModal.classList.remove("hidden");
+    });
+    }
+
+    if (closeAbout) {
+    closeAbout.addEventListener("click", () => {
+        aboutModal.classList.add("hidden");
+    });
+    }
+
 
       const copyrightModal = document.getElementById("copyright-modal");
       const closeCopyright = document.getElementById("close-copyright");

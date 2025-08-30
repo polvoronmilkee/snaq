@@ -222,7 +222,9 @@ class SnakeEnglishGame {
       this.musicBtn = document.getElementById("music-btn")
       this.instructionsModal = document.getElementById("instructions-modal")
       this.closeInstructionsBtn = document.getElementById("close-instructions")
-
+      this.aboutBtn = document.getElementById("about-btn")
+      this.aboutModal = document.getElementById("about-modal")
+      this.closeAboutBtn = document.getElementById("close-about")
       if (this.questionElement) {
       this.questionElement.style.fontSize = "15px"
       this.questionElement.style.lineHeight = "1.4"
@@ -299,11 +301,7 @@ class SnakeEnglishGame {
       this.helpBtn.addEventListener("click", () => this.showInstructions())
       this.soundBtn.addEventListener("click", () => this.toggleSound())
       this.musicBtn.addEventListener("click", () => this.toggleMusic())
-      this.closeInstructionsBtn.addEventListener("click", () => this.hideInstructions())
-        this.helpBtnEsc.addEventListener("click", () => {
-      this.playSound("click")
-      this.showInstructions()
-        })
+
       // Close instructions modal when clicking outside
       this.instructionsModal.addEventListener("click", (e) => {
       if (e.target === this.instructionsModal) {
@@ -325,6 +323,7 @@ class SnakeEnglishGame {
         }
       });
   }
+
 
   showEscMenu() {
     if (this.gameRunning && !this.paused && !this.countdownActive && 
@@ -1682,9 +1681,25 @@ cellIntersectsRect(gridX, gridY, rect) {
 }
 }
 
+
+    const aboutModal = document.getElementById("about-modal");
+    const closeAbout = document.getElementById("close-about");
+    const aboutBtn = document.getElementById("about-btn");
+
+    if (aboutModal) {
+    aboutBtn.addEventListener("click", () => {
+        aboutModal.classList.remove("hidden");
+    });
+    }
+    if (closeAbout) {
+      closeAbout.addEventListener("click", () => {
+          aboutModal.classList.add("hidden");
+      });
+    }
+
       const copyrightModal = document.getElementById("copyright-modal");
       const closeCopyright = document.getElementById("close-copyright");
-      const copyrightBtn = document.getElementById("copyright-btn"); // You can place a button in header/footer
+      const copyrightBtn = document.getElementById("copyright-btn");
 
       if (copyrightBtn) {
       copyrightBtn.addEventListener("click", () => {

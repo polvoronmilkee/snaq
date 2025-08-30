@@ -88,6 +88,22 @@ class LandingPage {
     const musicBtn = $$("music-btn")
     const instructionsModal = $$("instructions-modal")
     const closeInstructionsBtn = $$("close-instructions")
+    const aboutBtn = $$("about-btn")
+    const closeAboutBtn = $$("close-about")
+
+    if (aboutBtn) {
+      aboutBtn.addEventListener("click", () => {
+        this.playClickSound()
+        this.showAbout()
+      })
+    }
+
+    if (closeAboutBtn) {
+      closeAboutBtn.addEventListener("click", () => {
+        this.playClickSound()
+        this.closeAbout()
+      })
+    }
 
     if (helpBtn) {
       helpBtn.addEventListener("click", (e) => {
@@ -128,7 +144,7 @@ class LandingPage {
 
     const copyrightModal = $$("copyright-modal");
     const closeCopyright = $$("close-copyright");
-    const copyrightBtn = $$("copyright-btn"); // You can place a button in header/footer
+    const copyrightBtn = $$("copyright-btn"); 
 
     if (copyrightBtn) {
     copyrightBtn.addEventListener("click", () => {
@@ -142,6 +158,11 @@ class LandingPage {
     });
     }
 
+    if (aboutBtn) {
+      aboutBtn.addEventListener("click", () => {
+        aboutModal.classList.remove("hidden");
+      });
+    }
 
     const modal = $$("gameModeModal")
     const cancelBtn = $$("cancelBtn")
@@ -222,10 +243,24 @@ class LandingPage {
     }
   }
 
+  showAbout() {
+    const aboutModal = $$("about-modal")
+    if (aboutModal) {
+      aboutModal.classList.remove("hidden")
+    }
+  }
+
   hideInstructions() {
     const instructionsModal = $$("instructions-modal")
     if (instructionsModal) {
       instructionsModal.classList.add("hidden")
+    }
+  }
+
+  closeAbout() {
+    const aboutModal = $$("about-modal")
+    if (aboutModal) {
+      aboutModal.classList.add("hidden")
     }
   }
 

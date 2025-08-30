@@ -229,6 +229,9 @@ class SnakeMathGame {
     this.musicBtn = document.getElementById("music-btn")
     this.instructionsModal = document.getElementById("instructions-modal")
     this.closeInstructionsBtn = document.getElementById("close-instructions")
+    this.aboutBtn = document.getElementById("about-btn")
+    this.aboutModal = document.getElementById("about-modal")
+    this.closeAbout = document.getElementById("close-about")
 
     // Slightly larger question text for readability
     if (this.questionElement) {
@@ -1697,6 +1700,23 @@ showGameOver() {
     return manhattan <= (minDistance ?? 2)
   }
 }
+
+      const aboutModal = document.getElementById("about-modal");
+      const closeAbout = document.getElementById("close-about");
+      const aboutBtn = document.getElementById("about-btn");
+
+      if (aboutBtn) {
+        aboutBtn.addEventListener("click", () => {
+          aboutModal.classList.remove("hidden");
+        });
+      }
+
+      if (closeAbout) {
+        closeAbout.addEventListener("click", () => {
+          aboutModal.classList.add("hidden");
+        });
+      }
+
 
     const copyrightModal = document.getElementById("copyright-modal");
     const closeCopyright = document.getElementById("close-copyright");

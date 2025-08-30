@@ -873,6 +873,68 @@ body::before {
   background-image: url("../assets/HeartEmpty.png");
 }
 
+.about-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.about-content {
+  background: #2a2a2a;
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: center;
+}
+
+.about-content h3 {
+  color: #32cd32;
+  font-size: 14px;
+  margin-bottom: 19px;
+  text-align: center;
+}
+
+.about-content h4 {
+  color: #a5eb2c;
+  font-size: 10px;
+  margin: 12px 0 8px 0;
+  margin-bottom: 10px;
+}
+
+.about-content p,
+.about-content li {
+  font-size: 8px;
+  line-height: 1.4;
+  color: #ccc;
+  margin-bottom: 8px;
+}
+
+.about-content p2 {
+  font-size: 8px;
+  line-height: 1.4;
+  color: #b9da4cbe;
+  margin-bottom: 8px;
+}
+
+
+.about-content p3 {
+  font-size: 8px;
+  line-height: 1.4;
+  color: #e3dae69c;
+  margin-bottom: 8px;
+}
+
+
+
 .instructions-modal {
   position: fixed;
   top: 0;
@@ -939,6 +1001,25 @@ body::before {
   background: #3ae63a;
   transform: translate(1px, 1px);
 }
+
+.close-about {
+  background: #32cd32;
+  border: 2px solid #228b22;
+  color: #000;
+  padding: 8px 16px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  cursor: pointer;
+  margin: 16px auto 0;
+  display: block;
+  transition: all 0.1s ease;
+}
+
+.close-about:hover {
+  background: #3ae63a;
+  transform: translate(1px, 1px);
+}
+
 
 .shield-indicator {
   display: flex;
