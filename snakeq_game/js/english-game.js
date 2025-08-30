@@ -136,6 +136,14 @@ class SnakeEnglishGame {
       "SnakeHeadLeft",
       "SnakeHeadRight",
       "SnakeHeadDown",
+      "SnakeHeadCorner1",
+      "SnakeHeadCorner2",
+      "SnakeHeadCorner3",
+      "SnakeHeadCorner4",
+      "SnakeHeadCorner5",
+      "SnakeHeadCorner6",
+      "SnakeHeadCorner7",
+      "SnakeHeadCorner8",
       "SnakeBody",
       "SnakeTail",
       "SnakeTailLeft",
@@ -1391,11 +1399,54 @@ options.forEach((option, index) => {
             // ===== HEAD =====
             const next = this.snake[index + 1];
             const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
-            
-            let headSprite = this.sprites.SnakeHead; // default (up)
-            if (this.direction.x === 1) headSprite = this.sprites.SnakeHeadRight;
-            else if (this.direction.x === -1) headSprite = this.sprites.SnakeHeadLeft;
-            else if (this.direction.y === 1) headSprite = this.sprites.SnakeHeadDown;
+
+            let outOfBoundX;
+            if (dirNext.x === - (this.GRID_WIDTH - 1) || dirNext.x === 1) outOfBoundX = 1; else if (dirNext.x === this.GRID_WIDTH - 1 || dirNext.x === -1) outOfBoundX = -1;
+
+            let outOfBoundY;
+            if (dirNext.y === - (this.GRID_HEIGHT - 1) || dirNext.y === 1) outOfBoundY = 1; else if (dirNext.y === this.GRID_HEIGHT - 1 || dirNext.y === -1) outOfBoundY = -1;
+
+
+            let headSprite = this.sprites.SnakeHead;  // default (North)
+
+            if (this.direction.x === 1) { // Facing East
+
+                if (outOfBoundY === 1) { // Going North turning East
+                    headSprite = this.sprites.SnakeHeadCorner4
+                } else if (outOfBoundY === -1) { // Going South turning East
+                    headSprite = this.sprites.SnakeHeadCorner6
+                } else { //Straight going East
+                    headSprite = this.sprites.SnakeHeadRight;
+                }
+            } else if (this.direction.x === -1) { // Facing West
+
+                if (outOfBoundY === 1) { // Going North turning West
+                    headSprite = this.sprites.SnakeHeadCorner8
+                } else if (outOfBoundY === -1) { // Going South turning West
+                    headSprite = this.sprites.SnakeHeadCorner2
+                } else { //Straight going West
+                    headSprite = this.sprites.SnakeHeadLeft;
+                }
+            } else if (this.direction.y === 1) { // Facing South
+
+                if (outOfBoundX === 1) { // Going East turning South
+                    headSprite = this.sprites.SnakeHeadCorner7
+                } else if (outOfBoundX === -1) { // Going West turning South
+                    headSprite = this.sprites.SnakeHeadCorner3
+                } else { //Straight going West
+                    headSprite = this.sprites.SnakeHeadDown;
+                }
+
+            } else { // Facing North
+
+                if (outOfBoundX === 1) { // Going East turning North
+                    headSprite = this.sprites.SnakeHeadCorner1
+                } else if (outOfBoundX === -1) { // Going West turning North
+                    headSprite = this.sprites.SnakeHeadCorner5
+                } else { //Straight going North
+                    headSprite = this.sprites.SnakeHead;
+                }
+            }
 
             if (headSprite?.complete && headSprite) {
                 this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
@@ -1404,89 +1455,92 @@ options.forEach((option, index) => {
                 this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
                 this.drawPixelSnakeFace(x, y, this.snakeFace);
             }
-        } else if (index === this.snake.length - 1) {
-            // ===== TAIL =====
-            const prevSegment = this.snake[index - 1];
-            const tailDir = { x: prevSegment.x - segment.x, y: prevSegment.y - segment.y };
+            } else if (index === this.snake.length - 1) {
+                // ===== TAIL =====
+                const prev = this.snake[index - 1];
+                const dirPrev = { x: segment.x - prev.x , y: segment.y - prev.y };
 
-            let tailSprite = this.sprites.SnakeTail; // default up
-            if (tailDir.x === 1) tailSprite = this.sprites.SnakeTailRight;
-            else if (tailDir.x === -1) tailSprite = this.sprites.SnakeTailLeft;
-            else if (tailDir.y === 1) tailSprite = this.sprites.SnakeTailDown;
+                let outOfBoundPrevX;
+                if (dirPrev.x === - (this.GRID_WIDTH - 1) || dirPrev.x === 1) outOfBoundPrevX = 1; else if (dirPrev.x === this.GRID_WIDTH - 1 || dirPrev.x === -1) outOfBoundPrevX = -1;
 
-            if (tailSprite?.complete) {
-                this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+                let outOfBoundPrevY;
+                if (dirPrev.y === - (this.GRID_HEIGHT - 1) || dirPrev.y === 1) outOfBoundPrevY = 1; else if (dirPrev.y === this.GRID_HEIGHT - 1 || dirPrev.y === -1) outOfBoundPrevY = -1;
+
+                let tailSprite = this.sprites.SnakeTail; // default (North)
+                if (outOfBoundPrevX === -1) tailSprite = this.sprites.SnakeTailRight;
+                else if (outOfBoundPrevX === 1) tailSprite = this.sprites.SnakeTailLeft;
+                else if (outOfBoundPrevY === -1) tailSprite = this.sprites.SnakeTailDown;
+                else tailSprite = this.sprites.SnakeTail;
+
+                if (tailSprite?.complete) {
+                    this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+                } else {
+                    this.ctx.fillStyle = "#228b22";
+                    this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+                }
             } else {
-                this.ctx.fillStyle = "#228b22";
-                this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-            }
-        } else {
-            // ===== BODY =====
-            const prev = this.snake[index - 1];
-            const next = this.snake[index + 1];
+                // ===== BODY =====
+                const prev = this.snake[index - 1];
+                const next = this.snake[index + 1];
 
-            const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
-            const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
+                const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
+                const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
 
-            let bodySprite;
+                let outOfBoundPrevX;
+                if (dirPrev.x === - (this.GRID_WIDTH - 1) || dirPrev.x === 1) outOfBoundPrevX = 1; else if (dirPrev.x === this.GRID_WIDTH - 1 || dirPrev.x === -1) outOfBoundPrevX = -1;
 
-            // Straight segments
-            if (dirPrev.x === dirNext.x) {
-                // horizontal
-                bodySprite = (dirPrev.x !== 0) ? this.sprites.SnakeBodyRight : this.sprites.SnakeBody;
-            } else if (dirPrev.y === dirNext.y) {
-                // vertical
-                bodySprite = (dirPrev.y !== 0) ? this.sprites.SnakeBody : this.sprites.SnakeBodyRight;
-            } else {
-                // ===== CORNERS =====
-                if (
-                (dirNext.y === -1 && dirPrev.x === -1) || // down → right
-                (dirNext.x === 1 && dirPrev.y === 1) ||   // left → up
-                (dirNext.y === this.GRID_HEIGHT - 1 && dirPrev.x === -1) || // lower edge → upper edge → right
-                (dirNext.x === - (this.GRID_WIDTH - 1) && dirPrev.y === 1) || // left edge → right edge → up
-                (dirNext.y === -1 && dirPrev.x === this.GRID_WIDTH - 1) || // down → right edge → left edge
-                (dirNext.x === 1 && dirPrev.y === - (this.GRID_HEIGHT - 1)) // left → upper edge → lower edge
-                ) {
-                bodySprite = this.sprites.SnakeCornerLeftDown;
+                let outOfBoundPrevY;
+                if (dirPrev.y === - (this.GRID_HEIGHT - 1) || dirPrev.y === 1) outOfBoundPrevY = 1; else if (dirPrev.y === this.GRID_HEIGHT - 1 || dirPrev.y === -1) outOfBoundPrevY = -1;
+                
+                let outOfBoundNextX;
+                if (dirNext.x === - (this.GRID_WIDTH - 1) || dirNext.x === 1) outOfBoundNextX = 1; else if (dirNext.x === this.GRID_WIDTH - 1 || dirNext.x === -1) outOfBoundNextX = -1;
 
-                } else if (
-                (dirNext.y === -1 && dirPrev.x === 1) ||  // down → left
-                (dirNext.x === -1 && dirPrev.y === 1) ||  // right → up
-                (dirNext.y === this.GRID_HEIGHT - 1 && dirPrev.x === 1) || // lower edge → upper edge → left
-                (dirNext.x === this.GRID_WIDTH - 1 && dirPrev.y === 1) || // right edge → left edge → up
-                (dirNext.y === -1 && dirPrev.x === - (this.GRID_WIDTH - 1)) || // down → left edge → right edge
-                (dirNext.x === -1 && dirPrev.y === - (this.GRID_HEIGHT - 1)) // right → upper edge → lower edge
-                ) {
-                bodySprite = this.sprites.SnakeCornerRightDown;
-                } else if (
-                (dirNext.y === 1 && dirPrev.x === -1) ||  // up → right
-                (dirNext.x === 1 && dirPrev.y === -1) ||  // left → down
-                (dirNext.y === - (this.GRID_HEIGHT - 1) && dirPrev.x === -1) || // upper edge → lower edge → right
-                (dirNext.x === - (this.GRID_WIDTH - 1) && dirPrev.y === -1) || // left edge → right edge → down
-                (dirNext.y === 1 && dirPrev.x === this.GRID_WIDTH - 1) || // up → right edge → left edge
-                (dirNext.x === 1 && dirPrev.y === this.GRID_HEIGHT - 1) // left → lower edge → upper edge
-                ) {
-                bodySprite = this.sprites.SnakeCornerLeftUp;
-                } else if (
-                (dirNext.y === 1 && dirPrev.x === 1) ||   // up → left
-                (dirNext.x === -1 && dirPrev.y === -1) || // right → down
-                (dirNext.y === - (this.GRID_HEIGHT - 1) && dirPrev.x === 1) || // upper edge → lower edge → left
-                (dirNext.x === this.GRID_WIDTH - 1 && dirPrev.y === -1) || // right edge → left edge → down
-                (dirNext.y === 1 && dirPrev.x === - (this.GRID_WIDTH - 1)) || // up → left edge → right edge
-                (dirNext.x === -1 && dirPrev.y === this.GRID_HEIGHT - 1) // right → lower edge → upper edge
-                ) {
-                bodySprite = this.sprites.SnakeCornerRightUp;
+                let outOfBoundNextY;
+                if (dirNext.y === - (this.GRID_HEIGHT - 1) || dirNext.y === 1) outOfBoundNextY = 1; else if (dirNext.y === this.GRID_HEIGHT - 1 || dirNext.y === -1) outOfBoundNextY = -1;
+
+                let bodySprite;
+
+                // Straight segments
+                if (dirPrev.x === dirNext.x) {
+                    // horizontal
+                    bodySprite = (dirPrev.x !== 0) ? this.sprites.SnakeBodyRight : this.sprites.SnakeBody;
+                } else if (dirPrev.y === dirNext.y) {
+                    // vertical
+                    bodySprite = (dirPrev.y !== 0) ? this.sprites.SnakeBody : this.sprites.SnakeBodyRight;
+                } else {
+                    // ===== CORNERS =====
+                    if (
+                    (outOfBoundNextY === -1 && outOfBoundPrevX === -1) ||
+                    (outOfBoundNextX === 1 && outOfBoundPrevY === 1) 
+                    ) {
+                    bodySprite = this.sprites.SnakeCornerLeftDown;
+
+                    } else if (
+                    (outOfBoundNextY === -1 && outOfBoundPrevX === 1) ||
+                    (outOfBoundNextX === -1 && outOfBoundPrevY === 1) 
+                    ) {
+                    bodySprite = this.sprites.SnakeCornerRightDown;
+                    } else if (
+                    (outOfBoundNextY === 1 && outOfBoundPrevX === -1) ||
+                    (outOfBoundNextX === 1 && outOfBoundPrevY === -1) 
+                    ) {
+                    bodySprite = this.sprites.SnakeCornerLeftUp;
+                    } else if (
+                    (outOfBoundNextY === 1 && outOfBoundPrevX === 1) ||
+                    (outOfBoundNextX === -1 && outOfBoundPrevY === -1) 
+                    ) {
+                    bodySprite = this.sprites.SnakeCornerRightUp;
+                    }
+                }
+
+                // Draw body
+                if (bodySprite?.complete) {
+                    this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+                } else {
+                    this.ctx.fillStyle = "#006400";
+                    this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
                 }
             }
-
-            // Draw body
-            if (bodySprite?.complete) {
-                this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
-            } else {
-                this.ctx.fillStyle = "#006400";
-                this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-            }
-        }
   });
 
     // Use shield pickup icon if present
