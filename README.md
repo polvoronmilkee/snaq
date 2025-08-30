@@ -5,6 +5,12 @@ Pick your subject, answer questions by munching the correct apples, and grow you
 
 ---
 
+## 🎯 Theme Alignment
+
+Learning & Literacy – SnaQ builds foundational knowledge in math, language, and problem-solving by transforming learning into an engaging and interactive game. It makes education fun, accessible, and rewarding through a nostalgic arcade experience.
+
+---
+
 ## 🎮 Gameplay
 
 - **Choose Your Subject**
@@ -79,4 +85,14 @@ Pick your subject, answer questions by munching the correct apples, and grow you
 - Licensed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)  
 
 ---
+
+## 💪 Designed and Developed by Team APPLE JUICE 🧃
+
+We are 2nd Year BS Software Engineering students from Central Philippine University (CPU), Iloilo City, Philippines — passionate about building fun and meaningful tech projects. For this hackathon, we combined creativity, coding, and teamwork to create SnaQ, a game that makes learning exciting and engaging.
+
+- Danielle Poral
+- Lemuel Luceño
+- Ahron Alera
+- Sophia Mendoza
+- Joseph LLacer
 
