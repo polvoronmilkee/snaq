@@ -46,6 +46,8 @@ class SnakeMathGame {
       youWon: new Audio("../sounds/you-won.mp3"),
       bgMusic: new Audio("../sounds/music.mp3"),
       click: new Audio("../sounds/click.mp3"),
+      countdown: new Audio("../sounds/countdown.mp3"),
+      // goodJob: new Audio("../sounds/good-job.mp3")
     }
 
     this.sounds.bgMusic.volume = 0.2
@@ -77,6 +79,21 @@ class SnakeMathGame {
     this.paused = false
     this.showConfirm = false
     this.inputLocked = false
+    this.countdownActive = false
+    this.escMenuActive = false
+
+    // Boss challenge state (Endless mode)
+    this.inBossChallenge = false
+    this.bossAppleSpawned = false
+    this.nextBossAt = 5 // spawn boss after this many correct answers, then every +5
+
+    // Endless rewards: every N correct answers grant life or shield
+    this.lifeRewardInterval = 10
+    this.nextLifeRewardAt = 10
+
+    // Minimum spawn distance for apples from the snake head (in grid cells)
+    // Helps prevent immediate accidental collisions after eating
+    this.minAppleDistanceFromHead = 3
 
     this.baseSpeed = this.difficultySettings.baseSpeed
     this.speed = this.baseSpeed
@@ -84,6 +101,7 @@ class SnakeMathGame {
 
     this.pauseTimer = 0
     this.isPausedForEvent = false
+    this.countdownActive = false
 
     // Timer for timed mode
     this.timeLeft = 60
@@ -138,7 +156,7 @@ class SnakeMathGame {
       "SnakeCornerLeftUp",
       "SnakeCornerRightDown",
       "apple",
-
+      "shield"
     ]
 
     spriteNames.forEach((name) => {
@@ -195,6 +213,9 @@ class SnakeMathGame {
     this.playAgainBtn = document.getElementById("play-again-btn")
     this.menuBtn = document.getElementById("menu-btn")
     this.restartConfirm = document.getElementById("restart-confirm")
+    this.playAgainConfirm = document.getElementById("play-again-confirm")
+    this.playAgainConfirmBtn = document.getElementById("confirm-play-again")
+    this.cancelPlayAgain = document.getElementById("cancel-play-again")
     this.confirmRestartBtn = document.getElementById("confirm-restart")
     this.cancelRestartBtn = document.getElementById("cancel-restart")
     this.timerDisplay = document.getElementById("timer-display")
@@ -202,6 +223,7 @@ class SnakeMathGame {
 
     this.heartsContainer = document.getElementById("hearts-container")
     this.helpBtn = document.getElementById("help-btn")
+    this.helpBtnEsc = document.getElementById("help-btn-esc"); // ESC menu button
     this.soundBtn = document.getElementById("sound-btn")
     this.musicBtn = document.getElementById("music-btn")
     this.instructionsModal = document.getElementById("instructions-modal")
@@ -209,7 +231,7 @@ class SnakeMathGame {
 
     // Slightly larger question text for readability
     if (this.questionElement) {
-      this.questionElement.style.fontSize = "16px"
+      this.questionElement.style.fontSize = "18px"
       this.questionElement.style.lineHeight = "1.4"
     }
   }
@@ -259,11 +281,17 @@ class SnakeMathGame {
 
     this.playAgainBtn.addEventListener("click", () => {
       this.playSound("click")
-      this.showRestartConfirm()
+      this.playAgainConfirm.classList.remove("hidden");
     })
     this.menuBtn.addEventListener("click", () => {
       this.playSound("click")
       window.location.href = "../index.html"
+    })
+    this.playAgainConfirmBtn.addEventListener("click", () => {
+      this.playSound("click")
+      this.playAgainConfirm.classList.add("hidden") // ✅
+      this.gameOverOverlay.classList.add("hidden")  // ✅
+      this.confirmRestart() // ✅ call method properly
     })
     this.confirmRestartBtn.addEventListener("click", () => {
       this.playSound("click")
@@ -273,11 +301,16 @@ class SnakeMathGame {
       this.playSound("click")
       this.cancelRestart()
     })
-
+    this.cancelPlayAgain.addEventListener("click", () => {
+      this.playSound("click")  
+      this.playAgainConfirm.classList.add("hidden");
+    });
     this.helpBtn.addEventListener("click", () => {
       this.playSound("click")
+      document.getElementById("esc-menu").classList.add("hidden"); 
       this.showInstructions()
     })
+    
     this.soundBtn.addEventListener("click", () => this.toggleSound())
     this.musicBtn.addEventListener("click", () => this.toggleMusic())
     this.closeInstructionsBtn.addEventListener("click", () => {
@@ -291,6 +324,36 @@ class SnakeMathGame {
         this.hideInstructions()
       }
     })
+
+    // NEW: ESC menu event listeners - use event delegation
+    document.addEventListener('click', (e) => {
+      if (e.target.id === 'resume-btn') {
+        this.playSound("click");
+        this.hideEscMenu();
+      } else if (e.target.id === 'settings-btn') {
+        this.playSound("click");
+        this.showNotification("Settings feature coming soon!", "correct");
+        this.hideEscMenu();
+      } else if (e.target.id === 'main-menu-btn') {
+        this.playSound("click");
+        window.location.href = "../index.html";
+      }
+    });
+  }
+
+  showEscMenu() {
+    if (this.gameRunning && !this.paused && !this.countdownActive && 
+        this.restartConfirm.classList.contains("hidden")) {
+      this.escMenuActive = true;
+      this.paused = true;
+      document.getElementById("esc-menu").classList.remove("hidden");
+    }
+  }
+
+  hideEscMenu() {
+    this.escMenuActive = false;
+    this.paused = false;
+    document.getElementById("esc-menu").classList.add("hidden");
   }
 
   showInstructions() {
@@ -304,7 +367,12 @@ class SnakeMathGame {
   updateUI() {
     this.scoreElement.textContent = this.score
     this.correctElement.textContent = this.correctAnswers
-    this.questionElement.textContent = this.currentQuestion ? this.currentQuestion.question : "Loading..."
+    // Show label only while the boss apple is visible; once eaten (inBossChallenge), show equation
+    if (this.bossAppleSpawned && !this.inBossChallenge) {
+      this.questionElement.textContent = "Boss Challenge"
+    } else {
+      this.questionElement.textContent = this.currentQuestion ? this.currentQuestion.question : "Loading..."
+    }
 
     // Update hearts display
     const hearts = this.heartsContainer.querySelectorAll(".heart")
@@ -317,6 +385,7 @@ class SnakeMathGame {
         heart.classList.add("empty")
       }
     })
+    this.updateShieldUI();
   }
 
   generateQuestion() {
@@ -371,7 +440,6 @@ class SnakeMathGame {
       question = "2 + 3 = ?";
   }
 
-  // ✅ Generate wrong options
   const options = new Set([correctAnswer]);
 
   while (options.size < 4) {
@@ -412,9 +480,32 @@ class SnakeMathGame {
 }
 
 
-  initGame() {
-    this.snake = [this.getRandomPosition()]
-    this.direction = this.getRandomDirection()
+  initGame() { 
+    const headPosition = this.getRandomPosition()
+
+    // Keep head at least 1 cell away from edges
+    if (headPosition.x === 0) headPosition.x = 1
+    if (headPosition.x === this.GRID_WIDTH - 1) headPosition.x = this.GRID_WIDTH - 2
+    if (headPosition.y === 0) headPosition.y = 1
+    if (headPosition.y === this.GRID_HEIGHT - 1) headPosition.y = this.GRID_HEIGHT - 2
+
+    // Pick a random direction for the snake to face
+    const directions = [
+      { x: 1, y: 0 },   // right
+      { x: -1, y: 0 },  // left
+      { x: 0, y: 1 },   // down
+      { x: 0, y: -1 }   // up
+    ]
+    this.direction = directions[Math.floor(Math.random() * directions.length)]
+
+    // Place tail behind the head, opposite to direction
+    const tailPosition = {
+      x: headPosition.x - this.direction.x,
+      y: headPosition.y - this.direction.y
+    }
+
+    this.snake = [headPosition, tailPosition]
+
     this.currentQuestion = this.generateQuestion()
     this.apples = this.generateApples(this.currentQuestion)
     this.score = 0
@@ -439,6 +530,7 @@ class SnakeMathGame {
     } else {
       this.timerDisplay.style.display = "none"
     }
+  
 
     // Set target based on mode
     if (this.gameSettings.mode === "endless") {
@@ -460,28 +552,58 @@ class SnakeMathGame {
     // Reset self-bite immunity
     this.selfBiteImmunityTimer = 0
 
+    // Reset boss challenge state
+    this.inBossChallenge = false
+    this.bossAppleSpawned = false
+    this.nextBossAt = 5
+
+    // Reset endless rewards
+    this.lifeRewardInterval = 10
+    this.nextLifeRewardAt = 10
+
     this.updateUI()
     this.hideOverlays()
+    this.updateShieldUI();
   }
 
   startTimer() {
-    this.timerInterval = setInterval(() => {
-      this.timeLeft--
-      this.timerValue.textContent = this.timeLeft
+    this.isPausedForEvent = true;
 
-      if (this.timeLeft <= 0) {
-        this.gameState = "lost"
-        this.gameRunning = false
-        this.showGameOver()
-        clearInterval(this.timerInterval)
-      }
-    }, 1000)
+    if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+    }
+    
+    this.timerInterval = setInterval(() => {
+        if (!this.paused) {  
+            this.timeLeft--;
+            this.timerValue.textContent = this.timeLeft;
+            
+            if (this.timeLeft <= 0) {
+                this.gameState = "lost";
+                this.gameRunning = false;
+                this.showGameOver();
+                clearInterval(this.timerInterval);
+            }
+        }
+    }, 1000);
   }
 
   handleKeyDown(e) {
     const key = e.key.toLowerCase()
     const code = e.code
 
+    // Prevent all key actions when ESC menu is active, except ESC itself
+    if (this.escMenuActive && key !== "escape") {
+      e.preventDefault();
+      return;
+    }
+
+    // Prevent snake from moving during countdown
+    if (this.countdownActive) {
+      e.preventDefault();
+      return;
+    }
+    
     if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
       e.preventDefault()
     }
@@ -525,6 +647,17 @@ class SnakeMathGame {
     const isMovementKey = ["w","arrowup","s","arrowdown","a","arrowleft","d","arrowright"].includes(key)
     if (this.inputLocked && isMovementKey) return
 
+    // Handle ESC key for menu
+    if (code === "Escape" || key === "escape") {
+      e.preventDefault();
+      if (this.escMenuActive) {
+        this.hideEscMenu();
+      } else {
+        this.showEscMenu();
+      }
+      return;
+    }
+
     // WASD and Arrow key movement
     switch (key) {
       case "w":
@@ -555,6 +688,14 @@ class SnakeMathGame {
           moved = true
         }
         break
+      case "escape":
+        e.preventDefault();
+        if (this.escMenuActive) {
+          this.hideEscMenu();
+        } else {
+          this.showEscMenu();
+        }
+        break;
     }
 
     if (moved) {
@@ -606,7 +747,8 @@ class SnakeMathGame {
       } while (
         usedPositions.has(`${x},${y}`) ||
         this.snake.some((segment) => segment.x === x && segment.y === y) ||
-        this.cellIntersectsRect(x, y, this.sprintBar)
+        this.cellIntersectsRect(x, y, this.sprintBar) ||
+        this.isCellTooCloseToHead(x, y, this.minAppleDistanceFromHead)
       )
 
       usedPositions.add(`${x},${y}`)
@@ -621,16 +763,115 @@ class SnakeMathGame {
     return newApples
   }
 
+  // Boss apple spawns a single special apple labeled "2B2". When eaten, it
+  // switches the game to a multi-operator hard question until solved.
+  spawnBossApple() {
+    if (this.bossAppleSpawned || this.inBossChallenge) return
+
+    const usedPositions = new Set()
+    this.apples.forEach((a) => {
+      const w = a.width || 1
+      const h = a.height || 1
+      for (let dx = 0; dx < w; dx++) {
+        for (let dy = 0; dy < h; dy++) {
+          usedPositions.add(`${a.x + dx},${a.y 
+            + dy}`)
+        }
+      }
+    })
+    this.snake.forEach((s) => usedPositions.add(`${s.x},${s.y}`))
+    if (this.shieldPickup) usedPositions.add(`${this.shieldPickup.x},${this.shieldPickup.y}`)
+
+    let x, y
+    do {
+      x = this.randInt(Math.max(1, this.GRID_WIDTH - 1))
+      y = this.randInt(Math.max(1, this.GRID_HEIGHT - 1))
+    } while (
+      usedPositions.has(`${x},${y}`) ||
+      usedPositions.has(`${x+1},${y}`) ||
+      usedPositions.has(`${x},${y+1}`) ||
+      usedPositions.has(`${x+1},${y+1}`) ||
+      this.cellIntersectsRect(x, y, this.sprintBar) ||
+      this.cellIntersectsRect(x+1, y, this.sprintBar) ||
+      this.cellIntersectsRect(x, y+1, this.sprintBar) ||
+      this.cellIntersectsRect(x+1, y+1, this.sprintBar) ||
+      this.isCellTooCloseToHead(x, y, this.minAppleDistanceFromHead) ||
+      this.isCellTooCloseToHead(x+1, y, this.minAppleDistanceFromHead) ||
+      this.isCellTooCloseToHead(x, y+1, this.minAppleDistanceFromHead) ||
+      this.isCellTooCloseToHead(x+1, y+1, this.minAppleDistanceFromHead)
+    )
+
+    this.apples.push({ x, y, value: 'BOSS', isCorrect: false, type: 'boss', width: 2, height: 2 })
+    this.bossAppleSpawned = true
+    this.showNotification('SnaQ boss apple appeared!', 'correct')
+  }
+
+  // Create a hard 3-4 term expression with multiple operators and parentheses
+  generateBossQuestion() {
+    const ops = ['+', '-', '*'] // avoid division to keep integer results predictable
+    const randIn = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
+
+    // Build between 3 and 5 numbers
+    const termsCount = randIn(4, 5) // 4-5 numbers → 3-4 operators
+    const nums = Array.from({ length: termsCount }, () => randIn(1, 12))
+    const operators = Array.from({ length: termsCount - 1 }, () => ops[this.randInt(ops.length)])
+
+    // Randomly add one set of parentheses around a sub-range
+    let open = this.randInt(termsCount - 1)
+    let close = randIn(open + 1, termsCount - 1)
+
+    // Build expression string with parentheses
+    let expr = ''
+    for (let i = 0; i < termsCount; i++) {
+      const isOpen = i === open
+      const isClose = i === close
+      if (isOpen) expr += '('
+      expr += nums[i]
+      if (isClose) expr += ')'
+      if (i < operators.length) expr += ` ${operators[i]} `
+    }
+
+    // Evaluate safely using Function
+    let correctAnswer
+    try {
+      // eslint-disable-next-line no-new-func
+      correctAnswer = Number(Function(`"use strict"; return (${expr});`)())
+    } catch (e) {
+      // Fallback simple expression if something goes wrong
+      expr = '1 + 2 * 3 - 1'
+      correctAnswer = 1 + 2 * 3 - 1
+    }
+
+    // Build option set around the result
+    const options = new Set([correctAnswer])
+    const variance = [1, 2, 3, 4, 5, -1, -2, -3]
+    while (options.size < 4) {
+      const delta = variance[this.randInt(variance.length)]
+      options.add(correctAnswer + delta)
+    }
+
+    // Shuffle options
+    const shuffled = Array.from(options)
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+
+    return { question: `${expr} = ?`, correctAnswer, options: shuffled }
+  }
+
   showNotification(message, type) {
     this.notification = { message, type }
-    this.notificationTimer = 60
+    this.notificationTimer = 75
   }
 
   hideOverlays() {
     this.gameOverOverlay.classList.add("hidden")
     this.restartConfirm.classList.add("hidden")
   }
-
+  showPlayAgainConfirm() {
+    this.restartConfirm.classList.remove("hidden")
+  }
   showRestartConfirm() {
     this.restartConfirm.classList.remove("hidden")
   }
@@ -706,11 +947,28 @@ class SnakeMathGame {
     if (this.shieldPickup && head.x === this.shieldPickup.x && head.y === this.shieldPickup.y) {
       this.hasShield = true
       this.shieldPickup = null
-      this.showNotification("Shield acquired! 🛡️", "correct")
+      this.playSound("correct")
+      this.showNotification("Shield acquired!✨", "correct")
     }
 
-    const eatenApple = this.apples.find((apple) => apple.x === head.x && apple.y === head.y)
+    const eatenApple = this.getAppleAt(head.x, head.y)
     if (eatenApple) {
+      // Boss apple trigger: starts hard multi-operator challenge
+      if (eatenApple.type === 'boss') {
+        // Remove the boss apple and start boss challenge
+        this.playSound("correct")
+        this.apples = this.apples.filter((a) => a !== eatenApple)
+        this.inBossChallenge = true
+        this.bossAppleSpawned = false
+        this.currentQuestion = this.generateBossQuestion()
+        this.apples = this.generateApples(this.currentQuestion)
+        this.showNotification("SnaQ Boss Challenge!", "correct")
+        // Grow by one like a normal apple pickup
+        this.snake = newSnake
+        this.updateUI()
+        this.inputLocked = false
+        return
+      }
       if (eatenApple.isCorrect) {
         this.score += 10
         this.correctAnswers++
@@ -734,18 +992,61 @@ class SnakeMathGame {
           return
         }
 
-        this.snakeFace = "happy"
-        this.showNotification("Correct! +10 points", "correct")
+        // If inside boss challenge, grant bonus and exit boss mode
+        if (this.inBossChallenge) {
+          this.snakeFace = "happy"
+          this.score += 15 // extra bonus for boss (total +25)
+          this.showNotification("Boss cleared! +25 points", "correct")
+          this.inBossChallenge = false
+          this.currentQuestion = this.generateQuestion()
+          this.apples = this.generateApples(this.currentQuestion)
+        } else {
+          this.snakeFace = "happy"
+          this.showNotification("Correct! +10 points", "correct")
+          this.currentQuestion = this.generateQuestion()
+          this.apples = this.generateApples(this.currentQuestion)
+        }
 
-        this.currentQuestion = this.generateQuestion()
-        this.apples = this.generateApples(this.currentQuestion)
+        // Consider spawning next boss apple in endless mode
+        if (
+          this.gameSettings.mode === 'endless' &&
+          !this.inBossChallenge &&
+          !this.bossAppleSpawned &&
+          this.correctAnswers >= this.nextBossAt
+        ) {
+          this.apples = []
+          this.spawnBossApple()
+          this.nextBossAt += 5
+        }
+
+        // Endless reward: every 10 correct answers -> +1 life, or shield if full
+        if (this.gameSettings.mode === 'endless' && this.correctAnswers >= this.nextLifeRewardAt) {
+          // Determine max lives (default 3)
+          const maxLives = this.maxLives || 3
+          if (this.lives < maxLives) {
+            this.lives = Math.min(maxLives, this.lives + 1)
+            if (this.sounds?.goodJob) this.playSound('goodJob')
+            this.showNotification('Extra life! ❤️', 'correct')
+          } else if (!this.hasShield) {
+            this.hasShield = true
+            if (this.sounds?.goodJob) this.playSound('goodJob')
+            this.showNotification('Shield granted!✨', 'correct')
+          } else {
+            // Already full life and shield: small score bonus
+            this.score += 10
+            this.showNotification('Bonus +10 points', 'correct')
+          }
+          this.updateUI()
+          this.nextLifeRewardAt += this.lifeRewardInterval
+        }
       } else {
         // WRONG ANSWER
         if (this.hasShield) {
           // Shield blocks the penalty once
           this.hasShield = false
+          this.updateShieldUI();  
           this.snakeFace = "normal"
-          this.showNotification("Shield saved you! 🛡️", "correct")
+          this.showNotification("Shield saved you!✨", "correct")
 
           // Remove the eaten wrong apple and replace with a new option
           this.apples = this.apples.filter((apple) => apple !== eatenApple)
@@ -800,6 +1101,17 @@ class SnakeMathGame {
     this.inputLocked = false
   }
 
+  updateShieldUI() {
+    const shieldIndicator = document.getElementById('shield-indicator');
+    if (shieldIndicator) {
+      if (this.hasShield) {
+        shieldIndicator.innerHTML = '<img src="../assets/shield.png" class="shield-icon" alt="Shield">';
+      } else {
+        shieldIndicator.innerHTML = '';
+      }
+    }
+  }
+
   addNewApple() {
     const usedPositions = new Set()
 
@@ -827,7 +1139,11 @@ class SnakeMathGame {
       do {
         x = this.randInt(this.GRID_WIDTH)
         y = this.randInt(this.GRID_HEIGHT)
-      } while (usedPositions.has(`${x},${y}`) || this.cellIntersectsRect(x, y, this.sprintBar))
+      } while (
+        usedPositions.has(`${x},${y}`) ||
+        this.cellIntersectsRect(x, y, this.sprintBar) ||
+        this.isCellTooCloseToHead(x, y, this.minAppleDistanceFromHead)
+      )
 
       this.apples.push({
         x,
@@ -836,6 +1152,15 @@ class SnakeMathGame {
         isCorrect: randomOption === this.currentQuestion.correctAnswer,
       })
     }
+  }
+
+  // Return apple occupying a position; supports 2x2 boss apple cells
+  getAppleAt(gridX, gridY) {
+    return this.apples.find((apple) => {
+      const w = apple.width || 1
+      const h = apple.height || 1
+      return gridX >= apple.x && gridX < apple.x + w && gridY >= apple.y && gridY < apple.y + h
+    })
   }
 
   // Spawn shield pickup if player has exactly 1 life and no shield spawned yet
@@ -851,7 +1176,7 @@ class SnakeMathGame {
       } while (used.has(`${x},${y}`))
       this.shieldPickup = { x, y }
       this.shieldSpawned = true
-      this.showNotification("Shield appeared! 🛡️", "correct")
+      this.showNotification("Shield appeared!✨", "correct")
     }
   }
 
@@ -865,6 +1190,7 @@ showGameOver() {
   // Play appropriate sound
   if (this.gameState === "won") {
     this.playSound("youWon");
+    // this.playSound("goodJob")
   } else {
     this.playSound("snakeDies");
   }
@@ -1050,7 +1376,9 @@ showGameOver() {
               (dirNext.y === this.GRID_HEIGHT - 1 && dirPrev.x === -1) || // lower edge → upper edge → right
               (dirNext.x === - (this.GRID_WIDTH - 1) && dirPrev.y === 1) || // left edge → right edge → up
               (dirNext.y === -1 && dirPrev.x === this.GRID_WIDTH - 1) || // down → right edge → left edge
-              (dirNext.x === 1 && dirPrev.y === - (this.GRID_HEIGHT - 1)) // left → upper edge → lower edge
+              (dirNext.x === 1 && dirPrev.y === - (this.GRID_HEIGHT - 1)) || // left → upper edge → lower edge
+              (dirNext.y === this.GRID_HEIGHT - 1 && dirPrev.x === this.GRID_WIDTH - 1) || // Righter Up
+              (dirNext.x === - (this.GRID_WIDTH - 1) && dirPrev.y === - (this.GRID_HEIGHT - 1)) // Upper Right
             ) {
               bodySprite = this.sprites.SnakeCornerLeftDown;
 
@@ -1060,25 +1388,33 @@ showGameOver() {
               (dirNext.y === this.GRID_HEIGHT - 1 && dirPrev.x === 1) || // lower edge → upper edge → left
               (dirNext.x === this.GRID_WIDTH - 1 && dirPrev.y === 1) || // right edge → left edge → up
               (dirNext.y === -1 && dirPrev.x === - (this.GRID_WIDTH - 1)) || // down → left edge → right edge
-              (dirNext.x === -1 && dirPrev.y === - (this.GRID_HEIGHT - 1)) // right → upper edge → lower edge
+              (dirNext.x === -1 && dirPrev.y === - (this.GRID_HEIGHT - 1)) || // right → upper edge → lower edge
+              (dirNext.y === this.GRID_HEIGHT - 1 && dirPrev.x === - (this.GRID_WIDTH - 1)) || // Lefter Down
+              (dirNext.x === this.GRID_WIDTH - 1 && dirPrev.y === - (this.GRID_HEIGHT - 1)) // Lower Left
             ) {
             bodySprite = this.sprites.SnakeCornerRightDown;
+
             } else if (
-            (dirNext.y === 1 && dirPrev.x === -1) ||  // up → right
-            (dirNext.x === 1 && dirPrev.y === -1) ||  // left → down
-            (dirNext.y === - (this.GRID_HEIGHT - 1) && dirPrev.x === -1) || // upper edge → lower edge → right
-            (dirNext.x === - (this.GRID_WIDTH - 1) && dirPrev.y === -1) || // left edge → right edge → down
-            (dirNext.y === 1 && dirPrev.x === this.GRID_WIDTH - 1) || // up → right edge → left edge
-            (dirNext.x === 1 && dirPrev.y === this.GRID_HEIGHT - 1) // left → lower edge → upper edge
+              (dirNext.y === 1 && dirPrev.x === -1) ||  // up → right
+              (dirNext.x === 1 && dirPrev.y === -1) ||  // left → down
+              (dirNext.y === - (this.GRID_HEIGHT - 1) && dirPrev.x === -1) || // upper edge → lower edge → right
+              (dirNext.x === - (this.GRID_WIDTH - 1) && dirPrev.y === -1) || // left edge → right edge → down
+              (dirNext.y === 1 && dirPrev.x === this.GRID_WIDTH - 1) || // up → right edge → left edge
+              (dirNext.x === 1 && dirPrev.y === this.GRID_HEIGHT - 1) || // left → lower edge → upper edge
+              (dirNext.y === - (this.GRID_HEIGHT - 1) && dirPrev.x === this.GRID_WIDTH - 1) || // Righter Down
+              (dirNext.x === - (this.GRID_WIDTH - 1) && dirPrev.y === this.GRID_HEIGHT - 1) // Lower Right
             ) {
             bodySprite = this.sprites.SnakeCornerLeftUp;
+
             } else if (
-            (dirNext.y === 1 && dirPrev.x === 1) ||   // up → left
-            (dirNext.x === -1 && dirPrev.y === -1) || // right → down
-            (dirNext.y === - (this.GRID_HEIGHT - 1) && dirPrev.x === 1) || // upper edge → lower edge → left
-            (dirNext.x === this.GRID_WIDTH - 1 && dirPrev.y === -1) || // right edge → left edge → down
-            (dirNext.y === 1 && dirPrev.x === - (this.GRID_WIDTH - 1)) || // up → left edge → right edge
-            (dirNext.x === -1 && dirPrev.y === this.GRID_HEIGHT - 1) // right → lower edge → upper edge
+              (dirNext.y === 1 && dirPrev.x === 1) ||   // up → left
+              (dirNext.x === -1 && dirPrev.y === -1) || // right → down
+              (dirNext.y === - (this.GRID_HEIGHT - 1) && dirPrev.x === 1) || // upper edge → lower edge → left
+              (dirNext.x === this.GRID_WIDTH - 1 && dirPrev.y === -1) || // right edge → left edge → down
+              (dirNext.y === 1 && dirPrev.x === - (this.GRID_WIDTH - 1)) || // up → left edge → right edge
+              (dirNext.x === -1 && dirPrev.y === this.GRID_HEIGHT - 1) || // right → lower edge → upper edge
+              (dirNext.y === - (this.GRID_HEIGHT - 1) && dirPrev.x === - (this.GRID_WIDTH - 1)) || // Lefter Up
+              (dirNext.x === this.GRID_WIDTH - 1 && dirPrev.y === this.GRID_HEIGHT - 1) // Upper Left
             ) {
             bodySprite = this.sprites.SnakeCornerRightUp;
             }
@@ -1095,32 +1431,14 @@ showGameOver() {
 
       });
 
-    // Draw shield pickup if present
+    // Use shield pickup icon if present
     if (this.shieldPickup) {
       const px = this.shieldPickup.x * this.GRID_SIZE
       const py = this.shieldPickup.y * this.GRID_SIZE
-      // Pixel-style shield token (larger)
-      this.ctx.fillStyle = "#1e90ff"
-      this.ctx.fillRect(px, py, this.GRID_SIZE, this.GRID_SIZE)
-      // Thicker outer border
-      this.ctx.strokeStyle = "#000"
-      this.ctx.lineWidth = 3
-      this.ctx.strokeRect(px, py, this.GRID_SIZE, this.GRID_SIZE)
-      // Inner highlight border
-      this.ctx.strokeStyle = "#a6d8ff"
-      this.ctx.lineWidth = 2
-      this.ctx.strokeRect(px + 2, py + 2, this.GRID_SIZE - 4, this.GRID_SIZE - 4)
-      // Bigger shield icon
-      const iconSize = Math.max(12, Math.floor(this.GRID_SIZE * 0.8))
-      this.ctx.font = `${iconSize}px "Press Start 2P", monospace`
-      this.ctx.textAlign = "center"
-      this.ctx.textBaseline = "middle"
-      // Drop shadow
-      this.ctx.fillStyle = "#000"
-      this.ctx.fillText("🛡️", px + this.GRID_SIZE / 2 + 1, py + this.GRID_SIZE / 2 + 1)
-      this.ctx.fillStyle = "#fff"
-      this.ctx.fillText("🛡️", px + this.GRID_SIZE / 2, py + this.GRID_SIZE / 2)
-    }
+
+      const shieldSprite = this.sprites["shield"]
+      this.ctx.drawImage(shieldSprite, px, py, this.GRID_SIZE, this.GRID_SIZE)
+      }
 
 
     this.apples.forEach((apple) => {
@@ -1128,39 +1446,53 @@ showGameOver() {
       const y = apple.y * this.GRID_SIZE
 
       const appleSprite = this.sprites.apple
+      const drawW = (apple.width || 1) * this.GRID_SIZE
+      const drawH = (apple.height || 1) * this.GRID_SIZE
 
       if (appleSprite && appleSprite.complete) {
-        this.ctx.drawImage(appleSprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
+        this.ctx.drawImage(appleSprite, x, y, drawW, drawH)
       } else {
         // Fallback to red rectangle if sprite not loaded
         this.ctx.fillStyle = "#ff4444"
-        this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
+        this.ctx.fillRect(x, y, drawW, drawH)
 
         // Pixel border
         this.ctx.strokeStyle = "#000"
         this.ctx.lineWidth = 2
-        this.ctx.strokeRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
+        this.ctx.strokeRect(x, y, drawW, drawH)
       }
 
-      // Draw answer text on top of apple
-      this.ctx.fillStyle = "#fff"
+      // Draw label on top of apple
       const fontSize = Math.max(8, Math.floor(this.GRID_SIZE * 0.3))
       this.ctx.font = `${fontSize}px "Press Start 2P", monospace`
       this.ctx.textAlign = "center"
       this.ctx.textBaseline = "middle"
 
-      let displayText = apple.value.toString()
-      const maxLength = Math.floor(this.GRID_SIZE / 6)
+      let displayText
+      if (apple.type === 'boss') {
+        // Boss apple label
+        displayText = 'BOSS'
+        // Glow outline
+        this.ctx.strokeStyle = '#ffd700'
+        this.ctx.lineWidth = 3
+        this.ctx.strokeRect(x + 1, y + 1, drawW - 2, drawH - 2)
+      } else {
+        displayText = apple.value.toString()
+      }
+
+      const centerX = x + drawW / 2
+      const centerY = y + drawH / 2
+      const maxLength = Math.floor(((apple.width || 1) * this.GRID_SIZE) / 6)
       if (displayText.length > maxLength) {
-        displayText = displayText.substring(0, maxLength - 1) + "."
+        displayText = displayText.substring(0, maxLength - 1) + '.'
       }
 
       // Text shadow for pixel effect
-      this.ctx.fillStyle = "#000"
-      this.ctx.fillText(displayText, x + this.GRID_SIZE / 2 + 1, y + this.GRID_SIZE / 2 + 1)
+      this.ctx.fillStyle = '#000'
+      this.ctx.fillText(displayText, centerX + 1, centerY + 1)
 
-      this.ctx.fillStyle = "#fff"
-      this.ctx.fillText(displayText, x + this.GRID_SIZE / 2, y + this.GRID_SIZE / 2)
+      this.ctx.fillStyle = '#fff'
+      this.ctx.fillText(displayText, centerX, centerY)
     })
 
     if (this.notification && this.notificationTimer > 0) {
@@ -1209,7 +1541,6 @@ showGameOver() {
     this.ctx.fillText("SPRINT", bar.x + 7, barY - 5.4)
     this.ctx.fillStyle = "#fff"
     this.ctx.fillText("SPRINT", bar.x + 6, barY - 7)
-
   }
 
   gameLoop(timestamp = 0) {
@@ -1278,6 +1609,7 @@ showGameOver() {
 
   startCountdown(callback) {
     this.isCountdownActive = true  // lock movement
+    this.countdownActive = true;
     this.showCountdown(() => {
       this.isCountdownActive = false // unlock after countdown
       if (callback) callback()
@@ -1285,6 +1617,7 @@ showGameOver() {
   }
 
   showCountdown(callback) {
+    this.countdownActive = true;
     const countdownOverlay = document.createElement("div")
     countdownOverlay.style.cssText = `
       position: fixed;
@@ -1312,6 +1645,8 @@ showGameOver() {
     countdownOverlay.appendChild(countdownNumber)
     document.body.appendChild(countdownOverlay)
 
+    this.playSound("countdown")
+
     let count = 3
     const countdownInterval = setInterval(() => {
       count--
@@ -1323,6 +1658,7 @@ showGameOver() {
       } else {
         clearInterval(countdownInterval)
         countdownOverlay.remove()
+        this.countdownActive = false;
         if (callback) callback()
       }
     }, 1000)
@@ -1339,6 +1675,20 @@ showGameOver() {
     const cX2 = cellX + cellW
     const cY2 = cellY + cellH
     return !(cX2 <= rect.x || rX2 <= cellX || cY2 <= rect.y || rY2 <= cellY)
+  }
+
+  // Helper: ensure apples don't spawn too close to the snake's head
+  // Uses wrap-aware distance since the board wraps at edges
+  isCellTooCloseToHead(gridX, gridY, minDistance) {
+    if (!this.snake || this.snake.length === 0) return false
+    const head = this.snake[0]
+    const dx = Math.abs(gridX - head.x)
+    const dy = Math.abs(gridY - head.y)
+    // wrap-aware (toroidal) distance on each axis
+    const wrapDx = Math.min(dx, this.GRID_WIDTH - dx)
+    const wrapDy = Math.min(dy, this.GRID_HEIGHT - dy)
+    const manhattan = wrapDx + wrapDy
+    return manhattan <= (minDistance ?? 2)
   }
 }
 

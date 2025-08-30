@@ -41,6 +41,7 @@
             <h4>🕹️ Controls</h4>
             <ul>
                 <li>Use WASD or Arrow Keys to move the snake</li>
+                <li>Press SHIFT to sprint / move faster</li>
                 <li>Press SPACE to pause/unpause the game</li>
                 <li>Press R to restart the current game</li>
             </ul>
@@ -52,6 +53,12 @@
                 <li>Eat correct apples to grow and score points (+10)</li>
                 <li>Avoid wrong answers or lose points (-5) and a life</li>
                 <li>Don't bite yourself or you'll lose a life</li>
+            </ul>
+
+            <h4>🛡️ Power‑Ups</h4>
+            <ul>
+                <li>Shield: Spawns when you’re low on lives. Grab it to block one mistake!</li>
+                <li>Sprint Bar: Refills over time. Zoom carefully so you don’t miss apples.</li>
             </ul>
             
             <h4>❤️ Lives & Scoring</h4>
@@ -154,13 +161,37 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="play-again-confirm" class="modal hidden">
+                    <div class="modal-content pixel-border">
+                        <h3>Wanna Play Again?</h3>
+                        <p>Are you sure you want to play again?</p>
+                        <div class="modal-buttons">
+                            <button id="confirm-play-again" class="btn pixel-btn btn-green">Play Again</button>
+                            <button id="cancel-play-again" class="btn pixel-btn btn-red">Cancel</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Instructions -->
             <div class="instructions pixel-instructions">
                 <p>Use WASD or Arrow keys to move • Eat correct answers to grow • Avoid wrong answers!</p>
                 <p>All apples are red - look at the numbers to find the correct answer!</p>
+                <p class="shift">Press SHIFT to sprint / move faster!</p>
                 <p class="controls">Press SPACE to pause • Press R to restart</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ESC Menu -->
+    <div id="esc-menu" class="modal hidden">
+        <div class="modal-content pixel-border">
+            <h3>Game Paused</h3>
+            <div class="menu-options">
+                <button id="resume-btn" class="btn pixel-btn btn-green">Resume Game</button>
+                <button id="help-btn-esc" class="btn pixel-btn">How to Play?</button>
+                <button id="main-menu-btn" class="btn pixel-btn btn-red">Main Menu</button>
             </div>
         </div>
     </div>
