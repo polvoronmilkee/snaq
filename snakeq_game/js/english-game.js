@@ -662,6 +662,7 @@ class SnakeEnglishGame {
       this.notificationTimer = 0
       this.waitingForMove = true
       this.paused = false
+      this.inputLocked = false
       this.speed = this.baseSpeed
 
     // Setup timer for timed mode
@@ -778,7 +779,7 @@ class SnakeEnglishGame {
       }
 
       const isMovementKey = ["w","arrowup","s","arrowdown","a","arrowleft","d","arrowright"].includes(key)
-          if (this.inputLocked && isMovementKey) return
+      if (this.inputLocked && isMovementKey) return
 
       // WASD and Arrow key movement
       switch (key) {
@@ -821,7 +822,7 @@ class SnakeEnglishGame {
       }
 
       if (moved) {
-      this.inputLocked = false
+      this.inputLocked = true
       this.playSound("snakeTurns")
       if (this.waitingForMove) {
           this.waitingForMove = false
@@ -958,7 +959,6 @@ generateApples(question) {
       }
 
       this.updateUI()
-      this.inputLocked = false
       return
       }
 
@@ -1023,7 +1023,6 @@ generateApples(question) {
               this.snakeFace = "dead"
               this.playSound("snakeDies")
               this.showGameOver()
-              this.inputLocked = false
               return
           }
 
