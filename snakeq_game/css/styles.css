@@ -547,11 +547,20 @@ body::before {
   background-size: 80px 80px;
   background-repeat: repeat;
   image-rendering: pixelated;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 4px solid #000000;
+  box-shadow: 0 0 0 2px #fff inset, 0 0 0 4px #000 inset;
 }
 
 #game-canvas {
   display: block;
   border: none;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 800/480;
   background: transparent;
   image-rendering: pixelated;
   padding: auto;
