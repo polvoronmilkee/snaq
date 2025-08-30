@@ -578,6 +578,7 @@ body::before {
 }
 
 .pixel-instructions {
+  margin-top: 10px;
   background: #1a1a1a;
   padding: 12px 16px;
   border: 2px solid #333;
