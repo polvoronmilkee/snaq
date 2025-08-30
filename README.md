@@ -19,7 +19,7 @@ Pick your subject, answer questions by munching the correct apples, and grow you
 - **Objectives**
   - Eat the apple with the correct answer  
   - Gain points & length with correct bites  
-  - Lose lives with wrong answers (“Yuck!” reaction)  
+  - Lose lives with wrong answers
 
 - **Power-Ups**
   - **Shield** – Blocks one mistake when lives are low  
@@ -73,7 +73,7 @@ Pick your subject, answer questions by munching the correct apples, and grow you
 
 ---
 
-## 🎵 Credits
+## 🎵 Copyright & Credits
 
 - **Music:** "And So It Begins" by Artificial.Music  
 - Licensed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)  
