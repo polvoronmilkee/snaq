@@ -94,5 +94,5 @@ We are 2nd Year BS Software Engineering students from Central Philippine Univers
 - Lemuel Luceño
 - Ahron Alera
 - Sophia Mendoza
-- Joseph LLacer
+- Joseph Llacer
 
