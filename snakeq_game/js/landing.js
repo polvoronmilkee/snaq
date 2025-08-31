@@ -465,7 +465,7 @@ class LandingPage {
       "green": 0,
       "pink": 150,
       "blue": 200,
-      "cyan": 300
+      "volt": 999
     }
     return prices[skinName] || 0
   }

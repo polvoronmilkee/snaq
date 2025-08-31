@@ -96,12 +96,13 @@ class SnakeMathGame {
     this.gameLoopId = null
 
     // Sprint (temporary speed boost)
+    const isVoltSkin = this.selectedSkin === "volt"
     this.sprint = {
       active: false,
       energy: 1,            // 0..1 current stamina
-      maxEnergy: 1,
-      drainPerSecond: 1.2,  // stamina drain while sprinting (moderate burn)
-      regenPerSecond: 0.18, // stamina regen while not sprinting (slower refill)
+      maxEnergy: isVoltSkin ? 1.1 : 1, // +10% max energy for volt skin
+      drainPerSecond: isVoltSkin ? 1.02 : 1.2,  // -15% drain for volt skin (1.2 * 0.85 = 1.02)
+      regenPerSecond: isVoltSkin ? 0.207 : 0.18, // +15% regen for volt skin (0.18 * 1.15 = 0.207)
       multiplier: 1.8       // speed multiplier while sprinting
     }
 
