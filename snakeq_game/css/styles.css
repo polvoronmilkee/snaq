@@ -342,10 +342,8 @@ body::before {
   background: #27ae60;
   border: 4px solid #229954;
   color: #fff;
-  padding: 12px;
-  padding-top: 3px;
+  padding: 8px;
   font-family: "Press Start 2P", monospace;
-  font-size: 40px;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -356,6 +354,19 @@ body::before {
   box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #225839;
 }
 
+.skin-btn-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.skin-text {
+  font-size: 8px;
+  color: #fff;
+  line-height: 1;
+}
+
 .skin-shop-btn:hover {
   background: #25a359;
   transform: translate(2px, 2px);
@@ -363,9 +374,8 @@ body::before {
 }
 
 .pixel-palette-icon {
-  padding-top: 5px;
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 35px;
   image-rendering: pixelated;
 }
 .play-btn {
