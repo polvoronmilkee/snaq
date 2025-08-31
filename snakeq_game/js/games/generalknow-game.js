@@ -27,7 +27,11 @@ class SnakeGeneralKnowledgeGame {
       this.gameSettings = JSON.parse(localStorage.getItem("gameSettings")) || {
       mode: "quiz",
       difficulty: "easy",
+      selectedSkin: "green"
       }
+
+      // Skin system
+      this.selectedSkin = this.gameSettings.selectedSkin || "green"
 
       this.setDifficultySettings()
 
@@ -132,31 +136,33 @@ class SnakeGeneralKnowledgeGame {
 
 
   loadSprites() {
+      const skinPath = `../assets/snake_movement/${this.selectedSkin}_snake`
       const spritePaths = {
-        // Snake movement sprites (green_snake)
-        "SnakeHead": "../assets/snake_movement/green_snake/SnakeHead.png",
-        "SnakeHeadLeft": "../assets/snake_movement/green_snake/SnakeHeadLeft.png",
-        "SnakeHeadRight": "../assets/snake_movement/green_snake/SnakeHeadRight.png",
-        "SnakeHeadDown": "../assets/snake_movement/green_snake/SnakeHeadDown.png",
-        "SnakeHeadCorner1": "../assets/snake_movement/green_snake/SnakeHeadCorner1.png",
-        "SnakeHeadCorner2": "../assets/snake_movement/green_snake/SnakeHeadCorner2.png",
-        "SnakeHeadCorner3": "../assets/snake_movement/green_snake/SnakeHeadCorner3.png",
-        "SnakeHeadCorner4": "../assets/snake_movement/green_snake/SnakeHeadCorner4.png",
-        "SnakeHeadCorner5": "../assets/snake_movement/green_snake/SnakeHeadCorner5.png",
-        "SnakeHeadCorner6": "../assets/snake_movement/green_snake/SnakeHeadCorner6.png",
-        "SnakeHeadCorner7": "../assets/snake_movement/green_snake/SnakeHeadCorner7.png",
-        "SnakeHeadCorner8": "../assets/snake_movement/green_snake/SnakeHeadCorner8.png",
-        "SnakeBody": "../assets/snake_movement/green_snake/SnakeBody.png",
-        "SnakeTail": "../assets/snake_movement/green_snake/SnakeTail.png",
-        "SnakeTailLeft": "../assets/snake_movement/green_snake/SnakeTailLeft.png",
-        "SnakeTailRight": "../assets/snake_movement/green_snake/SnakeTailRight.png",
-        "SnakeTailDown": "../assets/snake_movement/green_snake/SnakeTailDown.png",
-        "SnakeBodyLeft": "../assets/snake_movement/green_snake/SnakeBodyLeft.png",
-        "SnakeBodyRight": "../assets/snake_movement/green_snake/SnakeBodyRight.png",
-        "SnakeCornerLeftDown": "../assets/snake_movement/green_snake/SnakeCornerLeftDown.png",
-        "SnakeCornerRightUp": "../assets/snake_movement/green_snake/SnakeCornerRightUp.png",
-        "SnakeCornerLeftUp": "../assets/snake_movement/green_snake/SnakeCornerLeftUp.png",
-        "SnakeCornerRightDown": "../assets/snake_movement/green_snake/SnakeCornerRightDown.png",
+        // Snake movement sprites (using selected skin)
+        "SnakeHead": `${skinPath}/SnakeHead.png`,
+        "SnakeHeadLeft": `${skinPath}/SnakeHeadLeft.png`,
+        "SnakeHeadRight": `${skinPath}/SnakeHeadRight.png`,
+        "SnakeHeadDown": `${skinPath}/SnakeHeadDown.png`,
+        "SnakeHeadCorner1": `${skinPath}/SnakeHeadCorner1.png`,
+        "SnakeHeadCorner2": `${skinPath}/SnakeHeadCorner2.png`,
+        "SnakeHeadCorner3": `${skinPath}/SnakeHeadCorner3.png`,
+        "SnakeHeadCorner4": `${skinPath}/SnakeHeadCorner4.png`,
+        "SnakeHeadCorner5": `${skinPath}/SnakeHeadCorner5.png`,
+        "SnakeHeadCorner6": `${skinPath}/SnakeHeadCorner6.png`,
+        "SnakeHeadCorner7": `${skinPath}/SnakeHeadCorner7.png`,
+        "SnakeHeadCorner8": `${skinPath}/SnakeHeadCorner8.png`,
+        "SnakeBody": `${skinPath}/SnakeBody.png`,
+        "SnakeBodyDown": `${skinPath}/SnakeBodyDown.png`,
+        "SnakeBodyLeft": `${skinPath}/SnakeBodyLeft.png`,
+        "SnakeBodyRight": `${skinPath}/SnakeBodyRight.png`,
+        "SnakeTail": `${skinPath}/SnakeTail.png`,
+        "SnakeTailDown": `${skinPath}/SnakeTailDown.png`,
+        "SnakeTailLeft": `${skinPath}/SnakeTailLeft.png`,
+        "SnakeTailRight": `${skinPath}/SnakeTailRight.png`,
+        "SnakeCornerLeftDown": `${skinPath}/SnakeCornerLeftDown.png`,
+        "SnakeCornerLeftUp": `${skinPath}/SnakeCornerLeftUp.png`,
+        "SnakeCornerRightDown": `${skinPath}/SnakeCornerRightDown.png`,
+        "SnakeCornerRightUp": `${skinPath}/SnakeCornerRightUp.png`,
         // Apple sprites
         "apple": "../assets/apples/apple.png",
         "appleA-pink": "../assets/apples/appleA-pink.png",

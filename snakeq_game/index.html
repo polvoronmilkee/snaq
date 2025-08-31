@@ -19,6 +19,7 @@
         </div>
         <div class="header-controls">
             <button class="header-btn" id="help-btn" title="Instructions">?</button>
+            <button class="header-btn" id="skin-btn" title="Skin Shop">🎨</button>
             <button class="header-btn" id="sound-btn" title="Sound Effects">🔊</button>
             <button class="header-btn" id="music-btn" title="Background Music">🎵</button>
             <button class="header-btn" id="copyright-btn" title="Copyright Credits">©️</button>
@@ -31,7 +32,7 @@
          <div class="about-content pixel-border">
               <h3>About Us</h3> 
               <h4>Team Apple Juice 🧃</h4>
-              <p>Hi! We’re 2nd Year BS Software Engineering students from Central Philippine University (CPU), Iloilo City. <br></p>
+              <p>Hi! We're 2nd Year BS Software Engineering students from Central Philippine University (CPU), Iloilo City. <br></p>
             <ul>
                <li>Poral, Danielle Anne — UI/UX Designer</li>
                <li>Luceño, Lemuel — UI/UX Designer</li>
@@ -43,6 +44,79 @@
             <p3><br><br>Development began: August 2025</p3>
             
             <button class="close-about" id="close-about">Close</button>
+        </div>
+    </div>
+
+    <!-- Skin Shop modal -->
+    <div id="skin-shop-modal" class="skin-shop-modal hidden">
+        <div class="skin-shop-content pixel-border">
+            <h3>🎨 SnaQ Skin Shop</h3>
+            <div class="points-display">
+                <span class="points-label">Your Points:</span>
+                <span class="points-value" id="current-points">0</span>
+            </div>
+            
+            <div class="skins-grid">
+                <div class="skin-item" data-skin="green">
+                    <div class="skin-preview">
+                        <img src="assets/snake_movement/green_snake/SnakeHead.png" alt="Green Snake" class="skin-image" />
+                    </div>
+                    <div class="skin-info">
+                        <h4>Classic Green</h4>
+                        <p class="skin-description">The original snake look</p>
+                        <div class="skin-status">
+                            <span class="skin-owned">✓ Owned</span>
+                            <button class="select-skin-btn" data-skin="green">Select</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skin-item" data-skin="pink">
+                    <div class="skin-preview">
+                        <img src="assets/snake_movement/pink_snake/SnakeHead.png" alt="Pink Snake" class="skin-image" />
+                    </div>
+                    <div class="skin-info">
+                        <h4>Pink Delight</h4>
+                        <p class="skin-description">A sweet pink variation</p>
+                        <div class="skin-status">
+                            <span class="skin-price">150 points</span>
+                            <button class="buy-skin-btn" data-skin="pink" data-price="150">Buy</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skin-item" data-skin="blue">
+                    <div class="skin-preview">
+                        <img src="assets/snake_movement/blue_snake/SnakeHead.png" alt="Blue Snake" class="skin-image" />
+                    </div>
+                    <div class="skin-info">
+                        <h4>Ocean Blue</h4>
+                        <p class="skin-description">Cool as the deep sea</p>
+                        <div class="skin-status">
+                            <span class="skin-price">200 points</span>
+                            <button class="buy-skin-btn" data-skin="blue" data-price="200">Buy</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skin-item" data-skin="red">
+                    <div class="skin-preview">
+                        <img src="assets/snake_movement/color_snake/lemmy.png" alt="Lemuel Snake" class="skin-image" />
+                    </div>
+                    <div class="skin-info">
+                        <h4>Lemmy's Demure</h4>
+                        <p class="skin-description">Blazing hot premium skin</p>
+                        <div class="skin-status">
+                            <span class="skin-price">300 points</span>
+                            <button class="buy-skin-btn" data-skin="red" data-price="300">Buy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="skin-shop-actions">
+                <button class="close-skin-shop" id="close-skin-shop">Close</button>
+            </div>
         </div>
     </div>
 
@@ -58,6 +132,9 @@
             <ul>
                 <li>Use WASD or Arrow Keys to slither around</li>
                 <li>Hold SHIFT to turbo sprint (don’t run out of energy!)</li>
+                <li>Press ESC to pause the game</li>
+                <li>Press SPACE to resume the game</li>
+                <li>Press R to restart the current game</li>
             </ul>
             
             <h4>🍎 Your Mission</h4>

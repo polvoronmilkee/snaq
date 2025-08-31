@@ -27,7 +27,11 @@ class SnakeScienceGame {
       this.gameSettings = JSON.parse(localStorage.getItem("gameSettings")) || {
       mode: "quiz",
       difficulty: "easy",
+      selectedSkin: "green"
       }
+
+      // Skin system
+      this.selectedSkin = this.gameSettings.selectedSkin || "green"
 
       this.setDifficultySettings()
 
@@ -130,32 +134,34 @@ class SnakeScienceGame {
 
 
 
-  loadSprites() {
-      const spritePaths = {
-        // Snake movement sprites (green_snake)
-        "SnakeHead": "../assets/snake_movement/green_snake/SnakeHead.png",
-        "SnakeHeadLeft": "../assets/snake_movement/green_snake/SnakeHeadLeft.png",
-        "SnakeHeadRight": "../assets/snake_movement/green_snake/SnakeHeadRight.png",
-        "SnakeHeadDown": "../assets/snake_movement/green_snake/SnakeHeadDown.png",
-        "SnakeHeadCorner1": "../assets/snake_movement/green_snake/SnakeHeadCorner1.png",
-        "SnakeHeadCorner2": "../assets/snake_movement/green_snake/SnakeHeadCorner2.png",
-        "SnakeHeadCorner3": "../assets/snake_movement/green_snake/SnakeHeadCorner3.png",
-        "SnakeHeadCorner4": "../assets/snake_movement/green_snake/SnakeHeadCorner4.png",
-        "SnakeHeadCorner5": "../assets/snake_movement/green_snake/SnakeHeadCorner5.png",
-        "SnakeHeadCorner6": "../assets/snake_movement/green_snake/SnakeHeadCorner6.png",
-        "SnakeHeadCorner7": "../assets/snake_movement/green_snake/SnakeHeadCorner7.png",
-        "SnakeHeadCorner8": "../assets/snake_movement/green_snake/SnakeHeadCorner8.png",
-        "SnakeBody": "../assets/snake_movement/green_snake/SnakeBody.png",
-        "SnakeTail": "../assets/snake_movement/green_snake/SnakeTail.png",
-        "SnakeTailLeft": "../assets/snake_movement/green_snake/SnakeTailLeft.png",
-        "SnakeTailRight": "../assets/snake_movement/green_snake/SnakeTailRight.png",
-        "SnakeTailDown": "../assets/snake_movement/green_snake/SnakeTailDown.png",
-        "SnakeBodyLeft": "../assets/snake_movement/green_snake/SnakeBodyLeft.png",
-        "SnakeBodyRight": "../assets/snake_movement/green_snake/SnakeBodyRight.png",
-        "SnakeCornerLeftDown": "../assets/snake_movement/green_snake/SnakeCornerLeftDown.png",
-        "SnakeCornerRightUp": "../assets/snake_movement/green_snake/SnakeCornerRightUp.png",
-        "SnakeCornerLeftUp": "../assets/snake_movement/green_snake/SnakeCornerLeftUp.png",
-        "SnakeCornerRightDown": "../assets/snake_movement/green_snake/SnakeCornerRightDown.png",
+    loadSprites() {
+    const skinPath = `../assets/snake_movement/${this.selectedSkin}_snake`
+    const spritePaths = {
+      // Snake movement sprites (using selected skin)
+      "SnakeHead": `${skinPath}/SnakeHead.png`,
+      "SnakeHeadLeft": `${skinPath}/SnakeHeadLeft.png`,
+      "SnakeHeadRight": `${skinPath}/SnakeHeadRight.png`,
+      "SnakeHeadDown": `${skinPath}/SnakeHeadDown.png`,
+      "SnakeHeadCorner1": `${skinPath}/SnakeHeadCorner1.png`,
+      "SnakeHeadCorner2": `${skinPath}/SnakeHeadCorner2.png`,
+      "SnakeHeadCorner3": `${skinPath}/SnakeHeadCorner3.png`,
+      "SnakeHeadCorner4": `${skinPath}/SnakeHeadCorner4.png`,
+      "SnakeHeadCorner5": `${skinPath}/SnakeHeadCorner5.png`,
+      "SnakeHeadCorner6": `${skinPath}/SnakeHeadCorner6.png`,
+      "SnakeHeadCorner7": `${skinPath}/SnakeHeadCorner7.png`,
+      "SnakeHeadCorner8": `${skinPath}/SnakeHeadCorner8.png`,
+      "SnakeBody": `${skinPath}/SnakeBody.png`,
+      "SnakeBodyDown": `${skinPath}/SnakeBodyDown.png`,
+      "SnakeBodyLeft": `${skinPath}/SnakeBodyLeft.png`,
+      "SnakeBodyRight": `${skinPath}/SnakeBodyRight.png`,
+      "SnakeTail": `${skinPath}/SnakeTail.png`,
+      "SnakeTailDown": `${skinPath}/SnakeTailDown.png`,
+      "SnakeTailLeft": `${skinPath}/SnakeTailLeft.png`,
+      "SnakeTailRight": `${skinPath}/SnakeTailRight.png`,
+      "SnakeCornerLeftDown": `${skinPath}/SnakeCornerLeftDown.png`,
+      "SnakeCornerLeftUp": `${skinPath}/SnakeCornerLeftUp.png`,
+      "SnakeCornerRightDown": `${skinPath}/SnakeCornerRightDown.png`,
+      "SnakeCornerRightUp": `${skinPath}/SnakeCornerRightUp.png`,
         // Apple sprites
         "apple": "../assets/apples/apple.png",
         "appleA-pink": "../assets/apples/appleA-pink.png",
@@ -448,7 +454,7 @@ generateQuestion() {
         { question: "Which organ helps us breathe?", correct: "Lungs", wrong: ["Heart", "Stomach", "Kidneys"] },
         { question: "What do fish use to breathe?", correct: "Gills", wrong: ["Lungs", "Skin", "Fins"] },
         { question: "What do cows give us to drink?", correct: "Milk", wrong: ["Water", "Juice", "Oil"] },
-        { question: "Which animal is known as man’s best friend?", correct: "Dog", wrong: ["Cat", "Horse", "Rabbit"] },
+        { question: "Which animal is known as man's best friend?", correct: "Dog", wrong: ["Cat", "Horse", "Rabbit"] },
         { question: "What part of the body helps us see?", correct: "Eyes", wrong: ["Ears", "Nose", "Mouth"] },
         { question: "Which organ covers the human body?", correct: "Skin", wrong: ["Liver", "Lungs", "Heart"] },
         { question: "What do plants need from sunlight to make food?", correct: "Energy", wrong: ["Water", "Soil", "Air"] },
@@ -495,7 +501,7 @@ generateQuestion() {
         { question: "What is the chemical symbol for gold?", correct: "Au", wrong: ["Ag", "G", "Go"] },
         { question: "What do we call the air we breathe?", correct: "Atmosphere", wrong: ["Oxygen", "Carbon dioxide", "Nitrogen"] },
         { question: "What is NaCl?", correct: "Salt", wrong: ["Sugar", "Water", "Ammonia"] },
-        { question: "Which element’s symbol is H?", correct: "Hydrogen", wrong: ["Helium", "Hafnium", "Holmium"] },
+        { question: "Which element's symbol is H?", correct: "Hydrogen", wrong: ["Helium", "Hafnium", "Holmium"] },
         { question: "What is the chemical symbol for silver?", correct: "Ag", wrong: ["Si", "S", "Au"] },
         { question: "What substance is used in pencils?", correct: "Graphite", wrong: ["Lead", "Charcoal", "Carbon dioxide"] },
         { question: "What gas makes balloons float?", correct: "Helium", wrong: ["Oxygen", "Nitrogen", "Carbon dioxide"] },
@@ -514,15 +520,15 @@ generateQuestion() {
         { question: "What do we call a scientist who studies rocks?", correct: "Geologist", wrong: ["Astronomer", "Biologist", "Chemist"] },
         { question: "Which layer of Earth do we live on?", correct: "Crust", wrong: ["Mantle", "Core", "Outer core"] },
         { question: "What is the largest ocean on Earth?", correct: "Pacific Ocean", wrong: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean"] },
-        { question: "Which gas makes up most of the Earth’s atmosphere?", correct: "Nitrogen", wrong: ["Oxygen", "Carbon dioxide", "Hydrogen"] },
+        { question: "Which gas makes up most of the Earth's atmosphere?", correct: "Nitrogen", wrong: ["Oxygen", "Carbon dioxide", "Hydrogen"] },
         { question: "Which continent is the largest?", correct: "Asia", wrong: ["Africa", "North America", "Europe"] },
         { question: "Which continent is the smallest?", correct: "Australia", wrong: ["Europe", "South America", "Antarctica"] },
         { question: "What is the highest mountain in the world?", correct: "Mount Everest", wrong: ["K2", "Kilimanjaro", "Makalu"] },
         { question: "Which ocean is the smallest?", correct: "Arctic Ocean", wrong: ["Indian Ocean", "Atlantic Ocean", "Pacific Ocean"] },
         { question: "Which desert is the largest in the world?", correct: "Sahara Desert", wrong: ["Gobi Desert", "Kalahari Desert", "Great Victoria Desert"] },
-        { question: "What do we call molten rock under Earth’s surface?", correct: "Magma", wrong: ["Lava", "Basalt", "Granite"] },
+        { question: "What do we call molten rock under Earth's surface?", correct: "Magma", wrong: ["Lava", "Basalt", "Granite"] },
         { question: "What do we call molten rock when it comes out of a volcano?", correct: "Lava", wrong: ["Magma", "Ash", "Smoke"] },
-        { question: "What is Earth’s only natural satellite?", correct: "The Moon", wrong: ["Mars", "Phobos", "Sun"] },
+        { question: "What is Earth's only natural satellite?", correct: "The Moon", wrong: ["Mars", "Phobos", "Sun"] },
         { question: "What season comes after summer?", correct: "Autumn", wrong: ["Spring", "Winter", "Rainy"] },
         { question: "Which planet is called the 'Blue Planet'?", correct: "Earth", wrong: ["Neptune", "Mars", "Venus"] },
     ],
@@ -644,7 +650,7 @@ generateQuestion() {
             { question: "Who proposed the theory of relativity?", correct: "Einstein", wrong: ["Newton", "Galileo", "Tesla"] },
             { question: "What is absolute zero in Celsius?", correct: "-273°C", wrong: ["0°C", "-100°C", "-459°C"] },
             { question: "What subatomic particle has no charge?", correct: "Neutron", wrong: ["Proton", "Electron", "Positron"] },
-            { question: "What law explains action and reaction?", correct: "Newton’s Third Law", wrong: ["First Law", "Second Law", "Law of Gravity"] },
+            { question: "What law explains action and reaction?", correct: "Newton's Third Law", wrong: ["First Law", "Second Law", "Law of Gravity"] },
             { question: "What is the unit of electrical resistance?", correct: "Ohm", wrong: ["Watt", "Ampere", "Volt"] },
             { question: "What is the escape velocity from Earth?", correct: "11.2 km/s", wrong: ["7.9 km/s", "9.8 km/s", "15 km/s"] },
             { question: "What is the weakest force in nature?", correct: "Gravitational", wrong: ["Electromagnetic", "Nuclear", "Magnetic"] },
@@ -653,7 +659,7 @@ generateQuestion() {
             { question: "Which scientist discovered radioactivity?", correct: "Henri Becquerel", wrong: ["Marie Curie", "Rutherford", "Einstein"] },
             { question: "What type of lens is used in a magnifying glass?", correct: "Convex", wrong: ["Concave", "Plane", "Cylindrical"] },
             { question: "What is the bending of light called?", correct: "Refraction", wrong: ["Reflection", "Diffraction", "Dispersion"] },
-            { question: "Which law relates pressure and volume of gas?", correct: "Boyle’s Law", wrong: ["Charles’s Law", "Avogadro’s Law", "Dalton’s Law"] },
+            { question: "Which law relates pressure and volume of gas?", correct: "Boyle's Law", wrong: ["Charles's Law", "Avogadro's Law", "Dalton's Law"] },
             { question: "What is the most penetrating radiation?", correct: "Gamma rays", wrong: ["Alpha rays", "Beta rays", "X-rays"] },
             { question: "Which particles carry electric current in metals?", correct: "Electrons", wrong: ["Protons", "Neutrons", "Ions"] },
             { question: "What type of wave is sound?", correct: "Longitudinal", wrong: ["Transverse", "Electromagnetic", "Stationary"] },
@@ -674,8 +680,8 @@ generateQuestion() {
             { question: "What type of reaction releases heat?", correct: "Exothermic", wrong: ["Endothermic", "Neutralization", "Combustion"] },
             { question: "What is the chemical symbol for Mercury?", correct: "Hg", wrong: ["Me", "Mr", "Mc"] },
             { question: "Which element is used in thermometers?", correct: "Mercury", wrong: ["Lead", "Zinc", "Copper"] },
-            { question: "What is the Avogadro’s number?", correct: "6.022×10²³", wrong: ["3.14", "9.81", "1.6×10⁻¹⁹"] },
-            { question: "What is the main gas in Earth’s atmosphere?", correct: "Nitrogen", wrong: ["Oxygen", "Carbon dioxide", "Hydrogen"] },
+            { question: "What is the Avogadro's number?", correct: "6.022×10²³", wrong: ["3.14", "9.81", "1.6×10⁻¹⁹"] },
+            { question: "What is the main gas in Earth's atmosphere?", correct: "Nitrogen", wrong: ["Oxygen", "Carbon dioxide", "Hydrogen"] },
             { question: "Which metal is liquid at room temperature?", correct: "Mercury", wrong: ["Sodium", "Potassium", "Aluminum"] },
             { question: "Which acid is found in vinegar?", correct: "Acetic acid", wrong: ["Citric acid", "Sulfuric acid", "Formic acid"] },
             { question: "Which gas is called laughing gas?", correct: "Nitrous oxide", wrong: ["Carbon monoxide", "Oxygen", "Hydrogen"] },
@@ -696,9 +702,9 @@ generateQuestion() {
             { question: "What is the deepest ocean trench?", correct: "Mariana Trench", wrong: ["Puerto Rico Trench", "Java Trench", "Tonga Trench"] },
             { question: "What is the study of earthquakes called?", correct: "Seismology", wrong: ["Volcanology", "Geology", "Astronomy"] },
             { question: "What is the smallest planet in our solar system?", correct: "Mercury", wrong: ["Mars", "Venus", "Pluto"] },
-            { question: "What is Earth’s primary source of energy?", correct: "The Sun", wrong: ["The Moon", "Volcanoes", "Earth’s core"] },
+            { question: "What is Earth's primary source of energy?", correct: "The Sun", wrong: ["The Moon", "Volcanoes", "Earth's core"] },
             { question: "What type of galaxy is the Milky Way?", correct: "Spiral", wrong: ["Elliptical", "Irregular", "Lenticular"] },
-            { question: "What is the Earth’s innermost layer?", correct: "Inner core", wrong: ["Outer core", "Mantle", "Crust"] },
+            { question: "What is the Earth's innermost layer?", correct: "Inner core", wrong: ["Outer core", "Mantle", "Crust"] },
             { question: "What is the tallest mountain on Earth?", correct: "Mount Everest", wrong: ["K2", "Kangchenjunga", "Makalu"] },
             { question: "Which planet is known as the Red Planet?", correct: "Mars", wrong: ["Jupiter", "Venus", "Saturn"] },
             { question: "What causes the aurora borealis?", correct: "Solar wind", wrong: ["Moonlight", "Earth’s rotation", "Volcanoes"] },
@@ -1094,10 +1100,11 @@ generateApples(question) {
       const eatenApple = this.apples.find((apple) => apple.x === head.x && apple.y === head.y)
       if (eatenApple) {
       if (eatenApple.isCorrect) {
-          this.score += 10
-          this.correctAnswers++
+                  this.score += 10
+        this.correctAnswers++
+        this.addToTotalPoints(10) // Add points to total points system
 
-          this.playSound("correct")
+        this.playSound("correct")
           this.playSound("biteApple")
 
           if (this.gameSettings.difficulty === "hard") {
@@ -1750,6 +1757,13 @@ cellIntersectsRect(gridX, gridY, rect) {
     const cX2 = cellX + cellW
     const cY2 = cellY + cellH
     return !(cX2 <= rect.x || rX2 <= cellX || cY2 <= rect.y || rY2 <= cellY)
+}
+
+addToTotalPoints(points) {
+  // Add points to the total points system for skin purchases
+  const currentTotal = parseInt(localStorage.getItem("totalPoints")) || 0
+  const newTotal = currentTotal + points
+  localStorage.setItem("totalPoints", newTotal.toString())
 }
 }
 
