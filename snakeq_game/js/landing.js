@@ -190,31 +190,10 @@ class LandingPage {
       })
     }
 
-    if (copyrightBtn) {
-      copyrightBtn.addEventListener("click", () => {
-        this.playClickSound()
-        this.showCopyright()
-      })
-    }
-
-    if (closeCopyright) {
-      closeCopyright.addEventListener("click", () => {
-        this.playClickSound()
-        copyrightModal.classList.add("hidden")
-      })
-    }
-
     if (cancelBtn) {
       cancelBtn.addEventListener("click", () => {
         this.playClickSound()
         this.hideGameModeModal()
-      })
-    }
-
-    if (startBtn) {
-      startBtn.addEventListener("click", () => {
-        this.playClickSound()
-        this.startGame()
       })
     }
 

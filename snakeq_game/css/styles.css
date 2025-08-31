@@ -409,44 +409,6 @@ body::before {
   box-shadow: 0 0 0 2px #888 inset, 4px 4px 0px #333;
 }
 
-.pixel-snake-character {
-  position: absolute;
-  bottom: 60px;
-  right: 40px;
-  z-index: 4;
-}
-
-.snake-segments {
-  display: flex;
-  align-items: center;
-}
-
-.snake-head,
-.snake-body-1,
-.snake-body-2 {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #000;
-  margin-left: -2px;
-}
-
-.snake-head {
-  background: #32cd32;
-  border-radius: 0;
-  position: relative;
-  z-index: 3;
-}
-
-.snake-body-1 {
-  background: #228b22;
-  z-index: 2;
-}
-
-.snake-body-2 {
-  background: #1e7e1e;
-  z-index: 1;
-}
-
 .game-container {
   position: relative;
   display: flex;
@@ -456,8 +418,6 @@ body::before {
   height: 100vh;
   overflow: hidden;
 }
-
-
 
 .game-board {
   position: relative;
@@ -905,31 +865,6 @@ body::before {
   display: none !important;
 }
 
-.hearts-container {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-
-.heart {
-  width: 16px;
-  height: 16px;
-  position: relative;
-  display: inline-block;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  image-rendering: pixelated;
-}
-
-.heart.filled {
-  background-image: url("../assets/icons/Heart.png");
-}
-
-.heart.empty {
-  background-image: url("../assets/icons/HeartEmpty.png");
-}
-
 .about-modal {
   position: fixed;
   top: 0;
@@ -1077,20 +1012,6 @@ body::before {
   transform: translate(1px, 1px);
 }
 
-
-.shield-indicator {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-left: 10px;
-}
-
-.shield-icon {
-  width: 16px;
-  height: 16px;
-  image-rendering: pixelated;
-}
-
 .game-container {
     padding: 100px 20px 40px;
     min-height: 100vh;
@@ -1208,7 +1129,6 @@ body::before {
 .heart.empty {
   background-image: url("../assets/icons/HeartEmpty.png");
 }
-
 
 .shield-indicator {
     display: flex;
