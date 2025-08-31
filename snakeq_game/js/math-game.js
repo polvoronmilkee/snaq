@@ -41,6 +41,7 @@ class SnakeMathGame {
       biteApple: new Audio("../assets/sounds/bite-apple.mp3"),
       snakeTurns: new Audio("../assets/sounds/snake-turns.mp3"),
       snakeDies: new Audio("../assets/sounds/snake-dies.mp3"),
+      bossApple: new Audio("../assets/sounds/bossApple.mp3"),
       snakeLosesLife: new Audio("../assets/sounds/snake-loses-life.mp3"),
       correct: new Audio("../assets/sounds/correct.mp3"),
       youWon: new Audio("../assets/sounds/good-job.mp3"),
@@ -54,6 +55,7 @@ class SnakeMathGame {
     this.sounds.bgMusic.volume = 0.2
     this.sounds.bgMusic.loop = true
     this.sounds.click.volume = 0.5
+    this.sounds.bossApple.volume = 0.3
 
     this.soundEnabled = localStorage.getItem("soundEnabled") !== "false" // default true
     this.musicEnabled = localStorage.getItem("musicEnabled") !== "false"
@@ -979,7 +981,7 @@ class SnakeMathGame {
       // Boss apple trigger: starts hard multi-operator challenge
       if (eatenApple.type === 'boss') {
         // Remove the boss apple and start boss challenge
-        this.playSound("correct")
+        this.playSound("bossApple")
         this.apples = this.apples.filter((a) => a !== eatenApple)
         this.inBossChallenge = true
         this.bossAppleSpawned = false
