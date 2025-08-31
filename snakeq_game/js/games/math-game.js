@@ -1078,7 +1078,6 @@ class SnakeMathGame {
             this.snakeFace = "dead"
             this.playSound("snakeDies")
             this.showGameOver()
-            this.inputLocked = false
             return
           }
 
