@@ -1,26 +1,3 @@
-document.addEventListener("keydown", (e) => {
-// Stop page from scrolling when using arrow keys
-if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-    e.preventDefault()
-}
-
-// Your game controls here
-switch (e.key) {
-    case "ArrowUp":
-    // move up
-    break
-    case "ArrowDown":
-    // move down
-    break
-    case "ArrowLeft":
-    // move left
-    break
-    case "ArrowRight":
-    // move right
-    break
-}
-})
-
 class SnakeEnglishGame {
   constructor() {
       // Game constants
