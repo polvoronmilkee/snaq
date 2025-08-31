@@ -328,6 +328,7 @@ class SnakeMathGame {
       document.getElementById("esc-menu").classList.add("hidden"); 
       this.showInstructions()
     })
+    this.helpBtn.addEventListener("click", () => this.showInstructions())
     
     
     this.soundBtn.addEventListener("click", () => this.toggleSound())

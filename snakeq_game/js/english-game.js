@@ -320,6 +320,8 @@ class SnakeEnglishGame {
       }
       })
 
+      this.closeInstructionsBtn.addEventListener("click", () => this.hideInstructions())
+
       document.addEventListener('click', (e) => {
         if (e.target.id === 'resume-btn') {
           this.playSound("click");
