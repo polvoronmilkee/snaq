@@ -38,7 +38,7 @@ class LandingPage {
     }
 
     if (musicBtn) {
-      musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+      musicBtn.textContent = this.musicEnabled ? "🎵" : "🎵"
       musicBtn.classList.toggle("active", this.musicEnabled)
       this.clickSound.volume = 0.5
 
