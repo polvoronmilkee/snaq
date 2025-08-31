@@ -23,8 +23,9 @@ Learning & Literacy – SnaQ builds foundational knowledge in math, language, an
 - **Controls**
   - **WASD / Arrow Keys** – Move  
   - **Shift** – Sprint (uses sprint bar)  
-  - **ESC** – Menu
-  - **Space Bar** Game Pause
+  - **ESC** – Pause Game
+  - **Space** – Resume Game
+  - **R** – Restart Game
 
 - **Objectives**
   - Eat the apple with the correct answer  
@@ -47,12 +48,15 @@ Learning & Literacy – SnaQ builds foundational knowledge in math, language, an
 
 ## ⚙️ Features
 
-- Pixel-art inspired UI and retro vibes  
+- **Customizable Snake Skins** – Unlock and purchase different snake appearances with earned points
+- **Skin Shop System** – Browse and buy new skins including Green (default), Pink, Blue, and Red variants
+- Pixel-art inspired UI and retro vibes with pixelated scrollbars and clean aesthetics
 - Sticky header with controls for **help, sound, music, and credits**  
 - Modal-based menus for game settings and instructions  
 - Difficulty levels: Easy, Medium, Hard  
 - Power-up mechanics to keep gameplay exciting  
 - Modular architecture for easy maintenance and expansion
+- Cross-game mode skin persistence and consistent rendering
 
 ---
 
@@ -74,24 +78,30 @@ Learning & Literacy – SnaQ builds foundational knowledge in math, language, an
 
 ```
 snakeq_game/
-├── index.html                    # Main landing page
+├── index.html                    # Main landing page with skin shop
 ├── css/
-│   └── styles.css               # Game styles and pixel art theme
+│   └── styles.css               # Game styles, pixel art theme, and skin shop UI
 ├── js/
-│   ├── landing.js               # Main menu logic
+│   ├── landing.js               # Main menu logic and skin system
 │   └── games/                   # Subject-specific game logic
-│       ├── math.js              # Math questions and answers
-│       ├── science.js           # Science questions and answers
-│       ├── english.js           # English questions and answers
-│       └── generalknow.js       # General knowledge questions
+│       ├── math-game.js         # Math questions and snake rendering
+│       ├── science-game.js      # Science questions and snake rendering
+│       ├── english-game.js      # English questions and snake rendering
+│       └── generalknow-game.js  # General knowledge questions and rendering
 ├── templates/
-│   └── games html
+│   ├── math-game.html           # Math game interface
+│   ├── science-game.html        # Science game interface
+│   ├── english-game.html        # English game interface
+│   └── generalknow-game.html    # General knowledge game interface
 └── assets/                      # Game resources
     ├── icons/                   # UI icons and buttons
     ├── backgrounds/             # Background images
-    ├── apples/                  # Apple sprites
-    ├── snake_movement/          # Snake body sprites
-    └── sounds/                  # Audio files
+    ├── apples/                  # Apple sprites (multiple colors)
+    └── snake_movement/          # Snake skin variants
+        ├── green_snake/         # Default green snake sprites
+        ├── pink_snake/          # Pink snake skin sprites
+        ├── blue_snake/          # Blue snake skin sprites
+        └── red_snake/           # Red snake skin sprites
 
 ```
 ---
