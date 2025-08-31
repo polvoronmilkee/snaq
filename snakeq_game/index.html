@@ -19,7 +19,6 @@
         </div>
         <div class="header-controls">
             <button class="header-btn" id="help-btn" title="Instructions">?</button>
-            <button class="header-btn" id="skin-btn" title="Skin Shop">🎨</button>
             <button class="header-btn" id="sound-btn" title="Sound Effects">🔊</button>
             <button class="header-btn" id="music-btn" title="Background Music">🎵</button>
             <button class="header-btn" id="copyright-btn" title="Copyright Credits">©️</button>
@@ -31,16 +30,16 @@
     <div id="about-modal" class="about-modal hidden">
          <div class="about-content pixel-border">
               <h3>About Us</h3> 
-              <h4>Team Apple Juice 🧃</h4>
+              <h4>Team Apple Juice <span class="big-juice">🧃</span></h4>
               <p>Hi! We're 2nd Year BS Software Engineering students from Central Philippine University (CPU), Iloilo City. <br></p>
             <ul>
-               <li>Poral, Danielle Anne — UI/UX Designer</li>
-               <li>Luceño, Lemuel — UI/UX Designer</li>
-               <li>Mendoza, Sophia Marielle — Programmer</li>
-               <li>Alera, Ahron — Programmer</li>
-               <li>Llacer, Joseph — Programmer</li>
+               <p class="about-name">Poral, Danielle Anne — UI/UX Designer</p>
+               <p class="about-name">Luceño, Lemuel — UI/UX Designer</p>
+               <p class="about-name">Mendoza, Sophia Marielle — Developer</p>
+               <p class="about-name">Alera, Ahron — Developer</p>
+               <p class="about-name">Llacer, Joseph — Developer</p>
             </ul>
-            <p2><i>Together, we created SnaQ — a quiz game that mixes fun, learning, and teamwork.</i></p2>
+            <p2><i>Together, we created SnaQ — a quiz game that mixes fun, learning, and quick thinking.</i></p2>
             <p3><br><br>Development began: August 2025</p3>
             
             <button class="close-about" id="close-about">Close</button>
@@ -229,10 +228,15 @@
                 
                 <p class="coming-soon">... more quests coming soon!</p>
                 
-                <button class="play-btn" id="playBtn" disabled>
-                    <img src="assets/icons/play-icon.png" alt="Play" class="btn-icon" />
-                    <span>START GAME</span>
-                </button>
+                <div class="game-actions">
+                    <button class="skin-shop-btn" id="skin-btn" title="Skin Shop">
+                        <img src="assets/icons/pixelPalette.png" alt="Skin Shop" class="pixel-palette-icon" />
+                    </button>
+                    <button class="play-btn" id="playBtn" disabled>
+                        <img src="assets/icons/play-icon.png" alt="Play" class="btn-icon" />
+                        <span>START GAME</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
