@@ -146,7 +146,7 @@ class SnakeMathGame {
   }
 
   loadSprites() {
-    const skinPath = `../assets/snake_movement/${this.selectedSkin}_snake`
+    const skinPath = `../assets/snake-skins/${this.selectedSkin}_snake`
     const spritePaths = {
       // Snake movement sprites (using selected skin)
       "SnakeHead": `${skinPath}/SnakeHead.png`,
