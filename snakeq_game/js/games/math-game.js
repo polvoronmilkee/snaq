@@ -17,20 +17,25 @@ class SnakeMathGame {
     this.GRID_WIDTH = Math.floor(this.CANVAS_WIDTH / this.GRID_SIZE)
     this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
 
-    this.sounds = {
-      biteApple: new Audio("../assets/sounds/bite-apple.mp3"),
-      snakeTurns: new Audio("../assets/sounds/snake-turns.mp3"),
-      snakeDies: new Audio("../assets/sounds/snake-dies.mp3"),
-      bossApple: new Audio("../assets/sounds/bossApple.mp3"),
-      snakeLosesLife: new Audio("../assets/sounds/snake-loses-life.mp3"),
-      correct: new Audio("../assets/sounds/correct.mp3"),
-      youWon: new Audio("../assets/sounds/good-job.mp3"),
-      bgMusic: new Audio("../assets/sounds/bg-music.mp3"),
-      click: new Audio("../assets/sounds/click.mp3"),
-      countdown: new Audio("../assets/sounds/countdown.mp3"),
-      shift: new Audio("../assets/sounds/shift.mp3"),
-      pause: new Audio("../assets/sounds/pause.mp3")
-    }
+      const canvasContainer = document.querySelector(".canvas-container");
+
+      canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../assets/snake-skins/volt_snake/Tile.png)` : `url("../assets/icons/Tile.png")`;
+
+      const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../assets/snake-skins/volt_snake/sounds" : "../assets/sounds"
+
+      this.sounds = {
+        biteApple: new Audio(`${soundPath}/bite-apple.mp3`),
+        snakeTurns: new Audio(`${soundPath}/snake-turns.mp3`),
+        snakeDies: new Audio(`${soundPath}/snake-dies.mp3`),
+        snakeLosesLife: new Audio(`${soundPath}/snake-loses-life.mp3`),
+        correct: new Audio(`${soundPath}/correct.mp3`),
+        bgMusic: new Audio(`${soundPath}/bg-music.mp3`),
+        youWon: new Audio("../assets/sounds/good-job.mp3"),
+        click: new Audio(`${soundPath}/click.mp3`),
+        countdown: new Audio(`${soundPath}/countdown.mp3`),
+        shift: new Audio(`${soundPath}/shift.mp3`),
+        pause: new Audio(`${soundPath}/pause.mp3`)
+      }
 
     this.sounds.bgMusic.volume = 0.2
     this.sounds.bgMusic.loop = true
