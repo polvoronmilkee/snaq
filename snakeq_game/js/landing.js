@@ -316,7 +316,7 @@ class LandingPage {
     const musicBtn = $$("music-btn")
 
     if (musicBtn) {
-      musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+      musicBtn.textContent = this.musicEnabled ? "🎵" : "🎵"
       musicBtn.classList.toggle("active", this.musicEnabled)
 
       if (this.musicEnabled) {
