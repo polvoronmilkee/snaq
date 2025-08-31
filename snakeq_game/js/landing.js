@@ -386,15 +386,15 @@ class LandingPage {
     }
 
     if (this.selectedCategory === "math") {
-      window.location.href = "games/math-game.html"
+      window.location.href = "templates/math-game.html"
     } else if (this.selectedCategory === "english") {
-      window.location.href = "games/english-game.html"
+      window.location.href = "templates/english-game.html"
     }
     else if (this.selectedCategory === "science") {
-      window.location.href = "games/science-game.html"
+      window.location.href = "templates/science-game.html"
     }
     else if (this.selectedCategory === "generalknow") {
-      window.location.href = "games/generalknow-game.html"
+      window.location.href = "templates/generalknow-game.html"
     }
   }
 }

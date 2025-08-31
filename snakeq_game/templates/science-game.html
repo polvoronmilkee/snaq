@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SnaQ - Math</title>
+    <title>SnaQ - Science</title>
     <link rel="icon" type="image/png" href="../assets/icons/snake-icon.png">
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-
+    
     <header class="sticky-header">
         <div class="header-left">
             <button class="header-btn back-btn-header" onclick="window.location.href='../index.html'" title="Back to Menu">
@@ -47,13 +47,14 @@
               <button class="close-about" id="close-about">Close</button>
         </div>
     </div>
-    <!-- Instructions modal -->
+
+    <!-- instructions modal -->
     <div id="instructions-modal" class="instructions-modal hidden">
         <div class="instructions-content pixel-border">
-            <h3>How to Play SnaQ - Math</h3>
+            <h3>How to Play SnaQ - Science</h3>
             
             <h4>🎯 Objective</h4>
-            <p>Control the snake to eat apples with correct answers to math questions. Grow your snake and reach the target score!</p>
+            <p>Control the snake to eat colored apples with correct answers to Science questions. Grow your snake and reach the target score!</p>
             
             <h4>🕹️ Controls</h4>
             <ul>
@@ -65,8 +66,9 @@
             
             <h4>🍎 Gameplay</h4>
             <ul>
-                <li>Look at the math question at the top</li>
-                <li>Find the apple with the correct answer</li>
+                <li>Read the Science question at the top</li>
+                <li>Look at the A, B, C answer options below</li>
+                <li>Find the apple with the matching letter for the correct answer</li>
                 <li>Eat correct apples to grow and score points (+10)</li>
                 <li>Avoid wrong answers or lose points (-5) and a life</li>
                 <li>Don't bite yourself or you'll lose a life</li>
@@ -115,8 +117,9 @@
     <div class="game-container">
         <div class="game-board pixel-border">
             <div class="game-header-bar">
-                <h1 class="game-title">MATHEMATICS SnaQ</h1>
-                <img src="../assets/icons/math-icon.png" alt="Math" class="game-icon" />
+                <h1 class="game-title">SCIENCE SnaQ</h1>
+                <img src="../assets/icons/Science.png" alt="Science" class="game-icon" />
+
             </div>
             
             <!-- HUD -->
@@ -125,7 +128,7 @@
                     <img src="../assets/icons/score-icon.png" alt="Score" class="stat-icon" />
                     Score: <span id="score-value">0</span>
                 </div>
- 
+       
                 <div class="lives pixel-stat">
                     <span>Lives:</span>
                     <div class="hearts-container" id="hearts-container">
@@ -133,12 +136,13 @@
                         <div class="heart filled"></div>
                         <div class="heart filled"></div>
                     </div>
+                    <div class="shield-indicator" id="shield-indicator"></div>
                 </div>
                 <div class="correct pixel-stat">
                     <img src="../assets/icons/correct-icon.png" alt="Correct" class="stat-icon" />
                     Correct: <span id="correct-value">0</span>/<span id="target-value">10</span>
                 </div>
-                <div class="timer pixel-stat" id="timer-display" style="text-align:center">
+                <div class="timer pixel-stat" id="timer-display" style="text-align: center">
                     <img src="../assets/icons/timer-icon.png" alt="Timer" class="stat-icon" />
                     Time: <span id="timer-value">60</span>s
                 </div>
@@ -147,9 +151,11 @@
             <!-- Question Section -->
             <div class="question-section">
                 <div class="question pixel-question" id="question-display">Loading...</div>
-                
-                <div class="instruction">Eat the apple with the correct answer!</div>
-
+                <div class="instruction">Eat the colored apple that matches your answer choice!</div>
+        
+                <div class="options-container pixel-border" id="options-display">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
             </div>
 
             <!-- Game Canvas -->
@@ -162,6 +168,7 @@
                         <h2 id="game-over-title">Game Over</h2>
                         <p id="final-score">Final Score: 0</p>
                         <p id="final-correct">Corrects: 0</p>
+                        
                         <button id="play-again-btn" class="btn pixel-btn btn-green">Play Again</button>
                         <button id="menu-btn" class="btn pixel-btn btn-red">Main Menu</button>
                     </div>
@@ -178,7 +185,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div id="play-again-confirm" class="modal hidden">
                     <div class="modal-content pixel-border">
                         <h3>Wanna Play Again?</h3>
@@ -193,8 +199,8 @@
 
             <!-- Instructions -->
             <div class="instructions pixel-instructions">
-                <p>Use WASD or Arrow keys to move • Eat correct answers to grow • Avoid wrong answers!</p>
-                <p>All apples are red - look at the numbers to find the correct answer!</p>
+                <p>Use WASD or Arrow keys to move • Eat correct colored apples to grow • Avoid wrong answers!</p>
+                <p>Look at the A, B, C options above - eat the apple with the correct letter!</p>
                 <p class="shift">Press SHIFT to sprint / move faster!</p>
                 <p class="controls">Press SPACE to pause • Press R to restart</p>
             </div>
@@ -204,7 +210,7 @@
     <!-- ESC Menu -->
     <div id="esc-menu" class="modal hidden">
         <div class="modal-content pixel-border">
-            <h3>Game Paused</h3>
+            <h3>Game Menu</h3>
             <div class="menu-options">
                 <button id="resume-btn" class="btn pixel-btn btn-green">Resume Game</button>
                 <button id="help-btn-esc" class="btn pixel-btn">How to Play?</button>
@@ -213,6 +219,6 @@
         </div>
     </div>
 
-    <script src="../js/math-game.js"></script>
+    <script src="../js/games/science-game.js"></script>
 </body>
 </html>

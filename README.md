@@ -23,6 +23,8 @@ Learning & Literacy – SnaQ builds foundational knowledge in math, language, an
 - **Controls**
   - **WASD / Arrow Keys** – Move  
   - **Shift** – Sprint (uses sprint bar)  
+  - **ESC** – Menu
+  - **Space Bar** Game Pause
 
 - **Objectives**
   - Eat the apple with the correct answer  
@@ -50,6 +52,7 @@ Learning & Literacy – SnaQ builds foundational knowledge in math, language, an
 - Modal-based menus for game settings and instructions  
 - Difficulty levels: Easy, Medium, Hard  
 - Power-up mechanics to keep gameplay exciting  
+- Modular architecture for easy maintenance and expansion
 
 ---
 
@@ -70,15 +73,27 @@ Learning & Literacy – SnaQ builds foundational knowledge in math, language, an
 ## 📂 Project Structure
 
 ```
-.
-├── index.html          # Main landing page
+snakeq_game/
+├── index.html                    # Main landing page
 ├── css/
-│   └── styles.css      # Game styles
+│   └── styles.css               # Game styles and pixel art theme
 ├── js/
-│   └── landing.js      # Game logic
-├── assets/             # Images, icons, and sprites
-```
+│   ├── landing.js               # Main menu logic
+│   └── games/                   # Subject-specific game logic
+│       ├── math.js              # Math questions and answers
+│       ├── science.js           # Science questions and answers
+│       ├── english.js           # English questions and answers
+│       └── generalknow.js       # General knowledge questions
+├── templates/
+│   └── games html
+└── assets/                      # Game resources
+    ├── icons/                   # UI icons and buttons
+    ├── backgrounds/             # Background images
+    ├── apples/                  # Apple sprites
+    ├── snake_movement/          # Snake body sprites
+    └── sounds/                  # Audio files
 
+```
 ---
 
 ## 🎵 Copyright & Credits
