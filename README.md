@@ -16,12 +16,13 @@ Learning & Literacy – SnaQ builds foundational knowledge in math, language, an
 
 - **Choose Your Subject**
   - Mathematics  
-  - English  
-  - (More coming soon…)  
+  - English
+  - Science
+  - General Knowledge
 
 - **Controls**
   - **WASD / Arrow Keys** – Move  
-  - **Shift** – Sprint (uses energy bar)  
+  - **Shift** – Sprint (uses sprint bar)  
 
 - **Objectives**
   - Eat the apple with the correct answer  
@@ -30,7 +31,7 @@ Learning & Literacy – SnaQ builds foundational knowledge in math, language, an
 
 - **Power-Ups**
   - **Shield** – Blocks one mistake when lives are low  
-  - **Sprint Bar** – Makes your snake fast, refills over time  
+  - **Sprints** – Makes your snake fast, refills over time  
 
 ---
 
