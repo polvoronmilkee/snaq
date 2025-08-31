@@ -91,9 +91,9 @@ class SnakeScienceGame {
       this.sprint = {
       active: false,
       energy: 1,
-      maxEnergy: 1,
-      drainPerSecond: 1.2,
-      regenPerSecond: 0.18,
+      maxEnergy: (this.gameSettings.selectedSkin === "cyan") ? (1 * 1.1) : 1,
+      drainPerSecond: (this.gameSettings.selectedSkin === "cyan") ? (1.2 * 0.85) : 1.2,
+      regenPerSecond: (this.gameSettings.selectedSkin === "cyan") ? (0.18 * 1.15) : 0.18,
       multiplier: 1.8
       }
 
