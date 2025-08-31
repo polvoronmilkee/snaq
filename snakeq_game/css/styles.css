@@ -28,7 +28,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("../assets/pixelForestBg.png");
+  background-image: url("../assets/backgrounds/pixelForestBg.png");
   background-repeat: no-repeat;
   background-size: 130% 110%;
   background-position: center;
@@ -555,7 +555,7 @@ body::before {
   background: #000;
   margin-bottom: 16px;
   max-width: 850px;
-  background-image: url("../assets/Tile.png");
+  background-image: url("../assets/icons/Tile.png");
   background-size: 10% ;
   background-repeat: repeat;
   image-rendering: pixelated;
@@ -601,8 +601,7 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-    background-image: url('pixel-frame.png'); 
+  background: rgba(0, 0, 0, 0.8); 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -866,11 +865,11 @@ body::before {
 }
 
 .heart.filled {
-  background-image: url("../assets/Heart.png");
+  background-image: url("../assets/icons/Heart.png");
 }
 
 .heart.empty {
-  background-image: url("../assets/HeartEmpty.png");
+  background-image: url("../assets/icons/HeartEmpty.png");
 }
 
 .about-modal {
@@ -1145,11 +1144,11 @@ body::before {
 }
 
 .heart.filled {
-    background-image: url("../assets/Heart.png");
+  background-image: url("../assets/icons/Heart.png");
 }
 
 .heart.empty {
-    background-image: url("../assets/HeartEmpty.png");
+  background-image: url("../assets/icons/HeartEmpty.png");
 }
 
 

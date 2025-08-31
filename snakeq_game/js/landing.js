@@ -7,11 +7,11 @@ class LandingPage {
     this.selectedCategory = null
     this.selectedMode = null
     this.selectedDifficulty = null
-    this.backgroundMusic = new Audio("sounds/music.mp3")
+    this.backgroundMusic = new Audio("assets/sounds/bg-music.mp3")
     this.backgroundMusic.loop = true
     this.musicEnabled = localStorage.getItem("musicEnabled") !==  "false"
     this.soundEnabled = localStorage.getItem("soundEnabled") !== "false" // default true
-    this.clickSound = new Audio("sounds/click.mp3")
+    this.clickSound = new Audio("assets/sounds/click.mp3")
     this.init()
   }
 
@@ -34,20 +34,21 @@ class LandingPage {
     if (musicBtn) {
       musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
       musicBtn.classList.toggle("active", this.musicEnabled)
-      this.sounds.click.volume = 0.5
+      this.clickSound.volume = 0.5
 
 
       if (this.musicEnabled) {
         this.backgroundMusic.volume = 0.2;
+        console.log('Attempting to play background music...');
         this.backgroundMusic.play().catch((e) => console.log("Music play failed:", e))
       }
     }
 
     document.querySelectorAll("button").forEach((btn) => {
     btn.addEventListener("click", () => {
-        if (this.soundEnabled && this.sounds.click) {
-        this.sounds.click.currentTime = 0 // restart if spam clicked
-        this.sounds.click.play()
+        if (this.soundEnabled && this.clickSound) {
+        this.clickSound.currentTime = 0 // restart if spam clicked
+        this.clickSound.play()
         }
     })
     })

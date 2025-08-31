@@ -37,17 +37,17 @@ class SnakeGeneralKnowledgeGame {
       this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
 
       this.sounds = {
-      biteApple: new Audio("../sounds/bite-apple.mp3"),
-      snakeTurns: new Audio("../sounds/snake-turns.mp3"),
-      snakeDies: new Audio("../sounds/snake-dies.mp3"),
-      snakeLosesLife: new Audio("../sounds/snake-loses-life.mp3"),
-      correct: new Audio("../sounds/correct.mp3"),
-      bgMusic: new Audio("../sounds/bg-music.mp3"),
-      youWon: new Audio("../sounds/you-won.mp3"),
-      click: new Audio("../sounds/click.mp3"),
-      countdown: new Audio("../sounds/countdown.mp3"),
-      shift: new Audio("../sounds/shift.mp3"),
-      pause: new Audio("../sounds/pause.mp3")
+        biteApple: new Audio("../assets/sounds/bite-apple.mp3"),
+        snakeTurns: new Audio("../assets/sounds/snake-turns.mp3"),
+        snakeDies: new Audio("../assets/sounds/snake-dies.mp3"),
+        snakeLosesLife: new Audio("../assets/sounds/snake-loses-life.mp3"),
+        correct: new Audio("../assets/sounds/correct.mp3"),
+        bgMusic: new Audio("../assets/sounds/bg-music.mp3"),
+        youWon: new Audio("../assets/sounds/good-job.mp3"),
+        click: new Audio("../assets/sounds/click.mp3"),
+        countdown: new Audio("../assets/sounds/countdown.mp3"),
+        shift: new Audio("../assets/sounds/shift.mp3"),
+        pause: new Audio("../assets/sounds/pause.mp3")
       }
 
       this.sounds.bgMusic.volume = 0.2
@@ -132,40 +132,43 @@ class SnakeGeneralKnowledgeGame {
 
 
   loadSprites() {
-      const spriteNames = [
-      "SnakeHead",
-      "SnakeHeadLeft",
-      "SnakeHeadRight",
-      "SnakeHeadDown",
-      "SnakeHeadCorner1",
-      "SnakeHeadCorner2",
-      "SnakeHeadCorner3",
-      "SnakeHeadCorner4",
-      "SnakeHeadCorner5",
-      "SnakeHeadCorner6",
-      "SnakeHeadCorner7",
-      "SnakeHeadCorner8",
-      "SnakeBody",
-      "SnakeTail",
-      "SnakeTailLeft",
-      "SnakeTailRight",
-      "SnakeTailDown",
-      "SnakeBodyLeft",
-      "SnakeBodyRight",
-      "SnakeCornerLeftDown",
-      "SnakeCornerRightUp",
-      "SnakeCornerLeftUp",
-      "SnakeCornerRightDown",
-      "apple",
-      "appleA-pink",
-      "appleB-yellow",
-      "appleC-blue",
-      "shield"
-      ]
+      const spritePaths = {
+        // Snake movement sprites (green_snake)
+        "SnakeHead": "../assets/snake_movement/green_snake/SnakeHead.png",
+        "SnakeHeadLeft": "../assets/snake_movement/green_snake/SnakeHeadLeft.png",
+        "SnakeHeadRight": "../assets/snake_movement/green_snake/SnakeHeadRight.png",
+        "SnakeHeadDown": "../assets/snake_movement/green_snake/SnakeHeadDown.png",
+        "SnakeHeadCorner1": "../assets/snake_movement/green_snake/SnakeHeadCorner1.png",
+        "SnakeHeadCorner2": "../assets/snake_movement/green_snake/SnakeHeadCorner2.png",
+        "SnakeHeadCorner3": "../assets/snake_movement/green_snake/SnakeHeadCorner3.png",
+        "SnakeHeadCorner4": "../assets/snake_movement/green_snake/SnakeHeadCorner4.png",
+        "SnakeHeadCorner5": "../assets/snake_movement/green_snake/SnakeHeadCorner5.png",
+        "SnakeHeadCorner6": "../assets/snake_movement/green_snake/SnakeHeadCorner6.png",
+        "SnakeHeadCorner7": "../assets/snake_movement/green_snake/SnakeHeadCorner7.png",
+        "SnakeHeadCorner8": "../assets/snake_movement/green_snake/SnakeHeadCorner8.png",
+        "SnakeBody": "../assets/snake_movement/green_snake/SnakeBody.png",
+        "SnakeTail": "../assets/snake_movement/green_snake/SnakeTail.png",
+        "SnakeTailLeft": "../assets/snake_movement/green_snake/SnakeTailLeft.png",
+        "SnakeTailRight": "../assets/snake_movement/green_snake/SnakeTailRight.png",
+        "SnakeTailDown": "../assets/snake_movement/green_snake/SnakeTailDown.png",
+        "SnakeBodyLeft": "../assets/snake_movement/green_snake/SnakeBodyLeft.png",
+        "SnakeBodyRight": "../assets/snake_movement/green_snake/SnakeBodyRight.png",
+        "SnakeCornerLeftDown": "../assets/snake_movement/green_snake/SnakeCornerLeftDown.png",
+        "SnakeCornerRightUp": "../assets/snake_movement/green_snake/SnakeCornerRightUp.png",
+        "SnakeCornerLeftUp": "../assets/snake_movement/green_snake/SnakeCornerLeftUp.png",
+        "SnakeCornerRightDown": "../assets/snake_movement/green_snake/SnakeCornerRightDown.png",
+        // Apple sprites
+        "apple": "../assets/apples/apple.png",
+        "appleA-pink": "../assets/apples/appleA-pink.png",
+        "appleB-yellow": "../assets/apples/appleB-yellow.png",
+        "appleC-blue": "../assets/apples/appleC-blue.png",
+        // Icon sprites
+        "shield": "../assets/icons/shield.png"
+      }
 
-      spriteNames.forEach((name) => {
-      this.sprites[name] = new Image()
-      this.sprites[name].src = `../assets/${name}.png`
+      Object.entries(spritePaths).forEach(([name, path]) => {
+        this.sprites[name] = new Image()
+        this.sprites[name].src = path
       })
   }
 
@@ -400,7 +403,7 @@ class SnakeGeneralKnowledgeGame {
       // Use specific colored apple sprites
       const appleImg = document.createElement("img")
       const appleColors = ["appleA-pink.png", "appleB-yellow.png", "appleC-blue.png"]
-      appleImg.src = `../assets/${appleColors[index] || "apple.png"}`
+              appleImg.src = `../assets/apples/${appleColors[index] || "apple.png"}`
       appleImg.alt = String.fromCharCode(65 + index) // A, B, C
       appleImg.className = "apple-sprite"
 
@@ -1189,7 +1192,7 @@ generateApples(question) {
     const shieldIndicator = document.getElementById('shield-indicator');
     if (shieldIndicator) {
         if (this.hasShield) {
-            shieldIndicator.innerHTML = '<img src="../assets/shield.png" class="shield-icon" alt="Shield">';
+            shieldIndicator.innerHTML = '<img src="../assets/icons/shield.png" class="shield-icon" alt="Shield">';
         } else {
             shieldIndicator.innerHTML = '';
         }
