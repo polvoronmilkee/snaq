@@ -97,7 +97,7 @@ snakeq_game/
     ├── icons/                   # UI icons and buttons
     ├── backgrounds/             # Background images
     ├── apples/                  # Apple sprites (multiple colors)
-    └── snake_movement/          # Snake skin variants
+    └── snake-skins/             # Snake skin variants
         ├── green_snake/         # Default green snake sprites
         ├── pink_snake/          # Pink snake skin sprites
         ├── blue_snake/          # Blue snake skin sprites
