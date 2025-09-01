@@ -17,25 +17,26 @@ class SnakeMathGame {
     this.GRID_WIDTH = Math.floor(this.CANVAS_WIDTH / this.GRID_SIZE)
     this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
 
-      const canvasContainer = document.querySelector(".canvas-container");
+    const canvasContainer = document.querySelector(".canvas-container");
 
-      canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../assets/snake-skins/volt_snake/Tile.png)` : `url("../assets/icons/Tile.png")`;
+    canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../assets/snake-skins/volt_snake/Tile.png)` : `url("../assets/icons/Tile.png")`;
 
-      const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../assets/snake-skins/volt_snake/sounds" : "../assets/sounds"
+    const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../assets/snake-skins/volt_snake/sounds" : "../assets/sounds"
 
-      this.sounds = {
-        biteApple: new Audio(`${soundPath}/bite-apple.mp3`),
-        snakeTurns: new Audio(`${soundPath}/snake-turns.mp3`),
-        snakeDies: new Audio(`${soundPath}/snake-dies.mp3`),
-        snakeLosesLife: new Audio(`${soundPath}/snake-loses-life.mp3`),
-        correct: new Audio(`${soundPath}/correct.mp3`),
-        bgMusic: new Audio(`${soundPath}/bg-music.mp3`),
-        youWon: new Audio("../assets/sounds/good-job.mp3"),
-        click: new Audio(`${soundPath}/click.mp3`),
-        countdown: new Audio(`${soundPath}/countdown.mp3`),
-        shift: new Audio(`${soundPath}/shift.mp3`),
-        pause: new Audio(`${soundPath}/pause.mp3`)
-      }
+    this.sounds = {
+      biteApple: new Audio(`${soundPath}/bite-apple.mp3`),
+      snakeTurns: new Audio(`${soundPath}/snake-turns.mp3`),
+      snakeDies: new Audio(`${soundPath}/snake-dies.mp3`),
+      snakeLosesLife: new Audio(`${soundPath}/snake-loses-life.mp3`),
+      correct: new Audio(`${soundPath}/correct.mp3`),
+      bgMusic: new Audio(`${soundPath}/bg-music.mp3`),
+      youWon: new Audio("../assets/sounds/good-job.mp3"),
+      click: new Audio(`${soundPath}/click.mp3`),
+      countdown: new Audio(`${soundPath}/countdown.mp3`),
+      shift: new Audio(`${soundPath}/shift.mp3`),
+      pause: new Audio(`${soundPath}/pause.mp3`),
+      bossApple: new Audio("../assets/sounds/bossApple.mp3"),
+    }
 
     this.sounds.bgMusic.volume = 0.2
     this.sounds.bgMusic.loop = true

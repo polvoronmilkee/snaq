@@ -37,7 +37,7 @@ class SnakeEnglishGame {
         pause: new Audio(`${soundPath}/pause.mp3`)
       }
 
-      this.sounds.bgMusic.volume = 0.4
+      this.sounds.bgMusic.volume = 0.2
       this.sounds.bgMusic.loop = true
       this.sounds.click.volume = 0.5
 
