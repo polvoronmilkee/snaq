@@ -14,7 +14,7 @@
     
     <header class="sticky-header">
         <div class="header-left">
-            <button class="header-btn back-btn-header" onclick="window.location.href='../index.html'" title="Back to Menu">
+            <button id="back-to-menu" class="header-btn back-btn-header" title="Back to Menu">
                 <img src="../assets/icons/back-icon.png" alt="Back" class="header-icon" />
             </button>
             <div class="header-logo">
@@ -192,6 +192,16 @@
                         <div class="modal-buttons">
                             <button id="confirm-play-again" class="btn pixel-btn btn-green">Play Again</button>
                             <button id="cancel-play-again" class="btn pixel-btn btn-red">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="back-to-menu-confirm" class="modal hidden">
+                    <div class="modal-content pixel-border">
+                        <h3>Back To Menu?</h3>
+                        <p>Are you sure you want to go back to menu?</p>
+                        <div class="modal-buttons">
+                            <button id="confirm-back-menu" class="btn pixel-btn btn-green">Yes</button>
+                            <button id="cancel-back-menu" class="btn pixel-btn btn-red">No</button>
                         </div>
                     </div>
                 </div>

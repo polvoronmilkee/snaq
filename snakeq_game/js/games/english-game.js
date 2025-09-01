@@ -227,6 +227,10 @@ class SnakeEnglishGame {
       this.aboutBtn = document.getElementById("about-btn")
       this.aboutModal = document.getElementById("about-modal")
       this.closeAboutBtn = document.getElementById("close-about")
+      this.backToMenuConfirm = document.getElementById("back-to-menu-confirm")
+      this.confirmBackMenuBtn = document.getElementById("confirm-back-menu")
+      this.cancelBackMenuBtn = document.getElementById("cancel-back-menu")
+      this.backToMenu = document.getElementById("back-to-menu")
       if (this.questionElement) {
       this.questionElement.style.fontSize = "15px"
       this.questionElement.style.lineHeight = "1.4"
@@ -297,7 +301,28 @@ class SnakeEnglishGame {
             this.playSound("click")  
             this.playAgainConfirm.classList.add("hidden");
         });  
-      this.menuBtn.addEventListener("click", () => (window.location.href = "../index.html"))
+      this.backToMenu.addEventListener("click", () => {
+        this.playSound("click")
+        this.backToMenuConfirm.classList.remove("hidden")
+        this.paused = true
+      })
+      
+      this.confirmBackMenuBtn.addEventListener("click", () => {
+        this.playSound("click")
+        window.location.href = "../index.html"
+      })
+      
+      this.cancelBackMenuBtn.addEventListener("click", () => {
+        this.playSound("click")
+        this.backToMenuConfirm.classList.add("hidden")
+        this.paused = false
+      })
+      
+      this.menuBtn.addEventListener("click", () => {
+        this.playSound("click")
+        this.backToMenuConfirm.classList.remove("hidden")
+        this.paused = true
+      })
       this.confirmRestartBtn.addEventListener("click", () => this.confirmRestart())
       this.cancelRestartBtn.addEventListener("click", () => this.cancelRestart())
       this.helpBtn.addEventListener("click", () => this.showInstructions())
@@ -323,7 +348,9 @@ class SnakeEnglishGame {
           this.hideEscMenu();
         } else if (e.target.id === 'main-menu-btn') {
           this.playSound("click");
-          window.location.href = "../index.html";
+          this.hideEscMenu();
+          this.backToMenuConfirm.classList.remove("hidden");
+          this.paused = true;
         }
       });
   }

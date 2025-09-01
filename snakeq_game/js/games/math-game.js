@@ -235,8 +235,11 @@ class SnakeMathGame {
     this.aboutBtn = document.getElementById("about-btn")
     this.aboutModal = document.getElementById("about-modal")
     this.closeAbout = document.getElementById("close-about")
+    this.backToMenuConfirm = document.getElementById("back-to-menu-confirm");
+    this.confirmBackMenuBtn = document.getElementById("confirm-back-menu");
+    this.cancelBackMenuBtn = document.getElementById("cancel-back-menu");
+    this.backToMenu = document.getElementById("back-to-menu");
 
-    // Slightly larger question text for readability
     if (this.questionElement) {
       this.questionElement.style.fontSize = "18px"
       this.questionElement.style.lineHeight = "1.4"
@@ -286,19 +289,37 @@ class SnakeMathGame {
     document.addEventListener("keydown", (e) => this.handleKeyDown(e))
     document.addEventListener("keyup", (e) => this.handleKeyUp(e))
 
+    this.backToMenu.addEventListener("click", () => {
+      this.playSound("click");
+      this.backToMenuConfirm.classList.remove("hidden");
+      this.paused = true; 
+
+    });
+
+    this.confirmBackMenuBtn.addEventListener("click", () => {
+      this.playSound("click");
+      window.location.href = "../index.html"; 
+    });
+
+    this.cancelBackMenuBtn.addEventListener("click", () => {
+      this.playSound("click");
+      this.backToMenuConfirm.classList.add("hidden");
+      this.paused = false
+    });
     this.playAgainBtn.addEventListener("click", () => {
       this.playSound("click")
       this.playAgainConfirm.classList.remove("hidden");
     })
+
     this.menuBtn.addEventListener("click", () => {
       this.playSound("click")
-      window.location.href = "../index.html"
-
+      this.backToMenuConfirm.classList.remove("hidden")
+      this.paused = true
     })
     this.playAgainConfirmBtn.addEventListener("click", () => {
       this.playSound("click")
-      this.playAgainConfirm.classList.add("hidden") // ✅
-      this.gameOverOverlay.classList.add("hidden")  // ✅
+      this.playAgainConfirm.classList.add("hidden") 
+      this.gameOverOverlay.classList.add("hidden")  
       this.confirmRestart() 
     })
     this.confirmRestartBtn.addEventListener("click", () => {
@@ -346,7 +367,9 @@ class SnakeMathGame {
         this.hideEscMenu();
       } else if (e.target.id === 'main-menu-btn') {
         this.playSound("click");
-        window.location.href = "../index.html";
+        this.hideEscMenu();
+        this.backToMenuConfirm.classList.remove("hidden");
+        this.paused = true;
       }
     });
   }
