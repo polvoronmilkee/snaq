@@ -38,7 +38,8 @@ class SnakeMathGame {
       bossApple: new Audio("../assets/sounds/bossApple.mp3"),
     }
 
-    this.sounds.bgMusic.volume = 0.2
+    this.sounds.bgMusic.volume = (this.gameSettings.selectedSkin === "volt") ? 0.6 : 0.2
+    this.sounds.shift.volume = (this.gameSettings.selectedSkin === "volt") ? 0.1 : 1
     this.sounds.bgMusic.loop = true
     this.sounds.click.volume = 0.5
     this.sounds.bossApple.volume = 0.3
