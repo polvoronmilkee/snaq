@@ -40,7 +40,7 @@ class SnakeMathGame {
 
     this.sounds.bgMusic.volume = (this.gameSettings.selectedSkin === "volt") ? 0.6 : 0.2
     this.sounds.shift.volume = (this.gameSettings.selectedSkin === "volt") ? 0.1 : 1
-    this.sounds.bgMusic.loop = true
+    this.sounds.bgMusic.loop = true;
     this.sounds.click.volume = 0.5
     this.sounds.bossApple.volume = 0.3
 
@@ -172,8 +172,8 @@ class SnakeMathGame {
 
   playSound(soundName) {
     if (this.soundEnabled && this.sounds[soundName]) {
-      this.sounds[soundName].currentTime = 0
-      this.sounds[soundName].play().catch((e) => console.log("Audio play failed:", e))
+      this.sounds[soundName].currentTime = 0;
+      this.sounds[soundName].play().catch((e) => {})
     }
   }
 
@@ -195,10 +195,10 @@ class SnakeMathGame {
     musicBtn.classList.toggle("active", this.musicEnabled)
 
     if (this.musicEnabled) {
-      this.sounds.bgMusic.loop = true
-      this.sounds.bgMusic.play().catch((e) => console.log("Music play failed:", e))
+      this.sounds.bgMusic.loop = true;
+      this.sounds.bgMusic.play().catch((e) => {})
     } else {
-      this.sounds.bgMusic.pause()
+      this.sounds.bgMusic.pause();
     }
   }
 
@@ -268,16 +268,16 @@ class SnakeMathGame {
       musicBtn.classList.toggle("active", this.musicEnabled)
 
       if (this.musicEnabled) {
-        this.sounds.bgMusic.loop = true
-        this.sounds.bgMusic.play().catch((e) => console.log("Music play failed:", e))
+        this.sounds.bgMusic.loop = true;
+        this.sounds.bgMusic.play().catch((e) => {})
       }
     }
 
     document.querySelectorAll("button").forEach((btn) => {
     btn.addEventListener("click", () => {
         if (this.soundEnabled && this.sounds.click) {
-        this.sounds.click.currentTime = 0 // restart if spam clicked
-        this.sounds.click.play()
+        this.sounds.click.currentTime = 0; // restart if spam clicked
+        this.sounds.click.play();
         }
     })
     })
@@ -660,8 +660,8 @@ class SnakeMathGame {
     if (code === "Space" || key === " ") {
       e.preventDefault()
       this.paused = !this.paused
-      this.sounds.pause.currentTime = 0
-      this.sounds.pause.play()
+      this.sounds.pause.currentTime = 0;
+      this.sounds.pause.play();
       return
     }
 
@@ -676,8 +676,8 @@ class SnakeMathGame {
         this.sprint.active = true
       }
 
-      this.sounds.shift.currentTime = 0
-      this.sounds.shift.play()
+      this.sounds.shift.currentTime = 0;
+      this.sounds.shift.play();
 
       return
     }

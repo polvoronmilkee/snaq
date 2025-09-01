@@ -39,7 +39,7 @@ class SnakeGeneralKnowledgeGame {
 
       this.sounds.bgMusic.volume = (this.gameSettings.selectedSkin === "volt") ? 0.6 : 0.2
       this.sounds.shift.volume = (this.gameSettings.selectedSkin === "volt") ? 0.1 : 1
-      this.sounds.bgMusic.loop = true
+      this.sounds.bgMusic.loop = true;
       this.sounds.click.volume = 0.5
 
       this.soundEnabled = localStorage.getItem("soundEnabled") !== "false" // default true
@@ -166,7 +166,7 @@ class SnakeGeneralKnowledgeGame {
   playSound(soundName) {
       if (this.soundEnabled && this.sounds[soundName]) {
       this.sounds[soundName].currentTime = 0
-      this.sounds[soundName].play().catch((e) => console.log("Audio play failed:", e))
+      this.sounds[soundName].play().catch((e) => {})
       }
   }
 
@@ -188,10 +188,10 @@ class SnakeGeneralKnowledgeGame {
           musicBtn.classList.toggle("active", this.musicEnabled)
 
           if (this.musicEnabled) {
-          this.sounds.bgMusic.loop = true
-          this.sounds.bgMusic.play().catch((e) => console.log("Music play failed:", e))
+          this.sounds.bgMusic.loop = true;
+          this.sounds.bgMusic.play().catch((e) => {})
           } else {
-          this.sounds.bgMusic.pause()
+          this.sounds.bgMusic.pause();
           }
       }
 
@@ -266,16 +266,16 @@ class SnakeGeneralKnowledgeGame {
       musicBtn.classList.toggle("active", this.musicEnabled)
 
       if (this.musicEnabled) {
-          this.sounds.bgMusic.loop = true
-          this.sounds.bgMusic.play().catch((e) => console.log("Music play failed:", e))
+          this.sounds.bgMusic.loop = true;
+          this.sounds.bgMusic.play().catch((e) => {})
       }
       }
 
       document.querySelectorAll("button").forEach((btn) => {
       btn.addEventListener("click", () => {
           if (this.soundEnabled && this.sounds.click) {
-          this.sounds.click.currentTime = 0 // restart if spam clicked
-          this.sounds.click.play()
+          this.sounds.click.currentTime = 0; // restart if spam clicked
+          this.sounds.click.play();
           }
       })
       })
@@ -436,11 +436,7 @@ class SnakeGeneralKnowledgeGame {
       optionText.className = "option-text"
       optionText.textContent = option
       // Make answers larger and more readable
-      optionText.style.fontSize = "20px"
-      optionText.style.lineHeight = "1.4"
-      optionText.style.fontWeight = "600"
-
-      optionText.style.fontSize = "15px"
+      optionText.style.fontSize = "18px"
       optionText.style.lineHeight = "1.4"
       optionText.style.fontWeight = "600"
 
@@ -747,13 +743,9 @@ generateQuestion() {
   );
 
   if (unused.length === 0) {
-        console.log("All questions have been used! You're one Brainy SnaQ! Resetting...");
-
-        // Reset so we can reuse all questions
+        // All questions used, resetting...
         this.usedWords[difficulty][questionType] = [];
-
-        // After reset, all words are available again
-        unusedWords = [...difficultyWords];
+        // All questions are now available again
   }
 
   const selected = unused[Math.floor(Math.random() * unused.length)];
@@ -899,8 +891,8 @@ generateQuestion() {
       if (code === "Space" || key === " ") {
       e.preventDefault()
       this.paused = !this.paused
-      this.sounds.pause.currentTime = 0
-      this.sounds.pause.play()
+      this.sounds.pause.currentTime = 0;
+      this.sounds.pause.play();
       return
       }
 
@@ -913,8 +905,8 @@ generateQuestion() {
       if ((code === "ShiftLeft" || code === "ShiftRight") && !this.paused) {
       if (this.sprint.energy > 0) this.sprint.active = true
 
-      this.sounds.shift.currentTime = 0 
-      this.sounds.shift.play()
+      this.sounds.shift.currentTime = 0;
+      this.sounds.shift.play();
       return
       }
 
@@ -1711,9 +1703,9 @@ options.forEach((option, index) => {
 
       // play countdown sound effect
       if (this.soundEnabled && this.sounds.countdown) {
-      this.sounds.countdown.currentTime = 0
+      this.sounds.countdown.currentTime = 0;
       this.sounds.countdown.play()
-          .catch(e => console.log("Countdown sound failed:", e))
+          .catch(e => {});
       }
       
       this.showCountdown(() => {
@@ -1763,7 +1755,7 @@ options.forEach((option, index) => {
       } else {
           clearInterval(countdownInterval)
           countdownOverlay.remove()
-          this.iscountdownActive = false
+          this.isCountdownActive = false
           this.countdownActive = false
           if (callback) callback()
       }
@@ -1784,40 +1776,39 @@ cellIntersectsRect(gridX, gridY, rect) {
 }
 }
 
-    const aboutModal = document.getElementById("about-modal");
-    const closeAbout = document.getElementById("close-about");
-    const aboutBtn = document.getElementById("about-btn");
+document.addEventListener("DOMContentLoaded", () => {
+  new SnakeGeneralKnowledgeGame();
 
-    if (aboutBtn) {
+  const aboutModal = document.getElementById("about-modal");
+  const closeAbout = document.getElementById("close-about");
+  const aboutBtn = document.getElementById("about-btn");
+
+  if (aboutBtn) {
     aboutBtn.addEventListener("click", () => {
-        aboutModal.classList.remove("hidden");
+      aboutModal.classList.remove("hidden");
     });
-    }
+  }
 
-    if (closeAbout) {
+  if (closeAbout) {
     closeAbout.addEventListener("click", () => {
-        aboutModal.classList.add("hidden");
+      aboutModal.classList.add("hidden");
     });
-    }
+  }
 
+  const copyrightModal = document.getElementById("copyright-modal");
+  const closeCopyright = document.getElementById("close-copyright");
+  const copyrightBtn = document.getElementById("copyright-btn"); 
 
-      const copyrightModal = document.getElementById("copyright-modal");
-      const closeCopyright = document.getElementById("close-copyright");
-      const copyrightBtn = document.getElementById("copyright-btn"); 
+  if (copyrightBtn) {
+    copyrightBtn.addEventListener("click", () => {
+      copyrightModal.classList.remove("hidden");
+    });
+  }
 
-      if (copyrightBtn) {
-      copyrightBtn.addEventListener("click", () => {
-          copyrightModal.classList.remove("hidden");
-      });
-      }
-
-      if (closeCopyright) {
-      closeCopyright.addEventListener("click", () => {
-          copyrightModal.classList.add("hidden");
-      });
-      }
-
-  document.addEventListener("DOMContentLoaded", () => {
-  new SnakeGeneralKnowledgeGame()
+  if (closeCopyright) {
+    closeCopyright.addEventListener("click", () => {
+      copyrightModal.classList.add("hidden");
+    });
+  }
 })
 

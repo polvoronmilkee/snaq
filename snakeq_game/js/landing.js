@@ -45,8 +45,7 @@ class LandingPage {
 
       if (this.musicEnabled) {
         this.backgroundMusic.volume = 0.2;
-        console.log('Attempting to play background music...');
-        this.backgroundMusic.play().catch((e) => console.log("Music play failed:", e))
+        this.backgroundMusic.play().catch((e) => {})
       }
     }
 
@@ -65,9 +64,7 @@ class LandingPage {
     if (this.soundEnabled && this.clickSound) {
       const sfx = this.clickSound.cloneNode(true) // new audio element
       sfx.volume = 0.5
-      sfx.play().catch(e => console.log("Click sound failed:", e))
-
-      // optional cleanup once it’s done playing
+      sfx.play().catch(e => {})
       sfx.addEventListener("ended", () => sfx.remove())
     }
   }
@@ -299,7 +296,7 @@ class LandingPage {
       musicBtn.classList.toggle("active", this.musicEnabled)
 
       if (this.musicEnabled) {
-        this.backgroundMusic.play().catch((e) => console.log("Music play failed:", e))
+        this.backgroundMusic.play().catch((e) => {})
       } else {
         this.backgroundMusic.pause()
       }

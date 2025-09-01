@@ -39,7 +39,7 @@ class SnakeEnglishGame {
 
       this.sounds.bgMusic.volume = (this.gameSettings.selectedSkin === "volt") ? 0.6 : 0.2
       this.sounds.shift.volume = (this.gameSettings.selectedSkin === "volt") ? 0.1 : 1
-      this.sounds.bgMusic.loop = true
+      this.sounds.bgMusic.loop = true;
       this.sounds.click.volume = 0.5
 
       this.soundEnabled = localStorage.getItem("soundEnabled") !== "false" // default true
@@ -165,7 +165,7 @@ class SnakeEnglishGame {
   playSound(soundName) {
       if (this.soundEnabled && this.sounds[soundName]) {
       this.sounds[soundName].currentTime = 0
-      this.sounds[soundName].play().catch((e) => console.log("Audio play failed:", e))
+      this.sounds[soundName].play().catch((e) => {})
       }
   }
 
@@ -187,10 +187,10 @@ class SnakeEnglishGame {
           musicBtn.classList.toggle("active", this.musicEnabled)
 
           if (this.musicEnabled) {
-          this.sounds.bgMusic.loop = true
-          this.sounds.bgMusic.play().catch((e) => console.log("Music play failed:", e))
+          this.sounds.bgMusic.loop = true;
+          this.sounds.bgMusic.play().catch((e) => {})
           } else {
-          this.sounds.bgMusic.pause()
+          this.sounds.bgMusic.pause();
           }
       }
 
@@ -263,16 +263,16 @@ class SnakeEnglishGame {
       musicBtn.classList.toggle("active", this.musicEnabled)
 
       if (this.musicEnabled) {
-          this.sounds.bgMusic.loop = true
-          this.sounds.bgMusic.play().catch((e) => console.log("Music play failed:", e))
+          this.sounds.bgMusic.loop = true;
+          this.sounds.bgMusic.play().catch((e) => {})
       }
       }
 
       document.querySelectorAll("button").forEach((btn) => {
       btn.addEventListener("click", () => {
           if (this.soundEnabled && this.sounds.click) {
-          this.sounds.click.currentTime = 0 // restart if spam clicked
-          this.sounds.click.play()
+          this.sounds.click.currentTime = 0; // restart if spam clicked
+          this.sounds.click.play();
           }
       })
       })
@@ -432,10 +432,6 @@ class SnakeEnglishGame {
       optionText.className = "option-text"
       optionText.textContent = option
       // Make answers larger and more readable
-      optionText.style.fontSize = "20px"
-      optionText.style.lineHeight = "1.4"
-      optionText.style.fontWeight = "600"
-
       optionText.style.fontSize = "15px"
       optionText.style.lineHeight = "1.4"
       optionText.style.fontWeight = "600"
@@ -735,7 +731,7 @@ class SnakeEnglishGame {
   );
 
     if (unusedWords.length === 0) {
-        console.log("All questions have been used! You're one Brainy SnaQ! Resetting...");
+        // All questions used, resetting...
 
         // Reset so we can reuse all questions
         this.usedWords[difficulty][questionType] = [];
@@ -927,8 +923,8 @@ class SnakeEnglishGame {
       if ((code === "ShiftLeft" || code === "ShiftRight") && !this.paused) {
       if (this.sprint.energy > 0) this.sprint.active = true
 
-      this.sounds.shift.currentTime = 0 
-      this.sounds.shift.play()
+      this.sounds.shift.currentTime = 0;
+      this.sounds.shift.play();
       return
       }
 
@@ -1725,9 +1721,9 @@ options.forEach((option, index) => {
 
       // play countdown sound effect
       if (this.soundEnabled && this.sounds.countdown) {
-      this.sounds.countdown.currentTime = 0
+      this.sounds.countdown.currentTime = 0;
       this.sounds.countdown.play()
-          .catch(e => console.log("Countdown sound failed:", e))
+          .catch(e => {});
       }
       
       this.showCountdown(() => {
@@ -1777,7 +1773,7 @@ options.forEach((option, index) => {
       } else {
           clearInterval(countdownInterval)
           countdownOverlay.remove()
-          this.iscountdownActive = false
+          this.isCountdownActive = false
           this.countdownActive = false
           if (callback) callback()
       }
