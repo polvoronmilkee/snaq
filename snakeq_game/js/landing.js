@@ -44,7 +44,7 @@ class LandingPage {
 
 
       if (this.musicEnabled) {
-        this.backgroundMusic.volume = 0.2;
+        this.backgroundMusic.volume = 0.1;
         this.backgroundMusic.play().catch((e) => {})
       }
     }
