@@ -49,75 +49,30 @@
         </div>
     </div>
 
-    <!-- Skin Shop modal -->
+    <!-- Shop modal -->
     <div id="skin-shop-modal" class="skin-shop-modal hidden">
         <div class="skin-shop-content pixel-border">
-            <h3>🎨 SnaQ Skin Shop</h3>
-            <div class="points-display">
-                <span class="points-label">Your Points:</span>
-                <span class="points-value" id="current-points">0</span>
-            </div>
-
-            <div class="skins-grid">
-                <div class="skin-item" data-skin="green">
-                    <div class="skin-preview">
-                        <img src="assets/snake-skins/green_snake/SnakeHead.png" alt="Green Snake" class="skin-image" />
-                    </div>
-                    <div class="skin-info">
-                        <h4>Classic Green</h4>
-                        <p class="skin-description">The original snake look</p>
-                        <div class="skin-status">
-                            <span class="skin-owned">✓ Owned</span>
-                            <button class="select-skin-btn" data-skin="green">Select</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="skin-item" data-skin="pink">
-                    <div class="skin-preview">
-                        <img src="assets/snake-skins//pink_snake/SnakeHead.png" alt="Pink Snake" class="skin-image" />
-                    </div>
-                    <div class="skin-info">
-                        <h4>Sugar Strike</h4>
-                        <p class="skin-description">A sweet pink variation</p>
-                        <div class="skin-status">
-                            <span class="skin-price">150 points</span>
-                            <button class="buy-skin-btn" data-skin="pink" data-price="150">Buy</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="skin-item" data-skin="blue">
-                    <div class="skin-preview">
-                        <img src="assets/snake-skins//blue_snake/SnakeHead.png" alt="Blue Snake" class="skin-image" />
-                    </div>
-                    <div class="skin-info">
-                        <h4>Ocean Fang</h4>
-                        <p class="skin-description">Cool as the deep seasplash</p>
-                        <div class="skin-status">
-                            <span class="skin-price">200 points</span>
-                            <button class="buy-skin-btn" data-skin="blue" data-price="200">Buy</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="skin-item" data-skin="volt">
-                    <div class="skin-preview">
-                        <img src="assets/snake-skins//volt_snake/SnakeHead.png" alt="Lemuel Snake" class="skin-image" />
-                    </div>
-                    <div class="skin-info">
-                        <h4>Zap Viper</h4>
-                        <p class="skin-description">Charged with voltech energy</p>
-                        <div class="skin-status">
-                            <span class="skin-price">999 points</span>
-                            <button class="buy-skin-btn" data-skin="volt" data-price="999">Buy</button>
-                        </div>
-                    </div>
+            <div class="shop-header">
+                <h2 class="shop-title">SNAQ SHOP</h2>
+                <div class="points-display pixel-stat">
+                    <span class="points-label">Your Points:</span>
+                    <span class="points-value" id="current-points">0</span>
                 </div>
             </div>
-
-            <div class="skin-shop-actions">
-                <button class="close-skin-shop" id="close-skin-shop">Close</button>
+            
+            <!-- Inventory-style tabs -->
+            <div class="inventory-tabs">
+                <button class="inventory-tab pixel-btn active" data-category="skins">Skins</button>
+                <button class="inventory-tab pixel-btn" data-category="accessories">Accessories</button>
+                <button class="inventory-tab pixel-btn" data-category="effects">Effects</button>
+            </div>
+            
+            <div id="shop-items-container">
+                <!-- Items will be populated by JavaScript -->
+            </div>
+            
+            <div class="shop-actions">
+                <button class="close-shop pixel-btn" id="close-skin-shop">Close Shop</button>
             </div>
         </div>
     </div>
@@ -133,7 +88,7 @@
             <h4>🕹️ Controls</h4>
             <ul>
                 <li>Use WASD or Arrow Keys to slither around</li>
-                <li>Hold SHIFT to turbo sprint (don’t run out of energy!)</li>
+                <li>Hold SHIFT to turbo sprint (don't run out of energy!)</li>
                 <li>Press ESC to pause the game</li>
                 <li>Press SPACE to resume the game</li>
                 <li>Press R to restart the current game</li>
@@ -144,13 +99,13 @@
                 <li>Read the question at the top</li>
                 <li><strong>Eat the colored apple that matches your answer choice!</strong></li>
                 <li>Correct bites give points and make your snake longer</li>
-                <li>Wrong bites make your snake say “yuck!” and cost a life</li>
+                <li>Wrong bites make your snake say "yuck!" and cost a life</li>
             </ul>
 
             <h4>🛡️ Power‑Ups</h4>
             <ul>
-                <li>Shield: Spawns when you’re low on lives. Grab it to block one mistake!</li>
-                <li>Sprint Bar: Refills over time. Zoom carefully so you don’t miss apples.</li>
+                <li>Shield: Spawns when you're low on lives. Grab it to block one mistake!</li>
+                <li>Sprint Bar: Refills over time. Zoom carefully so you don't miss apples.</li>
             </ul>
 
             <h4>🏆 Game Modes</h4>
@@ -159,9 +114,9 @@
                 <li><strong>Endless:</strong> How long can you grow?</li>
                 <li><strong>Timed:</strong> 60 seconds of speedy snacking</li>
             </ul>
-
-            <p>Tip: Think fast, slither smart, and have fun. Let’s make your brain and snake super strong!</p>
-
+            
+            <p>Tip: Think fast, slither smart, and have fun. Let's make your brain and snake super strong!</p>
+            
             <button class="close-instructions" id="close-instructions">Got It!</button>
         </div>
     </div>
@@ -278,16 +233,22 @@
         </div>
     </div>
 
-    <div id="esc-menu" class="modal hidden">
-        <div class="modal-content pixel-border">
-            <h3>Game Menu</h3>
+    <!-- Game Menu -->
+    <div class="game-menu hidden" id="game-menu">
+        <div class="menu-content pixel-border">
+            <h2 class="menu-title">Game Menu</h2>
             <div class="menu-options">
-                <button id="resume-btn" class="btn pixel-btn btn-green">Resume Game</button>
-                <button id="settings-btn" class="btn pixel-btn">Settings</button>
-                <button id="main-menu-btn" class="btn pixel-btn btn-red">Main Menu</button>
+                <button class="menu-btn" id="how-to-play-btn">How to Play?</button>
+                <button class="menu-btn" id="shop-menu-btn">Shop</button>
+                <button class="menu-btn" id="sound-menu-btn">Sound: On</button>
+                <button class="menu-btn" id="music-menu-btn">Music: On</button>
             </div>
         </div>
     </div>
+
+    <!-- Notification Element -->
+    <div id="notification" class="hidden"></div>
+
     <script src="js/landing.js"></script>
 </body>
 
