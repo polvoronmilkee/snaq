@@ -1,788 +1,788 @@
 class SnakeEnglishGame {
-  constructor() {
-      // Game constants
-      this.gameSettings = JSON.parse(localStorage.getItem("gameSettings")) || {
-      mode: "quiz",
-      difficulty: "easy",
-      selectedSkin: "green"
-      }
+    constructor() {
+        // Game constants
+        this.gameSettings = JSON.parse(localStorage.getItem("gameSettings")) || {
+            mode: "quiz",
+            difficulty: "easy",
+            selectedSkin: "green"
+        }
 
-      // Skin system
-      this.selectedSkin = this.gameSettings.selectedSkin || "green"
+        // Skin system
+        this.selectedSkin = this.gameSettings.selectedSkin || "green"
 
-      this.setDifficultySettings()
+        this.setDifficultySettings()
 
-      this.CANVAS_WIDTH = 800
-      this.CANVAS_HEIGHT = 480
-      this.GRID_WIDTH = Math.floor(this.CANVAS_WIDTH / this.GRID_SIZE)
-      this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
+        this.CANVAS_WIDTH = 800
+        this.CANVAS_HEIGHT = 480
+        this.GRID_WIDTH = Math.floor(this.CANVAS_WIDTH / this.GRID_SIZE)
+        this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
 
-      const canvasContainer = document.querySelector(".canvas-container");
+        const canvasContainer = document.querySelector(".canvas-container");
 
-      canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../assets/snake-skins/volt_snake/Tile.png)` : `url("../assets/icons/Tile.png")`;
+        canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../assets/snake-skins/volt_snake/Tile.png)` : `url("../assets/icons/Tile.png")`;
 
-      const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../assets/snake-skins/volt_snake/sounds" : "../assets/sounds"
+        const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../assets/snake-skins/volt_snake/sounds" : "../assets/sounds"
 
-      this.sounds = {
-        biteApple: new Audio(`${soundPath}/bite-apple.mp3`),
-        snakeTurns: new Audio(`${soundPath}/snake-turns.mp3`),
-        snakeDies: new Audio(`${soundPath}/snake-dies.mp3`),
-        snakeLosesLife: new Audio(`${soundPath}/snake-loses-life.mp3`),
-        correct: new Audio(`${soundPath}/correct.mp3`),
-        bgMusic: new Audio(`${soundPath}/bg-music.mp3`),
-        youWon: new Audio("../assets/sounds/good-job.mp3"),
-        click: new Audio(`${soundPath}/click.mp3`),
-        countdown: new Audio(`${soundPath}/countdown.mp3`),
-        shift: new Audio(`${soundPath}/shift.mp3`),
-        pause: new Audio(`${soundPath}/pause.mp3`)
-      }
+        this.sounds = {
+            biteApple: new Audio(`${soundPath}/bite-apple.mp3`),
+            snakeTurns: new Audio(`${soundPath}/snake-turns.mp3`),
+            snakeDies: new Audio(`${soundPath}/snake-dies.mp3`),
+            snakeLosesLife: new Audio(`${soundPath}/snake-loses-life.mp3`),
+            correct: new Audio(`${soundPath}/correct.mp3`),
+            bgMusic: new Audio(`${soundPath}/bg-music.mp3`),
+            youWon: new Audio("../assets/sounds/good-job.mp3"),
+            click: new Audio(`${soundPath}/click.mp3`),
+            countdown: new Audio(`${soundPath}/countdown.mp3`),
+            shift: new Audio(`${soundPath}/shift.mp3`),
+            pause: new Audio(`${soundPath}/pause.mp3`)
+        }
 
-      this.sounds.bgMusic.volume = (this.gameSettings.selectedSkin === "volt") ? 0.6 : 0.2
-      this.sounds.shift.volume = (this.gameSettings.selectedSkin === "volt") ? 0.1 : 1
-      this.sounds.bgMusic.loop = true;
-      this.sounds.click.volume = 0.5
+        this.sounds.bgMusic.volume = (this.gameSettings.selectedSkin === "volt") ? 0.6 : 0.2
+        this.sounds.shift.volume = (this.gameSettings.selectedSkin === "volt") ? 0.1 : 1
+        this.sounds.bgMusic.loop = true;
+        this.sounds.click.volume = 0.5
 
-      this.soundEnabled = localStorage.getItem("soundEnabled") !== "false" // default true
-      this.musicEnabled = localStorage.getItem("musicEnabled") !== "false"
+        this.soundEnabled = localStorage.getItem("soundEnabled") !== "false" // default true
+        this.musicEnabled = localStorage.getItem("musicEnabled") !== "false"
 
-      // Load snake sprites
-      this.sprites = {}
-      this.loadSprites()
+        // Load snake sprites
+        this.sprites = {}
+        this.loadSprites()
 
-      // Game state
-      this.snake = []
-      this.direction = { x: 1, y: 0 }
-      this.apples = []
-      this.gameRunning = true
-      this.gameState = "playing"
-      this.score = 0
-      this.lives = 3
-      this.correctAnswers = 0
-      this.targetAnswers = this.gameSettings.mode === "endless" ? "♾️" : 10
-      this.currentQuestion = null
-      this.snakeFace = "normal"
-      this.notification = null
-      this.notificationTimer = 0
-      this.waitingForMove = true
-      this.paused = false
-      this.showConfirm = false
-      this.inputLocked = false
-      this.countdownActive = false
-      this.escMenuActive = false
+        // Game state
+        this.snake = []
+        this.direction = { x: 1, y: 0 }
+        this.apples = []
+        this.gameRunning = true
+        this.gameState = "playing"
+        this.score = 0
+        this.lives = 3
+        this.correctAnswers = 0
+        this.targetAnswers = this.gameSettings.mode === "endless" ? "♾️" : 10
+        this.currentQuestion = null
+        this.snakeFace = "normal"
+        this.notification = null
+        this.notificationTimer = 0
+        this.waitingForMove = true
+        this.paused = false
+        this.showConfirm = false
+        this.inputLocked = false
+        this.countdownActive = false
+        this.escMenuActive = false
 
-      this.baseSpeed = this.difficultySettings.baseSpeed
-      this.speed = this.baseSpeed
-      this.speedIncrement = this.difficultySettings.speedIncrease
+        this.baseSpeed = this.difficultySettings.baseSpeed
+        this.speed = this.baseSpeed
+        this.speedIncrement = this.difficultySettings.speedIncrease
 
-      this.pauseTimer = 0
-      this.isPausedForEvent = false
-      this.countdownActive = false
+        this.pauseTimer = 0
+        this.isPausedForEvent = false
+        this.countdownActive = false
 
-      // Timer for timed mode
-      this.timeLeft = 60
-      this.timerInterval = null
+        // Timer for timed mode
+        this.timeLeft = 60
+        this.timerInterval = null
 
-      // Animation
-      this.lastFrameTime = 0
-      this.moveAccumulator = 0
-      this.gameLoopId = null
+        // Animation
+        this.lastFrameTime = 0
+        this.moveAccumulator = 0
+        this.gameLoopId = null
 
-      // to track questions that have been used already
-      this.usedWords = this.usedWords || {
-      easy: { synonym: [], antonym: [], definition: [], spelling: [] },
-      medium: { synonym: [], antonym: [], definition: [], spelling: [] },
-      hard: { synonym: [], antonym: [], definition: [], spelling: [] },
-      };
+        // to track questions that have been used already
+        this.usedWords = this.usedWords || {
+            easy: { synonym: [], antonym: [], definition: [], spelling: [] },
+            medium: { synonym: [], antonym: [], definition: [], spelling: [] },
+            hard: { synonym: [], antonym: [], definition: [], spelling: [] },
+        };
 
-      // Sprint (temporary speed boost)
-      const isVoltSkin = this.selectedSkin === "volt"
-      this.sprint = {
-      active: false,
-      energy: 1,
-      maxEnergy: isVoltSkin ? 1.1 : 1, // +10% max energy for volt skin
-      drainPerSecond: isVoltSkin ? 1.02 : 1.2, // -15% drain for volt skin (1.2 * 0.85 = 1.02)
-      regenPerSecond: isVoltSkin ? 0.207 : 0.18, // +15% regen for volt skin (0.18 * 1.15 = 0.207)
-      multiplier: 1.8
-      }
+        // Sprint (temporary speed boost)
+        const isVoltSkin = this.selectedSkin === "volt"
+        this.sprint = {
+            active: false,
+            energy: 1,
+            maxEnergy: isVoltSkin ? 1.1 : 1, // +10% max energy for volt skin
+            drainPerSecond: isVoltSkin ? 1.02 : 1.2, // -15% drain for volt skin (1.2 * 0.85 = 1.02)
+            regenPerSecond: isVoltSkin ? 0.207 : 0.18, // +15% regen for volt skin (0.18 * 1.15 = 0.207)
+            multiplier: 1.8
+        }
 
-      // Shield (one-time wrong-answer protection)
-      this.hasShield = false
-      this.shieldPickup = null
-      this.shieldSpawned = false
+        // Shield (one-time wrong-answer protection)
+        this.hasShield = false
+        this.shieldPickup = null
+        this.shieldSpawned = false
 
-      // Sprint bar UI rectangle (pixels)
-      this.sprintBar = { x: 16, y: 16, width: 160, height: 14 }
+        // Sprint bar UI rectangle (pixels)
+        this.sprintBar = { x: 16, y: 16, width: 160, height: 14 }
 
-      this.initDOM()
-      this.init()
-  }
+        this.initDOM()
+        this.init()
+    }
 
 
 
     loadSprites() {
-    const skinPath = `../assets/snake-skins/${this.selectedSkin}_snake`
-    const spritePaths = {
-      // Snake movement sprites (using selected skin)
-      "SnakeHead": `${skinPath}/SnakeHead.png`,
-      "SnakeHeadLeft": `${skinPath}/SnakeHeadLeft.png`,
-      "SnakeHeadRight": `${skinPath}/SnakeHeadRight.png`,
-      "SnakeHeadDown": `${skinPath}/SnakeHeadDown.png`,
-      "SnakeHeadCorner1": `${skinPath}/SnakeHeadCorner1.png`,
-      "SnakeHeadCorner2": `${skinPath}/SnakeHeadCorner2.png`,
-      "SnakeHeadCorner3": `${skinPath}/SnakeHeadCorner3.png`,
-      "SnakeHeadCorner4": `${skinPath}/SnakeHeadCorner4.png`,
-      "SnakeHeadCorner5": `${skinPath}/SnakeHeadCorner5.png`,
-      "SnakeHeadCorner6": `${skinPath}/SnakeHeadCorner6.png`,
-      "SnakeHeadCorner7": `${skinPath}/SnakeHeadCorner7.png`,
-      "SnakeHeadCorner8": `${skinPath}/SnakeHeadCorner8.png`,
-      "SnakeBody": `${skinPath}/SnakeBody.png`,
-      "SnakeBodyDown": `${skinPath}/SnakeBodyDown.png`,
-      "SnakeBodyLeft": `${skinPath}/SnakeBodyLeft.png`,
-      "SnakeBodyRight": `${skinPath}/SnakeBodyRight.png`,
-      "SnakeTail": `${skinPath}/SnakeTail.png`,
-      "SnakeTailDown": `${skinPath}/SnakeTailDown.png`,
-      "SnakeTailLeft": `${skinPath}/SnakeTailLeft.png`,
-      "SnakeTailRight": `${skinPath}/SnakeTailRight.png`,
-      "SnakeCornerLeftDown": `${skinPath}/SnakeCornerLeftDown.png`,
-      "SnakeCornerLeftUp": `${skinPath}/SnakeCornerLeftUp.png`,
-      "SnakeCornerRightDown": `${skinPath}/SnakeCornerRightDown.png`,
-      "SnakeCornerRightUp": `${skinPath}/SnakeCornerRightUp.png`,
-        // Apple sprites
-        "apple": "../assets/apples/apple.png",
-        "appleA-pink": "../assets/apples/appleA-pink.png",
-        "appleB-yellow": "../assets/apples/appleB-yellow.png",
-        "appleC-blue": "../assets/apples/appleC-blue.png",
-        // Icon sprites
-        "shield": "../assets/icons/shield.png"
-      }
+        const skinPath = `../assets/snake-skins/${this.selectedSkin}_snake`
+        const spritePaths = {
+            // Snake movement sprites (using selected skin)
+            "SnakeHead": `${skinPath}/SnakeHead.png`,
+            "SnakeHeadLeft": `${skinPath}/SnakeHeadLeft.png`,
+            "SnakeHeadRight": `${skinPath}/SnakeHeadRight.png`,
+            "SnakeHeadDown": `${skinPath}/SnakeHeadDown.png`,
+            "SnakeHeadCorner1": `${skinPath}/SnakeHeadCorner1.png`,
+            "SnakeHeadCorner2": `${skinPath}/SnakeHeadCorner2.png`,
+            "SnakeHeadCorner3": `${skinPath}/SnakeHeadCorner3.png`,
+            "SnakeHeadCorner4": `${skinPath}/SnakeHeadCorner4.png`,
+            "SnakeHeadCorner5": `${skinPath}/SnakeHeadCorner5.png`,
+            "SnakeHeadCorner6": `${skinPath}/SnakeHeadCorner6.png`,
+            "SnakeHeadCorner7": `${skinPath}/SnakeHeadCorner7.png`,
+            "SnakeHeadCorner8": `${skinPath}/SnakeHeadCorner8.png`,
+            "SnakeBody": `${skinPath}/SnakeBody.png`,
+            "SnakeBodyDown": `${skinPath}/SnakeBodyDown.png`,
+            "SnakeBodyLeft": `${skinPath}/SnakeBodyLeft.png`,
+            "SnakeBodyRight": `${skinPath}/SnakeBodyRight.png`,
+            "SnakeTail": `${skinPath}/SnakeTail.png`,
+            "SnakeTailDown": `${skinPath}/SnakeTailDown.png`,
+            "SnakeTailLeft": `${skinPath}/SnakeTailLeft.png`,
+            "SnakeTailRight": `${skinPath}/SnakeTailRight.png`,
+            "SnakeCornerLeftDown": `${skinPath}/SnakeCornerLeftDown.png`,
+            "SnakeCornerLeftUp": `${skinPath}/SnakeCornerLeftUp.png`,
+            "SnakeCornerRightDown": `${skinPath}/SnakeCornerRightDown.png`,
+            "SnakeCornerRightUp": `${skinPath}/SnakeCornerRightUp.png`,
+            // Apple sprites
+            "apple": "../assets/apples/apple.png",
+            "appleA-pink": "../assets/apples/appleA-pink.png",
+            "appleB-yellow": "../assets/apples/appleB-yellow.png",
+            "appleC-blue": "../assets/apples/appleC-blue.png",
+            // Icon sprites
+            "shield": "../assets/icons/shield.png"
+        }
 
-      Object.entries(spritePaths).forEach(([name, path]) => {
-        this.sprites[name] = new Image()
-        this.sprites[name].src = path
-      })
-  }
+        Object.entries(spritePaths).forEach(([name, path]) => {
+            this.sprites[name] = new Image()
+            this.sprites[name].src = path
+        })
+    }
 
-  playSound(soundName) {
-      if (this.soundEnabled && this.sounds[soundName]) {
-      this.sounds[soundName].currentTime = 0
-      this.sounds[soundName].play().catch((e) => {})
-      }
-  }
+    playSound(soundName) {
+        if (this.soundEnabled && this.sounds[soundName]) {
+            this.sounds[soundName].currentTime = 0
+            this.sounds[soundName].play().catch((e) => { })
+        }
+    }
 
-      toggleSound() {
-          this.soundEnabled = !this.soundEnabled
-          localStorage.setItem("soundEnabled", this.soundEnabled.toString())
+    toggleSound() {
+        this.soundEnabled = !this.soundEnabled
+        localStorage.setItem("soundEnabled", this.soundEnabled.toString())
 
-          const soundBtn = document.getElementById("sound-btn")
-          soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
-          soundBtn.classList.toggle("active", this.soundEnabled)
-      }
+        const soundBtn = document.getElementById("sound-btn")
+        soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
+        soundBtn.classList.toggle("active", this.soundEnabled)
+    }
 
-      toggleMusic() {
-          this.musicEnabled = !this.musicEnabled
-          localStorage.setItem("musicEnabled", this.musicEnabled.toString())
+    toggleMusic() {
+        this.musicEnabled = !this.musicEnabled
+        localStorage.setItem("musicEnabled", this.musicEnabled.toString())
 
-          const musicBtn = document.getElementById("music-btn")
-          musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
-          musicBtn.classList.toggle("active", this.musicEnabled)
+        const musicBtn = document.getElementById("music-btn")
+        musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+        musicBtn.classList.toggle("active", this.musicEnabled)
 
-          if (this.musicEnabled) {
-          this.sounds.bgMusic.loop = true;
-          this.sounds.bgMusic.play().catch((e) => {})
-          } else {
-          this.sounds.bgMusic.pause();
-          }
-      }
+        if (this.musicEnabled) {
+            this.sounds.bgMusic.loop = true;
+            this.sounds.bgMusic.play().catch((e) => { })
+        } else {
+            this.sounds.bgMusic.pause();
+        }
+    }
 
-  initDOM() {
-      this.canvas = document.getElementById("game-canvas")
-      this.ctx = this.canvas.getContext("2d")
-      this.scoreElement = document.getElementById("score-value")
-      this.livesElement = document.getElementById("lives-value")
-      this.correctElement = document.getElementById("correct-value")
-      this.targetElement = document.getElementById("target-value")
-      this.questionElement = document.getElementById("question-display")
-      this.gameOverOverlay = document.getElementById("game-over-overlay")
-      this.gameOverTitle = document.getElementById("game-over-title")
-      this.finalScoreElement = document.getElementById("final-score")
-      this.finalCorrectElement = document.getElementById("final-correct")
-      this.playAgainBtn = document.getElementById("play-again-btn")
-      this.playAgainConfirm = document.getElementById("play-again-confirm")
-      this.playAgainConfirmBtn = document.getElementById("confirm-play-again")
-      this.cancelPlayAgain = document.getElementById("cancel-play-again")
-      this.menuBtn = document.getElementById("menu-btn")
-      this.restartConfirm = document.getElementById("restart-confirm")
-      this.confirmRestartBtn = document.getElementById("confirm-restart")
-      this.cancelRestartBtn = document.getElementById("cancel-restart")
-      this.timerDisplay = document.getElementById("timer-display")
-      this.timerValue = document.getElementById("timer-value")
-      this.optionsContainer = document.getElementById("options-display")
-      this.heartsContainer = document.getElementById("hearts-container")
-      this.helpBtn = document.getElementById("help-btn")
-      this.helpBtnEsc = document.getElementById("help-btn-esc")
-      this.soundBtn = document.getElementById("sound-btn")
-      this.musicBtn = document.getElementById("music-btn")
-      this.instructionsModal = document.getElementById("instructions-modal")
-      this.closeInstructionsBtn = document.getElementById("close-instructions")
-      this.aboutBtn = document.getElementById("about-btn")
-      this.aboutModal = document.getElementById("about-modal")
-      this.closeAboutBtn = document.getElementById("close-about")
-      this.backToMenuConfirm = document.getElementById("back-to-menu-confirm")
-      this.confirmBackMenuBtn = document.getElementById("confirm-back-menu")
-      this.cancelBackMenuBtn = document.getElementById("cancel-back-menu")
-      this.backToMenu = document.getElementById("back-to-menu")
-      if (this.questionElement) {
-      this.questionElement.style.fontSize = "15px"
-      this.questionElement.style.lineHeight = "1.4"
-      }
-  }
+    initDOM() {
+        this.canvas = document.getElementById("game-canvas")
+        this.ctx = this.canvas.getContext("2d")
+        this.scoreElement = document.getElementById("score-value")
+        this.livesElement = document.getElementById("lives-value")
+        this.correctElement = document.getElementById("correct-value")
+        this.targetElement = document.getElementById("target-value")
+        this.questionElement = document.getElementById("question-display")
+        this.gameOverOverlay = document.getElementById("game-over-overlay")
+        this.gameOverTitle = document.getElementById("game-over-title")
+        this.finalScoreElement = document.getElementById("final-score")
+        this.finalCorrectElement = document.getElementById("final-correct")
+        this.playAgainBtn = document.getElementById("play-again-btn")
+        this.playAgainConfirm = document.getElementById("play-again-confirm")
+        this.playAgainConfirmBtn = document.getElementById("confirm-play-again")
+        this.cancelPlayAgain = document.getElementById("cancel-play-again")
+        this.menuBtn = document.getElementById("menu-btn")
+        this.restartConfirm = document.getElementById("restart-confirm")
+        this.confirmRestartBtn = document.getElementById("confirm-restart")
+        this.cancelRestartBtn = document.getElementById("cancel-restart")
+        this.timerDisplay = document.getElementById("timer-display")
+        this.timerValue = document.getElementById("timer-value")
+        this.optionsContainer = document.getElementById("options-display")
+        this.heartsContainer = document.getElementById("hearts-container")
+        this.helpBtn = document.getElementById("help-btn")
+        this.helpBtnEsc = document.getElementById("help-btn-esc")
+        this.soundBtn = document.getElementById("sound-btn")
+        this.musicBtn = document.getElementById("music-btn")
+        this.instructionsModal = document.getElementById("instructions-modal")
+        this.closeInstructionsBtn = document.getElementById("close-instructions")
+        this.aboutBtn = document.getElementById("about-btn")
+        this.aboutModal = document.getElementById("about-modal")
+        this.closeAboutBtn = document.getElementById("close-about")
+        this.backToMenuConfirm = document.getElementById("back-to-menu-confirm")
+        this.confirmBackMenuBtn = document.getElementById("confirm-back-menu")
+        this.cancelBackMenuBtn = document.getElementById("cancel-back-menu")
+        this.backToMenu = document.getElementById("back-to-menu")
+        if (this.questionElement) {
+            this.questionElement.style.fontSize = "15px"
+            this.questionElement.style.lineHeight = "1.4"
+        }
+    }
 
-  init() {
-      this.initGame()
-      this.bindEvents()
-      this.gameLoop()
-      this.initializeAudioStates()
+    init() {
+        this.initGame()
+        this.bindEvents()
+        this.gameLoop()
+        this.initializeAudioStates()
 
-      // Ensure countdown doesn't get stuck
-      setTimeout(() => {
-        this.ensureCountdownComplete();
-      }, 5000); // After 5 seconds, force countdown to complete
-  }
+        // Ensure countdown doesn't get stuck
+        setTimeout(() => {
+            this.ensureCountdownComplete();
+        }, 5000); // After 5 seconds, force countdown to complete
+    }
 
-      initializeAudioStates() {
-      const soundBtn = document.getElementById("sound-btn")
-      const musicBtn = document.getElementById("music-btn")
+    initializeAudioStates() {
+        const soundBtn = document.getElementById("sound-btn")
+        const musicBtn = document.getElementById("music-btn")
 
-      if (soundBtn) {
-      soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
-      soundBtn.classList.toggle("active", this.soundEnabled)
-      }
+        if (soundBtn) {
+            soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
+            soundBtn.classList.toggle("active", this.soundEnabled)
+        }
 
-      if (musicBtn) {
-      musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
-      musicBtn.classList.toggle("active", this.musicEnabled)
+        if (musicBtn) {
+            musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+            musicBtn.classList.toggle("active", this.musicEnabled)
 
-      if (this.musicEnabled) {
-          this.sounds.bgMusic.loop = true;
-          this.sounds.bgMusic.play().catch((e) => {})
-      }
-      }
+            if (this.musicEnabled) {
+                this.sounds.bgMusic.loop = true;
+                this.sounds.bgMusic.play().catch((e) => { })
+            }
+        }
 
-      document.querySelectorAll("button").forEach((btn) => {
-      btn.addEventListener("click", () => {
-          if (this.soundEnabled && this.sounds.click) {
-          this.sounds.click.currentTime = 0; // restart if spam clicked
-          this.sounds.click.play();
-          }
-      })
-      })
+        document.querySelectorAll("button").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                if (this.soundEnabled && this.sounds.click) {
+                    this.sounds.click.currentTime = 0; // restart if spam clicked
+                    this.sounds.click.play();
+                }
+            })
+        })
 
-  }
+    }
 
-  bindEvents() {
-      document.addEventListener("keydown", (e) => this.handleKeyDown(e))
-      // Keyup to stop sprint
-      document.addEventListener("keyup", (e) => {
-      if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
-          this.sprint.active = false
-      }
-      })
+    bindEvents() {
+        document.addEventListener("keydown", (e) => this.handleKeyDown(e))
+        // Keyup to stop sprint
+        document.addEventListener("keyup", (e) => {
+            if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+                this.sprint.active = false
+            }
+        })
         this.playAgainBtn.addEventListener("click", () => {
             this.playSound("click")
             this.playAgainConfirm.classList.remove("hidden");
-        })   
+        })
         this.playAgainConfirmBtn.addEventListener("click", () => {
             this.playSound("click")
-            this.playAgainConfirm.classList.add("hidden") 
+            this.playAgainConfirm.classList.add("hidden")
             this.gameOverOverlay.classList.add("hidden")
-            this.confirmRestart() 
-        }) 
+            this.confirmRestart()
+        })
         this.cancelPlayAgain.addEventListener("click", () => {
-            this.playSound("click")  
+            this.playSound("click")
             this.playAgainConfirm.classList.add("hidden");
-        });  
-      this.backToMenu.addEventListener("click", () => {
-        this.playSound("click")
-        this.backToMenuConfirm.classList.remove("hidden")
-        this.paused = true
-      })
-      
-      this.confirmBackMenuBtn.addEventListener("click", () => {
-        this.playSound("click")
-        window.location.href = "../index.html"
-      })
-      
-      this.cancelBackMenuBtn.addEventListener("click", () => {
-        this.playSound("click")
-        this.backToMenuConfirm.classList.add("hidden")
-        this.paused = false
-      })
-      
-      this.menuBtn.addEventListener("click", () => {
-        this.playSound("click")
-        this.backToMenuConfirm.classList.remove("hidden")
-        this.paused = true
-      })
-      this.confirmRestartBtn.addEventListener("click", () => this.confirmRestart())
-      this.cancelRestartBtn.addEventListener("click", () => this.cancelRestart())
-      this.helpBtn.addEventListener("click", () => this.showInstructions())
-      this.soundBtn.addEventListener("click", () => this.toggleSound())
-      this.musicBtn.addEventListener("click", () => this.toggleMusic())
+        });
+        this.backToMenu.addEventListener("click", () => {
+            this.playSound("click")
+            this.backToMenuConfirm.classList.remove("hidden")
+            this.paused = true
+        })
 
-      // Close instructions modal when clicking outside
-      this.instructionsModal.addEventListener("click", (e) => {
-      if (e.target === this.instructionsModal) {
-          this.hideInstructions()
-      }
-      })
+        this.confirmBackMenuBtn.addEventListener("click", () => {
+            this.playSound("click")
+            window.location.href = "../index.html"
+        })
 
-      this.closeInstructionsBtn.addEventListener("click", () => this.hideInstructions())
+        this.cancelBackMenuBtn.addEventListener("click", () => {
+            this.playSound("click")
+            this.backToMenuConfirm.classList.add("hidden")
+            this.paused = false
+        })
 
-      document.addEventListener('click', (e) => {
-        if (e.target.id === 'resume-btn') {
-          this.playSound("click");
-          this.hideEscMenu();
-        } else if (e.target.id === 'settings-btn') {
-          this.playSound("click");
-          this.showNotification("Settings feature coming soon!", "correct");
-          this.hideEscMenu();
-        } else if (e.target.id === 'main-menu-btn') {
-          this.playSound("click");
-          this.hideEscMenu();
-          this.backToMenuConfirm.classList.remove("hidden");
-          this.paused = true;
-        }
-      });
-  }
+        this.menuBtn.addEventListener("click", () => {
+            this.playSound("click")
+            this.backToMenuConfirm.classList.remove("hidden")
+            this.paused = true
+        })
+        this.confirmRestartBtn.addEventListener("click", () => this.confirmRestart())
+        this.cancelRestartBtn.addEventListener("click", () => this.cancelRestart())
+        this.helpBtn.addEventListener("click", () => this.showInstructions())
+        this.soundBtn.addEventListener("click", () => this.toggleSound())
+        this.musicBtn.addEventListener("click", () => this.toggleMusic())
 
+        // Close instructions modal when clicking outside
+        this.instructionsModal.addEventListener("click", (e) => {
+            if (e.target === this.instructionsModal) {
+                this.hideInstructions()
+            }
+        })
 
-  showEscMenu() {
-    if (this.gameRunning && !this.paused && !this.countdownActive && 
-        this.restartConfirm.classList.contains("hidden")) {
-      this.escMenuActive = true;
-      this.paused = true;
-      document.getElementById("esc-menu").classList.remove("hidden");
+        this.closeInstructionsBtn.addEventListener("click", () => this.hideInstructions())
+
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'resume-btn') {
+                this.playSound("click");
+                this.hideEscMenu();
+            } else if (e.target.id === 'settings-btn') {
+                this.playSound("click");
+                this.showNotification("Settings feature coming soon!", "correct");
+                this.hideEscMenu();
+            } else if (e.target.id === 'main-menu-btn') {
+                this.playSound("click");
+                this.hideEscMenu();
+                this.backToMenuConfirm.classList.remove("hidden");
+                this.paused = true;
+            }
+        });
     }
-  }
+
+
+    showEscMenu() {
+        if (this.gameRunning && !this.paused && !this.countdownActive &&
+            this.restartConfirm.classList.contains("hidden")) {
+            this.escMenuActive = true;
+            this.paused = true;
+            document.getElementById("esc-menu").classList.remove("hidden");
+        }
+    }
 
     hideEscMenu() {
-      this.escMenuActive = false;
-      this.paused = false;
-      document.getElementById("esc-menu").classList.add("hidden");
-  }
-
-  showInstructions() {
-      this.instructionsModal.classList.remove("hidden")
-  }
-
-  hideInstructions() {
-      this.instructionsModal.classList.add("hidden")
-  }
-
-  updateUI() {
-      this.scoreElement.textContent = this.score
-      this.correctElement.textContent = this.correctAnswers
-
-      // Update hearts display
-      const hearts = this.heartsContainer.querySelectorAll(".heart")
-      hearts.forEach((heart, index) => {
-      if (index < this.lives) {
-          heart.classList.add("filled")
-          heart.classList.remove("empty")
-      } else {
-          heart.classList.remove("filled")
-          heart.classList.add("empty")
-      }
-      })
-
-      if (this.currentQuestion) {
-      this.questionElement.textContent = this.currentQuestion.question
-      this.updateOptionsDisplay()
-      }
-      this.updateShieldUI();
-  }
-
-  updateOptionsDisplay() {
-      if (!this.optionsContainer || !this.currentQuestion) return
-
-      this.optionsContainer.innerHTML = ""
-
-      this.currentQuestion.options.forEach((option, index) => {
-      const optionDiv = document.createElement("div")
-      optionDiv.className = "option-item"
-
-      const appleIcon = document.createElement("div")
-      appleIcon.className = "apple-icon"
-
-      // Use specific colored apple sprites
-      const appleImg = document.createElement("img")
-      const appleColors = ["appleA-pink.png", "appleB-yellow.png", "appleC-blue.png"]
-              appleImg.src = `../assets/apples/${appleColors[index] || "apple.png"}`
-      appleImg.alt = String.fromCharCode(65 + index) // A, B, C
-      appleImg.className = "apple-sprite"
-
-      const letterLabel = document.createElement("span")
-      letterLabel.className = "apple-letter"
-      letterLabel.textContent = String.fromCharCode(65 + index) // A, B, C
-
-      appleIcon.appendChild(appleImg)
-      appleIcon.appendChild(letterLabel)
-
-      const optionText = document.createElement("span")
-      optionText.className = "option-text"
-      optionText.textContent = option
-      // Make answers larger and more readable
-      optionText.style.fontSize = "15px"
-      optionText.style.lineHeight = "1.4"
-      optionText.style.fontWeight = "600"
-
-      optionDiv.appendChild(appleIcon)
-      optionDiv.appendChild(optionText)
-      this.optionsContainer.appendChild(optionDiv)
-      })
-  }
-
-
-  generateQuestion() {
-      const difficulty = this.gameSettings.difficulty
-      const questionTypes = ["synonym", "antonym", "definition", "spelling"]
-      const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)]
-
-      const wordSets = {
-        easy: {
-        synonym: [
-            { word: "happy", correct: "joyful", wrong: ["sad", "angry", "tired"] },
-            { word: "big", correct: "large", wrong: ["small", "tiny", "little"] },
-            { word: "fast", correct: "quick", wrong: ["slow", "lazy", "tired"] },
-            { word: "smart", correct: "clever", wrong: ["dumb", "silly", "lazy"] },
-            { word: "angry", correct: "furious", wrong: ["happy", "calm", "joyful"] },
-            { word: "easy", correct: "simple", wrong: ["difficult", "hard", "complex"] },
-            { word: "strong", correct: "powerful", wrong: ["weak", "fragile", "small"] },
-            { word: "brave", correct: "courageous", wrong: ["scared", "timid", "weak"] },
-            { word: "quiet", correct: "silent", wrong: ["loud", "noisy", "talkative"] },
-            { word: "beautiful", correct: "gorgeous", wrong: ["ugly", "plain", "boring"] },
-            { word: "sad", correct: "unhappy", wrong: ["joyful", "funny", "excited"] },
-            { word: "cold", correct: "chilly", wrong: ["hot", "warm", "boiling"] },
-            { word: "clean", correct: "tidy", wrong: ["dirty", "messy", "ugly"] },
-            { word: "funny", correct: "hilarious", wrong: ["serious", "boring", "sad"] },
-            { word: "hard", correct: "difficult", wrong: ["easy", "simple", "soft"] },
-            { word: "rich", correct: "wealthy", wrong: ["poor", "broke", "hungry"] },
-            { word: "good", correct: "nice", wrong: ["bad", "evil", "awful"] },
-            { word: "bad", correct: "awful", wrong: ["great", "kind", "funny"] },
-            { word: "quick", correct: "rapid", wrong: ["slow", "lazy", "weak"] },
-            { word: "child", correct: "kid", wrong: ["adult", "man", "old"] },
-        ],
-        antonym: [
-            { word: "hot", correct: "cold", wrong: ["warm", "cool", "mild"] },
-            { word: "up", correct: "down", wrong: ["over", "under", "above"] },
-            { word: "good", correct: "bad", wrong: ["nice", "great", "fine"] },
-            { word: "light", correct: "dark", wrong: ["bright", "clear", "white"] },
-            { word: "happy", correct: "sad", wrong: ["joyful", "excited", "glad"] },
-            { word: "big", correct: "small", wrong: ["large", "huge", "gigantic"] },
-            { word: "fast", correct: "slow", wrong: ["quick", "rapid", "swift"] },
-            { word: "strong", correct: "weak", wrong: ["powerful", "mighty", "sturdy"] },
-            { word: "young", correct: "old", wrong: ["new", "fresh", "recent"] },
-            { word: "near", correct: "far", wrong: ["close", "next", "adjacent"] },
-            { word: "begin", correct: "end", wrong: ["start", "open", "play"] },
-            { word: "tall", correct: "short", wrong: ["long", "big", "high"] },
-            { word: "day", correct: "night", wrong: ["light", "sun", "time"] },
-            { word: "boy", correct: "girl", wrong: ["man", "uncle", "king"] },
-            { word: "asleep", correct: "awake", wrong: ["sleepy", "quiet", "lazy"] },
-            { word: "clean", correct: "dirty", wrong: ["tidy", "pure", "clear"] },
-            { word: "full", correct: "empty", wrong: ["big", "whole", "complete"] },
-            { word: "love", correct: "hate", wrong: ["like", "joy", "peace"] },
-            { word: "in", correct: "out", wrong: ["up", "over", "near"] },
-            { word: "give", correct: "take", wrong: ["bring", "help", "show"] },
-        ],
-        definition: [
-            { word: "cat", correct: "a small furry pet", wrong: ["a big dog", "a bird", "a fish"] },
-            { word: "book", correct: "something to read", wrong: ["something to eat", "something to wear", "something to drive"] },
-            { word: "apple", correct: "a type of fruit", wrong: ["a vegetable", "a tool", "a drink"] },
-            { word: "chair", correct: "something to sit on", wrong: ["something to sleep on", "something to write with", "something to wear"] },
-            { word: "river", correct: "a flowing body of water", wrong: ["a mountain", "a tree", "a road"] },
-            { word: "car", correct: "a vehicle for transport", wrong: ["a building", "a computer", "a tool"] },
-            { word: "shoe", correct: "something worn on the foot", wrong: ["something worn on the hand", "a hat", "a glove"] },
-            { word: "pencil", correct: "something used to write", wrong: ["something used to eat", "something used to paint", "something used to clean"] },
-            { word: "dog", correct: "a domesticated animal", wrong: ["a wild animal", "a bird", "a fish"] },
-            { word: "tree", correct: "a plant with a trunk and branches", wrong: ["a flower", "a bush", "a rock"] },
-            { word: "ball", correct: "something to play with", wrong: ["a food", "a shoe", "a bed"] },
-            { word: "bed", correct: "something to sleep on", wrong: ["something to sit on", "a car", "a book"] },
-            { word: "hat", correct: "something worn on the head", wrong: ["shoe", "glove", "pants"] },
-            { word: "milk", correct: "a drink from cows", wrong: ["fruit", "bread", "soup"] },
-            { word: "sun", correct: "the star that gives us light", wrong: ["moon", "lamp", "cloud"] },
-            { word: "fish", correct: "an animal that lives in water", wrong: ["dog", "bird", "cat"] },
-            { word: "clock", correct: "something that shows time", wrong: ["toy", "food", "book"] },
-            { word: "school", correct: "a place to learn", wrong: ["a house", "a park", "a shop"] },
-            { word: "banana", correct: "a yellow fruit", wrong: ["apple", "grape", "carrot"] },
-            { word: "road", correct: "a path for cars", wrong: ["river", "tree", "field"] },
-        ],
-        spelling: [
-            { word: "friend", correct: "friend", wrong: ["freind", "frend", "freand"] },
-            { word: "school", correct: "school", wrong: ["scool", "schol", "skool"] },
-            { word: "apple", correct: "apple", wrong: ["aple", "appel", "appl"] },
-            { word: "house", correct: "house", wrong: ["hous", "houes", "hoose"] },
-            { word: "computer", correct: "computer", wrong: ["computor", "compter", "comuter"] },
-            { word: "beautiful", correct: "beautiful", wrong: ["beatiful", "beutiful", "beautifull"] },
-            { word: "library", correct: "library", wrong: ["libary", "librery", "liberry"] },
-            { word: "holiday", correct: "holiday", wrong: ["holidy", "holoday", "holidey"] },
-            { word: "together", correct: "together", wrong: ["togther", "toether", "togehter"] },
-            { word: "because", correct: "because", wrong: ["becuase", "becase", "becouse"] },
-            { word: "family", correct: "family", wrong: ["famely", "famly", "familey"] },
-            { word: "teacher", correct: "teacher", wrong: ["techer", "tetcher", "techar"] },
-            { word: "mother", correct: "mother", wrong: ["moter", "mothar", "mothor"] },
-            { word: "father", correct: "father", wrong: ["fater", "fathar", "fathor"] },
-            { word: "animal", correct: "animal", wrong: ["anemal", "animel", "animil"] },
-            { word: "garden", correct: "garden", wrong: ["gardan", "gardon", "garedn"] },
-            { word: "orange", correct: "orange", wrong: ["orenge", "orrange", "orenj"] },
-            { word: "music", correct: "music", wrong: ["musick", "musik", "muic"] },
-            { word: "baby", correct: "baby", wrong: ["beby", "babey", "babby"] },
-            { word: "happy", correct: "happy", wrong: ["hapy", "hapey", "happi"] },
-        ]
-        },
-        medium: {
-        synonym: [
-            { word: "beautiful", correct: "gorgeous", wrong: ["ugly", "plain", "simple"] },
-            { word: "difficult", correct: "challenging", wrong: ["easy", "simple", "basic"] },
-            { word: "ancient", correct: "old", wrong: ["new", "modern", "recent"] },
-            { word: "quick", correct: "swift", wrong: ["slow", "lazy", "sluggish"] },
-            { word: "brave", correct: "courageous", wrong: ["scared", "timid", "weak"] },
-            { word: "smart", correct: "intelligent", wrong: ["dumb", "foolish", "slow"] },
-            { word: "strong", correct: "powerful", wrong: ["weak", "fragile", "feeble"] },
-            { word: "angry", correct: "furious", wrong: ["happy", "calm", "joyful"] },
-            { word: "funny", correct: "humorous", wrong: ["serious", "boring", "sad"] },
-            { word: "bright", correct: "luminous", wrong: ["dark", "dull", "dim"] },
-            { word: "tiny", correct: "minute", wrong: ["huge", "large", "giant"] },
-            { word: "happy", correct: "joyful", wrong: ["sad", "angry", "miserable"] },
-            { word: "calm", correct: "peaceful", wrong: ["noisy", "angry", "chaotic"] },
-            { word: "cold", correct: "chilly", wrong: ["hot", "warm", "boiling"] },
-            { word: "lazy", correct: "idle", wrong: ["active", "energetic", "busy"] },
-            { word: "friendly", correct: "amiable", wrong: ["mean", "hostile", "rude"] },
-            { word: "safe", correct: "secure", wrong: ["dangerous", "risky", "unsafe"] },
-            { word: "big", correct: "enormous", wrong: ["tiny", "small", "little"] },
-            { word: "sad", correct: "unhappy", wrong: ["joyful", "cheerful", "excited"] },
-            { word: "hardworking", correct: "diligent", wrong: ["lazy", "careless", "sloppy"] },
-        ],
-
-        antonym: [
-            { word: "expand", correct: "contract", wrong: ["grow", "increase", "enlarge"] },
-            { word: "victory", correct: "defeat", wrong: ["win", "success", "triumph"] },
-            { word: "ancient", correct: "modern", wrong: ["old", "historic", "past"] },
-            { word: "strong", correct: "weak", wrong: ["powerful", "robust", "tough"] },
-            { word: "happy", correct: "sad", wrong: ["joyful", "excited", "glad"] },
-            { word: "open", correct: "closed", wrong: ["shut", "ajar", "wide"] },
-            { word: "high", correct: "low", wrong: ["tall", "elevated", "above"] },
-            { word: "fast", correct: "slow", wrong: ["quick", "rapid", "swift"] },
-            { word: "bright", correct: "dark", wrong: ["luminous", "shiny", "glowing"] },
-            { word: "near", correct: "far", wrong: ["close", "next", "adjacent"] },
-            { word: "accept", correct: "reject", wrong: ["receive", "approve", "allow"] },
-            { word: "love", correct: "hate", wrong: ["like", "admire", "enjoy"] },
-            { word: "arrival", correct: "departure", wrong: ["coming", "entry", "approach"] },
-            { word: "include", correct: "exclude", wrong: ["allow", "add", "contain"] },
-            { word: "success", correct: "failure", wrong: ["achievement", "win", "victory"] },
-            { word: "public", correct: "private", wrong: ["open", "shared", "community"] },
-            { word: "asleep", correct: "awake", wrong: ["dreaming", "resting", "sleepy"] },
-            { word: "create", correct: "destroy", wrong: ["build", "design", "invent"] },
-            { word: "borrow", correct: "lend", wrong: ["take", "get", "receive"] },
-            { word: "arrival", correct: "departure", wrong: ["visit", "meeting", "welcome"] },
-        ],
-
-        definition: [
-            { word: "telescope", correct: "device to see far objects", wrong: ["device to hear sounds", "device to cook food", "device to clean"] },
-            { word: "volcano", correct: "mountain that erupts lava", wrong: ["lake", "river", "valley"] },
-            { word: "oxygen", correct: "gas we breathe", wrong: ["water", "carbon", "nitrogen"] },
-            { word: "keyboard", correct: "device to type on a computer", wrong: ["monitor", "mouse", "printer"] },
-            { word: "microscope", correct: "device to see tiny objects", wrong: ["telescope", "camera", "binoculars"] },
-            { word: "pyramid", correct: "triangular structure", wrong: ["cube", "sphere", "circle"] },
-            { word: "glacier", correct: "large ice mass", wrong: ["river", "mountain", "lake"] },
-            { word: "satellite", correct: "object orbiting a planet", wrong: ["rocket", "star", "moon"] },
-            { word: "guitar", correct: "stringed musical instrument", wrong: ["drum", "piano", "flute"] },
-            { word: "volleyball", correct: "sport played with a ball over a net", wrong: ["soccer", "tennis", "basketball"] },
-            { word: "atlas", correct: "book of maps", wrong: ["dictionary", "encyclopedia", "journal"] },
-            { word: "thermometer", correct: "instrument to measure temperature", wrong: ["barometer", "compass", "ruler"] },
-            { word: "battery", correct: "device that stores energy", wrong: ["engine", "fuel", "light"] },
-            { word: "planet", correct: "large object orbiting a star", wrong: ["asteroid", "comet", "satellite"] },
-            { word: "oxygen", correct: "gas essential for breathing", wrong: ["carbon", "hydrogen", "helium"] },
-            { word: "calendar", correct: "system to organize days", wrong: ["clock", "alarm", "timer"] },
-            { word: "dictionary", correct: "book with word meanings", wrong: ["atlas", "notebook", "encyclopedia"] },
-            { word: "binoculars", correct: "device to see distant objects", wrong: ["glasses", "microscope", "lens"] },
-            { word: "triangle", correct: "shape with three sides", wrong: ["square", "circle", "hexagon"] },
-            { word: "galaxy", correct: "system of stars", wrong: ["planet", "universe", "asteroid belt"] },
-        ],
-
-        spelling: [
-            { word: "necessary", correct: "necessary", wrong: ["neccessary", "necesary", "neccesary"] },
-            { word: "beautiful", correct: "beautiful", wrong: ["beatiful", "beutiful", "beautifull"] },
-            { word: "accommodate", correct: "accommodate", wrong: ["acommodate", "accomodate", "acomodate"] },
-            { word: "definitely", correct: "definitely", wrong: ["definately", "definitly", "definetly"] },
-            { word: "separate", correct: "separate", wrong: ["seperate", "seperete", "separite"] },
-            { word: "questionnaire", correct: "questionnaire", wrong: ["questionaire", "questinnaire", "questioner"] },
-            { word: "occurrence", correct: "occurrence", wrong: ["occurence", "ocurrence", "occurance"] },
-            { word: "acquire", correct: "acquire", wrong: ["aquire", "acqire", "acqure"] },
-            { word: "maintenance", correct: "maintenance", wrong: ["maintainance", "maintanance", "maintnance"] },
-            { word: "privilege", correct: "privilege", wrong: ["privelege", "priviledge", "privlig"] },
-            { word: "entrepreneur", correct: "entrepreneur", wrong: ["entrepeneur", "entreprenur", "enterprenuer"] },
-            { word: "recommend", correct: "recommend", wrong: ["reccomend", "recomend", "reccamend"] },
-            { word: "embarrass", correct: "embarrass", wrong: ["embarass", "embaras", "embarris"] },
-            { word: "rhythm", correct: "rhythm", wrong: ["rythm", "rithym", "rythem"] },
-            { word: "vacuum", correct: "vacuum", wrong: ["vaccum", "vacum", "vacuem"] },
-            { word: "millennium", correct: "millennium", wrong: ["millenium", "milennium", "milenium"] },
-            { word: "occasionally", correct: "occasionally", wrong: ["ocasionally", "occassionaly", "ocasionaly"] },
-            { word: "conscience", correct: "conscience", wrong: ["conciens", "conshens", "consiense"] },
-            { word: "hierarchy", correct: "hierarchy", wrong: ["heirarchy", "hierarcy", "hirarchy"] },
-            { word: "supersede", correct: "supersede", wrong: ["supercede", "supersceed", "suparseed"] },
-        ],
-        },
-        hard: {
-        synonym: [
-            { word: "ubiquitous", correct: "everywhere", wrong: ["rare", "hidden", "absent"] },
-            { word: "meticulous", correct: "careful", wrong: ["careless", "sloppy", "rushed"] },
-            { word: "obstinate", correct: "stubborn", wrong: ["flexible", "gentle", "yielding"] },
-            { word: "lucid", correct: "clear", wrong: ["confusing", "vague", "obscure"] },
-            { word: "tenacious", correct: "persistent", wrong: ["weak", "lazy", "indifferent"] },
-            { word: "esoteric", correct: "obscure", wrong: ["common", "famous", "popular"] },
-            { word: "ambiguous", correct: "unclear", wrong: ["obvious", "clear", "definite"] },
-            { word: "candid", correct: "honest", wrong: ["dishonest", "sly", "deceptive"] },
-            { word: "prudent", correct: "wise", wrong: ["reckless", "careless", "foolish"] },
-            { word: "profound", correct: "deep", wrong: ["shallow", "superficial", "simple"] },
-            { word: "arduous", correct: "difficult", wrong: ["easy", "simple", "effortless"] },
-            { word: "eloquent", correct: "fluent", wrong: ["awkward", "clumsy", "mute"] },
-            { word: "frugal", correct: "thrifty", wrong: ["wasteful", "lavish", "extravagant"] },
-            { word: "gregarious", correct: "sociable", wrong: ["shy", "introverted", "solitary"] },
-            { word: "incessant", correct: "continuous", wrong: ["intermittent", "rare", "occasional"] },
-            { word: "malevolent", correct: "evil", wrong: ["kind", "benevolent", "generous"] },
-            { word: "mundane", correct: "ordinary", wrong: ["extraordinary", "unique", "special"] },
-            { word: "succinct", correct: "brief", wrong: ["wordy", "lengthy", "long"] },
-            { word: "altruistic", correct: "selfless", wrong: ["selfish", "greedy", "egoistic"] },
-            { word: "capricious", correct: "unpredictable", wrong: ["consistent", "stable", "reliable"] },
-        ],
-        antonym: [
-            { word: "benevolent", correct: "malevolent", wrong: ["kind", "generous", "helpful"] },
-            { word: "ephemeral", correct: "permanent", wrong: ["temporary", "brief", "short"] },
-            { word: "ascend", correct: "descend", wrong: ["rise", "climb", "soar"] },
-            { word: "opaque", correct: "transparent", wrong: ["cloudy", "dark", "murky"] },
-            { word: "scarce", correct: "abundant", wrong: ["rare", "limited", "insufficient"] },
-            { word: "chaotic", correct: "orderly", wrong: ["messy", "confused", "disorganized"] },
-            { word: "artificial", correct: "natural", wrong: ["synthetic", "man-made", "engineered"] },
-            { word: "hostile", correct: "friendly", wrong: ["aggressive", "unfriendly", "harsh"] },
-            { word: "fragile", correct: "strong", wrong: ["weak", "delicate", "brittle"] },
-            { word: "vague", correct: "specific", wrong: ["unclear", "ambiguous", "imprecise"] },
-            { word: "timid", correct: "bold", wrong: ["fearful", "nervous", "shy"] },
-            { word: "ancient", correct: "modern", wrong: ["old", "antique", "historic"] },
-            { word: "expand", correct: "contract", wrong: ["grow", "enlarge", "stretch"] },
-            { word: "humble", correct: "arrogant", wrong: ["modest", "simple", "shy"] },
-            { word: "optimistic", correct: "pessimistic", wrong: ["hopeful", "cheerful", "positive"] },
-            { word: "tranquil", correct: "chaotic", wrong: ["calm", "peaceful", "quiet"] },
-            { word: "vivid", correct: "dull", wrong: ["bright", "colorful", "lively"] },
-            { word: "prosperity", correct: "poverty", wrong: ["wealth", "fortune", "abundance"] },
-            { word: "lenient", correct: "strict", wrong: ["forgiving", "kind", "merciful"] },
-            { word: "affirm", correct: "deny", wrong: ["accept", "agree", "confirm"] },
-        ],
-        definition: [
-            { word: "serendipity", correct: "pleasant surprise", wrong: ["bad luck", "planned event", "boring moment"] },
-            { word: "epiphany", correct: "sudden realization", wrong: ["confusion", "question", "mistake"] },
-            { word: "labyrinth", correct: "complex maze", wrong: ["simple path", "straight road", "open field"] },
-            { word: "paradox", correct: "contradictory statement", wrong: ["simple truth", "story", "fact"] },
-            { word: "quintessential", correct: "perfect example", wrong: ["worst example", "average", "rare"] },
-            { word: "mellifluous", correct: "pleasant-sounding", wrong: ["harsh", "ugly", "rough"] },
-            { word: "oblivion", correct: "state of being forgotten", wrong: ["fame", "attention", "recognition"] },
-            { word: "zenith", correct: "highest point", wrong: ["lowest point", "middle", "base"] },
-            { word: "cacophony", correct: "harsh noise", wrong: ["pleasant sound", "music", "silence"] },
-            { word: "ephemeral", correct: "short-lived", wrong: ["long-lasting", "permanent", "eternal"] },
-            { word: "facetious", correct: "not serious", wrong: ["serious", "genuine", "honest"] },
-            { word: "anachronism", correct: "out of place in time", wrong: ["timely", "modern", "current"] },
-            { word: "aesthetic", correct: "related to beauty", wrong: ["ugly", "plain", "ordinary"] },
-            { word: "eloquence", correct: "fluent speaking", wrong: ["silence", "awkwardness", "clumsiness"] },
-            { word: "hubris", correct: "excessive pride", wrong: ["humility", "kindness", "modesty"] },
-            { word: "ineffable", correct: "too great to express", wrong: ["obvious", "simple", "easy"] },
-            { word: "juxtapose", correct: "place side by side", wrong: ["separate", "ignore", "remove"] },
-            { word: "nostalgia", correct: "longing for the past", wrong: ["future hope", "present joy", "disinterest"] },
-            { word: "reverie", correct: "daydream", wrong: ["nightmare", "focus", "work"] },
-            { word: "sagacious", correct: "wise", wrong: ["foolish", "reckless", "ignorant"] },
-        ],
-        spelling: [
-            { word: "accommodate", correct: "accommodate", wrong: ["accomodate", "acomodate", "acommodate"] },
-            { word: "definitely", correct: "definitely", wrong: ["definately", "definitly", "definetly"] },
-            { word: "conscientious", correct: "conscientious", wrong: ["consciencious", "consientious", "conscientous"] },
-            { word: "pronunciation", correct: "pronunciation", wrong: ["pronounciation", "pronuntiation", "pronounciaton"] },
-            { word: "rhythm", correct: "rhythm", wrong: ["rythm", "rithm", "rhythem"] },
-            { word: "miscellaneous", correct: "miscellaneous", wrong: ["miscelaneous", "miscellanous", "micesllaneous"] },
-            { word: "occasionally", correct: "occasionally", wrong: ["ocasionally", "occassionally", "ocassionally"] },
-            { word: "embarrass", correct: "embarrass", wrong: ["embarass", "embarras", "embarrs"] },
-            { word: "harass", correct: "harass", wrong: ["harrass", "haras", "harres"] },
-            { word: "connoisseur", correct: "connoisseur", wrong: ["conaisseur", "connosieur", "connoiser"] },
-            { word: "supersede", correct: "supersede", wrong: ["supercede", "supersaid", "supersaid"] },
-            { word: "millennium", correct: "millennium", wrong: ["milenium", "millenium", "millennum"] },
-            { word: "indict", correct: "indict", wrong: ["indite", "indigt", "indickt"] },
-            { word: "pharaoh", correct: "pharaoh", wrong: ["pharoah", "pharoh", "pharow"] },
-            { word: "weird", correct: "weird", wrong: ["wierd", "weard", "waird"] },
-            { word: "guarantee", correct: "guarantee", wrong: ["garantee", "guarentee", "garente"] },
-            { word: "liaison", correct: "liaison", wrong: ["liason", "laiasone", "layazon"] },
-            { word: "recommend", correct: "recommend", wrong: ["reccomend", "recomend", "reccommand"] },
-            { word: "necessary", correct: "necessary", wrong: ["neccesary", "necesary", "nessesary"] },
-            { word: "questionnaire", correct: "questionnaire", wrong: ["questionare", "questonaire", "questionnare"] },
-        ],
-    }
-};
-
-      const difficultyWords = wordSets[difficulty][questionType]
-  // Filter out used words
-  const unusedWords = difficultyWords.filter(
-      w => !this.usedWords[difficulty][questionType].includes(w.word)
-  );
-
-    if (unusedWords.length === 0) {
-        // All questions used, resetting...
-
-        // Reset so we can reuse all questions
-        this.usedWords[difficulty][questionType] = [];
-
-        // After reset, all words are available again
-        unusedWords = [...difficultyWords];
+        this.escMenuActive = false;
+        this.paused = false;
+        document.getElementById("esc-menu").classList.add("hidden");
     }
 
-  // Pick a random unused word
-  const selectedWord = unusedWords[Math.floor(Math.random() * unusedWords.length)];
+    showInstructions() {
+        this.instructionsModal.classList.remove("hidden")
+    }
 
-  // Mark as used
-  this.usedWords[difficulty][questionType].push(selectedWord.word);
+    hideInstructions() {
+        this.instructionsModal.classList.add("hidden")
+    }
 
-  let question, correctAnswer, options;
-  switch (questionType) {
-      case "synonym":
-        question = `What is a synonym for "${selectedWord.word}"?`;
-        correctAnswer = selectedWord.correct;
-        options = [correctAnswer, ...selectedWord.wrong];
-      break;
-      case "antonym":
-        question = `What is the opposite of "${selectedWord.word}"?`;
-        correctAnswer = selectedWord.correct;
-        options = [correctAnswer, ...selectedWord.wrong];
-      break;
-      case "definition":
-        const firstLetter = selectedWord.word[0].toLowerCase();
-        const article = ["a", "e", "i", "o", "u"].includes(firstLetter) ? "an" : "a";
-        question = `What is ${article} "${selectedWord.word}"?`;
-        correctAnswer = selectedWord.correct;
-        options = [correctAnswer, ...selectedWord.wrong];
-        break;
-      case "spelling":
-        question = `Which word is spelled correctly?`;
-        correctAnswer = selectedWord.correct;
-        options = [correctAnswer, ...selectedWord.wrong];
-      break;
-  }
+    updateUI() {
+        this.scoreElement.textContent = this.score
+        this.correctElement.textContent = this.correctAnswers
 
-  // Shuffle options
-  for (let i = options.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [options[i], options[j]] = [options[j], options[i]];
-  }
+        // Update hearts display
+        const hearts = this.heartsContainer.querySelectorAll(".heart")
+        hearts.forEach((heart, index) => {
+            if (index < this.lives) {
+                heart.classList.add("filled")
+                heart.classList.remove("empty")
+            } else {
+                heart.classList.remove("filled")
+                heart.classList.add("empty")
+            }
+        })
 
-  return { question, correctAnswer, options };
-  }
+        if (this.currentQuestion) {
+            this.questionElement.textContent = this.currentQuestion.question
+            this.updateOptionsDisplay()
+        }
+        this.updateShieldUI();
+    }
 
-    initGame() { 
-      const headPosition = this.getRandomPosition()
+    updateOptionsDisplay() {
+        if (!this.optionsContainer || !this.currentQuestion) return
+
+        this.optionsContainer.innerHTML = ""
+
+        this.currentQuestion.options.forEach((option, index) => {
+            const optionDiv = document.createElement("div")
+            optionDiv.className = "option-item"
+
+            const appleIcon = document.createElement("div")
+            appleIcon.className = "apple-icon"
+
+            // Use specific colored apple sprites
+            const appleImg = document.createElement("img")
+            const appleColors = ["appleA-pink.png", "appleB-yellow.png", "appleC-blue.png"]
+            appleImg.src = `../assets/apples/${appleColors[index] || "apple.png"}`
+            appleImg.alt = String.fromCharCode(65 + index) // A, B, C
+            appleImg.className = "apple-sprite"
+
+            const letterLabel = document.createElement("span")
+            letterLabel.className = "apple-letter"
+            letterLabel.textContent = String.fromCharCode(65 + index) // A, B, C
+
+            appleIcon.appendChild(appleImg)
+            appleIcon.appendChild(letterLabel)
+
+            const optionText = document.createElement("span")
+            optionText.className = "option-text"
+            optionText.textContent = option
+            // Make answers larger and more readable
+            optionText.style.fontSize = "15px"
+            optionText.style.lineHeight = "1.4"
+            optionText.style.fontWeight = "600"
+
+            optionDiv.appendChild(appleIcon)
+            optionDiv.appendChild(optionText)
+            this.optionsContainer.appendChild(optionDiv)
+        })
+    }
+
+
+    generateQuestion() {
+        const difficulty = this.gameSettings.difficulty
+        const questionTypes = ["synonym", "antonym", "definition", "spelling"]
+        const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)]
+
+        const wordSets = {
+            easy: {
+                synonym: [
+                    { word: "happy", correct: "joyful", wrong: ["sad", "angry", "tired"] },
+                    { word: "big", correct: "large", wrong: ["small", "tiny", "little"] },
+                    { word: "fast", correct: "quick", wrong: ["slow", "lazy", "tired"] },
+                    { word: "smart", correct: "clever", wrong: ["dumb", "silly", "lazy"] },
+                    { word: "angry", correct: "furious", wrong: ["happy", "calm", "joyful"] },
+                    { word: "easy", correct: "simple", wrong: ["difficult", "hard", "complex"] },
+                    { word: "strong", correct: "powerful", wrong: ["weak", "fragile", "small"] },
+                    { word: "brave", correct: "courageous", wrong: ["scared", "timid", "weak"] },
+                    { word: "quiet", correct: "silent", wrong: ["loud", "noisy", "talkative"] },
+                    { word: "beautiful", correct: "gorgeous", wrong: ["ugly", "plain", "boring"] },
+                    { word: "sad", correct: "unhappy", wrong: ["joyful", "funny", "excited"] },
+                    { word: "cold", correct: "chilly", wrong: ["hot", "warm", "boiling"] },
+                    { word: "clean", correct: "tidy", wrong: ["dirty", "messy", "ugly"] },
+                    { word: "funny", correct: "hilarious", wrong: ["serious", "boring", "sad"] },
+                    { word: "hard", correct: "difficult", wrong: ["easy", "simple", "soft"] },
+                    { word: "rich", correct: "wealthy", wrong: ["poor", "broke", "hungry"] },
+                    { word: "good", correct: "nice", wrong: ["bad", "evil", "awful"] },
+                    { word: "bad", correct: "awful", wrong: ["great", "kind", "funny"] },
+                    { word: "quick", correct: "rapid", wrong: ["slow", "lazy", "weak"] },
+                    { word: "child", correct: "kid", wrong: ["adult", "man", "old"] },
+                ],
+                antonym: [
+                    { word: "hot", correct: "cold", wrong: ["warm", "cool", "mild"] },
+                    { word: "up", correct: "down", wrong: ["over", "under", "above"] },
+                    { word: "good", correct: "bad", wrong: ["nice", "great", "fine"] },
+                    { word: "light", correct: "dark", wrong: ["bright", "clear", "white"] },
+                    { word: "happy", correct: "sad", wrong: ["joyful", "excited", "glad"] },
+                    { word: "big", correct: "small", wrong: ["large", "huge", "gigantic"] },
+                    { word: "fast", correct: "slow", wrong: ["quick", "rapid", "swift"] },
+                    { word: "strong", correct: "weak", wrong: ["powerful", "mighty", "sturdy"] },
+                    { word: "young", correct: "old", wrong: ["new", "fresh", "recent"] },
+                    { word: "near", correct: "far", wrong: ["close", "next", "adjacent"] },
+                    { word: "begin", correct: "end", wrong: ["start", "open", "play"] },
+                    { word: "tall", correct: "short", wrong: ["long", "big", "high"] },
+                    { word: "day", correct: "night", wrong: ["light", "sun", "time"] },
+                    { word: "boy", correct: "girl", wrong: ["man", "uncle", "king"] },
+                    { word: "asleep", correct: "awake", wrong: ["sleepy", "quiet", "lazy"] },
+                    { word: "clean", correct: "dirty", wrong: ["tidy", "pure", "clear"] },
+                    { word: "full", correct: "empty", wrong: ["big", "whole", "complete"] },
+                    { word: "love", correct: "hate", wrong: ["like", "joy", "peace"] },
+                    { word: "in", correct: "out", wrong: ["up", "over", "near"] },
+                    { word: "give", correct: "take", wrong: ["bring", "help", "show"] },
+                ],
+                definition: [
+                    { word: "cat", correct: "a small furry pet", wrong: ["a big dog", "a bird", "a fish"] },
+                    { word: "book", correct: "something to read", wrong: ["something to eat", "something to wear", "something to drive"] },
+                    { word: "apple", correct: "a type of fruit", wrong: ["a vegetable", "a tool", "a drink"] },
+                    { word: "chair", correct: "something to sit on", wrong: ["something to sleep on", "something to write with", "something to wear"] },
+                    { word: "river", correct: "a flowing body of water", wrong: ["a mountain", "a tree", "a road"] },
+                    { word: "car", correct: "a vehicle for transport", wrong: ["a building", "a computer", "a tool"] },
+                    { word: "shoe", correct: "something worn on the foot", wrong: ["something worn on the hand", "a hat", "a glove"] },
+                    { word: "pencil", correct: "something used to write", wrong: ["something used to eat", "something used to paint", "something used to clean"] },
+                    { word: "dog", correct: "a domesticated animal", wrong: ["a wild animal", "a bird", "a fish"] },
+                    { word: "tree", correct: "a plant with a trunk and branches", wrong: ["a flower", "a bush", "a rock"] },
+                    { word: "ball", correct: "something to play with", wrong: ["a food", "a shoe", "a bed"] },
+                    { word: "bed", correct: "something to sleep on", wrong: ["something to sit on", "a car", "a book"] },
+                    { word: "hat", correct: "something worn on the head", wrong: ["shoe", "glove", "pants"] },
+                    { word: "milk", correct: "a drink from cows", wrong: ["fruit", "bread", "soup"] },
+                    { word: "sun", correct: "the star that gives us light", wrong: ["moon", "lamp", "cloud"] },
+                    { word: "fish", correct: "an animal that lives in water", wrong: ["dog", "bird", "cat"] },
+                    { word: "clock", correct: "something that shows time", wrong: ["toy", "food", "book"] },
+                    { word: "school", correct: "a place to learn", wrong: ["a house", "a park", "a shop"] },
+                    { word: "banana", correct: "a yellow fruit", wrong: ["apple", "grape", "carrot"] },
+                    { word: "road", correct: "a path for cars", wrong: ["river", "tree", "field"] },
+                ],
+                spelling: [
+                    { word: "friend", correct: "friend", wrong: ["freind", "frend", "freand"] },
+                    { word: "school", correct: "school", wrong: ["scool", "schol", "skool"] },
+                    { word: "apple", correct: "apple", wrong: ["aple", "appel", "appl"] },
+                    { word: "house", correct: "house", wrong: ["hous", "houes", "hoose"] },
+                    { word: "computer", correct: "computer", wrong: ["computor", "compter", "comuter"] },
+                    { word: "beautiful", correct: "beautiful", wrong: ["beatiful", "beutiful", "beautifull"] },
+                    { word: "library", correct: "library", wrong: ["libary", "librery", "liberry"] },
+                    { word: "holiday", correct: "holiday", wrong: ["holidy", "holoday", "holidey"] },
+                    { word: "together", correct: "together", wrong: ["togther", "toether", "togehter"] },
+                    { word: "because", correct: "because", wrong: ["becuase", "becase", "becouse"] },
+                    { word: "family", correct: "family", wrong: ["famely", "famly", "familey"] },
+                    { word: "teacher", correct: "teacher", wrong: ["techer", "tetcher", "techar"] },
+                    { word: "mother", correct: "mother", wrong: ["moter", "mothar", "mothor"] },
+                    { word: "father", correct: "father", wrong: ["fater", "fathar", "fathor"] },
+                    { word: "animal", correct: "animal", wrong: ["anemal", "animel", "animil"] },
+                    { word: "garden", correct: "garden", wrong: ["gardan", "gardon", "garedn"] },
+                    { word: "orange", correct: "orange", wrong: ["orenge", "orrange", "orenj"] },
+                    { word: "music", correct: "music", wrong: ["musick", "musik", "muic"] },
+                    { word: "baby", correct: "baby", wrong: ["beby", "babey", "babby"] },
+                    { word: "happy", correct: "happy", wrong: ["hapy", "hapey", "happi"] },
+                ]
+            },
+            medium: {
+                synonym: [
+                    { word: "beautiful", correct: "gorgeous", wrong: ["ugly", "plain", "simple"] },
+                    { word: "difficult", correct: "challenging", wrong: ["easy", "simple", "basic"] },
+                    { word: "ancient", correct: "old", wrong: ["new", "modern", "recent"] },
+                    { word: "quick", correct: "swift", wrong: ["slow", "lazy", "sluggish"] },
+                    { word: "brave", correct: "courageous", wrong: ["scared", "timid", "weak"] },
+                    { word: "smart", correct: "intelligent", wrong: ["dumb", "foolish", "slow"] },
+                    { word: "strong", correct: "powerful", wrong: ["weak", "fragile", "feeble"] },
+                    { word: "angry", correct: "furious", wrong: ["happy", "calm", "joyful"] },
+                    { word: "funny", correct: "humorous", wrong: ["serious", "boring", "sad"] },
+                    { word: "bright", correct: "luminous", wrong: ["dark", "dull", "dim"] },
+                    { word: "tiny", correct: "minute", wrong: ["huge", "large", "giant"] },
+                    { word: "happy", correct: "joyful", wrong: ["sad", "angry", "miserable"] },
+                    { word: "calm", correct: "peaceful", wrong: ["noisy", "angry", "chaotic"] },
+                    { word: "cold", correct: "chilly", wrong: ["hot", "warm", "boiling"] },
+                    { word: "lazy", correct: "idle", wrong: ["active", "energetic", "busy"] },
+                    { word: "friendly", correct: "amiable", wrong: ["mean", "hostile", "rude"] },
+                    { word: "safe", correct: "secure", wrong: ["dangerous", "risky", "unsafe"] },
+                    { word: "big", correct: "enormous", wrong: ["tiny", "small", "little"] },
+                    { word: "sad", correct: "unhappy", wrong: ["joyful", "cheerful", "excited"] },
+                    { word: "hardworking", correct: "diligent", wrong: ["lazy", "careless", "sloppy"] },
+                ],
+
+                antonym: [
+                    { word: "expand", correct: "contract", wrong: ["grow", "increase", "enlarge"] },
+                    { word: "victory", correct: "defeat", wrong: ["win", "success", "triumph"] },
+                    { word: "ancient", correct: "modern", wrong: ["old", "historic", "past"] },
+                    { word: "strong", correct: "weak", wrong: ["powerful", "robust", "tough"] },
+                    { word: "happy", correct: "sad", wrong: ["joyful", "excited", "glad"] },
+                    { word: "open", correct: "closed", wrong: ["shut", "ajar", "wide"] },
+                    { word: "high", correct: "low", wrong: ["tall", "elevated", "above"] },
+                    { word: "fast", correct: "slow", wrong: ["quick", "rapid", "swift"] },
+                    { word: "bright", correct: "dark", wrong: ["luminous", "shiny", "glowing"] },
+                    { word: "near", correct: "far", wrong: ["close", "next", "adjacent"] },
+                    { word: "accept", correct: "reject", wrong: ["receive", "approve", "allow"] },
+                    { word: "love", correct: "hate", wrong: ["like", "admire", "enjoy"] },
+                    { word: "arrival", correct: "departure", wrong: ["coming", "entry", "approach"] },
+                    { word: "include", correct: "exclude", wrong: ["allow", "add", "contain"] },
+                    { word: "success", correct: "failure", wrong: ["achievement", "win", "victory"] },
+                    { word: "public", correct: "private", wrong: ["open", "shared", "community"] },
+                    { word: "asleep", correct: "awake", wrong: ["dreaming", "resting", "sleepy"] },
+                    { word: "create", correct: "destroy", wrong: ["build", "design", "invent"] },
+                    { word: "borrow", correct: "lend", wrong: ["take", "get", "receive"] },
+                    { word: "arrival", correct: "departure", wrong: ["visit", "meeting", "welcome"] },
+                ],
+
+                definition: [
+                    { word: "telescope", correct: "device to see far objects", wrong: ["device to hear sounds", "device to cook food", "device to clean"] },
+                    { word: "volcano", correct: "mountain that erupts lava", wrong: ["lake", "river", "valley"] },
+                    { word: "oxygen", correct: "gas we breathe", wrong: ["water", "carbon", "nitrogen"] },
+                    { word: "keyboard", correct: "device to type on a computer", wrong: ["monitor", "mouse", "printer"] },
+                    { word: "microscope", correct: "device to see tiny objects", wrong: ["telescope", "camera", "binoculars"] },
+                    { word: "pyramid", correct: "triangular structure", wrong: ["cube", "sphere", "circle"] },
+                    { word: "glacier", correct: "large ice mass", wrong: ["river", "mountain", "lake"] },
+                    { word: "satellite", correct: "object orbiting a planet", wrong: ["rocket", "star", "moon"] },
+                    { word: "guitar", correct: "stringed musical instrument", wrong: ["drum", "piano", "flute"] },
+                    { word: "volleyball", correct: "sport played with a ball over a net", wrong: ["soccer", "tennis", "basketball"] },
+                    { word: "atlas", correct: "book of maps", wrong: ["dictionary", "encyclopedia", "journal"] },
+                    { word: "thermometer", correct: "instrument to measure temperature", wrong: ["barometer", "compass", "ruler"] },
+                    { word: "battery", correct: "device that stores energy", wrong: ["engine", "fuel", "light"] },
+                    { word: "planet", correct: "large object orbiting a star", wrong: ["asteroid", "comet", "satellite"] },
+                    { word: "oxygen", correct: "gas essential for breathing", wrong: ["carbon", "hydrogen", "helium"] },
+                    { word: "calendar", correct: "system to organize days", wrong: ["clock", "alarm", "timer"] },
+                    { word: "dictionary", correct: "book with word meanings", wrong: ["atlas", "notebook", "encyclopedia"] },
+                    { word: "binoculars", correct: "device to see distant objects", wrong: ["glasses", "microscope", "lens"] },
+                    { word: "triangle", correct: "shape with three sides", wrong: ["square", "circle", "hexagon"] },
+                    { word: "galaxy", correct: "system of stars", wrong: ["planet", "universe", "asteroid belt"] },
+                ],
+
+                spelling: [
+                    { word: "necessary", correct: "necessary", wrong: ["neccessary", "necesary", "neccesary"] },
+                    { word: "beautiful", correct: "beautiful", wrong: ["beatiful", "beutiful", "beautifull"] },
+                    { word: "accommodate", correct: "accommodate", wrong: ["acommodate", "accomodate", "acomodate"] },
+                    { word: "definitely", correct: "definitely", wrong: ["definately", "definitly", "definetly"] },
+                    { word: "separate", correct: "separate", wrong: ["seperate", "seperete", "separite"] },
+                    { word: "questionnaire", correct: "questionnaire", wrong: ["questionaire", "questinnaire", "questioner"] },
+                    { word: "occurrence", correct: "occurrence", wrong: ["occurence", "ocurrence", "occurance"] },
+                    { word: "acquire", correct: "acquire", wrong: ["aquire", "acqire", "acqure"] },
+                    { word: "maintenance", correct: "maintenance", wrong: ["maintainance", "maintanance", "maintnance"] },
+                    { word: "privilege", correct: "privilege", wrong: ["privelege", "priviledge", "privlig"] },
+                    { word: "entrepreneur", correct: "entrepreneur", wrong: ["entrepeneur", "entreprenur", "enterprenuer"] },
+                    { word: "recommend", correct: "recommend", wrong: ["reccomend", "recomend", "reccamend"] },
+                    { word: "embarrass", correct: "embarrass", wrong: ["embarass", "embaras", "embarris"] },
+                    { word: "rhythm", correct: "rhythm", wrong: ["rythm", "rithym", "rythem"] },
+                    { word: "vacuum", correct: "vacuum", wrong: ["vaccum", "vacum", "vacuem"] },
+                    { word: "millennium", correct: "millennium", wrong: ["millenium", "milennium", "milenium"] },
+                    { word: "occasionally", correct: "occasionally", wrong: ["ocasionally", "occassionaly", "ocasionaly"] },
+                    { word: "conscience", correct: "conscience", wrong: ["conciens", "conshens", "consiense"] },
+                    { word: "hierarchy", correct: "hierarchy", wrong: ["heirarchy", "hierarcy", "hirarchy"] },
+                    { word: "supersede", correct: "supersede", wrong: ["supercede", "supersceed", "suparseed"] },
+                ],
+            },
+            hard: {
+                synonym: [
+                    { word: "ubiquitous", correct: "everywhere", wrong: ["rare", "hidden", "absent"] },
+                    { word: "meticulous", correct: "careful", wrong: ["careless", "sloppy", "rushed"] },
+                    { word: "obstinate", correct: "stubborn", wrong: ["flexible", "gentle", "yielding"] },
+                    { word: "lucid", correct: "clear", wrong: ["confusing", "vague", "obscure"] },
+                    { word: "tenacious", correct: "persistent", wrong: ["weak", "lazy", "indifferent"] },
+                    { word: "esoteric", correct: "obscure", wrong: ["common", "famous", "popular"] },
+                    { word: "ambiguous", correct: "unclear", wrong: ["obvious", "clear", "definite"] },
+                    { word: "candid", correct: "honest", wrong: ["dishonest", "sly", "deceptive"] },
+                    { word: "prudent", correct: "wise", wrong: ["reckless", "careless", "foolish"] },
+                    { word: "profound", correct: "deep", wrong: ["shallow", "superficial", "simple"] },
+                    { word: "arduous", correct: "difficult", wrong: ["easy", "simple", "effortless"] },
+                    { word: "eloquent", correct: "fluent", wrong: ["awkward", "clumsy", "mute"] },
+                    { word: "frugal", correct: "thrifty", wrong: ["wasteful", "lavish", "extravagant"] },
+                    { word: "gregarious", correct: "sociable", wrong: ["shy", "introverted", "solitary"] },
+                    { word: "incessant", correct: "continuous", wrong: ["intermittent", "rare", "occasional"] },
+                    { word: "malevolent", correct: "evil", wrong: ["kind", "benevolent", "generous"] },
+                    { word: "mundane", correct: "ordinary", wrong: ["extraordinary", "unique", "special"] },
+                    { word: "succinct", correct: "brief", wrong: ["wordy", "lengthy", "long"] },
+                    { word: "altruistic", correct: "selfless", wrong: ["selfish", "greedy", "egoistic"] },
+                    { word: "capricious", correct: "unpredictable", wrong: ["consistent", "stable", "reliable"] },
+                ],
+                antonym: [
+                    { word: "benevolent", correct: "malevolent", wrong: ["kind", "generous", "helpful"] },
+                    { word: "ephemeral", correct: "permanent", wrong: ["temporary", "brief", "short"] },
+                    { word: "ascend", correct: "descend", wrong: ["rise", "climb", "soar"] },
+                    { word: "opaque", correct: "transparent", wrong: ["cloudy", "dark", "murky"] },
+                    { word: "scarce", correct: "abundant", wrong: ["rare", "limited", "insufficient"] },
+                    { word: "chaotic", correct: "orderly", wrong: ["messy", "confused", "disorganized"] },
+                    { word: "artificial", correct: "natural", wrong: ["synthetic", "man-made", "engineered"] },
+                    { word: "hostile", correct: "friendly", wrong: ["aggressive", "unfriendly", "harsh"] },
+                    { word: "fragile", correct: "strong", wrong: ["weak", "delicate", "brittle"] },
+                    { word: "vague", correct: "specific", wrong: ["unclear", "ambiguous", "imprecise"] },
+                    { word: "timid", correct: "bold", wrong: ["fearful", "nervous", "shy"] },
+                    { word: "ancient", correct: "modern", wrong: ["old", "antique", "historic"] },
+                    { word: "expand", correct: "contract", wrong: ["grow", "enlarge", "stretch"] },
+                    { word: "humble", correct: "arrogant", wrong: ["modest", "simple", "shy"] },
+                    { word: "optimistic", correct: "pessimistic", wrong: ["hopeful", "cheerful", "positive"] },
+                    { word: "tranquil", correct: "chaotic", wrong: ["calm", "peaceful", "quiet"] },
+                    { word: "vivid", correct: "dull", wrong: ["bright", "colorful", "lively"] },
+                    { word: "prosperity", correct: "poverty", wrong: ["wealth", "fortune", "abundance"] },
+                    { word: "lenient", correct: "strict", wrong: ["forgiving", "kind", "merciful"] },
+                    { word: "affirm", correct: "deny", wrong: ["accept", "agree", "confirm"] },
+                ],
+                definition: [
+                    { word: "serendipity", correct: "pleasant surprise", wrong: ["bad luck", "planned event", "boring moment"] },
+                    { word: "epiphany", correct: "sudden realization", wrong: ["confusion", "question", "mistake"] },
+                    { word: "labyrinth", correct: "complex maze", wrong: ["simple path", "straight road", "open field"] },
+                    { word: "paradox", correct: "contradictory statement", wrong: ["simple truth", "story", "fact"] },
+                    { word: "quintessential", correct: "perfect example", wrong: ["worst example", "average", "rare"] },
+                    { word: "mellifluous", correct: "pleasant-sounding", wrong: ["harsh", "ugly", "rough"] },
+                    { word: "oblivion", correct: "state of being forgotten", wrong: ["fame", "attention", "recognition"] },
+                    { word: "zenith", correct: "highest point", wrong: ["lowest point", "middle", "base"] },
+                    { word: "cacophony", correct: "harsh noise", wrong: ["pleasant sound", "music", "silence"] },
+                    { word: "ephemeral", correct: "short-lived", wrong: ["long-lasting", "permanent", "eternal"] },
+                    { word: "facetious", correct: "not serious", wrong: ["serious", "genuine", "honest"] },
+                    { word: "anachronism", correct: "out of place in time", wrong: ["timely", "modern", "current"] },
+                    { word: "aesthetic", correct: "related to beauty", wrong: ["ugly", "plain", "ordinary"] },
+                    { word: "eloquence", correct: "fluent speaking", wrong: ["silence", "awkwardness", "clumsiness"] },
+                    { word: "hubris", correct: "excessive pride", wrong: ["humility", "kindness", "modesty"] },
+                    { word: "ineffable", correct: "too great to express", wrong: ["obvious", "simple", "easy"] },
+                    { word: "juxtapose", correct: "place side by side", wrong: ["separate", "ignore", "remove"] },
+                    { word: "nostalgia", correct: "longing for the past", wrong: ["future hope", "present joy", "disinterest"] },
+                    { word: "reverie", correct: "daydream", wrong: ["nightmare", "focus", "work"] },
+                    { word: "sagacious", correct: "wise", wrong: ["foolish", "reckless", "ignorant"] },
+                ],
+                spelling: [
+                    { word: "accommodate", correct: "accommodate", wrong: ["accomodate", "acomodate", "acommodate"] },
+                    { word: "definitely", correct: "definitely", wrong: ["definately", "definitly", "definetly"] },
+                    { word: "conscientious", correct: "conscientious", wrong: ["consciencious", "consientious", "conscientous"] },
+                    { word: "pronunciation", correct: "pronunciation", wrong: ["pronounciation", "pronuntiation", "pronounciaton"] },
+                    { word: "rhythm", correct: "rhythm", wrong: ["rythm", "rithm", "rhythem"] },
+                    { word: "miscellaneous", correct: "miscellaneous", wrong: ["miscelaneous", "miscellanous", "micesllaneous"] },
+                    { word: "occasionally", correct: "occasionally", wrong: ["ocasionally", "occassionally", "ocassionally"] },
+                    { word: "embarrass", correct: "embarrass", wrong: ["embarass", "embarras", "embarrs"] },
+                    { word: "harass", correct: "harass", wrong: ["harrass", "haras", "harres"] },
+                    { word: "connoisseur", correct: "connoisseur", wrong: ["conaisseur", "connosieur", "connoiser"] },
+                    { word: "supersede", correct: "supersede", wrong: ["supercede", "supersaid", "supersaid"] },
+                    { word: "millennium", correct: "millennium", wrong: ["milenium", "millenium", "millennum"] },
+                    { word: "indict", correct: "indict", wrong: ["indite", "indigt", "indickt"] },
+                    { word: "pharaoh", correct: "pharaoh", wrong: ["pharoah", "pharoh", "pharow"] },
+                    { word: "weird", correct: "weird", wrong: ["wierd", "weard", "waird"] },
+                    { word: "guarantee", correct: "guarantee", wrong: ["garantee", "guarentee", "garente"] },
+                    { word: "liaison", correct: "liaison", wrong: ["liason", "laiasone", "layazon"] },
+                    { word: "recommend", correct: "recommend", wrong: ["reccomend", "recomend", "reccommand"] },
+                    { word: "necessary", correct: "necessary", wrong: ["neccesary", "necesary", "nessesary"] },
+                    { word: "questionnaire", correct: "questionnaire", wrong: ["questionare", "questonaire", "questionnare"] },
+                ],
+            }
+        };
+
+        const difficultyWords = wordSets[difficulty][questionType]
+        // Filter out used words
+        const unusedWords = difficultyWords.filter(
+            w => !this.usedWords[difficulty][questionType].includes(w.word)
+        );
+
+        if (unusedWords.length === 0) {
+            // All questions used, resetting...
+
+            // Reset so we can reuse all questions
+            this.usedWords[difficulty][questionType] = [];
+
+            // After reset, all words are available again
+            unusedWords = [...difficultyWords];
+        }
+
+        // Pick a random unused word
+        const selectedWord = unusedWords[Math.floor(Math.random() * unusedWords.length)];
+
+        // Mark as used
+        this.usedWords[difficulty][questionType].push(selectedWord.word);
+
+        let question, correctAnswer, options;
+        switch (questionType) {
+            case "synonym":
+                question = `What is a synonym for "${selectedWord.word}"?`;
+                correctAnswer = selectedWord.correct;
+                options = [correctAnswer, ...selectedWord.wrong];
+                break;
+            case "antonym":
+                question = `What is the opposite of "${selectedWord.word}"?`;
+                correctAnswer = selectedWord.correct;
+                options = [correctAnswer, ...selectedWord.wrong];
+                break;
+            case "definition":
+                const firstLetter = selectedWord.word[0].toLowerCase();
+                const article = ["a", "e", "i", "o", "u"].includes(firstLetter) ? "an" : "a";
+                question = `What is ${article} "${selectedWord.word}"?`;
+                correctAnswer = selectedWord.correct;
+                options = [correctAnswer, ...selectedWord.wrong];
+                break;
+            case "spelling":
+                question = `Which word is spelled correctly?`;
+                correctAnswer = selectedWord.correct;
+                options = [correctAnswer, ...selectedWord.wrong];
+                break;
+        }
+
+        // Shuffle options
+        for (let i = options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [options[i], options[j]] = [options[j], options[i]];
+        }
+
+        return { question, correctAnswer, options };
+    }
+
+    initGame() {
+        const headPosition = this.getRandomPosition()
 
         // Keep head at least 1 cell away from edges
         if (headPosition.x === 0) headPosition.x = 1
@@ -792,77 +792,77 @@ class SnakeEnglishGame {
 
         // Pick a random direction for the snake to face
         const directions = [
-          { x: 1, y: 0 },   // right
-          { x: -1, y: 0 },  // left
-          { x: 0, y: 1 },   // down
-          { x: 0, y: -1 }   // up
+            { x: 1, y: 0 },   // right
+            { x: -1, y: 0 },  // left
+            { x: 0, y: 1 },   // down
+            { x: 0, y: -1 }   // up
         ]
-          this.direction = directions[Math.floor(Math.random() * directions.length)]
+        this.direction = directions[Math.floor(Math.random() * directions.length)]
 
         // Place tail behind the head, opposite to direction
         const tailPosition = {
-          x: headPosition.x - this.direction.x,
-          y: headPosition.y - this.direction.y
+            x: headPosition.x - this.direction.x,
+            y: headPosition.y - this.direction.y
         }
 
-      this.snake = [headPosition, tailPosition]
-      this.currentQuestion = this.generateQuestion()
-      this.apples = this.generateApples(this.currentQuestion)
-      this.score = 0
-      this.lives = 3
-      this.correctAnswers = 0
-      this.gameState = "playing"
-      this.gameRunning = true
-      this.snakeFace = "normal"
-      this.notification = null
-      this.notificationTimer = 0
-      this.waitingForMove = true
-      this.paused = false
-      this.inputLocked = false
-      this.speed = this.baseSpeed
+        this.snake = [headPosition, tailPosition]
+        this.currentQuestion = this.generateQuestion()
+        this.apples = this.generateApples(this.currentQuestion)
+        this.score = 0
+        this.lives = 3
+        this.correctAnswers = 0
+        this.gameState = "playing"
+        this.gameRunning = true
+        this.snakeFace = "normal"
+        this.notification = null
+        this.notificationTimer = 0
+        this.waitingForMove = true
+        this.paused = false
+        this.inputLocked = false
+        this.speed = this.baseSpeed
 
-    // Setup timer for timed mode
-    if (this.gameSettings.mode === "timed") {
-    this.timeLeft = 60
-    this.timerDisplay.style.display = "flex"
-    this.startCountdown(() => {
-        this.startTimer()
-    })
-    } else {
-    this.timerDisplay.style.display = "none"
+        // Setup timer for timed mode
+        if (this.gameSettings.mode === "timed") {
+            this.timeLeft = 60
+            this.timerDisplay.style.display = "flex"
+            this.startCountdown(() => {
+                this.startTimer()
+            })
+        } else {
+            this.timerDisplay.style.display = "none"
+        }
+
+        // Set target based on mode
+        if (this.gameSettings.mode === "endless") {
+            this.targetElement.textContent = "♾️"
+            this.targetElement.style.fontSize = "15px"
+        } else {
+            this.targetElement.textContent = this.targetAnswers
+        }
+
+        // Reset sprint and shield
+        this.sprint.active = false
+        this.sprint.energy = this.sprint.maxEnergy
+        this.hasShield = false
+        this.shieldPickup = null
+        this.shieldSpawned = false
+
+        this.updateUI()
+        this.hideOverlays()
+        this.updateShieldUI();
     }
-
-      // Set target based on mode
-      if (this.gameSettings.mode === "endless") {
-      this.targetElement.textContent = "♾️"
-      this.targetElement.style.fontSize = "15px"
-      } else {
-      this.targetElement.textContent = this.targetAnswers
-      }
-
-      // Reset sprint and shield
-      this.sprint.active = false
-      this.sprint.energy = this.sprint.maxEnergy
-      this.hasShield = false
-      this.shieldPickup = null
-      this.shieldSpawned = false
-
-      this.updateUI()
-      this.hideOverlays()
-      this.updateShieldUI();
-  }
 
     startTimer() {
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
             this.timerInterval = null;
         }
-        
+
         this.timerInterval = setInterval(() => {
             if (!this.paused) {  // Only decrement if not paused
                 this.timeLeft--;
                 this.timerValue.textContent = this.timeLeft;
-                
+
                 if (this.timeLeft <= 0) {
                     this.gameState = "lost";
                     this.gameRunning = false;
@@ -873,612 +873,612 @@ class SnakeEnglishGame {
         }, 1000);
     }
 
-  handleKeyDown(e) {
-      const key = e.key.toLowerCase()
-      const code = e.code
+    handleKeyDown(e) {
+        const key = e.key.toLowerCase()
+        const code = e.code
 
-      if (this.escMenuActive && key !== "escape") {
-        e.preventDefault();
-        return;
-      }
-
-      if (this.countdownActive) {
-        e.preventDefault();
-        return;
-      }
-      
-      if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
-      e.preventDefault()
-      }
-    
-      if (e.repeat) return
-
-      if (!this.restartConfirm.classList.contains("hidden")) {
-      if (code === "Escape") {
-          this.cancelRestart()
-      } else if (code === "Enter") {
-          this.confirmRestart()
-      }
-      return
-      }
-
-      if (!this.gameRunning && key !== "r") return
-
-      let moved = false
-
-      if (code === "Space" || key === " ") {
-      e.preventDefault()
-      this.paused = !this.paused
-      this.sounds.pause.currentTime = 0; 
-      this.sounds.pause.play();
-      return
-      }
-
-      if (code === "KeyR" || key === "r") {
-      this.showRestartConfirm()
-      return
-      }
-
-      // Sprint activation (hold Shift)
-      if ((code === "ShiftLeft" || code === "ShiftRight") && !this.paused) {
-      if (this.sprint.energy > 0) this.sprint.active = true
-
-      this.sounds.shift.currentTime = 0;
-      this.sounds.shift.play();
-      return
-      }
-
-      // Handle ESC key for menu
-      if (code === "Escape" || key === "escape") {
-        e.preventDefault();
-        if (this.escMenuActive) {
-          this.hideEscMenu();
-        } else {
-          this.showEscMenu();
+        if (this.escMenuActive && key !== "escape") {
+            e.preventDefault();
+            return;
         }
-        return;
-      }
 
-      const isMovementKey = ["w","arrowup","s","arrowdown","a","arrowleft","d","arrowright"].includes(key)
-      if (this.inputLocked && isMovementKey) return
+        if (this.countdownActive) {
+            e.preventDefault();
+            return;
+        }
 
-      // WASD and Arrow key movement
-      switch (key) {
-        case "w":
-        case "arrowup":
-            if (!this.paused && this.direction.y === 0) {
-            this.direction = { x: 0, y: -1 }
-            moved = true
+        if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
+            e.preventDefault()
+        }
+
+        if (e.repeat) return
+
+        if (!this.restartConfirm.classList.contains("hidden")) {
+            if (code === "Escape") {
+                this.cancelRestart()
+            } else if (code === "Enter") {
+                this.confirmRestart()
             }
-            break
-        case "s":
-        case "arrowdown":
-            if (!this.paused && this.direction.y === 0) {
-            this.direction = { x: 0, y: 1 }
-            moved = true
-            }
-            break
-        case "a":
-        case "arrowleft":
-            if (!this.paused && this.direction.x === 0) {
-            this.direction = { x: -1, y: 0 }
-            moved = true
-            }
-            break
-        case "d":
-        case "arrowright":
-            if (!this.paused && this.direction.x === 0) {
-            this.direction = { x: 1, y: 0 }
-            moved = true
-            }
-            break
-        case "escape":
+            return
+        }
+
+        if (!this.gameRunning && key !== "r") return
+
+        let moved = false
+
+        if (code === "Space" || key === " ") {
+            e.preventDefault()
+            this.paused = !this.paused
+            this.sounds.pause.currentTime = 0;
+            this.sounds.pause.play();
+            return
+        }
+
+        if (code === "KeyR" || key === "r") {
+            this.showRestartConfirm()
+            return
+        }
+
+        // Sprint activation (hold Shift)
+        if ((code === "ShiftLeft" || code === "ShiftRight") && !this.paused) {
+            if (this.sprint.energy > 0) this.sprint.active = true
+
+            this.sounds.shift.currentTime = 0;
+            this.sounds.shift.play();
+            return
+        }
+
+        // Handle ESC key for menu
+        if (code === "Escape" || key === "escape") {
             e.preventDefault();
             if (this.escMenuActive) {
-              this.hideEscMenu();
+                this.hideEscMenu();
             } else {
-              this.showEscMenu();
+                this.showEscMenu();
             }
-            break;    
-      }
-
-      if (moved) {
-      this.inputLocked = true
-      this.playSound("snakeTurns")
-      if (this.waitingForMove) {
-          this.waitingForMove = false
-      }
-      }
-  }
-
-  randInt(max) {
-      return Math.floor(Math.random() * max)
-  }
-
-  getRandomPosition() {
-      return {
-      x: this.randInt(this.GRID_WIDTH),
-      y: this.randInt(this.GRID_HEIGHT),
-      }
-  }
-
-  getRandomDirection() {
-      const dirs = [
-      { x: 1, y: 0 },
-      { x: -1, y: 0 },
-      { x: 0, y: 1 },
-      { x: 0, y: -1 },
-      ]
-      return dirs[Math.floor(Math.random() * dirs.length)]
-  }
-
-generateApples(question) {
-    const newApples = []
-    const usedPositions = new Set()
-
-    question.options.forEach((option, index) => {
-    let x, y
-    do {
-        x = this.randInt(this.GRID_WIDTH)
-        y = this.randInt(this.GRID_HEIGHT)
-    } while (
-        usedPositions.has(`${x},${y}`) ||
-        this.snake.some((segment) => segment.x === x && segment.y === y) ||
-        this.cellIntersectsRect(x, y, this.sprintBar)
-    )
-
-      usedPositions.add(`${x},${y}`)
-      newApples.push({
-          x,
-          y,
-          value: option,
-          letter: String.fromCharCode(65 + index), // A, B, C
-          color: ["pink", "yellow", "blue"][index] || "red",
-          isCorrect: option === question.correctAnswer,
-      })
-      })
-
-      return newApples
-  }
-
-  showNotification(message, type) {
-      this.notification = { message, type }
-      this.notificationTimer = 75
-  }
-
-  hideOverlays() {
-      this.gameOverOverlay.classList.add("hidden")
-      this.restartConfirm.classList.add("hidden")
-  }
-
-  showRestartConfirm() {
-      this.restartConfirm.classList.remove("hidden")
-  }
-
-  confirmRestart() {
-      this.restartConfirm.classList.add("hidden")
-      if (this.gameLoopId) {
-      cancelAnimationFrame(this.gameLoopId)
-      this.gameLoopId = null
-      }
-      if (this.timerInterval) {
-      clearInterval(this.timerInterval)
-      this.timerInterval = null
-      }
-      this.gameRunning = false
-
-      // Reset game state completely
-      setTimeout(() => {
-      this.gameRunning = true
-      this.initGame()
-      this.gameLoop()
-      }, 100)
-  }
-
-  ensureCountdownComplete() {
-    // If countdown gets stuck, force it to complete
-    if (this.countdownActive) {
-        const overlay = document.getElementById("countdown-overlay");
-        if (overlay) {
-            overlay.remove();
+            return;
         }
-        this.isCountdownActive = false;
-        this.countdownActive = false;
-        
-        // Start the timer if in timed mode
-        if (this.gameSettings.mode === "timed") {
-            this.startTimer();
+
+        const isMovementKey = ["w", "arrowup", "s", "arrowdown", "a", "arrowleft", "d", "arrowright"].includes(key)
+        if (this.inputLocked && isMovementKey) return
+
+        // WASD and Arrow key movement
+        switch (key) {
+            case "w":
+            case "arrowup":
+                if (!this.paused && this.direction.y === 0) {
+                    this.direction = { x: 0, y: -1 }
+                    moved = true
+                }
+                break
+            case "s":
+            case "arrowdown":
+                if (!this.paused && this.direction.y === 0) {
+                    this.direction = { x: 0, y: 1 }
+                    moved = true
+                }
+                break
+            case "a":
+            case "arrowleft":
+                if (!this.paused && this.direction.x === 0) {
+                    this.direction = { x: -1, y: 0 }
+                    moved = true
+                }
+                break
+            case "d":
+            case "arrowright":
+                if (!this.paused && this.direction.x === 0) {
+                    this.direction = { x: 1, y: 0 }
+                    moved = true
+                }
+                break
+            case "escape":
+                e.preventDefault();
+                if (this.escMenuActive) {
+                    this.hideEscMenu();
+                } else {
+                    this.showEscMenu();
+                }
+                break;
+        }
+
+        if (moved) {
+            this.inputLocked = true
+            this.playSound("snakeTurns")
+            if (this.waitingForMove) {
+                this.waitingForMove = false
+            }
         }
     }
-  }
-  cancelRestart() {
-      this.restartConfirm.classList.add("hidden")
-  }
 
-  moveSnake() {
-      if (this.isCountdownActive) return  // 🚫 don't move while countdown is running
-      const newSnake = [...this.snake]
-      const head = { ...newSnake[0] }
+    randInt(max) {
+        return Math.floor(Math.random() * max)
+    }
 
-      head.x += this.direction.x
-      head.y += this.direction.y
+    getRandomPosition() {
+        return {
+            x: this.randInt(this.GRID_WIDTH),
+            y: this.randInt(this.GRID_HEIGHT),
+        }
+    }
 
-      if (head.x < 0) head.x = this.GRID_WIDTH - 1
-      if (head.x >= this.GRID_WIDTH) head.x = 0
-      if (head.y < 0) head.y = this.GRID_HEIGHT - 1
-      if (head.y >= this.GRID_HEIGHT) head.y = 0
+    getRandomDirection() {
+        const dirs = [
+            { x: 1, y: 0 },
+            { x: -1, y: 0 },
+            { x: 0, y: 1 },
+            { x: 0, y: -1 },
+        ]
+        return dirs[Math.floor(Math.random() * dirs.length)]
+    }
 
-      if (newSnake.some((segment) => segment.x === head.x && segment.y === head.y)) {
-      this.lives--
-      this.snakeFace = "disgust"
-      this.showNotification("Self-bite! -1 life", "wrong")
+    generateApples(question) {
+        const newApples = []
+        const usedPositions = new Set()
 
-      this.playSound("snakeLosesLife")
+        question.options.forEach((option, index) => {
+            let x, y
+            do {
+                x = this.randInt(this.GRID_WIDTH)
+                y = this.randInt(this.GRID_HEIGHT)
+            } while (
+                usedPositions.has(`${x},${y}`) ||
+                this.snake.some((segment) => segment.x === x && segment.y === y) ||
+                this.cellIntersectsRect(x, y, this.sprintBar)
+            )
 
-      if (this.snake.length > 1) {
-          this.snake.pop()
-      }
+            usedPositions.add(`${x},${y}`)
+            newApples.push({
+                x,
+                y,
+                value: option,
+                letter: String.fromCharCode(65 + index), // A, B, C
+                color: ["pink", "yellow", "blue"][index] || "red",
+                isCorrect: option === question.correctAnswer,
+            })
+        })
 
-      this.updateUI()
-      return
-      }
+        return newApples
+    }
 
-      newSnake.unshift(head)
+    showNotification(message, type) {
+        this.notification = { message, type }
+        this.notificationTimer = 75
+    }
 
-      // Collect shield pickup if present at head
-      if (this.shieldPickup && head.x === this.shieldPickup.x && head.y === this.shieldPickup.y) {
-      this.hasShield = true
-      this.shieldPickup = null
-      this.showNotification("Shield acquired! ✨", "correct")
-      }
+    hideOverlays() {
+        this.gameOverOverlay.classList.add("hidden")
+        this.restartConfirm.classList.add("hidden")
+    }
 
-      const eatenApple = this.apples.find((apple) => apple.x === head.x && apple.y === head.y)
-      if (eatenApple) {
-      if (eatenApple.isCorrect) {
-                  this.score += 10
-        this.correctAnswers++
-        this.addToTotalPoints(10) // Add points to total points system
+    showRestartConfirm() {
+        this.restartConfirm.classList.remove("hidden")
+    }
 
-        this.playSound("correct")
-          this.playSound("biteApple")
+    confirmRestart() {
+        this.restartConfirm.classList.add("hidden")
+        if (this.gameLoopId) {
+            cancelAnimationFrame(this.gameLoopId)
+            this.gameLoopId = null
+        }
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval)
+            this.timerInterval = null
+        }
+        this.gameRunning = false
 
-          if (this.gameSettings.difficulty === "hard") {
-          this.speed += this.speedIncrement
-          } else if (this.correctAnswers % 3 === 0 && this.correctAnswers > 0) {
-          this.speed += this.speedIncrement
-          }
+        // Reset game state completely
+        setTimeout(() => {
+            this.gameRunning = true
+            this.initGame()
+            this.gameLoop()
+        }, 100)
+    }
 
-          if (this.gameSettings.mode !== "endless" && this.correctAnswers >= this.targetAnswers) {
-          this.gameState = "won"
-          this.gameRunning = false
-          this.snakeFace = "happy"
-          this.showGameOver()
-          return
-          }
+    ensureCountdownComplete() {
+        // If countdown gets stuck, force it to complete
+        if (this.countdownActive) {
+            const overlay = document.getElementById("countdown-overlay");
+            if (overlay) {
+                overlay.remove();
+            }
+            this.isCountdownActive = false;
+            this.countdownActive = false;
 
-          this.snakeFace = "happy"
-          this.showNotification("Correct! +10 points", "correct")
+            // Start the timer if in timed mode
+            if (this.gameSettings.mode === "timed") {
+                this.startTimer();
+            }
+        }
+    }
+    cancelRestart() {
+        this.restartConfirm.classList.add("hidden")
+    }
 
-          this.currentQuestion = this.generateQuestion()
-          this.apples = this.generateApples(this.currentQuestion)
-      } else {
-          // Wrong answer: shield blocks once
-          if (this.hasShield) {
-          this.hasShield = false
-          this.updateShieldUI();
-          this.snakeFace = "normal"
-          this.showNotification("Shield saved you!✨", "correct")
-          // Remove the eaten wrong apple and replace
-          this.apples = this.apples.filter((apple) => apple !== eatenApple)
-          this.addNewApple()
-          this.updateUI()
-          newSnake.pop()
-          } else {
-          this.score = Math.max(0, this.score - 5)
-          this.lives--
+    moveSnake() {
+        if (this.isCountdownActive) return  // 🚫 don't move while countdown is running
+        const newSnake = [...this.snake]
+        const head = { ...newSnake[0] }
 
-          this.playSound("snakeLosesLife")
+        head.x += this.direction.x
+        head.y += this.direction.y
 
-          if (this.lives <= 0) {
-              this.gameState = "lost"
-              this.gameRunning = false
-              this.snakeFace = "dead"
-              this.playSound("snakeDies")
-              this.showGameOver()
-              return
-          }
+        if (head.x < 0) head.x = this.GRID_WIDTH - 1
+        if (head.x >= this.GRID_WIDTH) head.x = 0
+        if (head.y < 0) head.y = this.GRID_HEIGHT - 1
+        if (head.y >= this.GRID_HEIGHT) head.y = 0
 
-          this.snakeFace = "disgust"
-          this.showNotification("Wrong! -5 points, -1 life", "wrong")
+        if (newSnake.some((segment) => segment.x === head.x && segment.y === head.y)) {
+            this.lives--
+            this.snakeFace = "disgust"
+            this.showNotification("Self-bite! -1 life", "wrong")
 
-          if (this.snake.length > 1) {
-              this.snake.pop()
-          }
+            this.playSound("snakeLosesLife")
 
-          this.apples = this.apples.filter((apple) => apple !== eatenApple)
-          this.addNewApple()
+            if (this.snake.length > 1) {
+                this.snake.pop()
+            }
 
-          // Spawn shield when reaching 1 life (only once)
-          this.spawnShieldIfEligible()
+            this.updateUI()
+            return
+        }
 
-          this.updateUI()
-          newSnake.pop()
-          }
-      }
-      } else {
-      newSnake.pop()
-      if (this.snakeFace !== "dead") {
-          this.snakeFace = "normal"
-      }
-      }
+        newSnake.unshift(head)
 
-      this.snake = newSnake
-      this.updateUI()
-      this.inputLocked = false
-  }
+        // Collect shield pickup if present at head
+        if (this.shieldPickup && head.x === this.shieldPickup.x && head.y === this.shieldPickup.y) {
+            this.hasShield = true
+            this.shieldPickup = null
+            this.showNotification("Shield acquired! ✨", "correct")
+        }
 
-  updateShieldUI() {
-    const shieldIndicator = document.getElementById('shield-indicator');
-    if (shieldIndicator) {
-        if (this.hasShield) {
-            shieldIndicator.innerHTML = '<img src="../assets/icons/shield.png" class="shield-icon" alt="Shield">';
+        const eatenApple = this.apples.find((apple) => apple.x === head.x && apple.y === head.y)
+        if (eatenApple) {
+            if (eatenApple.isCorrect) {
+                this.score += 10
+                this.correctAnswers++
+                this.addToTotalPoints(10) // Add points to total points system
+
+                this.playSound("correct")
+                this.playSound("biteApple")
+
+                if (this.gameSettings.difficulty === "hard") {
+                    this.speed += this.speedIncrement
+                } else if (this.correctAnswers % 3 === 0 && this.correctAnswers > 0) {
+                    this.speed += this.speedIncrement
+                }
+
+                if (this.gameSettings.mode !== "endless" && this.correctAnswers >= this.targetAnswers) {
+                    this.gameState = "won"
+                    this.gameRunning = false
+                    this.snakeFace = "happy"
+                    this.showGameOver()
+                    return
+                }
+
+                this.snakeFace = "happy"
+                this.showNotification("Correct! +10 points", "correct")
+
+                this.currentQuestion = this.generateQuestion()
+                this.apples = this.generateApples(this.currentQuestion)
+            } else {
+                // Wrong answer: shield blocks once
+                if (this.hasShield) {
+                    this.hasShield = false
+                    this.updateShieldUI();
+                    this.snakeFace = "normal"
+                    this.showNotification("Shield saved you!✨", "correct")
+                    // Remove the eaten wrong apple and replace
+                    this.apples = this.apples.filter((apple) => apple !== eatenApple)
+                    this.addNewApple()
+                    this.updateUI()
+                    newSnake.pop()
+                } else {
+                    this.score = Math.max(0, this.score - 5)
+                    this.lives--
+
+                    this.playSound("snakeLosesLife")
+
+                    if (this.lives <= 0) {
+                        this.gameState = "lost"
+                        this.gameRunning = false
+                        this.snakeFace = "dead"
+                        this.playSound("snakeDies")
+                        this.showGameOver()
+                        return
+                    }
+
+                    this.snakeFace = "disgust"
+                    this.showNotification("Wrong! -5 points, -1 life", "wrong")
+
+                    if (this.snake.length > 1) {
+                        this.snake.pop()
+                    }
+
+                    this.apples = this.apples.filter((apple) => apple !== eatenApple)
+                    this.addNewApple()
+
+                    // Spawn shield when reaching 1 life (only once)
+                    this.spawnShieldIfEligible()
+
+                    this.updateUI()
+                    newSnake.pop()
+                }
+            }
         } else {
-            shieldIndicator.innerHTML = '';
+            newSnake.pop()
+            if (this.snakeFace !== "dead") {
+                this.snakeFace = "normal"
+            }
+        }
+
+        this.snake = newSnake
+        this.updateUI()
+        this.inputLocked = false
+    }
+
+    updateShieldUI() {
+        const shieldIndicator = document.getElementById('shield-indicator');
+        if (shieldIndicator) {
+            if (this.hasShield) {
+                shieldIndicator.innerHTML = '<img src="../assets/icons/shield.png" class="shield-icon" alt="Shield">';
+            } else {
+                shieldIndicator.innerHTML = '';
+            }
         }
     }
-  }
 
-  addNewApple() {
-  // If apples already exist, do nothing (prevent duplicates)
-  if (this.apples.length > 0) return
+    addNewApple() {
+        // If apples already exist, do nothing (prevent duplicates)
+        if (this.apples.length > 0) return
 
-  const usedPositions = new Set()
-  this.snake.forEach((segment) => {
-      usedPositions.add(`${segment.x},${segment.y}`)
-  })
+        const usedPositions = new Set()
+        this.snake.forEach((segment) => {
+            usedPositions.add(`${segment.x},${segment.y}`)
+        })
 
-  // Prevent overlap with shield and sprint bar
-  if (this.shieldPickup) usedPositions.add(`${this.shieldPickup.x},${this.shieldPickup.y}`)
+        // Prevent overlap with shield and sprint bar
+        if (this.shieldPickup) usedPositions.add(`${this.shieldPickup.x},${this.shieldPickup.y}`)
 
-// Take up to 4 options from the current question
-const options = this.currentQuestion.options.slice(0, 4)
+        // Take up to 4 options from the current question
+        const options = this.currentQuestion.options.slice(0, 4)
 
-options.forEach((option, index) => {
-    let x, y
-    do {
-    x = this.randInt(this.GRID_WIDTH)
-    y = this.randInt(this.GRID_HEIGHT)
-    } while (usedPositions.has(`${x},${y}`) || this.cellIntersectsRect(x, y, this.sprintBar))
+        options.forEach((option, index) => {
+            let x, y
+            do {
+                x = this.randInt(this.GRID_WIDTH)
+                y = this.randInt(this.GRID_HEIGHT)
+            } while (usedPositions.has(`${x},${y}`) || this.cellIntersectsRect(x, y, this.sprintBar))
 
-      usedPositions.add(`${x},${y}`)
+            usedPositions.add(`${x},${y}`)
 
-      this.apples.push({
-      x,
-      y,
-      value: option,
-      letter: String.fromCharCode(65 + index), // A, B, C, D
-      color: ["pink", "yellow", "blue", "red"][index],
-      isCorrect: option === this.currentQuestion.correctAnswer,
-      })
-  })
-  }
+            this.apples.push({
+                x,
+                y,
+                value: option,
+                letter: String.fromCharCode(65 + index), // A, B, C, D
+                color: ["pink", "yellow", "blue", "red"][index],
+                isCorrect: option === this.currentQuestion.correctAnswer,
+            })
+        })
+    }
 
-  // Spawn shield pickup when lives reach 1, only once per game
-  spawnShieldIfEligible() {
-      if (this.lives === 1 && !this.shieldSpawned && !this.hasShield && !this.shieldPickup) {
-      const used = new Set()
-      this.snake.forEach((s) => used.add(`${s.x},${s.y}`))
-      this.apples.forEach((a) => used.add(`${a.x},${a.y}`))
-      let x, y
-      do {
-          x = this.randInt(this.GRID_WIDTH)
-          y = this.randInt(this.GRID_HEIGHT)
-      } while (used.has(`${x},${y}`))
-      this.shieldPickup = { x, y }
-      this.shieldSpawned = true
-      this.showNotification("Shield appeared!✨", "correct")
-      }
-  }
-
-      
+    // Spawn shield pickup when lives reach 1, only once per game
+    spawnShieldIfEligible() {
+        if (this.lives === 1 && !this.shieldSpawned && !this.hasShield && !this.shieldPickup) {
+            const used = new Set()
+            this.snake.forEach((s) => used.add(`${s.x},${s.y}`))
+            this.apples.forEach((a) => used.add(`${a.x},${a.y}`))
+            let x, y
+            do {
+                x = this.randInt(this.GRID_WIDTH)
+                y = this.randInt(this.GRID_HEIGHT)
+            } while (used.has(`${x},${y}`))
+            this.shieldPickup = { x, y }
+            this.shieldSpawned = true
+            this.showNotification("Shield appeared!✨", "correct")
+        }
+    }
 
 
 
-      showGameOver() {
-      // Stop timer
-      if (this.timerInterval) {
-          clearInterval(this.timerInterval);
-          this.timerInterval = null;
-      }
-
-      // Play appropriate sound
-      if (this.gameState === "won") {
-          this.playSound("youWon");
-      } else {
-          this.playSound("snakeDies");
-      }
-
-      // Update HUD values
-      if (this.scoreElement) this.scoreElement.textContent = this.score;
-      if (this.livesElement) this.livesElement.textContent = this.lives;
-      if (this.correctElement) this.correctElement.textContent = this.correctAnswers;
-
-      // Update hearts in background
-      if (this.heartsContainer) {
-          const hearts = this.heartsContainer.querySelectorAll(".heart");
-          hearts.forEach((heart, index) => {
-          if (index < this.lives) {
-              heart.classList.add("filled");
-              heart.classList.remove("empty");
-          } else {
-              heart.classList.remove("filled");
-              heart.classList.add("empty");
-          }
-          });
-      }
-
-      // Show Game Over screen
-          if (this.gameOverTitle && this.finalScoreElement && this.gameOverOverlay) {
-          // Update the title
-          this.gameOverTitle.textContent =
-              this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀";
-
-          // Toggle classes for styling
-          this.gameOverTitle.classList.remove("won", "lost");
-          this.gameOverTitle.classList.add(this.gameState === "won" ? "won" : "lost");
-
-          // Update final stats
-          const maxLives = this.maxLives || 3; // fallback if not defined
-
-          this.finalScoreElement.textContent = `Final Score: ${this.score}`;
-          if (this.finalCorrectElement) {
-          this.finalCorrectElement.innerHTML = `Corrects: ${this.correctAnswers}/${this.targetAnswers === Infinity ? '<span class="big-infinity">♾️</span>' : this.targetAnswers}`;
-          }
-          // Show the overlay
-          this.gameOverOverlay.classList.remove("hidden");
-          }
-      }
 
 
-  drawPixelSnakeFace(x, y, face) {
-      const centerX = x + this.GRID_SIZE / 2
-      const centerY = y + this.GRID_SIZE / 2
+    showGameOver() {
+        // Stop timer
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+        }
 
-      // Pixel eyes
-      this.ctx.fillStyle = "#000"
-      const eyeSize = Math.max(2, Math.floor(this.GRID_SIZE / 8))
-      const eyeOffset = Math.max(4, Math.floor(this.GRID_SIZE / 4))
+        // Play appropriate sound
+        if (this.gameState === "won") {
+            this.playSound("youWon");
+        } else {
+            this.playSound("snakeDies");
+        }
 
-      this.ctx.fillRect(centerX - eyeOffset, centerY - 4, eyeSize, eyeSize)
-      this.ctx.fillRect(centerX + eyeOffset - eyeSize, centerY - 4, eyeSize, eyeSize)
+        // Update HUD values
+        if (this.scoreElement) this.scoreElement.textContent = this.score;
+        if (this.livesElement) this.livesElement.textContent = this.lives;
+        if (this.correctElement) this.correctElement.textContent = this.correctAnswers;
 
-      // Pixel mouth
-      this.ctx.fillStyle = "#000"
-      switch (face) {
-      case "happy":
-          this.ctx.fillRect(centerX - 3, centerY + 2, 2, 2)
-          this.ctx.fillRect(centerX - 1, centerY + 3, 2, 2)
-          this.ctx.fillRect(centerX + 1, centerY + 2, 2, 2)
-          break
-      case "disgust":
-          this.ctx.fillRect(centerX - 3, centerY + 4, 2, 2)
-          this.ctx.fillRect(centerX - 1, centerY + 3, 2, 2)
-          this.ctx.fillRect(centerX + 1, centerY + 4, 2, 2)
-          break
-      case "dead":
-          this.ctx.fillStyle = "#ff0000"
-          this.ctx.fillRect(centerX - eyeOffset, centerY - 4, eyeSize, eyeSize)
-          this.ctx.fillRect(centerX + eyeOffset - eyeSize, centerY - 4, eyeSize, eyeSize)
-          this.ctx.fillStyle = "#000"
-          this.ctx.fillRect(centerX - 4, centerY + 2, 8, 2)
-          break
-      default:
-          this.ctx.fillRect(centerX - 3, centerY + 2, 6, 2)
-      }
-  }
-
-  drawPixelNotification(notification) {
-      const { message, type } = notification
-
-      // Pixel-style notification box
-      this.ctx.fillStyle = type === "correct" ? "#32cd32" : "#ff4444"
-      this.ctx.fillRect(this.CANVAS_WIDTH /2 - 150, 40, 300, 60)
-
-      // Pixel border
-      this.ctx.strokeStyle = "#000"
-      this.ctx.lineWidth = 4
-      this.ctx.strokeRect(this.CANVAS_WIDTH /2 - 150, 40, 300, 60)
-
-      // Inner border
-      this.ctx.strokeStyle = "#fff"
-      this.ctx.lineWidth = 2
-      this.ctx.strokeRect(this.CANVAS_WIDTH /  2 - 148, 42, 296, 56)
-
-      // Pixel text with shadow
-      this.ctx.font = "10px 'Press Start 2P', monospace"
-      this.ctx.textAlign = "center"
-      this.ctx.textBaseline = "middle"
-
-      this.ctx.fillStyle = "#000"
-      this.ctx.fillText(message, this.CANVAS_WIDTH / 2 + 1, 71)
-      this.ctx.fillStyle = "#fff"
-      this.ctx.fillText(message, this.CANVAS_WIDTH / 2, 70)
-  }
-
-  draw() {
-      this.ctx.imageSmoothingEnabled = false
-
-      this.ctx.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT)
-
-      // Draw snake using sprites
-      this.snake.forEach((segment, index) => {
-      const x = segment.x * this.GRID_SIZE;
-      const y = segment.y * this.GRID_SIZE;
-
-        if (index === 0) {
-            // ===== HEAD =====
-            const next = this.snake[index + 1];
-            const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
-
-            let outOfBoundX;
-            if (dirNext.x === - (this.GRID_WIDTH - 1) || dirNext.x === 1) outOfBoundX = 1; else if (dirNext.x === this.GRID_WIDTH - 1 || dirNext.x === -1) outOfBoundX = -1;
-
-            let outOfBoundY;
-            if (dirNext.y === - (this.GRID_HEIGHT - 1) || dirNext.y === 1) outOfBoundY = 1; else if (dirNext.y === this.GRID_HEIGHT - 1 || dirNext.y === -1) outOfBoundY = -1;
-
-
-            let headSprite = this.sprites.SnakeHead;  // default (North)
-
-            if (this.direction.x === 1) { // Facing East
-
-                if (outOfBoundY === 1) { // Going North turning East
-                    headSprite = this.sprites.SnakeHeadCorner4
-                } else if (outOfBoundY === -1) { // Going South turning East
-                    headSprite = this.sprites.SnakeHeadCorner6
-                } else { //Straight going East
-                    headSprite = this.sprites.SnakeHeadRight;
+        // Update hearts in background
+        if (this.heartsContainer) {
+            const hearts = this.heartsContainer.querySelectorAll(".heart");
+            hearts.forEach((heart, index) => {
+                if (index < this.lives) {
+                    heart.classList.add("filled");
+                    heart.classList.remove("empty");
+                } else {
+                    heart.classList.remove("filled");
+                    heart.classList.add("empty");
                 }
-            } else if (this.direction.x === -1) { // Facing West
+            });
+        }
 
-                if (outOfBoundY === 1) { // Going North turning West
-                    headSprite = this.sprites.SnakeHeadCorner8
-                } else if (outOfBoundY === -1) { // Going South turning West
-                    headSprite = this.sprites.SnakeHeadCorner2
-                } else { //Straight going West
-                    headSprite = this.sprites.SnakeHeadLeft;
-                }
-            } else if (this.direction.y === 1) { // Facing South
+        // Show Game Over screen
+        if (this.gameOverTitle && this.finalScoreElement && this.gameOverOverlay) {
+            // Update the title
+            this.gameOverTitle.textContent =
+                this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀";
 
-                if (outOfBoundX === 1) { // Going East turning South
-                    headSprite = this.sprites.SnakeHeadCorner7
-                } else if (outOfBoundX === -1) { // Going West turning South
-                    headSprite = this.sprites.SnakeHeadCorner3
-                } else { //Straight going West
-                    headSprite = this.sprites.SnakeHeadDown;
-                }
+            // Toggle classes for styling
+            this.gameOverTitle.classList.remove("won", "lost");
+            this.gameOverTitle.classList.add(this.gameState === "won" ? "won" : "lost");
 
-            } else { // Facing North
+            // Update final stats
+            const maxLives = this.maxLives || 3; // fallback if not defined
 
-                if (outOfBoundX === 1) { // Going East turning North
-                    headSprite = this.sprites.SnakeHeadCorner1
-                } else if (outOfBoundX === -1) { // Going West turning North
-                    headSprite = this.sprites.SnakeHeadCorner5
-                } else { //Straight going North
-                    headSprite = this.sprites.SnakeHead;
-                }
+            this.finalScoreElement.textContent = `Final Score: ${this.score}`;
+            if (this.finalCorrectElement) {
+                this.finalCorrectElement.innerHTML = `Corrects: ${this.correctAnswers}/${this.targetAnswers === Infinity ? '<span class="big-infinity">♾️</span>' : this.targetAnswers}`;
             }
+            // Show the overlay
+            this.gameOverOverlay.classList.remove("hidden");
+        }
+    }
 
-            if (headSprite?.complete && headSprite) {
-                this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
-            } else {
-                this.ctx.fillStyle = "#32cd32";
-                this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-                this.drawPixelSnakeFace(x, y, this.snakeFace);
-            }
+
+    drawPixelSnakeFace(x, y, face) {
+        const centerX = x + this.GRID_SIZE / 2
+        const centerY = y + this.GRID_SIZE / 2
+
+        // Pixel eyes
+        this.ctx.fillStyle = "#000"
+        const eyeSize = Math.max(2, Math.floor(this.GRID_SIZE / 8))
+        const eyeOffset = Math.max(4, Math.floor(this.GRID_SIZE / 4))
+
+        this.ctx.fillRect(centerX - eyeOffset, centerY - 4, eyeSize, eyeSize)
+        this.ctx.fillRect(centerX + eyeOffset - eyeSize, centerY - 4, eyeSize, eyeSize)
+
+        // Pixel mouth
+        this.ctx.fillStyle = "#000"
+        switch (face) {
+            case "happy":
+                this.ctx.fillRect(centerX - 3, centerY + 2, 2, 2)
+                this.ctx.fillRect(centerX - 1, centerY + 3, 2, 2)
+                this.ctx.fillRect(centerX + 1, centerY + 2, 2, 2)
+                break
+            case "disgust":
+                this.ctx.fillRect(centerX - 3, centerY + 4, 2, 2)
+                this.ctx.fillRect(centerX - 1, centerY + 3, 2, 2)
+                this.ctx.fillRect(centerX + 1, centerY + 4, 2, 2)
+                break
+            case "dead":
+                this.ctx.fillStyle = "#ff0000"
+                this.ctx.fillRect(centerX - eyeOffset, centerY - 4, eyeSize, eyeSize)
+                this.ctx.fillRect(centerX + eyeOffset - eyeSize, centerY - 4, eyeSize, eyeSize)
+                this.ctx.fillStyle = "#000"
+                this.ctx.fillRect(centerX - 4, centerY + 2, 8, 2)
+                break
+            default:
+                this.ctx.fillRect(centerX - 3, centerY + 2, 6, 2)
+        }
+    }
+
+    drawPixelNotification(notification) {
+        const { message, type } = notification
+
+        // Pixel-style notification box
+        this.ctx.fillStyle = type === "correct" ? "#32cd32" : "#ff4444"
+        this.ctx.fillRect(this.CANVAS_WIDTH / 2 - 150, 40, 300, 60)
+
+        // Pixel border
+        this.ctx.strokeStyle = "#000"
+        this.ctx.lineWidth = 4
+        this.ctx.strokeRect(this.CANVAS_WIDTH / 2 - 150, 40, 300, 60)
+
+        // Inner border
+        this.ctx.strokeStyle = "#fff"
+        this.ctx.lineWidth = 2
+        this.ctx.strokeRect(this.CANVAS_WIDTH / 2 - 148, 42, 296, 56)
+
+        // Pixel text with shadow
+        this.ctx.font = "10px 'Press Start 2P', monospace"
+        this.ctx.textAlign = "center"
+        this.ctx.textBaseline = "middle"
+
+        this.ctx.fillStyle = "#000"
+        this.ctx.fillText(message, this.CANVAS_WIDTH / 2 + 1, 71)
+        this.ctx.fillStyle = "#fff"
+        this.ctx.fillText(message, this.CANVAS_WIDTH / 2, 70)
+    }
+
+    draw() {
+        this.ctx.imageSmoothingEnabled = false
+
+        this.ctx.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT)
+
+        // Draw snake using sprites
+        this.snake.forEach((segment, index) => {
+            const x = segment.x * this.GRID_SIZE;
+            const y = segment.y * this.GRID_SIZE;
+
+            if (index === 0) {
+                // ===== HEAD =====
+                const next = this.snake[index + 1];
+                const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
+
+                let outOfBoundX;
+                if (dirNext.x === - (this.GRID_WIDTH - 1) || dirNext.x === 1) outOfBoundX = 1; else if (dirNext.x === this.GRID_WIDTH - 1 || dirNext.x === -1) outOfBoundX = -1;
+
+                let outOfBoundY;
+                if (dirNext.y === - (this.GRID_HEIGHT - 1) || dirNext.y === 1) outOfBoundY = 1; else if (dirNext.y === this.GRID_HEIGHT - 1 || dirNext.y === -1) outOfBoundY = -1;
+
+
+                let headSprite = this.sprites.SnakeHead;  // default (North)
+
+                if (this.direction.x === 1) { // Facing East
+
+                    if (outOfBoundY === 1) { // Going North turning East
+                        headSprite = this.sprites.SnakeHeadCorner4
+                    } else if (outOfBoundY === -1) { // Going South turning East
+                        headSprite = this.sprites.SnakeHeadCorner6
+                    } else { //Straight going East
+                        headSprite = this.sprites.SnakeHeadRight;
+                    }
+                } else if (this.direction.x === -1) { // Facing West
+
+                    if (outOfBoundY === 1) { // Going North turning West
+                        headSprite = this.sprites.SnakeHeadCorner8
+                    } else if (outOfBoundY === -1) { // Going South turning West
+                        headSprite = this.sprites.SnakeHeadCorner2
+                    } else { //Straight going West
+                        headSprite = this.sprites.SnakeHeadLeft;
+                    }
+                } else if (this.direction.y === 1) { // Facing South
+
+                    if (outOfBoundX === 1) { // Going East turning South
+                        headSprite = this.sprites.SnakeHeadCorner7
+                    } else if (outOfBoundX === -1) { // Going West turning South
+                        headSprite = this.sprites.SnakeHeadCorner3
+                    } else { //Straight going West
+                        headSprite = this.sprites.SnakeHeadDown;
+                    }
+
+                } else { // Facing North
+
+                    if (outOfBoundX === 1) { // Going East turning North
+                        headSprite = this.sprites.SnakeHeadCorner1
+                    } else if (outOfBoundX === -1) { // Going West turning North
+                        headSprite = this.sprites.SnakeHeadCorner5
+                    } else { //Straight going North
+                        headSprite = this.sprites.SnakeHead;
+                    }
+                }
+
+                if (headSprite?.complete && headSprite) {
+                    this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+                } else {
+                    this.ctx.fillStyle = "#32cd32";
+                    this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+                    this.drawPixelSnakeFace(x, y, this.snakeFace);
+                }
             } else if (index === this.snake.length - 1) {
                 // ===== TAIL =====
                 const prev = this.snake[index - 1];
-                const dirPrev = { x: segment.x - prev.x , y: segment.y - prev.y };
+                const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
 
                 let outOfBoundPrevX;
                 if (dirPrev.x === - (this.GRID_WIDTH - 1) || dirPrev.x === 1) outOfBoundPrevX = 1; else if (dirPrev.x === this.GRID_WIDTH - 1 || dirPrev.x === -1) outOfBoundPrevX = -1;
@@ -1511,7 +1511,7 @@ options.forEach((option, index) => {
 
                 let outOfBoundPrevY;
                 if (dirPrev.y === - (this.GRID_HEIGHT - 1) || dirPrev.y === 1) outOfBoundPrevY = 1; else if (dirPrev.y === this.GRID_HEIGHT - 1 || dirPrev.y === -1) outOfBoundPrevY = -1;
-                
+
                 let outOfBoundNextX;
                 if (dirNext.x === - (this.GRID_WIDTH - 1) || dirNext.x === 1) outOfBoundNextX = 1; else if (dirNext.x === this.GRID_WIDTH - 1 || dirNext.x === -1) outOfBoundNextX = -1;
 
@@ -1530,26 +1530,26 @@ options.forEach((option, index) => {
                 } else {
                     // ===== CORNERS =====
                     if (
-                    (outOfBoundNextY === -1 && outOfBoundPrevX === -1) ||
-                    (outOfBoundNextX === 1 && outOfBoundPrevY === 1) 
+                        (outOfBoundNextY === -1 && outOfBoundPrevX === -1) ||
+                        (outOfBoundNextX === 1 && outOfBoundPrevY === 1)
                     ) {
-                    bodySprite = this.sprites.SnakeCornerLeftDown;
+                        bodySprite = this.sprites.SnakeCornerLeftDown;
 
                     } else if (
-                    (outOfBoundNextY === -1 && outOfBoundPrevX === 1) ||
-                    (outOfBoundNextX === -1 && outOfBoundPrevY === 1) 
+                        (outOfBoundNextY === -1 && outOfBoundPrevX === 1) ||
+                        (outOfBoundNextX === -1 && outOfBoundPrevY === 1)
                     ) {
-                    bodySprite = this.sprites.SnakeCornerRightDown;
+                        bodySprite = this.sprites.SnakeCornerRightDown;
                     } else if (
-                    (outOfBoundNextY === 1 && outOfBoundPrevX === -1) ||
-                    (outOfBoundNextX === 1 && outOfBoundPrevY === -1) 
+                        (outOfBoundNextY === 1 && outOfBoundPrevX === -1) ||
+                        (outOfBoundNextX === 1 && outOfBoundPrevY === -1)
                     ) {
-                    bodySprite = this.sprites.SnakeCornerLeftUp;
+                        bodySprite = this.sprites.SnakeCornerLeftUp;
                     } else if (
-                    (outOfBoundNextY === 1 && outOfBoundPrevX === 1) ||
-                    (outOfBoundNextX === -1 && outOfBoundPrevY === -1) 
+                        (outOfBoundNextY === 1 && outOfBoundPrevX === 1) ||
+                        (outOfBoundNextX === -1 && outOfBoundPrevY === -1)
                     ) {
-                    bodySprite = this.sprites.SnakeCornerRightUp;
+                        bodySprite = this.sprites.SnakeCornerRightUp;
                     }
                 }
 
@@ -1561,180 +1561,180 @@ options.forEach((option, index) => {
                     this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
                 }
             }
-  });
+        });
 
-    // Use shield pickup icon if present
-   if (this.shieldPickup) {
-    const px = this.shieldPickup.x * this.GRID_SIZE
-    const py = this.shieldPickup.y * this.GRID_SIZE
+        // Use shield pickup icon if present
+        if (this.shieldPickup) {
+            const px = this.shieldPickup.x * this.GRID_SIZE
+            const py = this.shieldPickup.y * this.GRID_SIZE
 
-      const shieldSprite = this.sprites["shield"]
-      this.ctx.drawImage(shieldSprite, px, py, this.GRID_SIZE, this.GRID_SIZE)
-      }
+            const shieldSprite = this.sprites["shield"]
+            this.ctx.drawImage(shieldSprite, px, py, this.GRID_SIZE, this.GRID_SIZE)
+        }
 
-      this.apples.forEach((apple) => {
-      const x = apple.x * this.GRID_SIZE
-      const y = apple.y * this.GRID_SIZE
+        this.apples.forEach((apple) => {
+            const x = apple.x * this.GRID_SIZE
+            const y = apple.y * this.GRID_SIZE
 
-      // Use colored apple sprite based on letter
-      let appleSprite
-      if (apple.letter === "A") appleSprite = this.sprites["appleA-pink"]
-      else if (apple.letter === "B") appleSprite = this.sprites["appleB-yellow"]
-      else if (apple.letter === "C") appleSprite = this.sprites["appleC-blue"]
-      else appleSprite = this.sprites.apple
+            // Use colored apple sprite based on letter
+            let appleSprite
+            if (apple.letter === "A") appleSprite = this.sprites["appleA-pink"]
+            else if (apple.letter === "B") appleSprite = this.sprites["appleB-yellow"]
+            else if (apple.letter === "C") appleSprite = this.sprites["appleC-blue"]
+            else appleSprite = this.sprites.apple
 
-      if (appleSprite && appleSprite.complete) {
-          this.ctx.drawImage(appleSprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
-      } else {
-          // Fallback to colored rectangle
-          const colors = { pink: "#ff69b4", yellow: "#ffd700", blue: "#4169e1", red: "#ff4444" }
-          this.ctx.fillStyle = colors[apple.color] || "#ff4444"
-          this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
+            if (appleSprite && appleSprite.complete) {
+                this.ctx.drawImage(appleSprite, x, y, this.GRID_SIZE, this.GRID_SIZE)
+            } else {
+                // Fallback to colored rectangle
+                const colors = { pink: "#ff69b4", yellow: "#ffd700", blue: "#4169e1", red: "#ff4444" }
+                this.ctx.fillStyle = colors[apple.color] || "#ff4444"
+                this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
 
-          this.ctx.strokeStyle = "#000"
-          this.ctx.lineWidth = 2
-          this.ctx.strokeRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
-      }
+                this.ctx.strokeStyle = "#000"
+                this.ctx.lineWidth = 2
+                this.ctx.strokeRect(x, y, this.GRID_SIZE, this.GRID_SIZE)
+            }
 
-      // Draw letter on apple
-      this.ctx.fillStyle = "#fff"
-      const fontSize = Math.max(8, Math.floor(this.GRID_SIZE * 0.4))
-      this.ctx.font = `${fontSize}px "Press Start 2P", monospace`
-      this.ctx.textAlign = "center"
-      this.ctx.textBaseline = "middle"
+            // Draw letter on apple
+            this.ctx.fillStyle = "#fff"
+            const fontSize = Math.max(8, Math.floor(this.GRID_SIZE * 0.4))
+            this.ctx.font = `${fontSize}px "Press Start 2P", monospace`
+            this.ctx.textAlign = "center"
+            this.ctx.textBaseline = "middle"
 
-      // Text shadow for pixel effect
-      this.ctx.fillStyle = "#000"
-      this.ctx.fillText(apple.letter, x + this.GRID_SIZE / 2 + 1, y + this.GRID_SIZE / 2 + 1)
+            // Text shadow for pixel effect
+            this.ctx.fillStyle = "#000"
+            this.ctx.fillText(apple.letter, x + this.GRID_SIZE / 2 + 1, y + this.GRID_SIZE / 2 + 1)
 
-      this.ctx.fillStyle = "#fff"
-      this.ctx.fillText(apple.letter, x + this.GRID_SIZE / 2, y + this.GRID_SIZE / 2)
-      })
+            this.ctx.fillStyle = "#fff"
+            this.ctx.fillText(apple.letter, x + this.GRID_SIZE / 2, y + this.GRID_SIZE / 2)
+        })
 
-      if (this.notification && this.notificationTimer > 0) {
-      this.drawPixelNotification(this.notification)
-      this.notificationTimer--
-      }
+        if (this.notification && this.notificationTimer > 0) {
+            this.drawPixelNotification(this.notification)
+            this.notificationTimer--
+        }
 
-      if (this.paused) {
-      this.ctx.fillStyle = "rgba(0,0,0,0.8)"
-      this.ctx.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT)
+        if (this.paused) {
+            this.ctx.fillStyle = "rgba(0,0,0,0.8)"
+            this.ctx.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT)
 
-      this.ctx.fillStyle = "#fff"
-      this.ctx.font = "16px 'Press Start 2P', monospace"
-      this.ctx.textAlign = "center"
-      this.ctx.textBaseline = "middle"
+            this.ctx.fillStyle = "#fff"
+            this.ctx.font = "16px 'Press Start 2P', monospace"
+            this.ctx.textAlign = "center"
+            this.ctx.textBaseline = "middle"
 
-      this.ctx.fillStyle = "#000"
-      this.ctx.fillText("PAUSED", this.CANVAS_WIDTH / 2 + 2, this.CANVAS_HEIGHT / 2 + 2)
-      this.ctx.fillStyle = "#fff"
-      this.ctx.fillText("PAUSED", this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2)
-      }
+            this.ctx.fillStyle = "#000"
+            this.ctx.fillText("PAUSED", this.CANVAS_WIDTH / 2 + 2, this.CANVAS_HEIGHT / 2 + 2)
+            this.ctx.fillStyle = "#fff"
+            this.ctx.fillText("PAUSED", this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2)
+        }
 
-      // Sprint/stamina bar (only show when not paused)
-      if (!this.paused) {
-        const marginDown = 20 
-        const bar = this.sprintBar
-        const barY = bar.y + marginDown
-        this.ctx.fillStyle = "#222"
-        this.ctx.fillRect(bar.x, bar.y, bar.width, bar.height)
-        this.ctx.strokeStyle = "#000"
-        this.ctx.lineWidth = 3
-        this.ctx.strokeRect(bar.x, bar.y, bar.width, bar.height)
-        const fillWidth = Math.floor(bar.width * (this.sprint.energy / this.sprint.maxEnergy))
-        this.ctx.fillStyle = this.sprint.active ? "#ffd166" : "#06d6a0"
-        this.ctx.fillRect(bar.x, bar.y, fillWidth, bar.height)
-        this.ctx.strokeStyle = "#fff"
-        this.ctx.lineWidth = 1
-        this.ctx.strokeRect(bar.x + 2, bar.y + 2, bar.width - 4, bar.height - 4)
-        this.ctx.font = "10px 'Press Start 2P', monospace"
-        this.ctx.textAlign = "left"
-        this.ctx.textBaseline = "bottom"
-        this.ctx.fillStyle = "#000"
-        this.ctx.fillText("SPRINT", bar.x + 7, barY - 5.4)
-        this.ctx.fillStyle = "#fff"
-        this.ctx.fillText("SPRINT", bar.x + 6, barY - 7)
-      }
-  }
+        // Sprint/stamina bar (only show when not paused)
+        if (!this.paused) {
+            const marginDown = 20
+            const bar = this.sprintBar
+            const barY = bar.y + marginDown
+            this.ctx.fillStyle = "#222"
+            this.ctx.fillRect(bar.x, bar.y, bar.width, bar.height)
+            this.ctx.strokeStyle = "#000"
+            this.ctx.lineWidth = 3
+            this.ctx.strokeRect(bar.x, bar.y, bar.width, bar.height)
+            const fillWidth = Math.floor(bar.width * (this.sprint.energy / this.sprint.maxEnergy))
+            this.ctx.fillStyle = this.sprint.active ? "#ffd166" : "#06d6a0"
+            this.ctx.fillRect(bar.x, bar.y, fillWidth, bar.height)
+            this.ctx.strokeStyle = "#fff"
+            this.ctx.lineWidth = 1
+            this.ctx.strokeRect(bar.x + 2, bar.y + 2, bar.width - 4, bar.height - 4)
+            this.ctx.font = "10px 'Press Start 2P', monospace"
+            this.ctx.textAlign = "left"
+            this.ctx.textBaseline = "bottom"
+            this.ctx.fillStyle = "#000"
+            this.ctx.fillText("SPRINT", bar.x + 7, barY - 5.4)
+            this.ctx.fillStyle = "#fff"
+            this.ctx.fillText("SPRINT", bar.x + 6, barY - 7)
+        }
+    }
 
-  gameLoop(timestamp = 0) {
-      if (!this.gameRunning) return
+    gameLoop(timestamp = 0) {
+        if (!this.gameRunning) return
 
-      const delta = (timestamp - this.lastFrameTime) / 1000
-      this.lastFrameTime = timestamp
+        const delta = (timestamp - this.lastFrameTime) / 1000
+        this.lastFrameTime = timestamp
 
-      // Update sprint energy
-      if (!this.paused) {
-      if (this.sprint.active) {
-          this.sprint.energy -= this.sprint.drainPerSecond * delta
-          if (this.sprint.energy <= 0) {
-          this.sprint.energy = 0
-          this.sprint.active = false
-          }
-      } else {
-          this.sprint.energy += this.sprint.regenPerSecond * delta
-          if (this.sprint.energy > this.sprint.maxEnergy) this.sprint.energy = this.sprint.maxEnergy
-      }
-      }
+        // Update sprint energy
+        if (!this.paused) {
+            if (this.sprint.active) {
+                this.sprint.energy -= this.sprint.drainPerSecond * delta
+                if (this.sprint.energy <= 0) {
+                    this.sprint.energy = 0
+                    this.sprint.active = false
+                }
+            } else {
+                this.sprint.energy += this.sprint.regenPerSecond * delta
+                if (this.sprint.energy > this.sprint.maxEnergy) this.sprint.energy = this.sprint.maxEnergy
+            }
+        }
 
-      if (!this.waitingForMove && !this.paused) {
-      this.moveAccumulator += delta
-      const effectiveSpeed = this.speed * (this.sprint.active && this.sprint.energy > 0 ? this.sprint.multiplier : 1)
-      const moveInterval = 1 / effectiveSpeed
+        if (!this.waitingForMove && !this.paused) {
+            this.moveAccumulator += delta
+            const effectiveSpeed = this.speed * (this.sprint.active && this.sprint.energy > 0 ? this.sprint.multiplier : 1)
+            const moveInterval = 1 / effectiveSpeed
 
-      while (this.moveAccumulator >= moveInterval) {
-          this.moveSnake()
-          this.moveAccumulator -= moveInterval
-      }
-      }
+            while (this.moveAccumulator >= moveInterval) {
+                this.moveSnake()
+                this.moveAccumulator -= moveInterval
+            }
+        }
 
-      this.draw()
-      this.gameLoopId = requestAnimationFrame((timestamp) => this.gameLoop(timestamp))
-  }
+        this.draw()
+        this.gameLoopId = requestAnimationFrame((timestamp) => this.gameLoop(timestamp))
+    }
 
-  setDifficultySettings() {
-      const difficultyConfig = {
-      easy: {
-          gridSize: 40,
-          baseSpeed: 5,
-          speedIncrease: 0.35,
-      },
-      medium: {
-          gridSize: 40,
-          baseSpeed: 5.5,
-          speedIncrease: 0.55,
-      },
-      hard: {
-          gridSize: 40,
-          baseSpeed: 6,
-          speedIncrease: 0.65,
-      },
-      }
+    setDifficultySettings() {
+        const difficultyConfig = {
+            easy: {
+                gridSize: 40,
+                baseSpeed: 5,
+                speedIncrease: 0.35,
+            },
+            medium: {
+                gridSize: 40,
+                baseSpeed: 5.5,
+                speedIncrease: 0.55,
+            },
+            hard: {
+                gridSize: 40,
+                baseSpeed: 6,
+                speedIncrease: 0.65,
+            },
+        }
 
-      this.difficultySettings = difficultyConfig[this.gameSettings.difficulty]
-      this.GRID_SIZE = this.difficultySettings.gridSize
-  }
+        this.difficultySettings = difficultyConfig[this.gameSettings.difficulty]
+        this.GRID_SIZE = this.difficultySettings.gridSize
+    }
 
-  startCountdown(callback) {
-      this.isCountdownActive = true  // lock movement
-      this.countdownActive = true
+    startCountdown(callback) {
+        this.isCountdownActive = true  // lock movement
+        this.countdownActive = true
 
-      // play countdown sound effect
-      if (this.soundEnabled && this.sounds.countdown) {
-      this.sounds.countdown.currentTime = 0;
-      this.sounds.countdown.play()
-          .catch(e => {});
-      }
-      
-      this.showCountdown(() => {
-      this.isCountdownActive = false // unlock after countdown
-      if (callback) callback()
-      })
-  }
+        // play countdown sound effect
+        if (this.soundEnabled && this.sounds.countdown) {
+            this.sounds.countdown.currentTime = 0;
+            this.sounds.countdown.play()
+                .catch(e => { });
+        }
 
-  showCountdown(callback) {
-      const countdownOverlay = document.createElement("div")
-      countdownOverlay.style.cssText = `
+        this.showCountdown(() => {
+            this.isCountdownActive = false // unlock after countdown
+            if (callback) callback()
+        })
+    }
+
+    showCountdown(callback) {
+        const countdownOverlay = document.createElement("div")
+        countdownOverlay.style.cssText = `
       position: fixed;
       top: 0;
       left: 0;
@@ -1747,92 +1747,92 @@ options.forEach((option, index) => {
       z-index: 1000;
       font-family: 'Press Start 2P', monospace;
       `
-      countdownOverlay.id = "countdown-overlay"
+        countdownOverlay.id = "countdown-overlay"
 
-      const countdownNumber = document.createElement("div")
-      countdownNumber.style.cssText = `
+        const countdownNumber = document.createElement("div")
+        countdownNumber.style.cssText = `
       font-size: 72px;
       color: #32cd32;
       text-align: center;
       text-shadow: 4px 4px 0px #000;
       `
-      countdownNumber.textContent = "3"
-      
-      countdownOverlay.appendChild(countdownNumber)
-      document.body.appendChild(countdownOverlay)
+        countdownNumber.textContent = "3"
 
-      let count = 3
-      const countdownInterval = setInterval(() => {
-      count--
-      if (count > 0) {
-          countdownNumber.textContent = count
-      } else if (count === 0) {
-          countdownNumber.textContent = "GO!"
-          countdownNumber.style.color = "#ff4444"
-          this.playSound("countdownGo")
-      } else {
-          clearInterval(countdownInterval)
-          countdownOverlay.remove()
-          this.isCountdownActive = false
-          this.countdownActive = false
-          if (callback) callback()
-      }
-      }, 1000)
-  }
+        countdownOverlay.appendChild(countdownNumber)
+        document.body.appendChild(countdownOverlay)
 
-// Helper: check if a grid cell intersects a pixel rect
-cellIntersectsRect(gridX, gridY, rect) {
-    const cellX = gridX * this.GRID_SIZE
-    const cellY = gridY * this.GRID_SIZE
-    const cellW = this.GRID_SIZE
-    const cellH = this.GRID_SIZE
-    const rX2 = rect.x + rect.width
-    const rY2 = rect.y + rect.height
-    const cX2 = cellX + cellW
-    const cY2 = cellY + cellH
-    return !(cX2 <= rect.x || rX2 <= cellX || cY2 <= rect.y || rY2 <= cellY)
+        let count = 3
+        const countdownInterval = setInterval(() => {
+            count--
+            if (count > 0) {
+                countdownNumber.textContent = count
+            } else if (count === 0) {
+                countdownNumber.textContent = "GO!"
+                countdownNumber.style.color = "#ff4444"
+                this.playSound("countdownGo")
+            } else {
+                clearInterval(countdownInterval)
+                countdownOverlay.remove()
+                this.isCountdownActive = false
+                this.countdownActive = false
+                if (callback) callback()
+            }
+        }, 1000)
+    }
+
+    // Helper: check if a grid cell intersects a pixel rect
+    cellIntersectsRect(gridX, gridY, rect) {
+        const cellX = gridX * this.GRID_SIZE
+        const cellY = gridY * this.GRID_SIZE
+        const cellW = this.GRID_SIZE
+        const cellH = this.GRID_SIZE
+        const rX2 = rect.x + rect.width
+        const rY2 = rect.y + rect.height
+        const cX2 = cellX + cellW
+        const cY2 = cellY + cellH
+        return !(cX2 <= rect.x || rX2 <= cellX || cY2 <= rect.y || rY2 <= cellY)
+    }
+
+    addToTotalPoints(points) {
+        // Add points to the total points system for skin purchases
+        const currentTotal = parseInt(localStorage.getItem("totalPoints")) || 0
+        const newTotal = currentTotal + points
+        localStorage.setItem("totalPoints", newTotal.toString())
+    }
 }
 
-addToTotalPoints(points) {
-  // Add points to the total points system for skin purchases
-  const currentTotal = parseInt(localStorage.getItem("totalPoints")) || 0
-  const newTotal = currentTotal + points
-  localStorage.setItem("totalPoints", newTotal.toString())
-}
-}
 
+const aboutModal = document.getElementById("about-modal");
+const closeAbout = document.getElementById("close-about");
+const aboutBtn = document.getElementById("about-btn");
 
-    const aboutModal = document.getElementById("about-modal");
-    const closeAbout = document.getElementById("close-about");
-    const aboutBtn = document.getElementById("about-btn");
-
-    if (aboutModal) {
+if (aboutModal) {
     aboutBtn.addEventListener("click", () => {
         aboutModal.classList.remove("hidden");
     });
-    }
-    if (closeAbout) {
-      closeAbout.addEventListener("click", () => {
-          aboutModal.classList.add("hidden");
-      });
-    }
+}
+if (closeAbout) {
+    closeAbout.addEventListener("click", () => {
+        aboutModal.classList.add("hidden");
+    });
+}
 
-      const copyrightModal = document.getElementById("copyright-modal");
-      const closeCopyright = document.getElementById("close-copyright");
-      const copyrightBtn = document.getElementById("copyright-btn");
+const copyrightModal = document.getElementById("copyright-modal");
+const closeCopyright = document.getElementById("close-copyright");
+const copyrightBtn = document.getElementById("copyright-btn");
 
-      if (copyrightBtn) {
-      copyrightBtn.addEventListener("click", () => {
-          copyrightModal.classList.remove("hidden");
-      });
-      }
+if (copyrightBtn) {
+    copyrightBtn.addEventListener("click", () => {
+        copyrightModal.classList.remove("hidden");
+    });
+}
 
-      if (closeCopyright) {
-      closeCopyright.addEventListener("click", () => {
-          copyrightModal.classList.add("hidden");
-      });
-      }
+if (closeCopyright) {
+    closeCopyright.addEventListener("click", () => {
+        copyrightModal.classList.add("hidden");
+    });
+}
 
-  document.addEventListener("DOMContentLoaded", () => {
-  new SnakeEnglishGame()
+document.addEventListener("DOMContentLoaded", () => {
+    new SnakeEnglishGame()
 })

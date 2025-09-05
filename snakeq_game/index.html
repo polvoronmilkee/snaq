@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <header class="sticky-header">
         <div class="header-left">
@@ -28,20 +30,21 @@
 
     <!--About Us modal-->
     <div id="about-modal" class="about-modal hidden">
-         <div class="about-content pixel-border">
-              <h3>About Us</h3> 
-              <h4>Team Apple Juice <span class="big-juice">🧃</span></h4>
-              <p>Hi! We're 2nd Year BS Software Engineering students from Central Philippine University (CPU), Iloilo City. <br></p>
+        <div class="about-content pixel-border">
+            <h3>About Us</h3>
+            <h4>Team Apple Juice <span class="big-juice">🧃</span></h4>
+            <p>Hi! We're 2nd Year BS Software Engineering students from Central Philippine University (CPU), Iloilo
+                City. <br></p>
             <ul>
-               <p class="about-name">Poral, Danielle Anne — UI/UX Designer</p>
-               <p class="about-name">Luceño, Lemuel — UI/UX Designer</p>
-               <p class="about-name">Mendoza, Sophia Marielle — Developer</p>
-               <p class="about-name">Alera, Ahron — Developer</p>
-               <p class="about-name">Llacer, Joseph — Developer</p>
+                <p class="about-name">Poral, Danielle Anne — UI/UX Designer</p>
+                <p class="about-name">Luceño, Lemuel — UI/UX Designer</p>
+                <p class="about-name">Mendoza, Sophia Marielle — Developer</p>
+                <p class="about-name">Alera, Ahron — Developer</p>
+                <p class="about-name">Llacer, Joseph — Developer</p>
             </ul>
             <p2><i>Together, we created SnaQ — a quiz game that mixes fun, learning, and quick thinking.</i></p2>
             <p3><br><br>Development began: August 2025</p3>
-            
+
             <button class="close-about" id="close-about">Close</button>
         </div>
     </div>
@@ -54,7 +57,7 @@
                 <span class="points-label">Your Points:</span>
                 <span class="points-value" id="current-points">0</span>
             </div>
-            
+
             <div class="skins-grid">
                 <div class="skin-item" data-skin="green">
                     <div class="skin-preview">
@@ -69,7 +72,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="skin-item" data-skin="pink">
                     <div class="skin-preview">
                         <img src="assets/snake-skins//pink_snake/SnakeHead.png" alt="Pink Snake" class="skin-image" />
@@ -83,7 +86,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="skin-item" data-skin="blue">
                     <div class="skin-preview">
                         <img src="assets/snake-skins//blue_snake/SnakeHead.png" alt="Blue Snake" class="skin-image" />
@@ -97,7 +100,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="skin-item" data-skin="volt">
                     <div class="skin-preview">
                         <img src="assets/snake-skins//volt_snake/SnakeHead.png" alt="Lemuel Snake" class="skin-image" />
@@ -112,7 +115,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="skin-shop-actions">
                 <button class="close-skin-shop" id="close-skin-shop">Close</button>
             </div>
@@ -123,10 +126,10 @@
     <div id="instructions-modal" class="instructions-modal hidden">
         <div class="instructions-content pixel-border">
             <h3>How to Play SnaQ</h3>
-            
+
             <h4>🎯 Pick Your Adventure</h4>
             <p>Choose Mathematics or English. Answer questions to help your hungry snake grow!</p>
-            
+
             <h4>🕹️ Controls</h4>
             <ul>
                 <li>Use WASD or Arrow Keys to slither around</li>
@@ -135,7 +138,7 @@
                 <li>Press SPACE to resume the game</li>
                 <li>Press R to restart the current game</li>
             </ul>
-            
+
             <h4>🍎 Your Mission</h4>
             <ul>
                 <li>Read the question at the top</li>
@@ -143,45 +146,47 @@
                 <li>Correct bites give points and make your snake longer</li>
                 <li>Wrong bites make your snake say “yuck!” and cost a life</li>
             </ul>
-            
+
             <h4>🛡️ Power‑Ups</h4>
             <ul>
                 <li>Shield: Spawns when you’re low on lives. Grab it to block one mistake!</li>
                 <li>Sprint Bar: Refills over time. Zoom carefully so you don’t miss apples.</li>
             </ul>
-            
+
             <h4>🏆 Game Modes</h4>
             <ul>
                 <li><strong>Quiz:</strong> Get 10 right to win</li>
                 <li><strong>Endless:</strong> How long can you grow?</li>
                 <li><strong>Timed:</strong> 60 seconds of speedy snacking</li>
             </ul>
-            
+
             <p>Tip: Think fast, slither smart, and have fun. Let’s make your brain and snake super strong!</p>
-            
+
             <button class="close-instructions" id="close-instructions">Got It!</button>
         </div>
     </div>
 
     <!-- COPYRIGHT MODAL -->
     <div id="copyright-modal" class="instructions-modal hidden">
-    <div class="instructions-content pixel-border">
-        <h3>Copyright & Credits</h3>
+        <div class="instructions-content pixel-border">
+            <h3>Copyright & Credits</h3>
 
-        <h4>🎵 Music Credit</h4>
-        <p>
-        ► Music Credit: <strong>Artificial.Music</strong><br>
-        Track Name: <em>"And So It Begins"</em><br>
-        Music By: Artificial Music @ <a href="https://www.youtube.com/c/artificial-music" target="_blank">/ artificial-music</a><br>
-        YT Channel HERE: <a href="https://www.youtube.com/c/smarttoaster" target="_blank">/ smarttoaster</a><br>
-        Original upload HERE: <a href="https://youtu.be/JpoEFiAJdxo" target="_blank">/ and-so-it-begins</a><br>
-        License for commercial use: Creative Commons Attribution 3.0 Unported (CC BY 3.0).<br>
-        Full License HERE: <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">View License</a><br>
-        Music promoted by <a href="https://goo.gl/fh3rEJ" target="_blank">NCM</a>
-        </p>
+            <h4>🎵 Music Credit</h4>
+            <p>
+                ► Music Credit: <strong>Artificial.Music</strong><br>
+                Track Name: <em>"And So It Begins"</em><br>
+                Music By: Artificial Music @ <a href="https://www.youtube.com/c/artificial-music" target="_blank">/
+                    artificial-music</a><br>
+                YT Channel HERE: <a href="https://www.youtube.com/c/smarttoaster" target="_blank">/ smarttoaster</a><br>
+                Original upload HERE: <a href="https://youtu.be/JpoEFiAJdxo" target="_blank">/ and-so-it-begins</a><br>
+                License for commercial use: Creative Commons Attribution 3.0 Unported (CC BY 3.0).<br>
+                Full License HERE: <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">View
+                    License</a><br>
+                Music promoted by <a href="https://goo.gl/fh3rEJ" target="_blank">NCM</a>
+            </p>
 
-        <button class="close-instructions" id="close-copyright">Close</button>
-    </div>
+            <button class="close-instructions" id="close-copyright">Close</button>
+        </div>
     </div>
 
 
@@ -205,7 +210,7 @@
                 <div class="pixel-sign">
                     <h2>Pick Your Adventure</h2>
                 </div>
-                
+
                 <div class="category-buttons">
                     <button class="category-btn math-btn" data-category="math">
                         <img src="assets/icons/math-icon.png" alt="Math" class="btn-icon" />
@@ -224,10 +229,10 @@
                         <span>General<br>Knowledge</span>
                     </button>
                 </div>
-    
-                
+
+
                 <p class="coming-soon">... more quests coming soon!</p>
-                
+
                 <div class="game-actions">
                     <button class="skin-shop-btn" id="skin-btn" title="Skin Shop">
                         <div class="skin-btn-content">
@@ -247,7 +252,7 @@
     <div id="gameModeModal" class="modal hidden">
         <div class="modal-content pixel-border">
             <h3>~~ SnaQ ~~</h3>
-            
+
             <div class="setting-group">
                 <h4>Game Mode</h4>
                 <div class="mode-buttons">
@@ -256,7 +261,7 @@
                     <button class="mode-btn pixel-btn" data-mode="timed">Timed (1 min)</button>
                 </div>
             </div>
-            
+
             <div class="setting-group">
                 <h4>Difficulty Level</h4>
                 <div class="difficulty-buttons">
@@ -265,7 +270,7 @@
                     <button class="difficulty-btn pixel-btn hard" data-difficulty="hard">Hard</button>
                 </div>
             </div>
-            
+
             <div class="modal-actions">
                 <button id="startGameBtn" class="start-btn pixel-btn" disabled>Start Game</button>
                 <button id="cancelBtn" class="cancel-btn pixel-btn">Cancel</button>
@@ -285,4 +290,5 @@
     </div>
     <script src="js/landing.js"></script>
 </body>
+
 </html>

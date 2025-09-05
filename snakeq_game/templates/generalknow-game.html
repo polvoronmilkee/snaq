@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +11,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    
+
     <header class="sticky-header">
         <div class="header-left">
             <button id="back-to-menu" class="header-btn back-btn-header" title="Back to Menu">
@@ -31,20 +33,21 @@
 
     <!--About Us modal-->
     <div id="about-modal" class="about-modal hidden">
-         <div class="about-content pixel-border">
-              <h3>About Us</h3> 
-              <h4>Team Apple Juice 🧃</h4>
-              <p>Hi! We’re 2nd Year BS Software Engineering students from Central Philippine University (CPU), Iloilo City. <br></p>
+        <div class="about-content pixel-border">
+            <h3>About Us</h3>
+            <h4>Team Apple Juice 🧃</h4>
+            <p>Hi! We’re 2nd Year BS Software Engineering students from Central Philippine University (CPU), Iloilo
+                City. <br></p>
             <ul>
-               <li>Poral, Danielle Anne — UI/UX Designer</li>
-               <li>Luceño, Lemuel — UI/UX Designer</li>
-               <li>Mendoza, Sophia Marielle — Programmer</li>
-               <li>Alera, Ahron — Programmer</li>
-               <li>Llacer, Joseph — Programmer</li>
+                <li>Poral, Danielle Anne — UI/UX Designer</li>
+                <li>Luceño, Lemuel — UI/UX Designer</li>
+                <li>Mendoza, Sophia Marielle — Programmer</li>
+                <li>Alera, Ahron — Programmer</li>
+                <li>Llacer, Joseph — Programmer</li>
             </ul>
             <p2><i>Together, we created SnaQ — a quiz game that mixes fun, learning, and quick thinking.</i></p2>
             <p3><br><br>Development began: August 2025</p3>
-              <button class="close-about" id="close-about">Close</button>
+            <button class="close-about" id="close-about">Close</button>
         </div>
     </div>
 
@@ -52,10 +55,11 @@
     <div id="instructions-modal" class="instructions-modal hidden">
         <div class="instructions-content pixel-border">
             <h3>How to Play SnaQ - General Knowledge</h3>
-            
+
             <h4>🎯 Objective</h4>
-            <p>Control the snake to eat colored apples with correct answers to English questions. Grow your snake and reach the target score!</p>
-            
+            <p>Control the snake to eat colored apples with correct answers to English questions. Grow your snake and
+                reach the target score!</p>
+
             <h4>🕹️ Controls</h4>
             <ul>
                 <li>Use WASD or Arrow Keys to move the snake</li>
@@ -63,7 +67,7 @@
                 <li>Press SPACE to pause/unpause the game</li>
                 <li>Press R to restart the current game</li>
             </ul>
-            
+
             <h4>🍎 Gameplay</h4>
             <ul>
                 <li>Read the General Knowledge question at the top</li>
@@ -79,7 +83,7 @@
                 <li>Shield: Spawns when you’re low on lives. Grab it to block one mistake!</li>
                 <li>Sprint Bar: Refills over time. Zoom carefully so you don’t miss apples.</li>
             </ul>
-            
+
             <h4>❤️ Lives & Scoring</h4>
             <ul>
                 <li>You start with 3 lives (hearts)</li>
@@ -87,30 +91,32 @@
                 <li>Game ends when you lose all lives</li>
                 <li>Speed increases as you progress</li>
             </ul>
-            
+
             <button class="close-instructions" id="close-instructions">Got It!</button>
         </div>
     </div>
 
     <!-- COPYRIGHT MODAL -->
     <div id="copyright-modal" class="instructions-modal hidden">
-    <div class="instructions-content pixel-border">
-        <h3>Copyright & Credits</h3>
+        <div class="instructions-content pixel-border">
+            <h3>Copyright & Credits</h3>
 
-        <h4>🎵 Music Credit</h4>
-        <p>
-        ► Music Credit: <strong>Artificial.Music</strong><br>
-        Track Name: <em>"And So It Begins"</em><br>
-        Music By: Artificial Music @ <a href="https://www.youtube.com/c/artificial-music" target="_blank">/ artificial-music</a><br>
-        YT Channel HERE: <a href="https://www.youtube.com/c/smarttoaster" target="_blank">/ smarttoaster</a><br>
-        Original upload HERE: <a href="https://youtu.be/JpoEFiAJdxo" target="_blank">/ and-so-it-begins</a><br>
-        License for commercial use: Creative Commons Attribution 3.0 Unported (CC BY 3.0).<br>
-        Full License HERE: <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">View License</a><br>
-        Music promoted by <a href="https://goo.gl/fh3rEJ" target="_blank">NCM</a>
-        </p>
+            <h4>🎵 Music Credit</h4>
+            <p>
+                ► Music Credit: <strong>Artificial.Music</strong><br>
+                Track Name: <em>"And So It Begins"</em><br>
+                Music By: Artificial Music @ <a href="https://www.youtube.com/c/artificial-music" target="_blank">/
+                    artificial-music</a><br>
+                YT Channel HERE: <a href="https://www.youtube.com/c/smarttoaster" target="_blank">/ smarttoaster</a><br>
+                Original upload HERE: <a href="https://youtu.be/JpoEFiAJdxo" target="_blank">/ and-so-it-begins</a><br>
+                License for commercial use: Creative Commons Attribution 3.0 Unported (CC BY 3.0).<br>
+                Full License HERE: <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">View
+                    License</a><br>
+                Music promoted by <a href="https://goo.gl/fh3rEJ" target="_blank">NCM</a>
+            </p>
 
-        <button class="close-instructions" id="close-copyright">Close</button>
-    </div>
+            <button class="close-instructions" id="close-copyright">Close</button>
+        </div>
     </div>
 
 
@@ -121,14 +127,14 @@
                 <img src="../assets/icons/generalknowledge-icon.png" alt="General Knowledge" class="game-icon" />
 
             </div>
-            
+
             <!-- HUD -->
             <div class="hud pixel-hud">
                 <div class="score pixel-stat">
                     <img src="../assets/icons/score-icon.png" alt="Score" class="stat-icon" />
                     Score: <span id="score-value">0</span>
                 </div>
-       
+
                 <div class="lives pixel-stat">
                     <span>Lives:</span>
                     <div class="hearts-container" id="hearts-container">
@@ -152,7 +158,7 @@
             <div class="question-section">
                 <div class="question pixel-question" id="question-display">Loading...</div>
                 <div class="instruction">Eat the colored apple that matches your answer choice!</div>
-        
+
                 <div class="options-container pixel-border" id="options-display">
                     <!-- Options will be populated by JavaScript -->
                 </div>
@@ -161,14 +167,14 @@
             <!-- Game Canvas -->
             <div class="canvas-container pixel-border">
                 <canvas id="game-canvas" width="800" height="480"></canvas>
-                
+
                 <!-- Game Over Overlay -->
                 <div id="game-over-overlay" class="overlay hidden">
                     <div class="overlay-content pixel-border">
                         <h2 id="game-over-title">Game Over</h2>
                         <p id="final-score">Final Score: 0</p>
                         <p id="final-correct">Corrects: 0</p>
-                        
+
                         <button id="play-again-btn" class="btn pixel-btn btn-green">Play Again</button>
                         <button id="menu-btn" class="btn pixel-btn btn-red">Main Menu</button>
                     </div>
@@ -231,4 +237,5 @@
 
     <script src="../js/games/generalknow-game.js"></script>
 </body>
+
 </html>

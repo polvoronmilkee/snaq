@@ -173,7 +173,7 @@ class SnakeMathGame {
   playSound(soundName) {
     if (this.soundEnabled && this.sounds[soundName]) {
       this.sounds[soundName].currentTime = 0;
-      this.sounds[soundName].play().catch((e) => {})
+      this.sounds[soundName].play().catch((e) => { })
     }
   }
 
@@ -196,7 +196,7 @@ class SnakeMathGame {
 
     if (this.musicEnabled) {
       this.sounds.bgMusic.loop = true;
-      this.sounds.bgMusic.play().catch((e) => {})
+      this.sounds.bgMusic.play().catch((e) => { })
     } else {
       this.sounds.bgMusic.pause();
     }
@@ -269,17 +269,17 @@ class SnakeMathGame {
 
       if (this.musicEnabled) {
         this.sounds.bgMusic.loop = true;
-        this.sounds.bgMusic.play().catch((e) => {})
+        this.sounds.bgMusic.play().catch((e) => { })
       }
     }
 
     document.querySelectorAll("button").forEach((btn) => {
-    btn.addEventListener("click", () => {
+      btn.addEventListener("click", () => {
         if (this.soundEnabled && this.sounds.click) {
-        this.sounds.click.currentTime = 0; // restart if spam clicked
-        this.sounds.click.play();
+          this.sounds.click.currentTime = 0; // restart if spam clicked
+          this.sounds.click.play();
         }
-    })
+      })
     })
 
   }
@@ -292,13 +292,13 @@ class SnakeMathGame {
     this.backToMenu.addEventListener("click", () => {
       this.playSound("click");
       this.backToMenuConfirm.classList.remove("hidden");
-      this.paused = true; 
+      this.paused = true;
 
     });
 
     this.confirmBackMenuBtn.addEventListener("click", () => {
       this.playSound("click");
-      window.location.href = "../index.html"; 
+      window.location.href = "../index.html";
     });
 
     this.cancelBackMenuBtn.addEventListener("click", () => {
@@ -318,9 +318,9 @@ class SnakeMathGame {
     })
     this.playAgainConfirmBtn.addEventListener("click", () => {
       this.playSound("click")
-      this.playAgainConfirm.classList.add("hidden") 
-      this.gameOverOverlay.classList.add("hidden")  
-      this.confirmRestart() 
+      this.playAgainConfirm.classList.add("hidden")
+      this.gameOverOverlay.classList.add("hidden")
+      this.confirmRestart()
     })
     this.confirmRestartBtn.addEventListener("click", () => {
       this.playSound("click")
@@ -331,17 +331,17 @@ class SnakeMathGame {
       this.cancelRestart()
     })
     this.cancelPlayAgain.addEventListener("click", () => {
-      this.playSound("click")  
+      this.playSound("click")
       this.playAgainConfirm.classList.add("hidden");
     });
     this.helpBtnEsc.addEventListener("click", () => {
       this.playSound("click")
-      document.getElementById("esc-menu").classList.add("hidden"); 
+      document.getElementById("esc-menu").classList.add("hidden");
       this.showInstructions()
     })
     this.helpBtn.addEventListener("click", () => this.showInstructions())
-    
-    
+
+
     this.soundBtn.addEventListener("click", () => this.toggleSound())
     this.musicBtn.addEventListener("click", () => this.toggleMusic())
     this.closeInstructionsBtn.addEventListener("click", () => {
@@ -375,8 +375,8 @@ class SnakeMathGame {
   }
 
   showEscMenu() {
-    if (this.gameRunning && !this.paused && !this.countdownActive && 
-        this.restartConfirm.classList.contains("hidden")) {
+    if (this.gameRunning && !this.paused && !this.countdownActive &&
+      this.restartConfirm.classList.contains("hidden")) {
       this.escMenuActive = true;
       this.paused = true;
       document.getElementById("esc-menu").classList.remove("hidden");
@@ -422,98 +422,98 @@ class SnakeMathGame {
   }
 
   generateQuestion() {
-  const difficulty = this.gameSettings.difficulty;
-  
-  // Difficulty settings
-  const settings = {
-    easy:   { range: 10,  maxMult: 5,   allowDiv: false },
-    medium: { range: 50,  maxMult: 12,  allowDiv: true  },
-    hard:   { range: 100, maxMult: 20,  allowDiv: true  }
-  };
+    const difficulty = this.gameSettings.difficulty;
 
-  const { range, maxMult, allowDiv } = settings[difficulty] || settings.easy;
+    // Difficulty settings
+    const settings = {
+      easy: { range: 10, maxMult: 5, allowDiv: false },
+      medium: { range: 50, maxMult: 12, allowDiv: true },
+      hard: { range: 100, maxMult: 20, allowDiv: true }
+    };
 
-  // Pick operation
-  const operations = allowDiv ? ["+", "-", "*", "/"] : ["+", "-", "*"];
-  const operation = operations[Math.floor(Math.random() * operations.length)];
+    const { range, maxMult, allowDiv } = settings[difficulty] || settings.easy;
 
-  let num1, num2, correctAnswer, question;
+    // Pick operation
+    const operations = allowDiv ? ["+", "-", "*", "/"] : ["+", "-", "*"];
+    const operation = operations[Math.floor(Math.random() * operations.length)];
 
-  switch (operation) {
-    case "+":
-      num1 = Math.floor(Math.random() * range) + 1;
-      num2 = Math.floor(Math.random() * range) + 1;
-      correctAnswer = num1 + num2;
-      question = `${num1} + ${num2} = ?`;
-      break;
+    let num1, num2, correctAnswer, question;
 
-    case "-":
-      num1 = Math.floor(Math.random() * range) + 1;
-      num2 = Math.floor(Math.random() * num1) + 1; // ensures non-negative
-      correctAnswer = num1 - num2;
-      question = `${num1} - ${num2} = ?`;
-      break;
-
-    case "*":
-      num1 = Math.floor(Math.random() * maxMult) + 1;
-      num2 = Math.floor(Math.random() * maxMult) + 1;
-      correctAnswer = num1 * num2;
-      question = `${num1} × ${num2} = ?`;
-      break;
-
-    case "/":
-      num2 = Math.floor(Math.random() * maxMult) + 1;
-      correctAnswer = Math.floor(Math.random() * maxMult) + 1;
-      num1 = num2 * correctAnswer; // ensures clean division
-      question = `${num1} ÷ ${num2} = ?`;
-      break;
-
-    default:
-      correctAnswer = 5;
-      question = "2 + 3 = ?";
-  }
-
-  const options = new Set([correctAnswer]);
-
-  while (options.size < 4) {
-    let wrongAnswer;
-
-    switch (Math.floor(Math.random() * 4)) {
-      case 0: // near miss
-        wrongAnswer = correctAnswer + (Math.floor(Math.random() * 5) - 2);
+    switch (operation) {
+      case "+":
+        num1 = Math.floor(Math.random() * range) + 1;
+        num2 = Math.floor(Math.random() * range) + 1;
+        correctAnswer = num1 + num2;
+        question = `${num1} + ${num2} = ?`;
         break;
-      case 1: // off by factor
-        wrongAnswer = correctAnswer * (Math.random() > 0.5 ? 2 : 0.5);
+
+      case "-":
+        num1 = Math.floor(Math.random() * range) + 1;
+        num2 = Math.floor(Math.random() * num1) + 1; // ensures non-negative
+        correctAnswer = num1 - num2;
+        question = `${num1} - ${num2} = ?`;
         break;
-      case 2: // operand swap (common mistake)
-        wrongAnswer = num1 + num2; // works as distractor in non-addition
+
+      case "*":
+        num1 = Math.floor(Math.random() * maxMult) + 1;
+        num2 = Math.floor(Math.random() * maxMult) + 1;
+        correctAnswer = num1 * num2;
+        question = `${num1} × ${num2} = ?`;
         break;
-      default: // random within difficulty range
-        wrongAnswer = Math.floor(Math.random() * (range * 2)) + 1;
+
+      case "/":
+        num2 = Math.floor(Math.random() * maxMult) + 1;
+        correctAnswer = Math.floor(Math.random() * maxMult) + 1;
+        num1 = num2 * correctAnswer; // ensures clean division
+        question = `${num1} ÷ ${num2} = ?`;
+        break;
+
+      default:
+        correctAnswer = 5;
+        question = "2 + 3 = ?";
     }
 
-    // Keep answers valid
-    if (
-      Number.isInteger(wrongAnswer) &&
-      wrongAnswer > 0 &&
-      wrongAnswer !== correctAnswer
-    ) {
-      options.add(wrongAnswer);
+    const options = new Set([correctAnswer]);
+
+    while (options.size < 4) {
+      let wrongAnswer;
+
+      switch (Math.floor(Math.random() * 4)) {
+        case 0: // near miss
+          wrongAnswer = correctAnswer + (Math.floor(Math.random() * 5) - 2);
+          break;
+        case 1: // off by factor
+          wrongAnswer = correctAnswer * (Math.random() > 0.5 ? 2 : 0.5);
+          break;
+        case 2: // operand swap (common mistake)
+          wrongAnswer = num1 + num2; // works as distractor in non-addition
+          break;
+        default: // random within difficulty range
+          wrongAnswer = Math.floor(Math.random() * (range * 2)) + 1;
+      }
+
+      // Keep answers valid
+      if (
+        Number.isInteger(wrongAnswer) &&
+        wrongAnswer > 0 &&
+        wrongAnswer !== correctAnswer
+      ) {
+        options.add(wrongAnswer);
+      }
     }
+
+    // Convert to array and shuffle
+    const shuffledOptions = Array.from(options);
+    for (let i = shuffledOptions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+    }
+
+    return { question, correctAnswer, options: shuffledOptions };
   }
 
-  // Convert to array and shuffle
-  const shuffledOptions = Array.from(options);
-  for (let i = shuffledOptions.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
-  }
 
-  return { question, correctAnswer, options: shuffledOptions };
-}
-
-
-  initGame() { 
+  initGame() {
     const headPosition = this.getRandomPosition()
 
     // Keep head at least 1 cell away from edges
@@ -563,7 +563,7 @@ class SnakeMathGame {
     } else {
       this.timerDisplay.style.display = "none"
     }
-  
+
 
     // Set target based on mode
     if (this.gameSettings.mode === "endless") {
@@ -603,21 +603,21 @@ class SnakeMathGame {
     this.isPausedForEvent = true;
 
     if (this.timerInterval) {
-        clearInterval(this.timerInterval);
+      clearInterval(this.timerInterval);
     }
-    
+
     this.timerInterval = setInterval(() => {
-        if (!this.paused) {  
-            this.timeLeft--;
-            this.timerValue.textContent = this.timeLeft;
-            
-            if (this.timeLeft <= 0) {
-                this.gameState = "lost";
-                this.gameRunning = false;
-                this.showGameOver();
-                clearInterval(this.timerInterval);
-            }
+      if (!this.paused) {
+        this.timeLeft--;
+        this.timerValue.textContent = this.timeLeft;
+
+        if (this.timeLeft <= 0) {
+          this.gameState = "lost";
+          this.gameRunning = false;
+          this.showGameOver();
+          clearInterval(this.timerInterval);
         }
+      }
     }, 1000);
   }
 
@@ -636,7 +636,7 @@ class SnakeMathGame {
       e.preventDefault();
       return;
     }
-    
+
     if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
       e.preventDefault()
     }
@@ -683,7 +683,7 @@ class SnakeMathGame {
     }
 
     // If an input has already been processed for this move window, ignore further movement keys
-    const isMovementKey = ["w","arrowup","s","arrowdown","a","arrowleft","d","arrowright"].includes(key)
+    const isMovementKey = ["w", "arrowup", "s", "arrowdown", "a", "arrowleft", "d", "arrowright"].includes(key)
     if (this.inputLocked && isMovementKey) return
 
     // Handle ESC key for menu
@@ -813,7 +813,7 @@ class SnakeMathGame {
       const h = a.height || 1
       for (let dx = 0; dx < w; dx++) {
         for (let dy = 0; dy < h; dy++) {
-          usedPositions.add(`${a.x + dx},${a.y 
+          usedPositions.add(`${a.x + dx},${a.y
             + dy}`)
         }
       }
@@ -827,17 +827,17 @@ class SnakeMathGame {
       y = this.randInt(Math.max(1, this.GRID_HEIGHT - 1))
     } while (
       usedPositions.has(`${x},${y}`) ||
-      usedPositions.has(`${x+1},${y}`) ||
-      usedPositions.has(`${x},${y+1}`) ||
-      usedPositions.has(`${x+1},${y+1}`) ||
+      usedPositions.has(`${x + 1},${y}`) ||
+      usedPositions.has(`${x},${y + 1}`) ||
+      usedPositions.has(`${x + 1},${y + 1}`) ||
       this.cellIntersectsRect(x, y, this.sprintBar) ||
-      this.cellIntersectsRect(x+1, y, this.sprintBar) ||
-      this.cellIntersectsRect(x, y+1, this.sprintBar) ||
-      this.cellIntersectsRect(x+1, y+1, this.sprintBar) ||
+      this.cellIntersectsRect(x + 1, y, this.sprintBar) ||
+      this.cellIntersectsRect(x, y + 1, this.sprintBar) ||
+      this.cellIntersectsRect(x + 1, y + 1, this.sprintBar) ||
       this.isCellTooCloseToHead(x, y, this.minAppleDistanceFromHead) ||
-      this.isCellTooCloseToHead(x+1, y, this.minAppleDistanceFromHead) ||
-      this.isCellTooCloseToHead(x, y+1, this.minAppleDistanceFromHead) ||
-      this.isCellTooCloseToHead(x+1, y+1, this.minAppleDistanceFromHead)
+      this.isCellTooCloseToHead(x + 1, y, this.minAppleDistanceFromHead) ||
+      this.isCellTooCloseToHead(x, y + 1, this.minAppleDistanceFromHead) ||
+      this.isCellTooCloseToHead(x + 1, y + 1, this.minAppleDistanceFromHead)
     )
 
     this.apples.push({ x, y, value: 'BOSS', isCorrect: false, type: 'boss', width: 2, height: 2 })
@@ -893,7 +893,7 @@ class SnakeMathGame {
     const shuffled = Array.from(options)
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))
-      ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
     }
 
     return { question: `${expr} = ?`, correctAnswer, options: shuffled }
@@ -1086,7 +1086,7 @@ class SnakeMathGame {
         if (this.hasShield) {
           // Shield blocks the penalty once
           this.hasShield = false
-          this.updateShieldUI();  
+          this.updateShieldUI();
           this.snakeFace = "normal"
           this.showNotification("Shield saved you!✨", "correct")
 
@@ -1221,62 +1221,62 @@ class SnakeMathGame {
     }
   }
 
-showGameOver() {
-  // Stop timer
-  if (this.timerInterval) {
-    clearInterval(this.timerInterval);
-    this.timerInterval = null;
-  }
+  showGameOver() {
+    // Stop timer
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
 
-  // Play appropriate sound
-  if (this.gameState === "won") {
-    this.playSound("youWon");
-    // this.playSound("goodJob")
-  } else {
-    this.playSound("snakeDies");
-  }
+    // Play appropriate sound
+    if (this.gameState === "won") {
+      this.playSound("youWon");
+      // this.playSound("goodJob")
+    } else {
+      this.playSound("snakeDies");
+    }
 
-  // Update HUD values
-  if (this.scoreElement) this.scoreElement.textContent = this.score;
-  if (this.livesElement) this.livesElement.textContent = this.lives;
-  if (this.correctElement) this.correctElement.textContent = this.correctAnswers;
+    // Update HUD values
+    if (this.scoreElement) this.scoreElement.textContent = this.score;
+    if (this.livesElement) this.livesElement.textContent = this.lives;
+    if (this.correctElement) this.correctElement.textContent = this.correctAnswers;
 
-  // Update hearts in background
-  if (this.heartsContainer) {
-    const hearts = this.heartsContainer.querySelectorAll(".heart");
-    hearts.forEach((heart, index) => {
-      if (index < this.lives) {
-        heart.classList.add("filled");
-        heart.classList.remove("empty");
-      } else {
-        heart.classList.remove("filled");
-        heart.classList.add("empty");
-      }
-    });
-  }
+    // Update hearts in background
+    if (this.heartsContainer) {
+      const hearts = this.heartsContainer.querySelectorAll(".heart");
+      hearts.forEach((heart, index) => {
+        if (index < this.lives) {
+          heart.classList.add("filled");
+          heart.classList.remove("empty");
+        } else {
+          heart.classList.remove("filled");
+          heart.classList.add("empty");
+        }
+      });
+    }
 
 
     // Show Game Over screen
     if (this.gameOverTitle && this.finalScoreElement && this.gameOverOverlay) {
-    
-    this.gameOverTitle.textContent =
+
+      this.gameOverTitle.textContent =
         this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀";
 
-    // Toggle classes for styling
-    this.gameOverTitle.classList.remove("won", "lost");
-    this.gameOverTitle.classList.add(this.gameState === "won" ? "won" : "lost");
+      // Toggle classes for styling
+      this.gameOverTitle.classList.remove("won", "lost");
+      this.gameOverTitle.classList.add(this.gameState === "won" ? "won" : "lost");
 
-    // Update final stats
-    const maxLives = this.maxLives || 3; // fallback if not defined
+      // Update final stats
+      const maxLives = this.maxLives || 3; // fallback if not defined
 
-    this.finalScoreElement.textContent = `Final Score: ${this.score}`;
-    if (this.finalCorrectElement) {
-    this.finalCorrectElement.innerHTML = `Corrects: ${this.correctAnswers}/${this.targetAnswers === Infinity ? '<span class="big-infinity">♾️</span>' : this.targetAnswers}`;
+      this.finalScoreElement.textContent = `Final Score: ${this.score}`;
+      if (this.finalCorrectElement) {
+        this.finalCorrectElement.innerHTML = `Corrects: ${this.correctAnswers}/${this.targetAnswers === Infinity ? '<span class="big-infinity">♾️</span>' : this.targetAnswers}`;
+      }
+      // Show the overlay
+      this.gameOverOverlay.classList.remove("hidden");
     }
-    // Show the overlay
-    this.gameOverOverlay.classList.remove("hidden");
-    }
-}
+  }
 
 
   drawPixelSnakeFace(x, y, face) {
@@ -1323,20 +1323,20 @@ showGameOver() {
 
   drawPixelNotification(notification) {
     const { message, type } = notification
-    
+
     // Pixel-style notification box
     this.ctx.fillStyle = type === "correct" ? "#32cd32" : "#ff4444"
-    this.ctx.fillRect(this.CANVAS_WIDTH /2 - 150, 40, 300, 60)
+    this.ctx.fillRect(this.CANVAS_WIDTH / 2 - 150, 40, 300, 60)
 
     // Pixel border
     this.ctx.strokeStyle = "#000"
     this.ctx.lineWidth = 4
-    this.ctx.strokeRect(this.CANVAS_WIDTH /2 - 150, 40, 300, 60)
+    this.ctx.strokeRect(this.CANVAS_WIDTH / 2 - 150, 40, 300, 60)
 
     // Inner border
     this.ctx.strokeStyle = "#fff"
     this.ctx.lineWidth = 2
-    this.ctx.strokeRect(this.CANVAS_WIDTH /  2 - 148, 42, 296, 56)
+    this.ctx.strokeRect(this.CANVAS_WIDTH / 2 - 148, 42, 296, 56)
 
     // Pixel text with shadow
     this.ctx.font = "10px 'Press Start 2P', monospace"
@@ -1361,153 +1361,153 @@ showGameOver() {
       const y = segment.y * this.GRID_SIZE
 
       if (index === 0) {
-            // ===== HEAD =====
-            const next = this.snake[index + 1];
-            const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
+        // ===== HEAD =====
+        const next = this.snake[index + 1];
+        const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
 
-            let outOfBoundX;
-            if (dirNext.x === - (this.GRID_WIDTH - 1) || dirNext.x === 1) outOfBoundX = 1; else if (dirNext.x === this.GRID_WIDTH - 1 || dirNext.x === -1) outOfBoundX = -1;
+        let outOfBoundX;
+        if (dirNext.x === - (this.GRID_WIDTH - 1) || dirNext.x === 1) outOfBoundX = 1; else if (dirNext.x === this.GRID_WIDTH - 1 || dirNext.x === -1) outOfBoundX = -1;
 
-            let outOfBoundY;
-            if (dirNext.y === - (this.GRID_HEIGHT - 1) || dirNext.y === 1) outOfBoundY = 1; else if (dirNext.y === this.GRID_HEIGHT - 1 || dirNext.y === -1) outOfBoundY = -1;
+        let outOfBoundY;
+        if (dirNext.y === - (this.GRID_HEIGHT - 1) || dirNext.y === 1) outOfBoundY = 1; else if (dirNext.y === this.GRID_HEIGHT - 1 || dirNext.y === -1) outOfBoundY = -1;
 
 
-            let headSprite = this.sprites.SnakeHead;  // default (North)
+        let headSprite = this.sprites.SnakeHead;  // default (North)
 
-            if (this.direction.x === 1) { // Facing East
+        if (this.direction.x === 1) { // Facing East
 
-                if (outOfBoundY === 1) { // Going North turning East
-                    headSprite = this.sprites.SnakeHeadCorner4
-                } else if (outOfBoundY === -1) { // Going South turning East
-                    headSprite = this.sprites.SnakeHeadCorner6
-                } else { //Straight going East
-                    headSprite = this.sprites.SnakeHeadRight;
-                }
-            } else if (this.direction.x === -1) { // Facing West
+          if (outOfBoundY === 1) { // Going North turning East
+            headSprite = this.sprites.SnakeHeadCorner4
+          } else if (outOfBoundY === -1) { // Going South turning East
+            headSprite = this.sprites.SnakeHeadCorner6
+          } else { //Straight going East
+            headSprite = this.sprites.SnakeHeadRight;
+          }
+        } else if (this.direction.x === -1) { // Facing West
 
-                if (outOfBoundY === 1) { // Going North turning West
-                    headSprite = this.sprites.SnakeHeadCorner8
-                } else if (outOfBoundY === -1) { // Going South turning West
-                    headSprite = this.sprites.SnakeHeadCorner2
-                } else { //Straight going West
-                    headSprite = this.sprites.SnakeHeadLeft;
-                }
-            } else if (this.direction.y === 1) { // Facing South
+          if (outOfBoundY === 1) { // Going North turning West
+            headSprite = this.sprites.SnakeHeadCorner8
+          } else if (outOfBoundY === -1) { // Going South turning West
+            headSprite = this.sprites.SnakeHeadCorner2
+          } else { //Straight going West
+            headSprite = this.sprites.SnakeHeadLeft;
+          }
+        } else if (this.direction.y === 1) { // Facing South
 
-                if (outOfBoundX === 1) { // Going East turning South
-                    headSprite = this.sprites.SnakeHeadCorner7
-                } else if (outOfBoundX === -1) { // Going West turning South
-                    headSprite = this.sprites.SnakeHeadCorner3
-                } else { //Straight going West
-                    headSprite = this.sprites.SnakeHeadDown;
-                }
+          if (outOfBoundX === 1) { // Going East turning South
+            headSprite = this.sprites.SnakeHeadCorner7
+          } else if (outOfBoundX === -1) { // Going West turning South
+            headSprite = this.sprites.SnakeHeadCorner3
+          } else { //Straight going West
+            headSprite = this.sprites.SnakeHeadDown;
+          }
 
-            } else { // Facing North
+        } else { // Facing North
 
-                if (outOfBoundX === 1) { // Going East turning North
-                    headSprite = this.sprites.SnakeHeadCorner1
-                } else if (outOfBoundX === -1) { // Going West turning North
-                    headSprite = this.sprites.SnakeHeadCorner5
-                } else { //Straight going North
-                    headSprite = this.sprites.SnakeHead;
-                }
-            }
-
-            if (headSprite?.complete && headSprite) {
-                this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
-            } else {
-                this.ctx.fillStyle = "#32cd32";
-                this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-                this.drawPixelSnakeFace(x, y, this.snakeFace);
-            }
-        } else if (index === this.snake.length - 1) {
-            // ===== TAIL =====
-            const prev = this.snake[index - 1];
-            const dirPrev = { x: segment.x - prev.x , y: segment.y - prev.y };
-
-            let outOfBoundPrevX;
-            if (dirPrev.x === - (this.GRID_WIDTH - 1) || dirPrev.x === 1) outOfBoundPrevX = 1; else if (dirPrev.x === this.GRID_WIDTH - 1 || dirPrev.x === -1) outOfBoundPrevX = -1;
-
-            let outOfBoundPrevY;
-            if (dirPrev.y === - (this.GRID_HEIGHT - 1) || dirPrev.y === 1) outOfBoundPrevY = 1; else if (dirPrev.y === this.GRID_HEIGHT - 1 || dirPrev.y === -1) outOfBoundPrevY = -1;
-
-            let tailSprite = this.sprites.SnakeTail; // default (North)
-            if (outOfBoundPrevX === -1) tailSprite = this.sprites.SnakeTailRight;
-            else if (outOfBoundPrevX === 1) tailSprite = this.sprites.SnakeTailLeft;
-            else if (outOfBoundPrevY === -1) tailSprite = this.sprites.SnakeTailDown;
-            else tailSprite = this.sprites.SnakeTail;
-
-            if (tailSprite?.complete) {
-                this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
-            } else {
-                this.ctx.fillStyle = "#228b22";
-                this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-            }
-        } else {
-            // ===== BODY =====
-            const prev = this.snake[index - 1];
-            const next = this.snake[index + 1];
-
-            const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
-            const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
-
-            let outOfBoundPrevX;
-            if (dirPrev.x === - (this.GRID_WIDTH - 1) || dirPrev.x === 1) outOfBoundPrevX = 1; else if (dirPrev.x === this.GRID_WIDTH - 1 || dirPrev.x === -1) outOfBoundPrevX = -1;
-
-            let outOfBoundPrevY;
-            if (dirPrev.y === - (this.GRID_HEIGHT - 1) || dirPrev.y === 1) outOfBoundPrevY = 1; else if (dirPrev.y === this.GRID_HEIGHT - 1 || dirPrev.y === -1) outOfBoundPrevY = -1;
-            
-            let outOfBoundNextX;
-            if (dirNext.x === - (this.GRID_WIDTH - 1) || dirNext.x === 1) outOfBoundNextX = 1; else if (dirNext.x === this.GRID_WIDTH - 1 || dirNext.x === -1) outOfBoundNextX = -1;
-
-            let outOfBoundNextY;
-            if (dirNext.y === - (this.GRID_HEIGHT - 1) || dirNext.y === 1) outOfBoundNextY = 1; else if (dirNext.y === this.GRID_HEIGHT - 1 || dirNext.y === -1) outOfBoundNextY = -1;
-
-            let bodySprite;
-
-            // Straight segments
-            if (dirPrev.x === dirNext.x) {
-                // horizontal
-                bodySprite = (dirPrev.x !== 0) ? this.sprites.SnakeBodyRight : this.sprites.SnakeBody;
-            } else if (dirPrev.y === dirNext.y) {
-                // vertical
-                bodySprite = (dirPrev.y !== 0) ? this.sprites.SnakeBody : this.sprites.SnakeBodyRight;
-            } else {
-                // ===== CORNERS =====
-                if (
-                (outOfBoundNextY === -1 && outOfBoundPrevX === -1) ||
-                (outOfBoundNextX === 1 && outOfBoundPrevY === 1) 
-                ) {
-                bodySprite = this.sprites.SnakeCornerLeftDown;
-
-                } else if (
-                (outOfBoundNextY === -1 && outOfBoundPrevX === 1) ||
-                (outOfBoundNextX === -1 && outOfBoundPrevY === 1) 
-                ) {
-                bodySprite = this.sprites.SnakeCornerRightDown;
-                } else if (
-                (outOfBoundNextY === 1 && outOfBoundPrevX === -1) ||
-                (outOfBoundNextX === 1 && outOfBoundPrevY === -1) 
-                ) {
-                bodySprite = this.sprites.SnakeCornerLeftUp;
-                } else if (
-                (outOfBoundNextY === 1 && outOfBoundPrevX === 1) ||
-                (outOfBoundNextX === -1 && outOfBoundPrevY === -1) 
-                ) {
-                bodySprite = this.sprites.SnakeCornerRightUp;
-                }
-            }
-
-            // Draw body
-            if (bodySprite?.complete) {
-                this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
-            } else {
-                this.ctx.fillStyle = "#006400";
-                this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
-            }
+          if (outOfBoundX === 1) { // Going East turning North
+            headSprite = this.sprites.SnakeHeadCorner1
+          } else if (outOfBoundX === -1) { // Going West turning North
+            headSprite = this.sprites.SnakeHeadCorner5
+          } else { //Straight going North
+            headSprite = this.sprites.SnakeHead;
+          }
         }
 
-      });
+        if (headSprite?.complete && headSprite) {
+          this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+        } else {
+          this.ctx.fillStyle = "#32cd32";
+          this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+          this.drawPixelSnakeFace(x, y, this.snakeFace);
+        }
+      } else if (index === this.snake.length - 1) {
+        // ===== TAIL =====
+        const prev = this.snake[index - 1];
+        const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
+
+        let outOfBoundPrevX;
+        if (dirPrev.x === - (this.GRID_WIDTH - 1) || dirPrev.x === 1) outOfBoundPrevX = 1; else if (dirPrev.x === this.GRID_WIDTH - 1 || dirPrev.x === -1) outOfBoundPrevX = -1;
+
+        let outOfBoundPrevY;
+        if (dirPrev.y === - (this.GRID_HEIGHT - 1) || dirPrev.y === 1) outOfBoundPrevY = 1; else if (dirPrev.y === this.GRID_HEIGHT - 1 || dirPrev.y === -1) outOfBoundPrevY = -1;
+
+        let tailSprite = this.sprites.SnakeTail; // default (North)
+        if (outOfBoundPrevX === -1) tailSprite = this.sprites.SnakeTailRight;
+        else if (outOfBoundPrevX === 1) tailSprite = this.sprites.SnakeTailLeft;
+        else if (outOfBoundPrevY === -1) tailSprite = this.sprites.SnakeTailDown;
+        else tailSprite = this.sprites.SnakeTail;
+
+        if (tailSprite?.complete) {
+          this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+        } else {
+          this.ctx.fillStyle = "#228b22";
+          this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+        }
+      } else {
+        // ===== BODY =====
+        const prev = this.snake[index - 1];
+        const next = this.snake[index + 1];
+
+        const dirPrev = { x: segment.x - prev.x, y: segment.y - prev.y };
+        const dirNext = { x: next.x - segment.x, y: next.y - segment.y };
+
+        let outOfBoundPrevX;
+        if (dirPrev.x === - (this.GRID_WIDTH - 1) || dirPrev.x === 1) outOfBoundPrevX = 1; else if (dirPrev.x === this.GRID_WIDTH - 1 || dirPrev.x === -1) outOfBoundPrevX = -1;
+
+        let outOfBoundPrevY;
+        if (dirPrev.y === - (this.GRID_HEIGHT - 1) || dirPrev.y === 1) outOfBoundPrevY = 1; else if (dirPrev.y === this.GRID_HEIGHT - 1 || dirPrev.y === -1) outOfBoundPrevY = -1;
+
+        let outOfBoundNextX;
+        if (dirNext.x === - (this.GRID_WIDTH - 1) || dirNext.x === 1) outOfBoundNextX = 1; else if (dirNext.x === this.GRID_WIDTH - 1 || dirNext.x === -1) outOfBoundNextX = -1;
+
+        let outOfBoundNextY;
+        if (dirNext.y === - (this.GRID_HEIGHT - 1) || dirNext.y === 1) outOfBoundNextY = 1; else if (dirNext.y === this.GRID_HEIGHT - 1 || dirNext.y === -1) outOfBoundNextY = -1;
+
+        let bodySprite;
+
+        // Straight segments
+        if (dirPrev.x === dirNext.x) {
+          // horizontal
+          bodySprite = (dirPrev.x !== 0) ? this.sprites.SnakeBodyRight : this.sprites.SnakeBody;
+        } else if (dirPrev.y === dirNext.y) {
+          // vertical
+          bodySprite = (dirPrev.y !== 0) ? this.sprites.SnakeBody : this.sprites.SnakeBodyRight;
+        } else {
+          // ===== CORNERS =====
+          if (
+            (outOfBoundNextY === -1 && outOfBoundPrevX === -1) ||
+            (outOfBoundNextX === 1 && outOfBoundPrevY === 1)
+          ) {
+            bodySprite = this.sprites.SnakeCornerLeftDown;
+
+          } else if (
+            (outOfBoundNextY === -1 && outOfBoundPrevX === 1) ||
+            (outOfBoundNextX === -1 && outOfBoundPrevY === 1)
+          ) {
+            bodySprite = this.sprites.SnakeCornerRightDown;
+          } else if (
+            (outOfBoundNextY === 1 && outOfBoundPrevX === -1) ||
+            (outOfBoundNextX === 1 && outOfBoundPrevY === -1)
+          ) {
+            bodySprite = this.sprites.SnakeCornerLeftUp;
+          } else if (
+            (outOfBoundNextY === 1 && outOfBoundPrevX === 1) ||
+            (outOfBoundNextX === -1 && outOfBoundPrevY === -1)
+          ) {
+            bodySprite = this.sprites.SnakeCornerRightUp;
+          }
+        }
+
+        // Draw body
+        if (bodySprite?.complete) {
+          this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+        } else {
+          this.ctx.fillStyle = "#006400";
+          this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
+        }
+      }
+
+    });
 
     // Use shield pickup icon if present
     if (this.shieldPickup) {
@@ -1516,7 +1516,7 @@ showGameOver() {
 
       const shieldSprite = this.sprites["shield"]
       this.ctx.drawImage(shieldSprite, px, py, this.GRID_SIZE, this.GRID_SIZE)
-      }
+    }
 
 
     this.apples.forEach((apple) => {
@@ -1593,8 +1593,8 @@ showGameOver() {
       this.ctx.fillText("PAUSED", this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2)
     }
 
-  if (!this.paused) {
-      const marginDown = 20 
+    if (!this.paused) {
+      const marginDown = 20
       const bar = this.sprintBar
       const barY = bar.y + marginDown
       this.ctx.fillStyle = "#222"
@@ -1616,7 +1616,7 @@ showGameOver() {
       this.ctx.fillStyle = "#fff"
       this.ctx.fillText("SPRINT", bar.x + 6, barY - 7)
     }
-}
+  }
 
   gameLoop(timestamp = 0) {
     if (!this.gameRunning) return
@@ -1661,7 +1661,7 @@ showGameOver() {
 
   setDifficultySettings() {
     const difficultyConfig = {
-        easy: {
+      easy: {
         gridSize: 40,
         baseSpeed: 5.5,
         speedIncrease: 0.35,
@@ -1774,38 +1774,38 @@ showGameOver() {
   }
 }
 
-      const aboutModal = document.getElementById("about-modal");
-      const closeAbout = document.getElementById("close-about");
-      const aboutBtn = document.getElementById("about-btn");
+const aboutModal = document.getElementById("about-modal");
+const closeAbout = document.getElementById("close-about");
+const aboutBtn = document.getElementById("about-btn");
 
-      if (aboutBtn) {
-        aboutBtn.addEventListener("click", () => {
-          aboutModal.classList.remove("hidden");
-        });
-      }
+if (aboutBtn) {
+  aboutBtn.addEventListener("click", () => {
+    aboutModal.classList.remove("hidden");
+  });
+}
 
-      if (closeAbout) {
-        closeAbout.addEventListener("click", () => {
-          aboutModal.classList.add("hidden");
-        });
-      }
+if (closeAbout) {
+  closeAbout.addEventListener("click", () => {
+    aboutModal.classList.add("hidden");
+  });
+}
 
 
-    const copyrightModal = document.getElementById("copyright-modal");
-    const closeCopyright = document.getElementById("close-copyright");
-    const copyrightBtn = document.getElementById("copyright-btn"); // You can place a button in header/footer
+const copyrightModal = document.getElementById("copyright-modal");
+const closeCopyright = document.getElementById("close-copyright");
+const copyrightBtn = document.getElementById("copyright-btn"); // You can place a button in header/footer
 
-    if (copyrightBtn) {
-    copyrightBtn.addEventListener("click", () => {
-        copyrightModal.classList.remove("hidden");
-    });
-    }
+if (copyrightBtn) {
+  copyrightBtn.addEventListener("click", () => {
+    copyrightModal.classList.remove("hidden");
+  });
+}
 
-    if (closeCopyright) {
-    closeCopyright.addEventListener("click", () => {
-        copyrightModal.classList.add("hidden");
-    });
-    }
+if (closeCopyright) {
+  closeCopyright.addEventListener("click", () => {
+    copyrightModal.classList.add("hidden");
+  });
+}
 
 
 document.addEventListener("DOMContentLoaded", () => {

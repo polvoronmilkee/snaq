@@ -9,19 +9,19 @@ class LandingPage {
     this.selectedDifficulty = null
     this.backgroundMusic = new Audio("assets/sounds/bg-music.mp3")
     this.backgroundMusic.loop = true
-    this.musicEnabled = localStorage.getItem("musicEnabled") !==  "false"
+    this.musicEnabled = localStorage.getItem("musicEnabled") !== "false"
     this.soundEnabled = localStorage.getItem("soundEnabled") !== "false" // default true
     this.clickSound = new Audio("assets/sounds/click.mp3")
-    
+
     // Skin system
     this.points = parseInt(localStorage.getItem("totalPoints")) || 0
     this.ownedSkins = JSON.parse(localStorage.getItem("ownedSkins")) || ["green"]
     this.selectedSkin = localStorage.getItem("selectedSkin") || "green"
-    
+
     this.init()
   }
 
-  
+
 
   init() {
     this.bindEvents()
@@ -45,17 +45,17 @@ class LandingPage {
 
       if (this.musicEnabled) {
         this.backgroundMusic.volume = 0.1;
-        this.backgroundMusic.play().catch((e) => {})
+        this.backgroundMusic.play().catch((e) => { })
       }
     }
 
     document.querySelectorAll("button").forEach((btn) => {
-    btn.addEventListener("click", () => {
+      btn.addEventListener("click", () => {
         if (this.soundEnabled && this.clickSound) {
-        this.clickSound.currentTime = 0 // restart if spam clicked
-        this.clickSound.play()
+          this.clickSound.currentTime = 0 // restart if spam clicked
+          this.clickSound.play()
         }
-    })
+      })
     })
 
   }
@@ -64,7 +64,7 @@ class LandingPage {
     if (this.soundEnabled && this.clickSound) {
       const sfx = this.clickSound.cloneNode(true) // new audio element
       sfx.volume = 0.5
-      sfx.play().catch(e => {})
+      sfx.play().catch(e => { })
       sfx.addEventListener("ended", () => sfx.remove())
     }
   }
@@ -148,18 +148,18 @@ class LandingPage {
 
     const copyrightModal = $$("copyright-modal");
     const closeCopyright = $$("close-copyright");
-    const copyrightBtn = $$("copyright-btn"); 
+    const copyrightBtn = $$("copyright-btn");
 
     if (copyrightBtn) {
-    copyrightBtn.addEventListener("click", () => {
+      copyrightBtn.addEventListener("click", () => {
         copyrightModal.classList.remove("hidden");
-    });
+      });
     }
 
     if (closeCopyright) {
-    closeCopyright.addEventListener("click", () => {
+      closeCopyright.addEventListener("click", () => {
         copyrightModal.classList.add("hidden");
-    });
+      });
     }
 
     if (aboutBtn) {
@@ -296,7 +296,7 @@ class LandingPage {
       musicBtn.classList.toggle("active", this.musicEnabled)
 
       if (this.musicEnabled) {
-        this.backgroundMusic.play().catch((e) => {})
+        this.backgroundMusic.play().catch((e) => { })
       } else {
         this.backgroundMusic.pause()
       }
@@ -307,7 +307,7 @@ class LandingPage {
     // Find the actual button element (handles clicks on child elements)
     const btn = e.target.closest('.category-btn');
     if (!btn) return;
-    
+
     document.querySelectorAll(".category-btn").forEach((btn) => {
       btn.classList.remove("selected");
     });
@@ -414,7 +414,7 @@ class LandingPage {
     skinItems.forEach(item => {
       const skinName = item.dataset.skin
       const skinStatus = item.querySelector(".skin-status")
-      
+
       if (this.ownedSkins.includes(skinName)) {
         // Skin is owned
         const isSelected = skinName === this.selectedSkin
@@ -424,7 +424,7 @@ class LandingPage {
             ${isSelected ? 'Selected' : 'Select'}
           </button>
         `
-        
+
         // Add event listener to select button
         const selectBtn = skinStatus.querySelector(".select-skin-btn")
         if (selectBtn && !isSelected) {
@@ -437,14 +437,14 @@ class LandingPage {
         // Skin is not owned, show price and buy button
         const price = this.getSkinPrice(skinName)
         const canAfford = this.points >= price
-        
+
         skinStatus.innerHTML = `
           <span class="skin-price">${price} points</span>
           <button class="buy-skin-btn" data-skin="${skinName}" data-price="${price}" ${!canAfford ? 'disabled' : ''}>
             ${canAfford ? 'Buy' : 'Not Enough Points'}
           </button>
         `
-        
+
         // Add event listener to buy button
         const buyBtn = skinStatus.querySelector(".buy-skin-btn")
         if (buyBtn) {
@@ -471,13 +471,13 @@ class LandingPage {
     if (this.ownedSkins.includes(skinName)) {
       this.selectedSkin = skinName
       localStorage.setItem("selectedSkin", skinName)
-      
+
       // Update display
       this.updateSkinShopDisplay()
-      
+
       // Play sound
       this.playClickSound()
-      
+
       // Show notification
       this.showNotification(`🎨 ${skinName.charAt(0).toUpperCase() + skinName.slice(1)} skin selected!`)
     }
@@ -488,7 +488,7 @@ class LandingPage {
     if (skinShopModal) {
       skinShopModal.classList.remove("hidden")
       this.updateSkinShopDisplay()
-      
+
       // Update points display
       const pointsDisplay = $$("current-points")
       if (pointsDisplay) {
@@ -509,23 +509,23 @@ class LandingPage {
       // Deduct points
       this.points -= price
       localStorage.setItem("totalPoints", this.points.toString())
-      
+
       // Add skin to owned skins
       this.ownedSkins.push(skinName)
       localStorage.setItem("ownedSkins", JSON.stringify(this.ownedSkins))
-      
+
       // Update display
       this.updateSkinShopDisplay()
-      
+
       // Update points display
       const pointsDisplay = $$("current-points")
       if (pointsDisplay) {
         pointsDisplay.textContent = this.points
       }
-      
+
       // Play sound
       this.playClickSound()
-      
+
       // Show notification
       this.showNotification(`🎉 ${skinName.charAt(0).toUpperCase() + skinName.slice(1)} skin purchased!`)
     }
@@ -553,11 +553,11 @@ class LandingPage {
       `
       document.body.appendChild(notification)
     }
-    
+
     // Set message and show
     notification.textContent = message
     notification.style.transform = "translateX(0)"
-    
+
     // Hide after 3 seconds
     setTimeout(() => {
       notification.style.transform = "translateX(100%)"

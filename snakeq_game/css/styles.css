@@ -5,11 +5,13 @@
 * {
   box-sizing: border-box;
 }
-html, body {
+
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%; 
+  height: 100%;
   overflow-x: hidden;
 }
 
@@ -35,7 +37,7 @@ body::before {
   image-rendering: pixelated;
   filter: blur(4px);
   transform: scale(1.05);
-  z-index: -1; 
+  z-index: -1;
 }
 
 .pixel-border {
@@ -151,7 +153,7 @@ body::before {
   min-height: 100vh;
   overflow: hidden;
   text-align: center;
-  justify-content: center ;
+  justify-content: center;
   align-items: center;
   align-self: center;
   display: flex;
@@ -163,11 +165,11 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-   background-size: cover;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: blur(4px); 
-  transform: scale(1.05);  
+  filter: blur(4px);
+  transform: scale(1.05);
   z-index: 1;
 }
 
@@ -190,7 +192,7 @@ body::before {
   justify-content: center;
   height: 100vh;
   padding: 20px;
-  padding-top: 100px; 
+  padding-top: 100px;
 }
 
 .game-header {
@@ -207,7 +209,7 @@ body::before {
 }
 
 .logo-icon {
-  width: 30vw;   
+  width: 30vw;
   max-width: 240px;
   height: auto;
   image-rendering: pixelated;
@@ -216,6 +218,7 @@ body::before {
 .logo {
   font-size: clamp(1.5rem, 4vw, 3rem);
 }
+
 .sn {
   color: #32cd32;
 }
@@ -378,6 +381,7 @@ body::before {
   height: 35px;
   image-rendering: pixelated;
 }
+
 .play-btn {
   background: #32cd32;
   border: 4px solid #228b22;
@@ -523,7 +527,7 @@ body::before {
 }
 
 .big-juice {
-  font-size: 20px; 
+  font-size: 20px;
 }
 
 .about-name {
@@ -574,7 +578,7 @@ body::before {
   margin-bottom: 16px;
   max-width: 850px;
   background-image: url("../assets/icons/Tile.png");
-  background-size: 10% ;
+  background-size: 10%;
   background-repeat: repeat;
   image-rendering: pixelated;
   width: 100%;
@@ -609,6 +613,7 @@ body::before {
   color: #e0c490;
   margin-top: 8px;
 }
+
 .shift {
   color: rgb(145, 242, 242);
 }
@@ -619,43 +624,45 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8); 
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  
+
 }
 
 .modal h2 {
-    font-size: 18px;
-    color: #4fff4f;  
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 0px #000;
+  font-size: 18px;
+  color: #4fff4f;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 0px #000;
 }
 
 .modal h3 {
-    font-size: 14px;
-    margin: 16px 0 10px;
-    color: #fff;
-    text-shadow: 1px 1px 0px #000;
+  font-size: 14px;
+  margin: 16px 0 10px;
+  color: #fff;
+  text-shadow: 1px 1px 0px #000;
 }
 
 .button-group {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
 }
+
 .modal-content {
-  background: #1e1e1e;             
-  border: 2px solid #2f2f2f;     
+  background: #1e1e1e;
+  border: 2px solid #2f2f2f;
   max-width: 360px;
   margin: auto;
   text-align: center;
-  box-shadow: 6px 6px 0px #000;  
+  box-shadow: 6px 6px 0px #000;
   padding: 16px;
 }
+
 .modal-content h3 {
   font-size: 20px;
   color: #32cd32;
@@ -668,7 +675,7 @@ body::before {
   color: #32cd32;
   font-size: 14px;
   margin-bottom: 25px;
-    
+
 }
 
 .setting-group {
@@ -694,12 +701,15 @@ body::before {
   height: 2px;
   background: #555;
 }
+
 .setting-group h4::before {
   left: -50px;
 }
+
 .setting-group h4::after {
   right: -50px;
 }
+
 .mode-buttons,
 .difficulty-buttons {
   display: flex;
@@ -708,6 +718,7 @@ body::before {
   margin-top: 12px;
   flex-wrap: wrap;
 }
+
 .pixel-btn {
   background: #2a2a2a;
   border: 2px solid #666;
@@ -720,6 +731,7 @@ body::before {
   min-width: 120px;
   box-shadow: 3px 3px 0 #000;
 }
+
 .pixel-btn:hover {
   background: #444;
   transform: translate(2px, 2px);
@@ -743,6 +755,7 @@ body::before {
 .hard.selected {
   background: #ff4444;
 }
+
 .modal-actions {
   display: flex;
   justify-content: center;
@@ -793,15 +806,15 @@ body::before {
   padding: 24px;
   text-align: center;
   max-width: 300px;
- 
-   
+
+
 }
 
 .overlay-content h2 {
   font-size: 16px;
   margin-bottom: 16px;
-  word-wrap: break-word;      
-  overflow-wrap: break-word; 
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   white-space: pre-line;
   padding: 24px;
 }
@@ -809,27 +822,27 @@ body::before {
 .overlay-content h2.won {
   color: #32cd32;
   padding: 24px;
-  word-wrap: break-word;      
-  overflow-wrap: break-word; 
-  white-space: pre-line;  
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-line;
 }
 
 .overlay-content h2.lost {
   color: #ff4444;
   padding: 24px;
-  word-wrap: break-word;      
-  overflow-wrap: break-word; 
-  white-space: pre-line;  
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-line;
 
 }
 
 .overlay-content p {
   font-size: 11px;
-  margin-bottom:30px;
+  margin-bottom: 30px;
   color: #ccc;
-  word-wrap: break-word;      
-  overflow-wrap: break-word; 
-  white-space: normal;  
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .btn {
@@ -1013,113 +1026,113 @@ body::before {
 }
 
 .game-container {
-    padding: 100px 20px 40px;
-    min-height: 100vh;
-    overflow-y: auto;
+  padding: 100px 20px 40px;
+  min-height: 100vh;
+  overflow-y: auto;
 }
 
 .game-board {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
-    margin-top: auto;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: auto;
 }
 
 
 .pixel-question {
-    background: #0a612c;
-    color: #fff;
-    padding: 16px 20px;
-    border: 2px solid #fff;
-    font-size: 18px;
-    text-align: center;
-    margin-bottom: 20px;
-    line-height: 1.6\1;
-    min-height:30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background: #0a612c;
+  color: #fff;
+  padding: 16px 20px;
+  border: 2px solid #fff;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 20px;
+  line-height: 1.6\1;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 
 .pixel-hud {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 15px;
-    flex-wrap: wrap;
-    padding-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px;
+  flex-wrap: wrap;
+  padding-bottom: 10px;
 }
 
 .pixel-stat {
-    padding: 10px 14px;
-    font-size: 12px;
-    background: #000;
-    color: #fff;
-    border: 2px solid #fff;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    min-width: 140px;
+  padding: 10px 14px;
+  font-size: 12px;
+  background: #000;
+  color: #fff;
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 140px;
 }
 
 
 .options-container {
-    background: #1a1a1a;
-    padding: 15px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  background: #1a1a1a;
+  padding: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .option-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    background: #333;
-    border: 1px solid #555;
-    font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #333;
+  border: 1px solid #555;
+  font-size: 14px;
 }
 
 .option-text {
-    color: #fff;
-    font-size: 16px;
-    flex: 1;
-    font-weight: bold;
+  color: #fff;
+  font-size: 16px;
+  flex: 1;
+  font-weight: bold;
 }
 
 .pixel-instructions {
-    background: #1a1a1a;
-    padding: 12px 16px;
-    border: 2px solid #333;
-    font-size: 12px;
-    line-height: 1.4;
-    text-align: center;
+  background: #1a1a1a;
+  padding: 12px 16px;
+  border: 2px solid #333;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .pixel-instructions p {
-    margin: 8px 0;
+  margin: 8px 0;
 }
 
 
 .hearts-container {
-    display: flex;
-    gap: 5px;
-    align-items: center;
+  display: flex;
+  gap: 5px;
+  align-items: center;
 }
 
 .heart {
-    width: 16px;
-    height: 16px;
-    position: relative;
-    display: inline-block;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    image-rendering: pixelated;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  display: inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
 }
 
 .heart.filled {
@@ -1131,31 +1144,31 @@ body::before {
 }
 
 .shield-indicator {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 10px;
 }
 
 .shield-icon {
-    width: 16px;
-    height: 16px;
-    image-rendering: pixelated;
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
 }
 
 .timer.pixel-stat {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #timer-display {
-    display: flex;
+  display: flex;
 }
 
 
 #countdown-overlay {
-    z-index: 2000;
+  z-index: 2000;
 }
 
 
@@ -1204,7 +1217,7 @@ body::before {
     width: 100%;
     justify-content: center;
   }
-  
+
   .logo {
     font-size: 2rem;
   }
@@ -1216,10 +1229,10 @@ body::before {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 60px); 
+    min-height: calc(100vh - 60px);
     width: 100%;
-    max-width: 1200px;  
-    margin: 0 auto;      
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 20px;
   }
 
@@ -1236,8 +1249,8 @@ body::before {
   }
 
   .big-infinity {
-  font-size: 15px; 
-}
+    font-size: 15px;
+  }
 
   .game-actions {
     flex-direction: column;
@@ -1484,7 +1497,7 @@ body::before {
   .skins-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .skin-shop-content {
     padding: 20px;
     margin: 20px;
