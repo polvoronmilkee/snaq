@@ -1,6 +1,8 @@
 import wordSets from "../../shared/gamesQuestions/englishQuestions.js"
 class SnakeEnglishGame {
     constructor() {
+
+        
         // Game constants
         this.gameSettings = JSON.parse(localStorage.getItem("gameSettings")) || {
             mode: "quiz",
@@ -118,8 +120,7 @@ class SnakeEnglishGame {
         this.init()
     }
 
-
-
+    
     loadSprites() {
         const skinPath = `../../assets/images/snake-skins/${this.selectedSkin}_snake`
         const spritePaths = {
@@ -354,7 +355,68 @@ class SnakeEnglishGame {
                 this.paused = true;
             }
         });
+
+        const canvasContainer = document.querySelector(".canvas-container");
+
+        const tryActivateSprint = () => {
+            // Only activate sprint if game is not paused and snake is moving
+            if (!this.paused && this.sprint.energy > 0 && this.direction) {
+                this.sprint.active = true;
+                this.sounds.shift.currentTime = 0;
+                this.sounds.shift.play();
+            }
+        };
+
+        canvasContainer.addEventListener("mousedown", tryActivateSprint);
+        canvasContainer.addEventListener("touchstart", tryActivateSprint);
+
+        // Stop sprint on release
+        const stopSprint = () => {
+            this.sprint.active = false;
+        };
+
+        canvasContainer.addEventListener("mouseup", stopSprint);
+        canvasContainer.addEventListener("touchend", stopSprint);
+
+        // --- Mobile Swipe Controls ---
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        const minSwipeDistance = 30; // minimum distance in pixels to count as swipe
+
+        document.querySelector(".canvas-container").addEventListener("touchstart", (e) => {
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+        });
+
+        canvasContainer.addEventListener("touchend", (e) => {
+            const touch = e.changedTouches[0];
+            touchEndX = touch.clientX;
+            touchEndY = touch.clientY;
+
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+
+            // Ignore small swipes
+            if (Math.abs(deltaX) < minSwipeDistance && Math.abs(deltaY) < minSwipeDistance) return;
+
+            // Determine swipe direction
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Horizontal swipe
+                if (deltaX > 0 && this.direction.x === 0) this.direction = { x: 1, y: 0 }; // right
+                else if (deltaX < 0 && this.direction.x === 0) this.direction = { x: -1, y: 0 }; // left
+            } else {
+                // Vertical swipe
+                if (deltaY > 0 && this.direction.y === 0) this.direction = { x: 0, y: 1 }; // down
+                else if (deltaY < 0 && this.direction.y === 0) this.direction = { x: 0, y: -1 }; // up
+            }
+        });
+
     }
+
+
 
 
     showEscMenu() {
@@ -432,10 +494,6 @@ class SnakeEnglishGame {
             const optionText = document.createElement("span")
             optionText.className = "option-text"
             optionText.textContent = option
-            // Make answers larger and more readable
-            optionText.style.fontSize = "15px"
-            optionText.style.lineHeight = "1.4"
-            optionText.style.fontWeight = "600"
 
             optionDiv.appendChild(appleIcon)
             optionDiv.appendChild(optionText)
@@ -595,6 +653,7 @@ class SnakeEnglishGame {
             }
         }, 1000);
     }
+    
 
     handleKeyDown(e) {
         const key = e.key.toLowerCase()
@@ -628,6 +687,7 @@ class SnakeEnglishGame {
         if (!this.gameRunning && key !== "r") return
 
         let moved = false
+
 
         if (code === "Space" || key === " ") {
             e.preventDefault()
@@ -1002,10 +1062,6 @@ class SnakeEnglishGame {
             this.showNotification("Shield appeared!✨", "correct")
         }
     }
-
-
-
-
 
     showGameOver() {
         // Stop timer
