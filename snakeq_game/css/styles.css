@@ -1171,102 +1171,6 @@ body::before {
   z-index: 2000;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .game-container {
-    padding: 80px 10px 20px;
-  }
-
-  .game-board {
-    padding: 16px;
-  }
-
-  .pixel-hud {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .pixel-stat {
-    min-width: auto;
-    width: 100%;
-    justify-content: center;
-    text-align: center;
-  }
-
-  #game-canvas {
-    width: 100%;
-    height: auto;
-  }
-
-  .category-buttons {
-    display: flex;
-    gap: 24px;
-    margin-bottom: 24px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .menu-options {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin: 20px 0;
-  }
-
-  .menu-options .btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .logo {
-    font-size: 2rem;
-  }
-
-  .main-content {
-    position: relative;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: calc(100vh - 60px);
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-
-  .option-item {
-    font-size: 8px;
-    padding: 6px 8px;
-    gap: 6px;
-  }
-
-  .apple-icon {
-    width: 20px;
-    height: 20px;
-    font-size: 8px;
-  }
-
-  .big-infinity {
-    font-size: 15px;
-  }
-
-  .game-actions {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .skin-shop-btn {
-    width: 60px;
-    height: 60px;
-    justify-content: center;
-    padding: 12px;
-    font-size: 8px;
-  }
-
-}
-
 /* Skin Shop Modal Styles */
 .skin-shop-modal {
   position: fixed;
@@ -1492,18 +1396,6 @@ body::before {
 .close-skin-shop:hover {
   background: #cc0000;
   transform: translateY(-1px);
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .skins-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .skin-shop-content {
-    padding: 20px;
-    margin: 20px;
-  }
 }
 
 /* Shop Styles */
@@ -1955,41 +1847,6 @@ body::before {
     display: block;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .shop-container {
-    flex-direction: column;
-  }
-  
-  .shop-sidebar {
-    width: 100%;
-    margin-bottom: 15px;
-    flex-direction: row;
-    justify-content: center;
-  }
-  
-  .shop-main {
-    width: 100%;
-  }
-  
-  .skins-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .inventory-tabs {
-      flex-wrap: wrap;
-  }
-    
-  .inventory-tab {
-    font-size: 8px;
-    padding: 6px 10px;
-  }
-  
-  .skins-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* Game Menu Styles */
 .game-menu {
   position: fixed;
@@ -2055,6 +1912,139 @@ body::before {
 }
 
 @media (max-width: 768px) {
+  .game-container {
+    padding: 80px 10px 20px;
+  }
+
+  .game-board {
+    padding: 16px;
+  }
+
+  .pixel-hud {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pixel-stat {
+    min-width: auto;
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  #game-canvas {
+    width: 100%;
+    height: auto;
+  }
+
+  .category-buttons {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .menu-options .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .logo {
+    font-size: 2rem;
+  }
+
+  .main-content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 60px);
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .option-item {
+    font-size: 8px;
+    padding: 6px 8px;
+    gap: 6px;
+  }
+
+  .apple-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 8px;
+  }
+
+  .big-infinity {
+    font-size: 15px;
+  }
+
+  .game-actions {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .skin-shop-btn {
+    width: 60px;
+    height: 60px;
+    justify-content: center;
+    padding: 12px;
+    font-size: 8px;
+  }
+
+  .skins-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skin-shop-content {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  .shop-container {
+    flex-direction: column;
+  }
+  
+  .shop-sidebar {
+    width: 100%;
+    margin-bottom: 15px;
+    flex-direction: row;
+    justify-content: center;
+  }
+  
+  .shop-main {
+    width: 100%;
+  }
+  
+  .skins-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inventory-tabs {
+      flex-wrap: wrap;
+  }
+    
+  .inventory-tab {
+    font-size: 8px;
+    padding: 6px 10px;
+  }
+  
+  .skins-grid {
+    grid-template-columns: 1fr;
+  }
+
   .menu-content {
     width: 90%;
     padding: 20px;
