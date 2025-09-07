@@ -1,4 +1,4 @@
-import wordSets from "../../shared/gamesQuestions/englishQuestions.js"
+import wordSets from "../../shared/gamesQuestions/english-question.js"
 class SnakeEnglishGame {
     constructor() {
 

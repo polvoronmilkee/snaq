@@ -1,4 +1,4 @@
-import scienceSets from "../../shared/gamesQuestions/scienceQuestions.js"
+import scienceSets from "../../shared/gamesQuestions/science-question.js"
 import { generateQuestion } from "../../shared/questionsUtils.js"
 class SnakeScienceGame {
     constructor() {

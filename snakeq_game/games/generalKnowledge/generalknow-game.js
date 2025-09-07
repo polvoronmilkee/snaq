@@ -1,4 +1,4 @@
-import gkSets from "../../shared/gamesQuestions/generalKnowQuestions.js"
+import gkSets from "../../shared/gamesQuestions/generalKnow-question.js"
 import { generateQuestion } from "../../shared/questionsUtils.js"
 class SnakeGeneralKnowledgeGame {
     constructor() {
