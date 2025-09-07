@@ -1171,8 +1171,6 @@ body::before {
   z-index: 2000;
 }
 
-
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .game-container {
@@ -1903,4 +1901,120 @@ body::before {
     font-size: 10px;
     padding: 10px;
   }
+}
+
+#notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #4CAF50;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 10000;
+  font-weight: bold;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  transform: translateX(120%);
+  transition: transform 0.3s ease;
+  border: 2px solid #2e7d32;
+  max-width: 250px;
+  word-wrap: break-word;
+}
+
+#notification.hidden {
+  display: none;
+}
+
+#notification.show {
+  transform: translateX(0);
+}
+
+/* Hide scrollbars but maintain scrolling functionality globally */
+html, body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Game-specific containers that need scrolling */
+.game-container,
+.canvas-container,
+.skin-shop-content,
+.instructions-content,
+.about-content,
+.modal-content,
+.overlay-content,
+.menu-content,
+.options-container {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  overflow-y: auto;
+}
+
+.game-container::-webkit-scrollbar,
+.canvas-container::-webkit-scrollbar,
+.skin-shop-content::-webkit-scrollbar,
+.instructions-content::-webkit-scrollbar,
+.about-content::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar,
+.overlay-content::-webkit-scrollbar,
+.menu-content::-webkit-scrollbar,
+.options-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Ensure scrolling is smooth */
+.game-container,
+.skin-shop-content,
+.instructions-content {
+  -webkit-overflow-scrolling: touch;
+}
+
+.math-game .game-board,
+.math-game .options-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.math-game .game-board::-webkit-scrollbar,
+.math-game .options-container::-webkit-scrollbar {
+  display: none;
+}
+
+.english-game .game-board,
+.english-game .options-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.english-game .game-board::-webkit-scrollbar,
+.english-game .options-container::-webkit-scrollbar {
+  display: none;
+}
+
+.science-game .game-board,
+.science-game .options-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.science-game .game-board::-webkit-scrollbar,
+.science-game .options-container::-webkit-scrollbar {
+  display: none;
+}
+
+.generalknow-game .game-board,
+.generalknow-game .options-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.generalknow-game .game-board::-webkit-scrollbar,
+.generalknow-game .options-container::-webkit-scrollbar {
+  display: none;
 }

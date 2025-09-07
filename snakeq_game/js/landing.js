@@ -694,7 +694,7 @@ class LandingPage {
     }
     
     this.playClickSound();
-    this.showNotification(`🎨 ${this.getItemName(category, itemId)} selected!`);
+    this.showNotification(`${this.getItemName(category, itemId)} selected!`);
   }
   
   getItemName(category, itemId) {
@@ -790,35 +790,22 @@ class LandingPage {
     if (!notification) {
       notification = document.createElement("div");
       notification.id = "notification";
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 0px;
-        background: #4CAF50;
-        color: white;
-        padding: 15px 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        z-index: 10000;
-        font-weight: bold;
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
-      `;
+      notification.className = "hidden";
       document.body.appendChild(notification);
     }
     
     // Set message and show
     notification.textContent = message;
     notification.classList.remove("hidden");
-    notification.style.transform = "translateX(0)";
+    notification.classList.add("show");
     
-    // Hide after 3 seconds
+    // Hide after 2 seconds
     setTimeout(() => {
-      notification.style.transform = "translateX(100%)";
+      notification.classList.remove("show");
       setTimeout(() => {
         notification.classList.add("hidden");
-      }, 300);
-    }, 3000);
+      }, 1000);
+    }, 2000);
   }
 }
 
