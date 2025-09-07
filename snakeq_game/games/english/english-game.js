@@ -1,6 +1,8 @@
 import wordSets from "../../shared/gamesQuestions/englishQuestions.js"
 class SnakeEnglishGame {
     constructor() {
+
+        
         // Game constants
         this.gameSettings = JSON.parse(localStorage.getItem("gameSettings")) || {
             mode: "quiz",
@@ -117,8 +119,6 @@ class SnakeEnglishGame {
         this.initDOM()
         this.init()
     }
-
-
 
     
     loadSprites() {
@@ -417,6 +417,8 @@ class SnakeEnglishGame {
     }
 
 
+
+
     showEscMenu() {
         if (this.gameRunning && !this.paused && !this.countdownActive &&
             this.restartConfirm.classList.contains("hidden")) {
@@ -652,6 +654,7 @@ class SnakeEnglishGame {
             }
         }, 1000);
     }
+    
 
     handleKeyDown(e) {
         const key = e.key.toLowerCase()
@@ -685,6 +688,7 @@ class SnakeEnglishGame {
         if (!this.gameRunning && key !== "r") return
 
         let moved = false
+
 
         if (code === "Space" || key === " ") {
             e.preventDefault()
@@ -1059,10 +1063,6 @@ class SnakeEnglishGame {
             this.showNotification("Shield appeared!✨", "correct")
         }
     }
-
-
-
-
 
     showGameOver() {
         // Stop timer
