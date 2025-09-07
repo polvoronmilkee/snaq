@@ -53,12 +53,21 @@
     <div id="skin-shop-modal" class="skin-shop-modal hidden">
         <div class="skin-shop-content pixel-border">
             <div class="shop-header">
-                <h2 class="shop-title">SNAQ SHOP</h2>
-                <div class="points-display pixel-stat">
-                    <span class="points-label">Your Points:</span>
+                
+                
+                <div class="pixel-stat">
+                    <span class="points-label">⭐Points:</span>
                     <span class="points-value" id="current-points">0</span>
                 </div>
+
+                <h2 class="shop-title">SNAQ SHOP</h2>
+                
+                <div class="pixel-stat">
+                    <span class="coins-label">🪙Coins:</span>
+                    <span class="coins-value" id="current-coins">0</span>
+                </div>
             </div>
+
             
             <!-- Inventory-style tabs -->
             <div class="inventory-tabs">
@@ -70,12 +79,59 @@
             <div id="shop-items-container">
                 <!-- Items will be populated by JavaScript -->
             </div>
+
+              <!-- Conversion note -->
+            <p class="conversion-note">💡 Every 10 Points = 1 Coin</p>
             
             <div class="shop-actions">
+                 <button class="buy-coins pixel-btn" id="buy-coins-btn">💰 Want more coins? Buy here!</button> <br>
                 <button class="close-shop pixel-btn" id="close-skin-shop">Close Shop</button>
             </div>
         </div>
     </div>
+
+
+    <!-- Buy Coins Modal -->
+<div id="buy-coins-modal" class="buy-coins-modal hidden">
+  <div class="buy-coins-content pixel-border">
+    <h2 class="shop-title">💰 Buy Coins</h2>
+    <p class="marketing-text">
+      Power up your snake! Get coins to unlock exclusive skins, effects, and accessories.
+    </p>
+
+    <div class="coin-packages">
+      <div class="coin-package" data-coins="25" data-price="49">
+        <span>🪙 25 Coins</span>
+        <button class="price-btn pixel-btn">₱49</button>
+      </div>
+      <div class="coin-package" data-coins="60" data-price="99">
+        <span>🪙 60 Coins</span>
+        <button class="price-btn pixel-btn">₱99</button>
+      </div>
+      <div class="coin-package" data-coins="180" data-price="249">
+        <span>🪙 180 Coins</span>
+        <button class="price-btn pixel-btn">₱249</button>
+      </div>
+      <div class="coin-package" data-coins="400" data-price="499">
+        <span>🪙 400 Coins</span>
+        <button class="price-btn pixel-btn">₱499</button>
+      </div>
+      <div class="coin-package best-deal" data-coins="900" data-price="999">
+        <span>🪙 900 Coins</span>
+        <button class="price-btn pixel-btn">₱999</button>
+      </div>
+    </div>
+
+    <p class="coming-soon">⚠️ Purchases not available yet — demo only!</p>
+
+    <div class="shop-actions">
+      <button class="purchase-btn pixel-btn hidden" id="confirm-purchase">Purchase</button>
+      <button class="close-shop pixel-btn" id="close-buy-coins">Close</button>
+    </div>
+  </div>
+</div>
+
+
 
     <!-- Instructions modal -->
     <div id="instructions-modal" class="instructions-modal hidden">

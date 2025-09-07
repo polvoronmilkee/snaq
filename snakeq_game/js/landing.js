@@ -15,6 +15,8 @@ class LandingPage {
 
     // Skin system
     this.points = parseInt(localStorage.getItem("totalPoints")) || 0;
+    this.coins = Math.floor(this.points / 10); // Convert points to coins (10 points = 1 coin)
+    this.totalPointsDisplay = $$("current-points");
     this.ownedSkins = JSON.parse(localStorage.getItem("ownedSkins")) || ["green"];
     this.selectedSkin = localStorage.getItem("selectedSkin") || "green";
     
@@ -272,7 +274,7 @@ class LandingPage {
     const mainMenuBtn = $$("main-menu-btn");
     const closeInstructionsBtn2 = $$("close-instructions-btn");
 
-    // ESC key for game menu
+    // ESC key for game menu ---------------------------------------------------------------------------
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         this.toggleGameMenu();
@@ -524,61 +526,61 @@ class LandingPage {
     const category = btn.dataset.category;
     this.renderShopItems(category);
   }
+renderShopItems(category) {
+  const itemsContainer = document.getElementById("shop-items-container");
+  if (!itemsContainer) return;
   
-  renderShopItems(category) {
-    const itemsContainer = document.getElementById("shop-items-container");
-    if (!itemsContainer) return;
-    
-    itemsContainer.innerHTML = '';
-    
-    const items = this.getShopItemsByCategory(category);
-    
-    if (items.length === 0) {
-      itemsContainer.innerHTML = '<p class="coming-soon">Coming soon!</p>';
-      return;
-    }
-    
-    // Create grid container
-    const grid = document.createElement('div');
-    grid.className = 'skins-grid';
-    
-    items.forEach(item => {
-      const isOwned = this.isItemOwned(category, item.id);
-      const isSelected = this.isItemSelected(category, item.id);
-      const canAfford = this.points >= item.price;
-      
-      const itemElement = document.createElement('div');
-      itemElement.className = 'skin-item shop-item';
-      itemElement.innerHTML = `
-        <div class="skin-preview">
-          <img src="assets/snake-skins/${item.id}_snake/SnakeHead.png" alt="${item.name}" class="skin-image" />
+  itemsContainer.innerHTML = '';
+  
+  const items = this.getShopItemsByCategory(category);
+  
+  if (items.length === 0) {
+    itemsContainer.innerHTML = '<p class="coming-soon">Coming soon!</p>';
+    return;
+  }
+  
+  // Create grid container
+  const grid = document.createElement('div');
+  grid.className = 'skins-grid';
+  
+  items.forEach(item => {
+    const isOwned = this.isItemOwned(category, item.id);
+    const isSelected = this.isItemSelected(category, item.id);
+    const canAfford = this.coins >= item.price; // ✅ now checks coins
+
+    const itemElement = document.createElement('div');
+    itemElement.className = 'skin-item shop-item';
+    itemElement.innerHTML = `
+      <div class="skin-preview">
+        <img src="assets/snake-skins/${item.id}_snake/SnakeHead.png" alt="${item.name}" class="skin-image" />
+      </div>
+      <div class="skin-info">
+        <h4>${item.name}</h4>
+        <p class="skin-description">${item.desc}</p>
+        <div class="skin-status">
+          ${isOwned ? 
+            `<span class="skin-owned">✓ Owned</span>
+             <button class="action-btn ${isSelected ? 'selected' : ''}" 
+                     data-category="${category}" data-id="${item.id}" data-action="select">
+               ${isSelected ? 'Selected' : 'Select'}
+             </button>` : 
+            `<span class="skin-price">${item.price} coins</span>  <!-- ✅ now shows coins -->
+             <button class="action-btn ${canAfford ? '' : 'disabled'}" 
+                     data-category="${category}" data-id="${item.id}" data-action="buy"
+                     ${canAfford ? '' : 'disabled'}>
+               ${canAfford ? 'Buy' : 'Need More Coins'}
+             </button>`
+          }
         </div>
-        <div class="skin-info">
-          <h4>${item.name}</h4>
-          <p class="skin-description">${item.desc}</p>
-          <div class="skin-status">
-            ${isOwned ? 
-              `<span class="skin-owned">✓ Owned</span>
-               <button class="action-btn ${isSelected ? 'selected' : ''}" 
-                       data-category="${category}" data-id="${item.id}" data-action="select">
-                 ${isSelected ? 'Selected' : 'Select'}
-               </button>` : 
-              `<span class="skin-price">${item.price} points</span>
-               <button class="action-btn ${canAfford ? '' : 'disabled'}" 
-                       data-category="${category}" data-id="${item.id}" data-action="buy"
-                       ${canAfford ? '' : 'disabled'}>
-                 ${canAfford ? 'Buy' : 'Need More Points'}
-               </button>`
-            }
-          </div>
-        </div>
-      `;
-      
-      grid.appendChild(itemElement);
-    });
+      </div>
+    `;
     
-    itemsContainer.appendChild(grid);
-    
+    grid.appendChild(itemElement);
+  });
+  
+  itemsContainer.appendChild(grid);
+
+
     // Add event listeners to action buttons
     itemsContainer.querySelectorAll('.action-btn').forEach(button => {
       button.addEventListener('click', (e) => {
@@ -632,15 +634,23 @@ class LandingPage {
       return;
     }
     
-    // Check if user has enough points
+    // Check if user has enough points and coins
     if (this.points < item.price) {
       this.showNotification('❌ Not enough points!');
+      return;
+    }
+
+    if (this.coins < (item.priceCoins || 0)) {
+      this.showNotification('❌ Not enough coins!');
       return;
     }
     
     // Deduct points and add to owned items
     this.points -= item.price;
     localStorage.setItem("totalPoints", this.points.toString());
+
+    this.coins -= (item.priceCoins || 0);
+    localStorage.setItem("totalCoins", this.coins.toString());
     
     if (category === 'skins') {
       if (!this.ownedSkins.includes(itemId)) {
@@ -664,6 +674,13 @@ class LandingPage {
     if (pointsDisplay) {
       pointsDisplay.textContent = this.points;
     }
+
+    // Update coins based on new points
+    const coinsDisplay = document.getElementById("current-coins");
+    if (coinsDisplay) {
+        coinsDisplay.textContent = this.coins;
+    }
+
     
     // Re-render items to show updated status
     const activeTab = document.querySelector('.inventory-tab.active');
@@ -712,6 +729,11 @@ class LandingPage {
       const pointsDisplay = $$("current-points");
       if (pointsDisplay) {
         pointsDisplay.textContent = this.points;
+      }
+
+      const coinsDisplay = $$("current-coins");
+      if (coinsDisplay) {
+          coinsDisplay.textContent = this.coins;
       }
       
       // Select first category by default
@@ -808,6 +830,64 @@ class LandingPage {
     }, 2000);
   }
 }
+
+
+// === Buy Coins Modal ===
+const buyCoinsModal = document.getElementById("buy-coins-modal");
+const openBuyCoinsBtn = document.getElementById("buy-coins-btn"); // the "Buy Coins" button in shop
+const closeBuyCoinsBtn = document.getElementById("close-buy-coins");
+
+const priceButtons = document.querySelectorAll(".price-btn");
+const purchaseBtn = document.getElementById("confirm-purchase");
+let selectedPackage = null;
+
+// Open Buy Coins modal
+openBuyCoinsBtn.addEventListener("click", () => {
+  buyCoinsModal.classList.remove("hidden");
+
+  // Reset state every time modal opens
+  document.querySelectorAll(".coin-package").forEach(pkg => pkg.classList.remove("selected"));
+  purchaseBtn.classList.add("hidden");
+  selectedPackage = null;
+});
+
+// Close Buy Coins modal
+closeBuyCoinsBtn.addEventListener("click", () => {
+  buyCoinsModal.classList.add("hidden");
+
+  // Reset when closing too
+  document.querySelectorAll(".coin-package").forEach(pkg => pkg.classList.remove("selected"));
+  purchaseBtn.classList.add("hidden");
+  selectedPackage = null;
+});
+
+// Handle price button clicks
+priceButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    // Clear previous selection
+    document.querySelectorAll(".coin-package").forEach(pkg => pkg.classList.remove("selected"));
+
+    // Mark new selection
+    const packageDiv = btn.closest(".coin-package");
+    packageDiv.classList.add("selected");
+
+    selectedPackage = {
+      coins: packageDiv.dataset.coins,
+      price: packageDiv.dataset.price
+    };
+
+    // Show purchase button
+    purchaseBtn.classList.remove("hidden");
+  });
+});
+
+// "Purchase" button clicked
+purchaseBtn.addEventListener("click", () => {
+  if (selectedPackage) {
+    alert(`✅ You selected ${selectedPackage.coins} coins for ₱${selectedPackage.price}.\n(Purchases disabled in demo)`);
+  }
+});
+// ======================
 
 document.addEventListener("DOMContentLoaded", () => {
   new LandingPage();
