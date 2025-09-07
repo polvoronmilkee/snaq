@@ -1,4 +1,5 @@
 import scienceSets from "../../shared/gamesQuestions/scienceQuestions.js"
+import { generateQuestion } from "../../shared/questionsUtils.js"
 class SnakeScienceGame {
     constructor() {
         // Game constants
@@ -117,7 +118,6 @@ class SnakeScienceGame {
         this.initDOM()
         this.init()
     }
-
 
 
     loadSprites() {
@@ -445,44 +445,11 @@ class SnakeScienceGame {
         })
     }
 
-
-    generateQuestion() {
-        const difficulty = this.gameSettings.difficulty;
-        const questionTypes = ["biology", "physics", "chemistry", "earth"];
-        const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
-
-        const difficultyWords = scienceSets[difficulty][questionType];
-
-        // Filter unused questions
-        const unused = difficultyWords.filter(
-            q => !this.usedWords[difficulty][questionType].includes(q.question)
-        );
-
-        if (unused.length === 0) {
-            // All questions used, resetting...
-
-            // Reset so we can reuse all questions
-            this.usedWords[difficulty][questionType] = [];
-
-            // All questions are now available again
-        }
-
-        const selected = unused[Math.floor(Math.random() * unused.length)];
-        this.usedWords[difficulty][questionType].push(selected.question);
-
-        // shuffle options
-        let options = [selected.correct, ...selected.wrong];
-        for (let i = options.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [options[i], options[j]] = [options[j], options[i]];
-        }
-
-        return { question: selected.question, correctAnswer: selected.correct, options };
-    }
-
+    
 
     initGame() {
         const headPosition = this.getRandomPosition()
+        const questionTypes = ["biology", "physics", "chemistry", "earth"]
 
         // Keep head at least 1 cell away from edges
         if (headPosition.x === 0) headPosition.x = 1
@@ -506,7 +473,12 @@ class SnakeScienceGame {
         }
 
         this.snake = [headPosition, tailPosition]
-        this.currentQuestion = this.generateQuestion()
+        this.currentQuestion = generateQuestion(  
+            scienceSets,
+            questionTypes,
+            this.gameSettings,
+            this.usedWords)
+            
         this.apples = this.generateApples(this.currentQuestion)
         this.score = 0
         this.lives = 3
@@ -859,7 +831,13 @@ class SnakeScienceGame {
                 this.snakeFace = "happy"
                 this.showNotification("Correct! +10 points", "correct")
 
-                this.currentQuestion = this.generateQuestion()
+                const questionTypes = ["biology", "physics", "chemistry", "earth"]
+                this.currentQuestion = generateQuestion(
+                    scienceSets,
+                    questionTypes,
+                    this.gameSettings,
+                    this.usedWords
+                )
                 this.apples = this.generateApples(this.currentQuestion)
             } else {
                 // Wrong answer: shield blocks once

@@ -443,12 +443,10 @@ class SnakeEnglishGame {
         })
     }
 
-
     generateQuestion() {
         const difficulty = this.gameSettings.difficulty
         const questionTypes = ["synonym", "antonym", "definition", "spelling"]
         const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)]
-
         const difficultyWords = wordSets[difficulty][questionType]
         // Filter out used words
         const unusedWords = difficultyWords.filter(

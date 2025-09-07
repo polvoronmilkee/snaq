@@ -1,4 +1,5 @@
 import gkSets from "../../shared/gamesQuestions/generalKnowQuestions.js"
+import { generateQuestion } from "../../shared/questionsUtils.js"
 class SnakeGeneralKnowledgeGame {
     constructor() {
         // Game constants
@@ -446,40 +447,11 @@ class SnakeGeneralKnowledgeGame {
             this.optionsContainer.appendChild(optionDiv)
         })
     }
-    generateQuestion() {
-        const difficulty = this.gameSettings.difficulty;
-        const questionTypes = ["history", "geography", "sports", "popculture"];
-        const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
-        const difficultyWords = gkSets[difficulty][questionType];
-
-        // filter unused questions
-        const unused = difficultyWords.filter(
-            q => !this.usedWords[difficulty][questionType].includes(q.question)
-        );
-
-        if (unused.length === 0) {
-            // All questions used, resetting...
-            this.usedWords[difficulty][questionType] = [];
-            // All questions are now available again
-        }
-
-        const selected = unused[Math.floor(Math.random() * unused.length)];
-        this.usedWords[difficulty][questionType].push(selected.question);
-
-        // shuffle answer options
-        let options = [selected.correct, ...selected.wrong];
-        for (let i = options.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [options[i], options[j]] = [options[j], options[i]];
-        }
-
-        return { question: selected.question, correctAnswer: selected.correct, options };
-    }
-
 
 
     initGame() {
         const headPosition = this.getRandomPosition()
+        const questionTypes = ["history", "geography", "sports", "popculture"];
 
         // Keep head at least 1 cell away from edges
         if (headPosition.x === 0) headPosition.x = 1
@@ -503,7 +475,12 @@ class SnakeGeneralKnowledgeGame {
         }
 
         this.snake = [headPosition, tailPosition]
-        this.currentQuestion = this.generateQuestion()
+        this.currentQuestion = generateQuestion(
+            gkSets,
+            questionTypes,
+            this.gameSettings,
+            this.usedWords
+        )
         this.apples = this.generateApples(this.currentQuestion)
         this.score = 0
         this.lives = 3
