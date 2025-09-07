@@ -19,9 +19,9 @@ class SnakeMathGame {
 
     const canvasContainer = document.querySelector(".canvas-container");
 
-    canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../assets/snake-skins/volt_snake/Tile.png)` : `url("../assets/icons/Tile.png")`;
+    canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../../assets/images/snake-skins/volt_snake/Tile.png)` : `url("../../assets/images/icons/Tile.png")`;
 
-    const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../assets/snake-skins/volt_snake/sounds" : "../assets/sounds"
+    const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../../assets/images/snake-skins/volt_snake/sounds" : "../../assets/sounds"
 
     this.sounds = {
       biteApple: new Audio(`${soundPath}/bite-apple.mp3`),
@@ -30,12 +30,12 @@ class SnakeMathGame {
       snakeLosesLife: new Audio(`${soundPath}/snake-loses-life.mp3`),
       correct: new Audio(`${soundPath}/correct.mp3`),
       bgMusic: new Audio(`${soundPath}/bg-music.mp3`),
-      youWon: new Audio("../assets/sounds/good-job.mp3"),
+      youWon: new Audio("../../assets/sounds/good-job.mp3"),
       click: new Audio(`${soundPath}/click.mp3`),
       countdown: new Audio(`${soundPath}/countdown.mp3`),
       shift: new Audio(`${soundPath}/shift.mp3`),
       pause: new Audio(`${soundPath}/pause.mp3`),
-      bossApple: new Audio("../assets/sounds/bossApple.mp3"),
+      bossApple: new Audio("../../assets/sounds/bossApple.mp3"),
     }
 
     this.sounds.bgMusic.volume = (this.gameSettings.selectedSkin === "volt") ? 0.6 : 1
@@ -130,7 +130,7 @@ class SnakeMathGame {
   }
 
   loadSprites() {
-    const skinPath = `../assets/snake-skins/${this.selectedSkin}_snake`
+    const skinPath = `../../assets/images/snake-skins/${this.selectedSkin}_snake`
     const spritePaths = {
       // Snake movement sprites (using selected skin)
       "SnakeHead": `${skinPath}/SnakeHead.png`,
@@ -158,9 +158,9 @@ class SnakeMathGame {
       "SnakeCornerRightDown": `${skinPath}/SnakeCornerRightDown.png`,
       "SnakeCornerRightUp": `${skinPath}/SnakeCornerRightUp.png`,
       // Apple sprites
-      "apple": "../assets/apples/apple.png",
+      "apple": "../../assets/images/apples/apple.png",
       // Icon sprites
-      "shield": "../assets/icons/shield.png"
+      "shield": "../../assets/images/icons/shield.png"
     }
 
     Object.entries(spritePaths).forEach(([name, path]) => {
@@ -298,7 +298,7 @@ class SnakeMathGame {
 
     this.confirmBackMenuBtn.addEventListener("click", () => {
       this.playSound("click");
-      window.location.href = "../index.html";
+      window.location.href = "../../index.html";
     });
 
     this.cancelBackMenuBtn.addEventListener("click", () => {
@@ -1146,7 +1146,7 @@ class SnakeMathGame {
     const shieldIndicator = document.getElementById('shield-indicator');
     if (shieldIndicator) {
       if (this.hasShield) {
-        shieldIndicator.innerHTML = '<img src="../assets/icons/shield.png" class="shield-icon" alt="Shield">';
+        shieldIndicator.innerHTML = '<img src="../../assets/images/icons/shield.png" class="shield-icon" alt="Shield">';
       } else {
         shieldIndicator.innerHTML = '';
       }

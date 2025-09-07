@@ -503,13 +503,13 @@ class LandingPage {
     }
 
     if (this.selectedCategory === "math") {
-      window.location.href = "templates/math-game.html";
+      window.location.href = "games/math/math-game.html";
     } else if (this.selectedCategory === "english") {
-      window.location.href = "templates/english-game.html";
+      window.location.href = "games/english/english-game.html";
     } else if (this.selectedCategory === "science") {
-      window.location.href = "templates/science-game.html";
+      window.location.href = "games/science/science-game.html";
     } else if (this.selectedCategory === "generalknow") {
-      window.location.href = "templates/generalknow-game.html";
+      window.location.href = "games/generalKnowledge/generalknow-game.html";
     }
   }
 
@@ -552,7 +552,7 @@ renderShopItems(category) {
     itemElement.className = 'skin-item shop-item';
     itemElement.innerHTML = `
       <div class="skin-preview">
-        <img src="assets/snake-skins/${item.id}_snake/SnakeHead.png" alt="${item.name}" class="skin-image" />
+        <img src="assets/images/snake-skins/${item.id}_snake/SnakeHead.png" alt="${item.name}" class="skin-image" />
       </div>
       <div class="skin-info">
         <h4>${item.name}</h4>
@@ -689,7 +689,7 @@ renderShopItems(category) {
     }
     
     this.playClickSound();
-    this.showNotification(`🎉 ${item.name} purchased!`);
+    this.showNotification(`${item.name} purchased!`);
   }
 
   selectItem(category, itemId) {

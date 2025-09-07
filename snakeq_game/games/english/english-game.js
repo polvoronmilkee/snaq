@@ -1,4 +1,5 @@
-class SnakeGeneralKnowledgeGame {
+import wordSets from "../../shared/gamesQuestions/englishQuestions.js"
+class SnakeEnglishGame {
     constructor() {
         // Game constants
         this.gameSettings = JSON.parse(localStorage.getItem("gameSettings")) || {
@@ -19,9 +20,9 @@ class SnakeGeneralKnowledgeGame {
 
         const canvasContainer = document.querySelector(".canvas-container");
 
-        canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../assets/snake-skins/volt_snake/Tile.png)` : `url("../assets/icons/Tile.png")`;
+        canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../../assets/images/snake-skins/volt_snake/Tile.png)` : `url("../../assets/images/icons/Tile.png")`;
 
-        const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../assets/snake-skins/volt_snake/sounds" : "../assets/sounds"
+        const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../../assets/images/snake-skins/volt_snake/sounds" : "../../assets/sounds"
 
         this.sounds = {
             biteApple: new Audio(`${soundPath}/bite-apple.mp3`),
@@ -30,7 +31,7 @@ class SnakeGeneralKnowledgeGame {
             snakeLosesLife: new Audio(`${soundPath}/snake-loses-life.mp3`),
             correct: new Audio(`${soundPath}/correct.mp3`),
             bgMusic: new Audio(`${soundPath}/bg-music.mp3`),
-            youWon: new Audio("../assets/sounds/good-job.mp3"),
+            youWon: new Audio("../../assets/sounds/good-job.mp3"),
             click: new Audio(`${soundPath}/click.mp3`),
             countdown: new Audio(`${soundPath}/countdown.mp3`),
             shift: new Audio(`${soundPath}/shift.mp3`),
@@ -89,11 +90,10 @@ class SnakeGeneralKnowledgeGame {
 
         // to track questions that have been used already
         this.usedWords = this.usedWords || {
-            easy: { history: [], geography: [], sports: [], popculture: [] },
-            medium: { history: [], geography: [], sports: [], popculture: [] },
-            hard: { history: [], geography: [], sports: [], popculture: [] },
+            easy: { synonym: [], antonym: [], definition: [], spelling: [] },
+            medium: { synonym: [], antonym: [], definition: [], spelling: [] },
+            hard: { synonym: [], antonym: [], definition: [], spelling: [] },
         };
-
 
         // Sprint (temporary speed boost)
         const isVoltSkin = this.selectedSkin === "volt"
@@ -120,8 +120,9 @@ class SnakeGeneralKnowledgeGame {
 
 
 
+    
     loadSprites() {
-        const skinPath = `../assets/snake-skins/${this.selectedSkin}_snake`
+        const skinPath = `../../assets/images/snake-skins/${this.selectedSkin}_snake`
         const spritePaths = {
             // Snake movement sprites (using selected skin)
             "SnakeHead": `${skinPath}/SnakeHead.png`,
@@ -149,12 +150,12 @@ class SnakeGeneralKnowledgeGame {
             "SnakeCornerRightDown": `${skinPath}/SnakeCornerRightDown.png`,
             "SnakeCornerRightUp": `${skinPath}/SnakeCornerRightUp.png`,
             // Apple sprites
-            "apple": "../assets/apples/apple.png",
-            "appleA-pink": "../assets/apples/appleA-pink.png",
-            "appleB-yellow": "../assets/apples/appleB-yellow.png",
-            "appleC-blue": "../assets/apples/appleC-blue.png",
+            "apple": "../../assets/images/apples/apple.png",
+            "appleA-pink": "../../assets/images/apples/appleA-pink.png",
+            "appleB-yellow": "../../assets/images/apples/appleB-yellow.png",
+            "appleC-blue": "../../assets/images/apples/appleC-blue.png",
             // Icon sprites
-            "shield": "../assets/icons/shield.png"
+            "shield": "../../assets/images/icons/shield.png"
         }
 
         Object.entries(spritePaths).forEach(([name, path]) => {
@@ -227,13 +228,11 @@ class SnakeGeneralKnowledgeGame {
         this.closeInstructionsBtn = document.getElementById("close-instructions")
         this.aboutBtn = document.getElementById("about-btn")
         this.aboutModal = document.getElementById("about-modal")
-        this.closeAbout = document.getElementById("close-about")
+        this.closeAboutBtn = document.getElementById("close-about")
         this.backToMenuConfirm = document.getElementById("back-to-menu-confirm")
         this.confirmBackMenuBtn = document.getElementById("confirm-back-menu")
         this.cancelBackMenuBtn = document.getElementById("cancel-back-menu")
         this.backToMenu = document.getElementById("back-to-menu")
-        this.aboutBtn = document.getElementById("about-btn")
-
         if (this.questionElement) {
             this.questionElement.style.fontSize = "15px"
             this.questionElement.style.lineHeight = "1.4"
@@ -312,7 +311,7 @@ class SnakeGeneralKnowledgeGame {
 
         this.confirmBackMenuBtn.addEventListener("click", () => {
             this.playSound("click")
-            window.location.href = "../index.html"
+            window.location.href = "../../index.html"
         })
 
         this.cancelBackMenuBtn.addEventListener("click", () => {
@@ -331,17 +330,15 @@ class SnakeGeneralKnowledgeGame {
         this.helpBtn.addEventListener("click", () => this.showInstructions())
         this.soundBtn.addEventListener("click", () => this.toggleSound())
         this.musicBtn.addEventListener("click", () => this.toggleMusic())
-        this.closeInstructionsBtn.addEventListener("click", () => this.hideInstructions())
-        this.helpBtnEsc.addEventListener("click", () => {
-            this.playSound("click")
-            this.showInstructions()
-        })
+
         // Close instructions modal when clicking outside
         this.instructionsModal.addEventListener("click", (e) => {
             if (e.target === this.instructionsModal) {
                 this.hideInstructions()
             }
         })
+
+        this.closeInstructionsBtn.addEventListener("click", () => this.hideInstructions())
 
         document.addEventListener('click', (e) => {
             if (e.target.id === 'resume-btn') {
@@ -358,7 +355,67 @@ class SnakeGeneralKnowledgeGame {
                 this.paused = true;
             }
         });
+
+        const canvasContainer = document.querySelector(".canvas-container");
+
+        const tryActivateSprint = () => {
+            // Only activate sprint if game is not paused and snake is moving
+            if (!this.paused && this.sprint.energy > 0 && this.direction) {
+                this.sprint.active = true;
+                this.sounds.shift.currentTime = 0;
+                this.sounds.shift.play();
+            }
+        };
+
+        canvasContainer.addEventListener("mousedown", tryActivateSprint);
+        canvasContainer.addEventListener("touchstart", tryActivateSprint);
+
+        // Stop sprint on release
+        const stopSprint = () => {
+            this.sprint.active = false;
+        };
+
+        canvasContainer.addEventListener("mouseup", stopSprint);
+        canvasContainer.addEventListener("touchend", stopSprint);
+
+        // --- Mobile Swipe Controls ---
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        const minSwipeDistance = 30; // minimum distance in pixels to count as swipe
+
+        document.querySelector(".canvas-container").addEventListener("touchstart", (e) => {
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+        });
+
+        canvasContainer.addEventListener("touchend", (e) => {
+            const touch = e.changedTouches[0];
+            touchEndX = touch.clientX;
+            touchEndY = touch.clientY;
+
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+
+            // Ignore small swipes
+            if (Math.abs(deltaX) < minSwipeDistance && Math.abs(deltaY) < minSwipeDistance) return;
+
+            // Determine swipe direction
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Horizontal swipe
+                if (deltaX > 0 && this.direction.x === 0) this.direction = { x: 1, y: 0 }; // right
+                else if (deltaX < 0 && this.direction.x === 0) this.direction = { x: -1, y: 0 }; // left
+            } else {
+                // Vertical swipe
+                if (deltaY > 0 && this.direction.y === 0) this.direction = { x: 0, y: 1 }; // down
+                else if (deltaY < 0 && this.direction.y === 0) this.direction = { x: 0, y: -1 }; // up
+            }
+        });
+
     }
+
 
     showEscMenu() {
         if (this.gameRunning && !this.paused && !this.countdownActive &&
@@ -421,7 +478,7 @@ class SnakeGeneralKnowledgeGame {
             // Use specific colored apple sprites
             const appleImg = document.createElement("img")
             const appleColors = ["appleA-pink.png", "appleB-yellow.png", "appleC-blue.png"]
-            appleImg.src = `../assets/apples/${appleColors[index] || "apple.png"}`
+            appleImg.src = `../../assets/images/apples/${appleColors[index] || "apple.png"}`
             appleImg.alt = String.fromCharCode(65 + index) // A, B, C
             appleImg.className = "apple-sprite"
 
@@ -435,333 +492,74 @@ class SnakeGeneralKnowledgeGame {
             const optionText = document.createElement("span")
             optionText.className = "option-text"
             optionText.textContent = option
-            // Make answers larger and more readable
-            optionText.style.fontSize = "18px"
-            optionText.style.lineHeight = "1.4"
-            optionText.style.fontWeight = "600"
 
             optionDiv.appendChild(appleIcon)
             optionDiv.appendChild(optionText)
             this.optionsContainer.appendChild(optionDiv)
         })
     }
+
     generateQuestion() {
-        const difficulty = this.gameSettings.difficulty;
-        const questionTypes = ["history", "geography", "sports", "popculture"];
-        const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+        const difficulty = this.gameSettings.difficulty
+        const questionTypes = ["synonym", "antonym", "definition", "spelling"]
+        const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)]
 
-        const gkSets = {
-            easy: {
-                history: [
-                    { question: "Who was the first President of the Philippines?", correct: "Emilio Aguinaldo", wrong: ["Sergio Osmeña", "Manuel L. Quezon", "Jose P. Laurel"] },
-                    { question: "Who is considered the national hero of the Philippines?", correct: "José Rizal", wrong: ["Andres Bonifacio", "Emilio Aguinaldo", "Apolinario Mabini"] },
-                    { question: "Who is known as the 'Father of the Katipunan'?", correct: "Andres Bonifacio", wrong: ["Emilio Jacinto", "Marcelo H. del Pilar", "José Rizal"] },
-                    { question: "In what year was Philippine Independence declared in Kawit, Cavite?", correct: "1898", wrong: ["1896", "1901", "1946"] },
-                    { question: "Who led the first circumnavigation of the world and landed in the Philippines?", correct: "Ferdinand Magellan", wrong: ["Christopher Columbus", "Juan Sebastián Elcano", "Miguel López de Legazpi"] },
-                    { question: "Who is known as the 'Brains of the Revolution'?", correct: "Apolinario Mabini", wrong: ["Emilio Jacinto", "Andres Bonifacio", "Marcelo H. del Pilar"] },
-                    { question: "What historic site in Manila is also called the 'Walled City'?", correct: "Intramuros", wrong: ["Fort Santiago", "Luneta", "Malacañang"] },
-                    { question: "Who was the first woman president of the Philippines?", correct: "Corazon Aquino", wrong: ["Gloria Macapagal-Arroyo", "Imelda Marcos", "Melchora Aquino"] },
-                    { question: "Who is the first Miss Universe winner from the Philippines?", correct: "Gloria Diaz", wrong: ["Margarita Moran", "Pia Wurtzbach", "Catriona Gray"] },
-                    { question: "Who was the president during the declaration of Martial Law in 1972?", correct: "Ferdinand Marcos", wrong: ["Diosdado Macapagal", "Corazon Aquino", "Elpidio Quirino"] },
-                    { question: "What Philippine mountain is the highest peak in the country?", correct: "Mount Apo", wrong: ["Mount Pulag", "Mount Banahaw", "Mount Mayon"] },
-                    { question: "Who was the first editor of La Solidaridad?", correct: "Graciano López Jaena", wrong: ["Marcelo H. del Pilar", "José Rizal", "Juan Luna"] },
-                    { question: "Who founded the Katipunan?", correct: "Andres Bonifacio", wrong: ["Emilio Aguinaldo", "Apolinario Mabini", "Gregorio del Pilar"] },
-                    { question: "Who is known as 'Tandang Sora'?", correct: "Melchora Aquino", wrong: ["Gabriela Silang", "Corazon Aquino", "Leona Florentino"] },
-                    { question: "What war was fought against American colonizers from 1899 to 1902?", correct: "Philippine-American War", wrong: ["Philippine Revolution", "World War II", "Filipino-Japanese War"] },
-                    { question: "Who painted the famous 'Spoliarium'?", correct: "Juan Luna", wrong: ["Fernando Amorsolo", "Félix Resurrección Hidalgo", "Carlos Botong Francisco"] },
-                    { question: "What ship carried the remains of José Rizal back to the Philippines in 1896?", correct: "SS España", wrong: ["SS Colon", "SS Montevideo", "SS Filipinas"] },
-                    { question: "Who was the first Prime Minister of the Philippines?", correct: "Cesar Virata", wrong: ["Ferdinand Marcos", "Arturo Tolentino", "Fidel Ramos"] },
-                    { question: "Which country colonized the Philippines for more than 300 years?", correct: "Spain", wrong: ["United States", "Japan", "China"] },
-                    { question: "Who was the first vice president of the Philippines?", correct: "Sergio Osmeña", wrong: ["Manuel Roxas", "Elpidio Quirino", "Jose P. Laurel"] }
-                ],
-
-                geography: [
-                    { question: "What is the largest ocean on Earth?", correct: "Pacific Ocean", wrong: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean"] },
-                    { question: "What is the capital of France?", correct: "Paris", wrong: ["Rome", "Madrid", "Berlin"] },
-                    { question: "What is the tallest mountain in the world?", correct: "Mount Everest", wrong: ["K2", "Kilimanjaro", "Makalu"] },
-                    { question: "Which desert is the largest in the world?", correct: "Sahara", wrong: ["Gobi", "Kalahari", "Arctic"] },
-                    { question: "What country has the Great Wall?", correct: "China", wrong: ["India", "Japan", "Mongolia"] },
-                    { question: "What is the longest river in the world?", correct: "Nile", wrong: ["Amazon", "Yangtze", "Mississippi"] },
-                    { question: "Which continent is the coldest?", correct: "Antarctica", wrong: ["Europe", "North America", "Asia"] },
-                    { question: "What country is shaped like a boot?", correct: "Italy", wrong: ["Spain", "France", "Greece"] },
-                    { question: "What is the capital of Japan?", correct: "Tokyo", wrong: ["Kyoto", "Osaka", "Seoul"] },
-                    { question: "Which country is famous for kangaroos?", correct: "Australia", wrong: ["South Africa", "New Zealand", "Brazil"] },
-                    { question: "What is the smallest country in the world?", correct: "Vatican City", wrong: ["Monaco", "San Marino", "Liechtenstein"] },
-                    { question: "Which continent is known as the 'Dark Continent'?", correct: "Africa", wrong: ["South America", "Asia", "Australia"] },
-                    { question: "What country has the city of Cairo?", correct: "Egypt", wrong: ["Morocco", "Turkey", "Saudi Arabia"] },
-                    { question: "What is the capital of Canada?", correct: "Ottawa", wrong: ["Toronto", "Vancouver", "Montreal"] },
-                    { question: "Which U.S. state is the largest by area?", correct: "Alaska", wrong: ["Texas", "California", "Montana"] },
-                    { question: "Which ocean borders India?", correct: "Indian Ocean", wrong: ["Pacific Ocean", "Atlantic Ocean", "Southern Ocean"] },
-                    { question: "Which European country has the tulip as its symbol?", correct: "Netherlands", wrong: ["Belgium", "Germany", "France"] },
-                    { question: "Which country has the Amazon rainforest?", correct: "Brazil", wrong: ["Peru", "Colombia", "Venezuela"] },
-                    { question: "What is the capital of South Korea?", correct: "Seoul", wrong: ["Busan", "Tokyo", "Beijing"] },
-                    { question: "Which continent has the most countries?", correct: "Africa", wrong: ["Asia", "Europe", "South America"] },
-                ],
-
-                sports: [
-                    { question: "How many players are on a soccer team (on field)?", correct: "11", wrong: ["9", "10", "12"] },
-                    { question: "In basketball, how many points is a free throw worth?", correct: "1", wrong: ["2", "3", "0"] },
-                    { question: "What sport uses a bat and ball and bases?", correct: "Baseball", wrong: ["Cricket", "Hockey", "Rugby"] },
-                    { question: "What color flag means 'stop' in car racing?", correct: "Red", wrong: ["Yellow", "Green", "Blue"] },
-                    { question: "What sport has love, deuce, and ace?", correct: "Tennis", wrong: ["Badminton", "Volleyball", "Table Tennis"] },
-                    { question: "Which sport is known as 'the beautiful game'?", correct: "Soccer", wrong: ["Basketball", "Rugby", "Cricket"] },
-                    { question: "In which sport do you knock down pins?", correct: "Bowling", wrong: ["Cricket", "Baseball", "Golf"] },
-                    { question: "What sport uses a puck?", correct: "Ice Hockey", wrong: ["Lacrosse", "Field Hockey", "Basketball"] },
-                    { question: "Which sport has a quarterback?", correct: "American Football", wrong: ["Rugby", "Soccer", "Basketball"] },
-                    { question: "In golf, what is the term for one stroke under par?", correct: "Birdie", wrong: ["Bogey", "Eagle", "Par"] },
-                    { question: "Which country hosts the Tour de France?", correct: "France", wrong: ["Italy", "Spain", "Belgium"] },
-                    { question: "What is the national sport of Japan?", correct: "Sumo Wrestling", wrong: ["Judo", "Karate", "Kendo"] },
-                    { question: "How many rings are on the Olympic flag?", correct: "5", wrong: ["4", "6", "7"] },
-                    { question: "What sport is played at Wimbledon?", correct: "Tennis", wrong: ["Badminton", "Table Tennis", "Squash"] },
-                    { question: "In baseball, how many strikes make an out?", correct: "3", wrong: ["2", "4", "5"] },
-                    { question: "In basketball, how many points is a shot from beyond the arc?", correct: "3", wrong: ["2", "1", "4"] },
-                    { question: "What sport uses a shuttlecock?", correct: "Badminton", wrong: ["Tennis", "Squash", "Table Tennis"] },
-                    { question: "What sport does Lionel Messi play?", correct: "Soccer", wrong: ["Basketball", "Tennis", "Rugby"] },
-                    { question: "In which sport would you do a slam dunk?", correct: "Basketball", wrong: ["Volleyball", "Soccer", "Handball"] },
-                    { question: "What sport does Serena Williams play?", correct: "Tennis", wrong: ["Badminton", "Golf", "Volleyball"] },
-                ],
-
-                popculture: [
-                    { question: "Who is Mickey Mouse’s dog?", correct: "Pluto", wrong: ["Goofy", "Donald", "Snoopy"] },
-                    { question: "What movie features a boy wizard named Harry?", correct: "Harry Potter", wrong: ["Lord of the Rings", "Narnia", "Percy Jackson"] },
-                    { question: "Who is the superhero with a bat symbol?", correct: "Batman", wrong: ["Superman", "Spider-Man", "Iron Man"] },
-                    { question: "What is the name of the toy cowboy in Toy Story?", correct: "Woody", wrong: ["Buzz", "Jessie", "Slinky"] },
-                    { question: "Which singer is known as the King of Pop?", correct: "Michael Jackson", wrong: ["Elvis Presley", "Prince", "Freddie Mercury"] },
-                    { question: "What is the name of Shrek’s donkey friend?", correct: "Donkey", wrong: ["Puss", "Fiona", "Dragon"] },
-                    { question: "Who is the princess with seven dwarfs?", correct: "Snow White", wrong: ["Cinderella", "Aurora", "Rapunzel"] },
-                    { question: "What is the name of SpongeBob’s best friend?", correct: "Patrick", wrong: ["Squidward", "Mr. Krabs", "Gary"] },
-                    { question: "Which Marvel hero wields Mjolnir?", correct: "Thor", wrong: ["Iron Man", "Captain America", "Hulk"] },
-                    { question: "In Frozen, what is the snowman’s name?", correct: "Olaf", wrong: ["Kristoff", "Sven", "Hans"] },
-                    { question: "What is the name of the wizard school in Harry Potter?", correct: "Hogwarts", wrong: ["Durmstrang", "Beauxbatons", "Ilvermorny"] },
-                    { question: "Which Pixar film features a clownfish?", correct: "Finding Nemo", wrong: ["Shark Tale", "The Little Mermaid", "Moana"] },
-                    { question: "Who lives in a pineapple under the sea?", correct: "SpongeBob", wrong: ["Patrick", "Squidward", "Nemo"] },
-                    { question: "Which princess loses her glass slipper?", correct: "Cinderella", wrong: ["Belle", "Aurora", "Ariel"] },
-                    { question: "What video game character collects rings?", correct: "Sonic", wrong: ["Mario", "Link", "Pac-Man"] },
-                    { question: "Which movie features a talking snowman and ice powers?", correct: "Frozen", wrong: ["Tangled", "Moana", "Brave"] },
-                    { question: "Who is the green ogre in DreamWorks movies?", correct: "Shrek", wrong: ["Fiona", "Donkey", "Hulk"] },
-                    { question: "What is the name of Iron Man’s alter ego?", correct: "Tony Stark", wrong: ["Bruce Wayne", "Steve Rogers", "Clark Kent"] },
-                    { question: "Which yellow creatures love bananas?", correct: "Minions", wrong: ["Smurfs", "Care Bears", "Trolls"] },
-                    { question: "What’s the name of Mario’s brother?", correct: "Luigi", wrong: ["Yoshi", "Wario", "Toad"] },
-                ],
-            },
-
-            medium: {
-                history: [
-                    { question: "Who discovered America in 1492?", correct: "Christopher Columbus", wrong: ["Ferdinand Magellan", "Marco Polo", "Amerigo Vespucci"] },
-                    { question: "The Great Fire of London happened in which year?", correct: "1666", wrong: ["1766", "1566", "1866"] },
-                    { question: "Who was the first emperor of Rome?", correct: "Augustus", wrong: ["Julius Caesar", "Nero", "Tiberius"] },
-                    { question: "Which war ended with the Treaty of Versailles?", correct: "World War I", wrong: ["World War II", "Napoleonic Wars", "Cold War"] },
-                    { question: "The Cold War was mainly between the USA and which country?", correct: "Soviet Union", wrong: ["China", "Germany", "Japan"] },
-                    { question: "Who was the British Prime Minister during most of World War II?", correct: "Winston Churchill", wrong: ["Neville Chamberlain", "Clement Attlee", "Margaret Thatcher"] },
-                    { question: "Which US president abolished slavery?", correct: "Abraham Lincoln", wrong: ["George Washington", "Theodore Roosevelt", "John F. Kennedy"] },
-                    { question: "Who was the first female Prime Minister of the UK?", correct: "Margaret Thatcher", wrong: ["Theresa May", "Elizabeth I", "Angela Merkel"] },
-                    { question: "Which empire built Machu Picchu?", correct: "Inca", wrong: ["Maya", "Aztec", "Olmec"] },
-                    { question: "What year did World War II end?", correct: "1945", wrong: ["1939", "1918", "1955"] },
-                    { question: "Who was assassinated in Sarajevo in 1914, sparking WWI?", correct: "Archduke Franz Ferdinand", wrong: ["Kaiser Wilhelm", "Nicholas II", "Woodrow Wilson"] },
-                    { question: "Who was known as the Maid of Orléans?", correct: "Joan of Arc", wrong: ["Catherine the Great", "Cleopatra", "Marie Antoinette"] },
-                    { question: "Which empire was ruled by Genghis Khan?", correct: "Mongol Empire", wrong: ["Ottoman Empire", "Persian Empire", "Roman Empire"] },
-                    { question: "Who painted the ceiling of the Sistine Chapel?", correct: "Michelangelo", wrong: ["Leonardo da Vinci", "Raphael", "Donatello"] },
-                    { question: "The Berlin Wall fell in what year?", correct: "1989", wrong: ["1991", "1985", "1979"] },
-                    { question: "Who was the first man on the moon?", correct: "Neil Armstrong", wrong: ["Buzz Aldrin", "Yuri Gagarin", "John Glenn"] },
-                    { question: "The ancient city of Troy was located in which modern country?", correct: "Turkey", wrong: ["Greece", "Italy", "Egypt"] },
-                    { question: "Which king had six wives?", correct: "Henry VIII", wrong: ["Louis XIV", "Richard III", "Edward VI"] },
-                    { question: "Who was the first President of South Africa after apartheid?", correct: "Nelson Mandela", wrong: ["Desmond Tutu", "F.W. de Klerk", "Jacob Zuma"] },
-                    { question: "The American Civil War was fought in which century?", correct: "19th", wrong: ["18th", "20th", "17th"] },
-                ],
-
-                geography: [
-                    { question: "Which desert is the largest in the world?", correct: "Sahara", wrong: ["Gobi", "Kalahari", "Arabian"] },
-                    { question: "Mount Everest lies on the border of Nepal and which country?", correct: "China", wrong: ["India", "Bhutan", "Pakistan"] },
-                    { question: "What is the capital of Canada?", correct: "Ottawa", wrong: ["Toronto", "Vancouver", "Montreal"] },
-                    { question: "Which river flows through Egypt?", correct: "Nile", wrong: ["Amazon", "Danube", "Tigris"] },
-                    { question: "What is the smallest country in the world?", correct: "Vatican City", wrong: ["Monaco", "San Marino", "Liechtenstein"] },
-                    { question: "Which continent has the most countries?", correct: "Africa", wrong: ["Europe", "Asia", "South America"] },
-                    { question: "What is the capital of Australia?", correct: "Canberra", wrong: ["Sydney", "Melbourne", "Perth"] },
-                    { question: "Which country is known as the Land of the Rising Sun?", correct: "Japan", wrong: ["China", "Thailand", "South Korea"] },
-                    { question: "The Amazon rainforest is mainly in which country?", correct: "Brazil", wrong: ["Peru", "Colombia", "Venezuela"] },
-                    { question: "Which US state is the largest by area?", correct: "Alaska", wrong: ["Texas", "California", "Montana"] },
-                    { question: "Which city is known as the Eternal City?", correct: "Rome", wrong: ["Athens", "Paris", "Jerusalem"] },
-                    { question: "Which country has the longest coastline in the world?", correct: "Canada", wrong: ["Russia", "Australia", "USA"] },
-                    { question: "What is the capital of South Korea?", correct: "Seoul", wrong: ["Busan", "Tokyo", "Beijing"] },
-                    { question: "What is the driest place on Earth?", correct: "Atacama Desert", wrong: ["Sahara", "Antarctica", "Gobi"] },
-                    { question: "Which ocean is between Africa and Australia?", correct: "Indian Ocean", wrong: ["Pacific Ocean", "Atlantic Ocean", "Arctic Ocean"] },
-                    { question: "Which European country is famous for tulips and windmills?", correct: "Netherlands", wrong: ["Belgium", "Denmark", "Switzerland"] },
-                    { question: "What is the capital of Egypt?", correct: "Cairo", wrong: ["Alexandria", "Luxor", "Giza"] },
-                    { question: "Which mountain range separates Europe from Asia?", correct: "Ural Mountains", wrong: ["Alps", "Himalayas", "Carpathians"] },
-                    { question: "Which African country has the most people?", correct: "Nigeria", wrong: ["Egypt", "South Africa", "Kenya"] },
-                    { question: "What is the capital of Argentina?", correct: "Buenos Aires", wrong: ["Santiago", "Lima", "Rio de Janeiro"] },
-                ],
-
-                sports: [
-                    { question: "Which country won the FIFA World Cup in 2018?", correct: "France", wrong: ["Brazil", "Germany", "Argentina"] },
-                    { question: "In tennis, what is the term for 0 points?", correct: "Love", wrong: ["Zero", "Nil", "Blank"] },
-                    { question: "How many players are on a basketball team on the court?", correct: "5", wrong: ["6", "7", "4"] },
-                    { question: "Which sport is known as the 'king of sports'?", correct: "Soccer", wrong: ["Basketball", "Tennis", "Cricket"] },
-                    { question: "In which sport do players use a shuttlecock?", correct: "Badminton", wrong: ["Tennis", "Squash", "Table Tennis"] },
-                    { question: "How long is an Olympic swimming pool?", correct: "50 meters", wrong: ["25 meters", "100 meters", "75 meters"] },
-                    { question: "Which sport has positions like pitcher and catcher?", correct: "Baseball", wrong: ["Cricket", "Rugby", "Hockey"] },
-                    { question: "Which country hosts the Tour de France?", correct: "France", wrong: ["Italy", "Spain", "Belgium"] },
-                    { question: "How many holes are played in a standard round of golf?", correct: "18", wrong: ["9", "12", "24"] },
-                    { question: "Which martial art originated in Korea?", correct: "Taekwondo", wrong: ["Karate", "Kung Fu", "Judo"] },
-                    { question: "In which sport is the term 'checkmate' used?", correct: "Chess", wrong: ["Boxing", "Wrestling", "Fencing"] },
-                    { question: "Which country hosted the 2016 Summer Olympics?", correct: "Brazil", wrong: ["China", "UK", "Russia"] },
-                    { question: "What is the highest score in a single frame of bowling?", correct: "30", wrong: ["20", "10", "40"] },
-                    { question: "In which sport can you get a 'hole in one'?", correct: "Golf", wrong: ["Cricket", "Tennis", "Bowling"] },
-                    { question: "What does NBA stand for?", correct: "National Basketball Association", wrong: ["National Baseball Association", "National Boxing Alliance", "National Ball Association"] },
-                    { question: "Which sport uses a pommel horse?", correct: "Gymnastics", wrong: ["Wrestling", "Karate", "Diving"] },
-                    { question: "In soccer, what is it called when a player scores 3 goals in a game?", correct: "Hat-trick", wrong: ["Triple", "Three-pointer", "Goal blast"] },
-                    { question: "Who has won the most Olympic gold medals?", correct: "Michael Phelps", wrong: ["Usain Bolt", "Simone Biles", "Carl Lewis"] },
-                    { question: "Which sport uses a bat and wicket?", correct: "Cricket", wrong: ["Baseball", "Hockey", "Lacrosse"] },
-                    { question: "In which sport is the Vince Lombardi Trophy awarded?", correct: "American Football (NFL)", wrong: ["Baseball", "Basketball", "Ice Hockey"] },
-                ],
-
-                popculture: [
-                    { question: "Who played Jack in Titanic?", correct: "Leonardo DiCaprio", wrong: ["Brad Pitt", "Tom Cruise", "Matt Damon"] },
-                    { question: "Which superhero is also known as the Dark Knight?", correct: "Batman", wrong: ["Superman", "Iron Man", "Spider-Man"] },
-                    { question: "Which singer is known as the Queen of Pop?", correct: "Madonna", wrong: ["Beyoncé", "Lady Gaga", "Whitney Houston"] },
-                    { question: "Which movie series features a ring and Middle-earth?", correct: "The Lord of the Rings", wrong: ["Harry Potter", "Narnia", "Star Wars"] },
-                    { question: "Who created the Mickey Mouse character?", correct: "Walt Disney", wrong: ["Stan Lee", "Hanna-Barbera", "Jim Henson"] },
-                    { question: "Which pop star is known as the 'Material Girl'?", correct: "Madonna", wrong: ["Britney Spears", "Lady Gaga", "Cher"] },
-                    { question: "Which Netflix show features Eleven and the Upside Down?", correct: "Stranger Things", wrong: ["The Witcher", "Dark", "Breaking Bad"] },
-                    { question: "What’s the name of the wizarding school in Harry Potter?", correct: "Hogwarts", wrong: ["Durmstrang", "Beauxbatons", "Ilvermorny"] },
-                    { question: "Which actor plays Iron Man in the MCU?", correct: "Robert Downey Jr.", wrong: ["Chris Evans", "Mark Ruffalo", "Chris Hemsworth"] },
-                    { question: "Which TV show is set in Springfield?", correct: "The Simpsons", wrong: ["Family Guy", "South Park", "Futurama"] },
-                    { question: "Which singer is nicknamed 'The King of Pop'?", correct: "Michael Jackson", wrong: ["Elvis Presley", "Prince", "Freddie Mercury"] },
-                    { question: "What is the highest-grossing movie of all time (as of 2023)?", correct: "Avatar", wrong: ["Avengers: Endgame", "Titanic", "Star Wars"] },
-                    { question: "Who voices Donkey in Shrek?", correct: "Eddie Murphy", wrong: ["Chris Rock", "Kevin Hart", "Will Smith"] },
-                    { question: "Which video game series features Master Chief?", correct: "Halo", wrong: ["Call of Duty", "Gears of War", "Fortnite"] },
-                    { question: "Which singer released the album '1989'?", correct: "Taylor Swift", wrong: ["Adele", "Katy Perry", "Selena Gomez"] },
-                    { question: "What is the name of the coffee shop in Friends?", correct: "Central Perk", wrong: ["Monk's Café", "MacLaren's", "JJ's Diner"] },
-                    { question: "Which movie features the song 'Let It Go'?", correct: "Frozen", wrong: ["Moana", "Tangled", "Encanto"] },
-                    { question: "Who played the character of Jack Sparrow?", correct: "Johnny Depp", wrong: ["Orlando Bloom", "Hugh Jackman", "Russell Crowe"] },
-                    { question: "Which show had characters Ross, Rachel, and Monica?", correct: "Friends", wrong: ["How I Met Your Mother", "The Office", "Seinfeld"] },
-                    { question: "Which rapper is known as Slim Shady?", correct: "Eminem", wrong: ["Dr. Dre", "Jay-Z", "Kanye West"] },
-                ]
-            },
-
-            hard: {
-                history: [
-                    { question: "Who was the first emperor of Rome?", correct: "Augustus", wrong: ["Julius Caesar", "Nero", "Tiberius"] },
-                    { question: "The Cold War was mainly between the USA and which country?", correct: "Soviet Union", wrong: ["Germany", "China", "Japan"] },
-                    { question: "Who was the first woman to fly solo across the Atlantic?", correct: "Amelia Earhart", wrong: ["Harriet Quimby", "Bessie Coleman", "Valentina Tereshkova"] },
-                    { question: "Which treaty ended World War I?", correct: "Treaty of Versailles", wrong: ["Treaty of Paris", "Treaty of Ghent", "Treaty of Utrecht"] },
-                    { question: "Who was the British Prime Minister during World War II?", correct: "Winston Churchill", wrong: ["Neville Chamberlain", "Clement Attlee", "Margaret Thatcher"] },
-                    { question: "What empire was ruled by Genghis Khan?", correct: "Mongol Empire", wrong: ["Ottoman Empire", "Roman Empire", "Persian Empire"] },
-                    { question: "Which ancient city was destroyed by a volcanic eruption in 79 AD?", correct: "Pompeii", wrong: ["Athens", "Babylon", "Carthage"] },
-                    { question: "Who was assassinated on the Ides of March, 44 BC?", correct: "Julius Caesar", wrong: ["Brutus", "Augustus", "Cicero"] },
-                    { question: "What year did the Berlin Wall fall?", correct: "1989", wrong: ["1991", "1985", "1993"] },
-                    { question: "Who was the first President of South Africa after apartheid?", correct: "Nelson Mandela", wrong: ["Thabo Mbeki", "F.W. de Klerk", "Jacob Zuma"] },
-                    { question: "Which war was fought between the North and South regions of the United States?", correct: "American Civil War", wrong: ["Revolutionary War", "World War I", "Mexican War"] },
-                    { question: "What was the name of the ship on which the Pilgrims traveled to America in 1620?", correct: "Mayflower", wrong: ["Santa Maria", "Endeavour", "Discovery"] },
-                    { question: "Who was the longest-reigning British monarch before Queen Elizabeth II surpassed them?", correct: "Queen Victoria", wrong: ["George III", "Edward VII", "Elizabeth I"] },
-                    { question: "Which civilization built Machu Picchu?", correct: "Inca", wrong: ["Aztec", "Maya", "Olmec"] },
-                    { question: "The Battle of Hastings was fought in which year?", correct: "1066", wrong: ["1215", "1415", "1666"] },
-                    { question: "Who painted the Sistine Chapel ceiling?", correct: "Michelangelo", wrong: ["Leonardo da Vinci", "Raphael", "Donatello"] },
-                    { question: "What was the first country to grant women the right to vote?", correct: "New Zealand", wrong: ["USA", "UK", "Sweden"] },
-                    { question: "Which French queen was executed during the French Revolution?", correct: "Marie Antoinette", wrong: ["Catherine de Medici", "Joan of Arc", "Anne Boleyn"] },
-                    { question: "Who was the U.S. president during the Cuban Missile Crisis?", correct: "John F. Kennedy", wrong: ["Richard Nixon", "Dwight D. Eisenhower", "Lyndon B. Johnson"] },
-                    { question: "What dynasty built most of the Great Wall of China?", correct: "Ming Dynasty", wrong: ["Han Dynasty", "Tang Dynasty", "Qin Dynasty"] }
-                ],
-
-                geography: [
-                    { question: "What is the capital of Canada?", correct: "Ottawa", wrong: ["Toronto", "Vancouver", "Montreal"] },
-                    { question: "Which river runs through Baghdad?", correct: "Tigris", wrong: ["Euphrates", "Nile", "Jordan"] },
-                    { question: "What is the smallest country in the world?", correct: "Vatican City", wrong: ["Monaco", "San Marino", "Liechtenstein"] },
-                    { question: "Which country has the most islands?", correct: "Sweden", wrong: ["Indonesia", "Philippines", "Norway"] },
-                    { question: "What is the longest river in the world?", correct: "Nile", wrong: ["Amazon", "Yangtze", "Mississippi"] },
-                    { question: "Which continent has no permanent population?", correct: "Antarctica", wrong: ["Australia", "Europe", "Africa"] },
-                    { question: "What is the capital of Kazakhstan?", correct: "Astana (Nur-Sultan)", wrong: ["Almaty", "Tashkent", "Bishkek"] },
-                    { question: "Which mountain range separates Europe and Asia?", correct: "Ural Mountains", wrong: ["Alps", "Caucasus", "Himalayas"] },
-                    { question: "What is the deepest ocean trench?", correct: "Mariana Trench", wrong: ["Tonga Trench", "Kuril Trench", "Puerto Rico Trench"] },
-                    { question: "Which country is known as the Land of a Thousand Lakes?", correct: "Finland", wrong: ["Norway", "Sweden", "Canada"] },
-                    { question: "What is the largest desert in the world?", correct: "Antarctic Desert", wrong: ["Sahara", "Arabian", "Gobi"] },
-                    { question: "Which two countries share the longest border in the world?", correct: "USA and Canada", wrong: ["Russia and China", "Brazil and Argentina", "India and Bangladesh"] },
-                    { question: "Which African country was formerly called Abyssinia?", correct: "Ethiopia", wrong: ["Somalia", "Sudan", "Eritrea"] },
-                    { question: "What is the capital of Mongolia?", correct: "Ulaanbaatar", wrong: ["Astana", "Tashkent", "Baku"] },
-                    { question: "Which sea separates Europe and Africa?", correct: "Mediterranean Sea", wrong: ["Black Sea", "Red Sea", "Caspian Sea"] },
-                    { question: "Which country has the city of Timbuktu?", correct: "Mali", wrong: ["Niger", "Chad", "Burkina Faso"] },
-                    { question: "What is the only country that is also a continent?", correct: "Australia", wrong: ["Antarctica", "Greenland", "South America"] },
-                    { question: "Which city is known as the 'Pearl of the Orient'?", correct: "Manila", wrong: ["Hong Kong", "Singapore", "Bangkok"] },
-                    { question: "Which river flows through Paris?", correct: "Seine", wrong: ["Thames", "Rhine", "Danube"] },
-                    { question: "What is the tallest mountain in Africa?", correct: "Mount Kilimanjaro", wrong: ["Mount Kenya", "Ruwenzori", "Drakensberg"] }
-                ],
-
-                sports: [
-                    { question: "Who has won the most Olympic gold medals?", correct: "Michael Phelps", wrong: ["Usain Bolt", "Simone Biles", "Carl Lewis"] },
-                    { question: "In which sport is the Ryder Cup contested?", correct: "Golf", wrong: ["Tennis", "Cricket", "Rugby"] },
-                    { question: "Which country hosted the first modern Olympics?", correct: "Greece", wrong: ["France", "USA", "Italy"] },
-                    { question: "Which boxer was known as 'The Greatest'?", correct: "Muhammad Ali", wrong: ["Mike Tyson", "Floyd Mayweather", "Joe Frazier"] },
-                    { question: "In which year did Roger Federer win his first Wimbledon?", correct: "2003", wrong: ["2001", "2004", "2005"] },
-                    { question: "Which country won the first FIFA World Cup in 1930?", correct: "Uruguay", wrong: ["Brazil", "Germany", "Argentina"] },
-                    { question: "How many players are on a rugby union team?", correct: "15", wrong: ["11", "13", "9"] },
-                    { question: "Which NBA player is known as 'The Black Mamba'?", correct: "Kobe Bryant", wrong: ["Michael Jordan", "LeBron James", "Shaquille O'Neal"] },
-                    { question: "Who won the most Formula 1 World Championships?", correct: "Michael Schumacher and Lewis Hamilton", wrong: ["Ayrton Senna", "Sebastian Vettel", "Alain Prost"] },
-                    { question: "Which female tennis player has won the most Grand Slams?", correct: "Serena Williams", wrong: ["Steffi Graf", "Martina Navratilova", "Chris Evert"] },
-                    { question: "Which country has won the most Cricket World Cups?", correct: "Australia", wrong: ["India", "England", "West Indies"] },
-                    { question: "In baseball, how many strikes result in an out?", correct: "3", wrong: ["2", "4", "5"] },
-                    { question: "Which African nation won the AFCON in 2019?", correct: "Algeria", wrong: ["Egypt", "Nigeria", "Cameroon"] },
-                    { question: "Which NFL team has won the most Super Bowls?", correct: "New England Patriots & Pittsburgh Steelers", wrong: ["Dallas Cowboys", "San Francisco 49ers", "Green Bay Packers"] },
-                    { question: "Which athlete lit the Olympic flame in Barcelona 1992?", correct: "Antonio Rebollo", wrong: ["Carl Lewis", "Sergey Bubka", "Nadia Comăneci"] },
-                    { question: "What sport uses the terms 'stale fish' and 'ollie'?", correct: "Skateboarding", wrong: ["Snowboarding", "Surfing", "BMX"] },
-                    { question: "Who was the first gymnast to score a perfect 10 in the Olympics?", correct: "Nadia Comăneci", wrong: ["Simone Biles", "Olga Korbut", "Shannon Miller"] },
-                    { question: "Which country won the Rugby World Cup in 2019?", correct: "South Africa", wrong: ["England", "New Zealand", "Australia"] },
-                    { question: "Which country invented table tennis?", correct: "England", wrong: ["China", "Japan", "Germany"] },
-                    { question: "Which boxer was nicknamed 'Iron Mike'?", correct: "Mike Tyson", wrong: ["George Foreman", "Joe Louis", "Evander Holyfield"] }
-                ],
-
-                popculture: [
-                    { question: "Which band was John Lennon a member of?", correct: "The Beatles", wrong: ["The Rolling Stones", "Pink Floyd", "Queen"] },
-                    { question: "What year did the first iPhone release?", correct: "2007", wrong: ["2005", "2008", "2010"] },
-                    { question: "Who created the TV series 'Game of Thrones'?", correct: "George R. R. Martin", wrong: ["J.R.R. Tolkien", "J.K. Rowling", "Stephen King"] },
-                    { question: "Which actor voiced Darth Vader?", correct: "James Earl Jones", wrong: ["Samuel L. Jackson", "Morgan Freeman", "Forest Whitaker"] },
-                    { question: "Who directed 'Inception'?", correct: "Christopher Nolan", wrong: ["Steven Spielberg", "James Cameron", "Ridley Scott"] },
-                    { question: "Which singer is known as 'Queen of Pop'?", correct: "Madonna", wrong: ["Beyoncé", "Lady Gaga", "Whitney Houston"] },
-                    { question: "What is the highest-grossing movie of all time (without inflation)?", correct: "Avatar", wrong: ["Avengers: Endgame", "Titanic", "Star Wars"] },
-                    { question: "Which TV show featured Ross, Rachel, and Chandler?", correct: "Friends", wrong: ["How I Met Your Mother", "The Office", "Seinfeld"] },
-                    { question: "Which artist painted 'Starry Night'?", correct: "Vincent van Gogh", wrong: ["Claude Monet", "Pablo Picasso", "Salvador Dalí"] },
-                    { question: "Who played the Joker in 'The Dark Knight'?", correct: "Heath Ledger", wrong: ["Jared Leto", "Joaquin Phoenix", "Jack Nicholson"] },
-                    { question: "Which rapper is also known as Marshall Mathers?", correct: "Eminem", wrong: ["Dr. Dre", "Jay-Z", "50 Cent"] },
-                    { question: "Who sang 'Rolling in the Deep'?", correct: "Adele", wrong: ["Rihanna", "Taylor Swift", "Beyoncé"] },
-                    { question: "Which animated movie features Elsa and Anna?", correct: "Frozen", wrong: ["Moana", "Brave", "Tangled"] },
-                    { question: "Who wrote 'The Lord of the Rings'?", correct: "J.R.R. Tolkien", wrong: ["C.S. Lewis", "George R.R. Martin", "Philip Pullman"] },
-                    { question: "What’s the name of the coffee shop in Friends?", correct: "Central Perk", wrong: ["Cafe Nervosa", "Java Joe's", "Daily Grind"] },
-                    { question: "Which movie won Best Picture at the Oscars 2020?", correct: "Parasite", wrong: ["1917", "Joker", "Once Upon a Time in Hollywood"] },
-                    { question: "What video game franchise features Master Chief?", correct: "Halo", wrong: ["Call of Duty", "Gears of War", "Destiny"] },
-                    { question: "Who played Wolverine in the X-Men movies?", correct: "Hugh Jackman", wrong: ["Chris Hemsworth", "Ryan Reynolds", "Henry Cavill"] },
-                    { question: "Which TV series is set in Westeros?", correct: "Game of Thrones", wrong: ["The Witcher", "The Last Kingdom", "Shadow and Bone"] },
-                    { question: "Which K-pop group released 'Dynamite'?", correct: "BTS", wrong: ["Blackpink", "EXO", "Twice"] }
-                ]
-            }
-
-        };
-
-        const difficultyWords = gkSets[difficulty][questionType];
-
-        // filter unused questions
-        const unused = difficultyWords.filter(
-            q => !this.usedWords[difficulty][questionType].includes(q.question)
+        const difficultyWords = wordSets[difficulty][questionType]
+        // Filter out used words
+        const unusedWords = difficultyWords.filter(
+            w => !this.usedWords[difficulty][questionType].includes(w.word)
         );
 
-        if (unused.length === 0) {
+        if (unusedWords.length === 0) {
             // All questions used, resetting...
+
+            // Reset so we can reuse all questions
             this.usedWords[difficulty][questionType] = [];
-            // All questions are now available again
+
+            // After reset, all words are available again
+            unusedWords = [...difficultyWords];
         }
 
-        const selected = unused[Math.floor(Math.random() * unused.length)];
-        this.usedWords[difficulty][questionType].push(selected.question);
+        // Pick a random unused word
+        const selectedWord = unusedWords[Math.floor(Math.random() * unusedWords.length)];
 
-        // shuffle answer options
-        let options = [selected.correct, ...selected.wrong];
+        // Mark as used
+        this.usedWords[difficulty][questionType].push(selectedWord.word);
+
+        let question, correctAnswer, options;
+        switch (questionType) {
+            case "synonym":
+                question = `What is a synonym for "${selectedWord.word}"?`;
+                correctAnswer = selectedWord.correct;
+                options = [correctAnswer, ...selectedWord.wrong];
+                break;
+            case "antonym":
+                question = `What is the opposite of "${selectedWord.word}"?`;
+                correctAnswer = selectedWord.correct;
+                options = [correctAnswer, ...selectedWord.wrong];
+                break;
+            case "definition":
+                const firstLetter = selectedWord.word[0].toLowerCase();
+                const article = ["a", "e", "i", "o", "u"].includes(firstLetter) ? "an" : "a";
+                question = `What is ${article} "${selectedWord.word}"?`;
+                correctAnswer = selectedWord.correct;
+                options = [correctAnswer, ...selectedWord.wrong];
+                break;
+            case "spelling":
+                question = `Which word is spelled correctly?`;
+                correctAnswer = selectedWord.correct;
+                options = [correctAnswer, ...selectedWord.wrong];
+                break;
+        }
+
+        // Shuffle options
         for (let i = options.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [options[i], options[j]] = [options[j], options[i]];
         }
 
-        return { question: selected.question, correctAnswer: selected.correct, options };
+        return { question, correctAnswer, options };
     }
-
-
 
     initGame() {
         const headPosition = this.getRandomPosition()
@@ -1078,7 +876,7 @@ class SnakeGeneralKnowledgeGame {
     }
 
     moveSnake() {
-        if (this.isCountdownActive) return  // 🚫 don’t move while countdown is running
+        if (this.isCountdownActive) return  // 🚫 don't move while countdown is running
         const newSnake = [...this.snake]
         const head = { ...newSnake[0] }
 
@@ -1119,6 +917,7 @@ class SnakeGeneralKnowledgeGame {
             if (eatenApple.isCorrect) {
                 this.score += 10
                 this.correctAnswers++
+                this.addToTotalPoints(10) // Add points to total points system
 
                 this.playSound("correct")
                 this.playSound("biteApple")
@@ -1202,7 +1001,7 @@ class SnakeGeneralKnowledgeGame {
         const shieldIndicator = document.getElementById('shield-indicator');
         if (shieldIndicator) {
             if (this.hasShield) {
-                shieldIndicator.innerHTML = '<img src="../assets/icons/shield.png" class="shield-icon" alt="Shield">';
+                shieldIndicator.innerHTML = '<img src="../../assets/images/icons/shield.png" class="shield-icon" alt="Shield">';
             } else {
                 shieldIndicator.innerHTML = '';
             }
@@ -1542,7 +1341,6 @@ class SnakeGeneralKnowledgeGame {
                     this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
                 }
             }
-
         });
 
         // Use shield pickup icon if present
@@ -1774,41 +1572,47 @@ class SnakeGeneralKnowledgeGame {
         const cY2 = cellY + cellH
         return !(cX2 <= rect.x || rX2 <= cellX || cY2 <= rect.y || rY2 <= cellY)
     }
+
+    addToTotalPoints(points) {
+        // Add points to the total points system for skin purchases
+        const currentTotal = parseInt(localStorage.getItem("totalPoints")) || 0
+        const newTotal = currentTotal + points
+        localStorage.setItem("totalPoints", newTotal.toString())
+    }
+}
+
+
+const aboutModal = document.getElementById("about-modal");
+const closeAbout = document.getElementById("close-about");
+const aboutBtn = document.getElementById("about-btn");
+
+if (aboutModal) {
+    aboutBtn.addEventListener("click", () => {
+        aboutModal.classList.remove("hidden");
+    });
+}
+if (closeAbout) {
+    closeAbout.addEventListener("click", () => {
+        aboutModal.classList.add("hidden");
+    });
+}
+
+const copyrightModal = document.getElementById("copyright-modal");
+const closeCopyright = document.getElementById("close-copyright");
+const copyrightBtn = document.getElementById("copyright-btn");
+
+if (copyrightBtn) {
+    copyrightBtn.addEventListener("click", () => {
+        copyrightModal.classList.remove("hidden");
+    });
+}
+
+if (closeCopyright) {
+    closeCopyright.addEventListener("click", () => {
+        copyrightModal.classList.add("hidden");
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    new SnakeGeneralKnowledgeGame();
-
-    const aboutModal = document.getElementById("about-modal");
-    const closeAbout = document.getElementById("close-about");
-    const aboutBtn = document.getElementById("about-btn");
-
-    if (aboutBtn) {
-        aboutBtn.addEventListener("click", () => {
-            aboutModal.classList.remove("hidden");
-        });
-    }
-
-    if (closeAbout) {
-        closeAbout.addEventListener("click", () => {
-            aboutModal.classList.add("hidden");
-        });
-    }
-
-    const copyrightModal = document.getElementById("copyright-modal");
-    const closeCopyright = document.getElementById("close-copyright");
-    const copyrightBtn = document.getElementById("copyright-btn");
-
-    if (copyrightBtn) {
-        copyrightBtn.addEventListener("click", () => {
-            copyrightModal.classList.remove("hidden");
-        });
-    }
-
-    if (closeCopyright) {
-        closeCopyright.addEventListener("click", () => {
-            copyrightModal.classList.add("hidden");
-        });
-    }
+    new SnakeEnglishGame()
 })
-
