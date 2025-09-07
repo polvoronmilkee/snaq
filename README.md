@@ -82,40 +82,40 @@ Learning & Literacy – SnaQ builds foundational knowledge in math, language, an
 
 ```
 snakeq_game/
-├── index.html                    # Main landing page with skin shop
+├── index.html          
 ├── assets/
 │   ├── css/
-│   │   └── styles.css           # Game styles, pixel art theme, and skin shop UI
+│   │   └── styles.css   
 │   ├── images/
-│   │   ├── icons/               # UI icons and buttons
-│   │   ├── apples/              # Apple sprites (multiple colors)
-│   │   └── snake-skins/         # Snake skin variants
-│   │       ├── green_snake/     # Default green snake sprites
-│   │       ├── pink_snake/      # Pink snake skin sprites
-│   │       ├── blue_snake/      # Blue snake skin sprites
-│   │       ├── red_snake/       # Red snake skin sprites
-│   │       └── volt_snake/      # Special Volt Tech skin with bonuses
-│   └── sounds/                  # Audio files and sound effects
+│   │   ├── icons/            
+│   │   ├── apples/        
+│   │   └── snake-skins/     
+│   │       ├── green_snake/   
+│   │       ├── pink_snake/    
+│   │       ├── blue_snake/    
+│   │       ├── red_snake/     
+│   │       └── volt_snake/    
+│   └── sounds/             
 ├── shared/
-│   ├── landing.js               # Main menu logic and skin system
-│   └── gamesQuestions/          # Question databases for each subject
-│       ├── mathQuestions.js     # Math questions and answers
-│       ├── scienceQuestions.js  # Science questions and answers
-│       ├── englishQuestions.js  # English questions and answers
-│       └── generalKnowQuestions.js # General knowledge questions
-└── games/                       # Individual game directories
+│   ├── landing.js             
+│   └── gamesQuestions/         
+│       ├── mathQuestions.js     
+│       ├── scienceQuestions.js  
+│       ├── englishQuestions.js  
+│       └── generalKnowQuestions.js 
+└── games/                      
     ├── math/
-    │   ├── math-game.html       # Math game interface
-    │   └── math-game.js         # Math game logic and rendering
+    │   ├── math-game.html    
+    │   └── math-game.js        
     ├── science/
-    │   ├── science-game.html    # Science game interface
-    │   └── science-game.js      # Science game logic and rendering
+    │   ├── science-game.html    
+    │   └── science-game.js      
     ├── english/
-    │   ├── english-game.html    # English game interface
-    │   └── english-game.js      # English game logic and rendering
+    │   ├── english-game.html    
+    │   └── english-game.js      
     └── generalKnowledge/
-        ├── generalknow-game.html # General knowledge game interface
-        └── generalknow-game.js   # General knowledge game logic
+        ├── generalknow-game.html 
+        └── generalknow-game.js   
 ```
 ---
 
