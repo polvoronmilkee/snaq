@@ -832,7 +832,13 @@ class SnakeGeneralKnowledgeGame {
                 this.snakeFace = "happy"
                 this.showNotification("Correct! +10 points", "correct")
 
-                this.currentQuestion = this.generateQuestion()
+                const questionTypes = ["history", "geography", "sports", "popculture"];
+                this.currentQuestion = generateQuestion(
+                    gkSets,
+                    questionTypes,
+                    this.gameSettings,
+                    this.usedWords
+                )
                 this.apples = this.generateApples(this.currentQuestion)
             } else {
                 // Wrong answer: shield blocks once
@@ -875,6 +881,8 @@ class SnakeGeneralKnowledgeGame {
                     this.spawnShieldIfEligible()
 
                     this.updateUI()
+                    
+                    // Don't grow the snake for wrong answer, just remove the tail
                     newSnake.pop()
                 }
             }
