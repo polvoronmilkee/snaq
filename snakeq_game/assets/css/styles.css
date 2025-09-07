@@ -1718,10 +1718,12 @@ body::before {
   background: #ff4444;
   border: 2px solid #cc3333;
   color: #fff;
-  padding: 10px 20px;
+  padding: 10px 10px;
   font-family: "Press Start 2P", monospace;
   font-size: 12px;
   cursor: pointer;
+  width: 65%;
+  align-self: center;
   transition: all 0.1s ease;
 }
 

@@ -15,7 +15,7 @@ class LandingPage {
 
     // Skin system
     this.points = parseInt(localStorage.getItem("totalPoints")) || 0;
-    this.coins = Math.floor(this.points / 10); // Convert points to coins (10 points = 1 coin)
+    this.coins = parseInt(localStorage.getItem("totalCoins")) || Math.floor(this.points / 10); // Load coins from storage or calculate from points
     this.totalPointsDisplay = $$("current-points");
     this.ownedSkins = JSON.parse(localStorage.getItem("ownedSkins")) || ["green"];
     this.selectedSkin = localStorage.getItem("selectedSkin") || "green";
@@ -546,7 +546,7 @@ renderShopItems(category) {
   items.forEach(item => {
     const isOwned = this.isItemOwned(category, item.id);
     const isSelected = this.isItemSelected(category, item.id);
-    const canAfford = this.coins >= item.price; // ✅ now checks coins
+    const canAfford = this.coins >= item.price; // 
 
     const itemElement = document.createElement('div');
     itemElement.className = 'skin-item shop-item';
@@ -564,7 +564,7 @@ renderShopItems(category) {
                      data-category="${category}" data-id="${item.id}" data-action="select">
                ${isSelected ? 'Selected' : 'Select'}
              </button>` : 
-            `<span class="skin-price">${item.price} coins</span>  <!-- ✅ now shows coins -->
+            `<span class="skin-price">${item.price} coins</span>  
              <button class="action-btn ${canAfford ? '' : 'disabled'}" 
                      data-category="${category}" data-id="${item.id}" data-action="buy"
                      ${canAfford ? '' : 'disabled'}>
@@ -634,23 +634,17 @@ renderShopItems(category) {
       return;
     }
     
-    // Check if user has enough points and coins
-    if (this.points < item.price) {
-      this.showNotification('❌ Not enough points!');
-      return;
-    }
-
-    if (this.coins < (item.priceCoins || 0)) {
+    // Check if user has enough coins
+    if (this.coins < item.price) {
       this.showNotification('❌ Not enough coins!');
       return;
     }
     
-    // Deduct points and add to owned items
-    this.points -= item.price;
-    localStorage.setItem("totalPoints", this.points.toString());
-
-    this.coins -= (item.priceCoins || 0);
+    // Deduct coins and corresponding points (10 points = 1 coin)
+    this.coins -= item.price;
+    this.points -= (item.price * 10);
     localStorage.setItem("totalCoins", this.coins.toString());
+    localStorage.setItem("totalPoints", this.points.toString());
     
     if (category === 'skins') {
       if (!this.ownedSkins.includes(itemId)) {
@@ -675,7 +669,7 @@ renderShopItems(category) {
       pointsDisplay.textContent = this.points;
     }
 
-    // Update coins based on new points
+    // Update coins display
     const coinsDisplay = document.getElementById("current-coins");
     if (coinsDisplay) {
         coinsDisplay.textContent = this.coins;
