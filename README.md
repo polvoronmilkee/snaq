@@ -93,7 +93,6 @@ snakeq_game/
 │   │       ├── green_snake/   
 │   │       ├── pink_snake/    
 │   │       ├── blue_snake/    
-│   │       ├── red_snake/     
 │   │       └── volt_snake/    
 │   └── sounds/             
 ├── shared/
