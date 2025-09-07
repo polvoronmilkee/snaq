@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SnaQ - General Knowledge</title>
-    <link rel="icon" type="image/png" href="../assets/icons/snake-icon.png">
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="icon" type="image/png" href="../../assets/images/icons/snake-icon.png">
+    <link rel="stylesheet" href="../../assets/css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -17,10 +17,10 @@
     <header class="sticky-header">
         <div class="header-left">
             <button id="back-to-menu" class="header-btn back-btn-header" title="Back to Menu">
-                <img src="../assets/icons/back-icon.png" alt="Back" class="header-icon" />
+                <img src="../../assets/images/icons/back-icon.png" alt="Back" class="header-icon" />
             </button>
             <div class="header-logo">
-                <img src="../assets/icons/snake-icon.png" alt="SnAQ Logo" />
+                <img src="../../assets/images/icons/snake-icon.png" alt="SnAQ Logo" />
             </div>
         </div>
         <div class="header-controls">
@@ -57,7 +57,7 @@
             <h3>How to Play SnaQ - General Knowledge</h3>
 
             <h4>🎯 Objective</h4>
-            <p>Control the snake to eat colored apples with correct answers to English questions. Grow your snake and
+            <p>Control the snake to eat colored apples with correct answers to General Knowledge questions. Grow your snake and
                 reach the target score!</p>
 
             <h4>🕹️ Controls</h4>
@@ -78,18 +78,21 @@
                 <li>Don't bite yourself or you'll lose a life</li>
             </ul>
 
-            <h4>🛡️ Power‑Ups</h4>
+            <h4>🛡️ Power‑Ups & Special Features</h4>
             <ul>
-                <li>Shield: Spawns when you’re low on lives. Grab it to block one mistake!</li>
-                <li>Sprint Bar: Refills over time. Zoom carefully so you don’t miss apples.</li>
+                <li><strong>Shield:</strong> Spawns when you're low on lives. Grab it to block one mistake!</li>
+                <li><strong>Sprint Bar:</strong> Hold SHIFT to move faster. Energy refills over time.</li>
+                <li><strong>Volt Tech Skin:</strong> Special skin with +10% max energy, -15% drain, +15% regen!</li>
+                <li><strong>Open Trivia API:</strong> Fresh questions from 13+ categories including History, Geography, Sports!</li>
             </ul>
 
             <h4>❤️ Lives & Scoring</h4>
             <ul>
                 <li>You start with 3 lives (hearts)</li>
                 <li>Lose a life for wrong answers or self-bites</li>
-                <li>Game ends when you lose all lives</li>
-                <li>Speed increases as you progress</li>
+                <li>Game ends when you lose all lives or reach target score</li>
+                <li>Speed increases as you progress through difficulty levels</li>
+                <li>Earn points to unlock new snake skins in the shop!</li>
             </ul>
 
             <button class="close-instructions" id="close-instructions">Got It!</button>
@@ -124,14 +127,14 @@
         <div class="game-board pixel-border">
             <div class="game-header-bar">
                 <h1 class="game-title">GENERAL KNOWLEDGE SnaQ</h1>
-                <img src="../assets/icons/generalknowledge-icon.png" alt="General Knowledge" class="game-icon" />
+                <img src="../../assets/images/icons/generalknowledge-icon.png" alt="General Knowledge" class="game-icon" />
 
             </div>
 
             <!-- HUD -->
             <div class="hud pixel-hud">
                 <div class="score pixel-stat">
-                    <img src="../assets/icons/score-icon.png" alt="Score" class="stat-icon" />
+                    <img src="../../assets/images/icons/score-icon.png" alt="Score" class="stat-icon" />
                     Score: <span id="score-value">0</span>
                 </div>
 
@@ -145,11 +148,11 @@
                     <div class="shield-indicator" id="shield-indicator"></div>
                 </div>
                 <div class="correct pixel-stat">
-                    <img src="../assets/icons/correct-icon.png" alt="Correct" class="stat-icon" />
+                    <img src="../../assets/images/icons/correct-icon.png" alt="Correct" class="stat-icon" />
                     Correct: <span id="correct-value">0</span>/<span id="target-value">10</span>
                 </div>
                 <div class="timer pixel-stat" id="timer-display" style="text-align: center">
-                    <img src="../assets/icons/timer-icon.png" alt="Timer" class="stat-icon" />
+                    <img src="../../assets/images/icons/timer-icon.png" alt="Timer" class="stat-icon" />
                     Time: <span id="timer-value">60</span>s
                 </div>
             </div>
@@ -235,7 +238,7 @@
         </div>
     </div>
 
-    <script type="module" src="../scripts/games/generalknow-game.js"></script>
+    <script type="module" src="../../games/generalKnowledge/generalknow-game.js"></script>
 </body>
 
 </html>

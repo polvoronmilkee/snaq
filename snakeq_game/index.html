@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SnaQ - Quiz Your Brain, Grow Your Snake!</title>
-    <link rel="icon" type="image/png" href="assets/icons/snake-icon.png">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="assets/images/icons/snake-icon.png">
+    <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
     <header class="sticky-header">
         <div class="header-left">
             <div class="header-logo">
-                <img src="assets/icons/snake-icon.png" alt="SnaQ Logo" />
+                <img src="assets/images/icons/snake-icon.png" alt="SnaQ Logo" />
             </div>
         </div>
         <div class="header-controls">
@@ -139,7 +139,7 @@
             <h3>How to Play SnaQ</h3>
 
             <h4>🎯 Pick Your Adventure</h4>
-            <p>Choose Mathematics or English. Answer questions to help your hungry snake grow!</p>
+            <p>Choose from Mathematics, English, Science, or General Knowledge. Answer questions to help your hungry snake grow!</p>
 
             <h4>🕹️ Controls</h4>
             <ul>
@@ -158,10 +158,13 @@
                 <li>Wrong bites make your snake say "yuck!" and cost a life</li>
             </ul>
 
-            <h4>🛡️ Power‑Ups</h4>
+            <h4>🛡️ Power‑Ups & Special Features</h4>
             <ul>
-                <li>Shield: Spawns when you're low on lives. Grab it to block one mistake!</li>
-                <li>Sprint Bar: Refills over time. Zoom carefully so you don't miss apples.</li>
+                <li><strong>Shield:</strong> Spawns when you're low on lives. Grab it to block one mistake!</li>
+                <li><strong>Sprint Bar:</strong> Hold SHIFT to move faster. Energy refills over time.</li>
+                <li><strong>Volt Tech Skin:</strong> Special skin with +10% max energy, -15% drain, +15% regen!</li>
+                <li><strong>Shop System:</strong> Earn points to unlock new snake skins and accessories!</li>
+                <li><strong>Fresh Questions:</strong> API integration provides varied trivia content!</li>
             </ul>
 
             <h4>🏆 Game Modes</h4>
@@ -203,7 +206,7 @@
 
     <div class="landing-container">
         <!-- Added background image -->
-        <div class="pixel-background" style="background-image: url('assets/backgrounds/bgback.png');">
+        <div class="pixel-background" style="background-image: url('assets/images/backgrounds/bgback.png');">
             <div class="pixel-trees"></div>
             <div class="pixel-grass"></div>
         </div>
@@ -211,7 +214,7 @@
         <div class="main-content">
             <header class="game-header">
                 <div class="logo-container">
-                    <img src="assets/icons/snake-icon-boxed.png" alt="Snake" class="logo-icon" />
+                    <img src="assets/images/icons/snake-icon-boxed.png" alt="Snake" class="logo-icon" />
                 </div>
                 <p class="tagline">Quiz Your Brain, Grow Your Snake!</p>
             </header>
@@ -224,19 +227,19 @@
 
                 <div class="category-buttons">
                     <button class="category-btn math-btn" data-category="math">
-                        <img src="assets/icons/math-icon.png" alt="Math" class="btn-icon" />
+                        <img src="assets/images/icons/math-icon.png" alt="Math" class="btn-icon" />
                         <span>Mathematics</span>
                     </button>
                     <button class="category-btn english-btn" data-category="english">
-                        <img src="assets/icons/english-icon.png" alt="English" class="btn-icon" />
+                        <img src="assets/images/icons/english-icon.png" alt="English" class="btn-icon" />
                         <span>English</span>
                     </button>
                     <button class="category-btn science-btn" data-category="science">
-                        <img src="assets/icons/Science.png" alt="Science" class="btn-icon" />
+                        <img src="assets/images/icons/Science.png" alt="Science" class="btn-icon" />
                         <span>Science</span>
                     </button>
                     <button class="category-btn generalknow-btn" data-category="generalknow">
-                        <img src="assets/icons/generalknowledge-icon.png" alt="General Knowledge" class="btn-icon" />
+                        <img src="assets/images/icons/generalknowledge-icon.png" alt="General Knowledge" class="btn-icon" />
                         <span>General<br>Knowledge</span>
                     </button>
                 </div>
@@ -248,11 +251,11 @@
                     <button class="skin-shop-btn" id="skin-btn" title="Skin Shop">
                         <div class="skin-btn-content">
                             <span class="skin-text">Skins</span>
-                            <img src="assets/icons/pixelPalette.png" alt="Skin Shop" class="pixel-palette-icon" />
+                            <img src="assets/images/icons/pixelPalette.png" alt="Skin Shop" class="pixel-palette-icon" />
                         </div>
                     </button>
                     <button class="play-btn" id="playBtn" disabled>
-                        <img src="assets/icons/play-icon.png" alt="Play" class="btn-icon" />
+                        <img src="assets/images/icons/play-icon.png" alt="Play" class="btn-icon" />
                         <span>START GAME</span>
                     </button>
                 </div>
@@ -305,7 +308,6 @@
     <!-- Notification Element -->
     <div id="notification" class="hidden"></div>
 
-    <script src="scripts/landing.js"></script>
+    <script src="shared/landing.js"></script>
 </body>
-
 </html>

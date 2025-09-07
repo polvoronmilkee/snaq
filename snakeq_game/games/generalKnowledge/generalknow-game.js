@@ -1,4 +1,4 @@
-import gkSets from "../gamesQuestions/generalKnowQuestions.js"
+import gkSets from "../../shared/gamesQuestions/generalKnowQuestions.js"
 class SnakeGeneralKnowledgeGame {
     constructor() {
         // Game constants
@@ -20,9 +20,9 @@ class SnakeGeneralKnowledgeGame {
 
         const canvasContainer = document.querySelector(".canvas-container");
 
-        canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../assets/snake-skins/volt_snake/Tile.png)` : `url("../assets/icons/Tile.png")`;
+        canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../../assets/images/snake-skins/volt_snake/Tile.png)` : `url("../../assets/images/icons/Tile.png")`;
 
-        const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../assets/snake-skins/volt_snake/sounds" : "../assets/sounds"
+        const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../../assets/images/snake-skins/volt_snake/sounds" : "../../assets/sounds"
 
         this.sounds = {
             biteApple: new Audio(`${soundPath}/bite-apple.mp3`),
@@ -31,7 +31,7 @@ class SnakeGeneralKnowledgeGame {
             snakeLosesLife: new Audio(`${soundPath}/snake-loses-life.mp3`),
             correct: new Audio(`${soundPath}/correct.mp3`),
             bgMusic: new Audio(`${soundPath}/bg-music.mp3`),
-            youWon: new Audio("../assets/sounds/good-job.mp3"),
+            youWon: new Audio("../../assets/sounds/good-job.mp3"),
             click: new Audio(`${soundPath}/click.mp3`),
             countdown: new Audio(`${soundPath}/countdown.mp3`),
             shift: new Audio(`${soundPath}/shift.mp3`),
@@ -122,7 +122,7 @@ class SnakeGeneralKnowledgeGame {
 
 
     loadSprites() {
-        const skinPath = `../assets/snake-skins/${this.selectedSkin}_snake`
+        const skinPath = `../../assets/images/snake-skins/${this.selectedSkin}_snake`
         const spritePaths = {
             // Snake movement sprites (using selected skin)
             "SnakeHead": `${skinPath}/SnakeHead.png`,
@@ -150,12 +150,12 @@ class SnakeGeneralKnowledgeGame {
             "SnakeCornerRightDown": `${skinPath}/SnakeCornerRightDown.png`,
             "SnakeCornerRightUp": `${skinPath}/SnakeCornerRightUp.png`,
             // Apple sprites
-            "apple": "../assets/apples/apple.png",
-            "appleA-pink": "../assets/apples/appleA-pink.png",
-            "appleB-yellow": "../assets/apples/appleB-yellow.png",
-            "appleC-blue": "../assets/apples/appleC-blue.png",
+            "apple": "../../assets/images/apples/apple.png",
+            "appleA-pink": "../../assets/images/apples/appleA-pink.png",
+            "appleB-yellow": "../../assets/images/apples/appleB-yellow.png",
+            "appleC-blue": "../../assets/images/apples/appleC-blue.png",
             // Icon sprites
-            "shield": "../assets/icons/shield.png"
+            "shield": "../../assets/images/icons/shield.png"
         }
 
         Object.entries(spritePaths).forEach(([name, path]) => {
@@ -313,7 +313,7 @@ class SnakeGeneralKnowledgeGame {
 
         this.confirmBackMenuBtn.addEventListener("click", () => {
             this.playSound("click")
-            window.location.href = "../index.html"
+            window.location.href = "../../index.html"
         })
 
         this.cancelBackMenuBtn.addEventListener("click", () => {
@@ -422,7 +422,7 @@ class SnakeGeneralKnowledgeGame {
             // Use specific colored apple sprites
             const appleImg = document.createElement("img")
             const appleColors = ["appleA-pink.png", "appleB-yellow.png", "appleC-blue.png"]
-            appleImg.src = `../assets/apples/${appleColors[index] || "apple.png"}`
+            appleImg.src = `../../assets/images/apples/${appleColors[index] || "apple.png"}`
             appleImg.alt = String.fromCharCode(65 + index) // A, B, C
             appleImg.className = "apple-sprite"
 
@@ -917,7 +917,7 @@ class SnakeGeneralKnowledgeGame {
         const shieldIndicator = document.getElementById('shield-indicator');
         if (shieldIndicator) {
             if (this.hasShield) {
-                shieldIndicator.innerHTML = '<img src="../assets/icons/shield.png" class="shield-icon" alt="Shield">';
+                shieldIndicator.innerHTML = '<img src="../../assets/images/icons/shield.png" class="shield-icon" alt="Shield">';
             } else {
                 shieldIndicator.innerHTML = '';
             }

@@ -49,14 +49,18 @@ Learning & Literacy – SnaQ builds foundational knowledge in math, language, an
 ## ⚙️ Features
 
 - **Customizable Snake Skins** – Unlock and purchase different snake appearances with earned points
-- **Skin Shop System** – Browse and buy new skins including Green (default), Pink, Blue, and Red variants
+- **Skin Shop System** – Browse and buy new skins including Green (default), Pink, Blue, Red, and special Volt Tech variants
+- **Volt Tech Skin Bonuses** – Special energy bonuses: +10% max energy, -15% energy drain, +15% energy regeneration
+- **Open Trivia Database Integration** – Fresh questions from external API with fallback to local questions
+- **Modular Game Architecture** – ES6 modules with shared utilities for easy maintenance and expansion
+- **Advanced Power-up System** – Sprint mechanics with energy management and shield protection
+- **Multiple Question Categories** – 13+ trivia categories including Science, History, Geography, Sports, and more
 - Pixel-art inspired UI and retro vibes with pixelated scrollbars and clean aesthetics
 - Sticky header with controls for **help, sound, music, and credits**  
 - Modal-based menus for game settings and instructions  
-- Difficulty levels: Easy, Medium, Hard  
-- Power-up mechanics to keep gameplay exciting  
-- Modular architecture for easy maintenance and expansion
+- Difficulty levels: Easy, Medium, Hard with adaptive speed and complexity
 - Cross-game mode skin persistence and consistent rendering
+- Async question loading with proper error handling
 
 ---
 
@@ -79,30 +83,39 @@ Learning & Literacy – SnaQ builds foundational knowledge in math, language, an
 ```
 snakeq_game/
 ├── index.html                    # Main landing page with skin shop
-├── css/
-│   └── styles.css               # Game styles, pixel art theme, and skin shop UI
-├── js/
+├── assets/
+│   ├── css/
+│   │   └── styles.css           # Game styles, pixel art theme, and skin shop UI
+│   ├── images/
+│   │   ├── icons/               # UI icons and buttons
+│   │   ├── apples/              # Apple sprites (multiple colors)
+│   │   └── snake-skins/         # Snake skin variants
+│   │       ├── green_snake/     # Default green snake sprites
+│   │       ├── pink_snake/      # Pink snake skin sprites
+│   │       ├── blue_snake/      # Blue snake skin sprites
+│   │       ├── red_snake/       # Red snake skin sprites
+│   │       └── volt_snake/      # Special Volt Tech skin with bonuses
+│   └── sounds/                  # Audio files and sound effects
+├── shared/
 │   ├── landing.js               # Main menu logic and skin system
-│   └── games/                   # Subject-specific game logic
-│       ├── math-game.js         # Math questions and snake rendering
-│       ├── science-game.js      # Science questions and snake rendering
-│       ├── english-game.js      # English questions and snake rendering
-│       └── generalknow-game.js  # General knowledge questions and rendering
-├── templates/
-│   ├── math-game.html           # Math game interface
-│   ├── science-game.html        # Science game interface
-│   ├── english-game.html        # English game interface
-│   └── generalknow-game.html    # General knowledge game interface
-└── assets/                      # Game resources
-    ├── icons/                   # UI icons and buttons
-    ├── backgrounds/             # Background images
-    ├── apples/                  # Apple sprites (multiple colors)
-    └── snake-skins/             # Snake skin variants
-        ├── green_snake/         # Default green snake sprites
-        ├── pink_snake/          # Pink snake skin sprites
-        ├── blue_snake/          # Blue snake skin sprites
-        └── red_snake/           # Red snake skin sprites
-
+│   └── gamesQuestions/          # Question databases for each subject
+│       ├── mathQuestions.js     # Math questions and answers
+│       ├── scienceQuestions.js  # Science questions and answers
+│       ├── englishQuestions.js  # English questions and answers
+│       └── generalKnowQuestions.js # General knowledge questions
+└── games/                       # Individual game directories
+    ├── math/
+    │   ├── math-game.html       # Math game interface
+    │   └── math-game.js         # Math game logic and rendering
+    ├── science/
+    │   ├── science-game.html    # Science game interface
+    │   └── science-game.js      # Science game logic and rendering
+    ├── english/
+    │   ├── english-game.html    # English game interface
+    │   └── english-game.js      # English game logic and rendering
+    └── generalKnowledge/
+        ├── generalknow-game.html # General knowledge game interface
+        └── generalknow-game.js   # General knowledge game logic
 ```
 ---
 
