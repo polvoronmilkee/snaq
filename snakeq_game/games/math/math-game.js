@@ -1777,7 +1777,6 @@ class SnakeMathGame {
 }
 
 function checkZoomLevel() {
-  // 🚫 Skip check for mobile devices
   if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
     return;
   }
