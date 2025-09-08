@@ -1,5 +1,6 @@
 import scienceSets from "../../shared/gamesQuestions/science-question.js"
 import { generateQuestion } from "../../shared/utils/questionsUtils.js"
+
 function $id(id) { return document.getElementById(id) }
 class SnakeScienceGame {
     constructor() {

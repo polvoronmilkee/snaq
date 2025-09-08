@@ -1,6 +1,6 @@
 import wordSets from "../../shared/gamesQuestions/english-question.js"
 
-function $id(id) { return $id(id) }
+function $id(id) { return document.getElementById(id) }
 
 class SnakeEnglishGame {
     constructor() {
