@@ -310,9 +310,9 @@ body::before {
 }
 
 .logo-icon {
-  width: 30vw;
+  width: 700px;
   max-width: 100%;
-  margin-bottom: -50px;
+  margin-bottom: -100px;
   height: auto;
   image-rendering: pixelated;
 }
