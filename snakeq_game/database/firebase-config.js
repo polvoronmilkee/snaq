@@ -34,22 +34,10 @@ class LeaderboardManager {
         lastUpdated: new Date()
       };
 
-      // Always submit the score (remove the improvement check)
+      // Only submit to the specific category (no automatic overall submission)
       await addDoc(collection(this.db, this.leaderboardCollection), playerData);
       
-      // Also submit to overall category if not already overall
-      if (category !== 'overall') {
-        const overallData = {
-          username: username.trim(),
-          totalPoints: parseInt(totalPoints),
-          category: 'overall',
-          timestamp: new Date(),
-          lastUpdated: new Date()
-        };
-        await addDoc(collection(this.db, this.leaderboardCollection), overallData);
-      }
-      
-      console.log('Score submitted successfully');
+      console.log(`Score submitted successfully to ${category} category`);
       return { success: true, message: 'Score submitted successfully' };
     } catch (error) {
       console.error('Error submitting score:', error);
@@ -82,41 +70,131 @@ class LeaderboardManager {
     }
   }
 
-  // Get top leaderboard entries
+  // Get top leaderboard entries (unique usernames only)
   async getLeaderboard(category = 'overall', limitCount = 10) {
     try {
-      const q = query(
-        collection(this.db, this.leaderboardCollection),
-        where('category', '==', category),
-        orderBy('totalPoints', 'desc'),
-        limit(limitCount)
-      );
-      
-      const querySnapshot = await getDocs(q);
-      const leaderboard = [];
-      
-      querySnapshot.forEach((doc, index) => {
-        const data = doc.data();
-        leaderboard.push({
-          rank: index + 1,
-          username: data.username,
-          totalPoints: data.totalPoints,
-          timestamp: data.timestamp,
-          id: doc.id
+      if (category === 'overall') {
+        // For overall leaderboard, sum scores from all categories
+        return await this.getOverallLeaderboard(limitCount);
+      } else {
+        // For specific categories, get the best score per user in that category
+        const q = query(
+          collection(this.db, this.leaderboardCollection),
+          where('category', '==', category),
+          orderBy('totalPoints', 'desc')
+        );
+        
+        const querySnapshot = await getDocs(q);
+        const userBestScores = new Map();
+        
+        // Process all documents to find each user's best score in this category
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const username = data.username.trim();
+          
+          if (!userBestScores.has(username) || 
+              userBestScores.get(username).totalPoints < data.totalPoints) {
+            userBestScores.set(username, {
+              username: username,
+              totalPoints: data.totalPoints,
+              timestamp: data.timestamp,
+              id: doc.id
+            });
+          }
         });
-      });
-      
-      return leaderboard;
+        
+        // Convert to array and sort by totalPoints descending
+        const leaderboard = Array.from(userBestScores.values())
+          .sort((a, b) => b.totalPoints - a.totalPoints)
+          .slice(0, limitCount)
+          .map((entry, index) => ({
+            rank: index + 1,
+            username: entry.username,
+            totalPoints: entry.totalPoints,
+            timestamp: entry.timestamp,
+            id: entry.id
+          }));
+        
+        return leaderboard;
+      }
     } catch (error) {
       console.error('Error getting leaderboard:', error);
       return [];
     }
   }
 
-  // Get player's rank
+  // Get overall leaderboard by summing all categories
+  async getOverallLeaderboard(limitCount = 10) {
+    try {
+      const categories = ['math', 'english', 'science', 'generalknow'];
+      const userTotalScores = new Map();
+      
+      // Get all scores from all categories
+      for (const cat of categories) {
+        const q = query(
+          collection(this.db, this.leaderboardCollection),
+          where('category', '==', cat),
+          orderBy('totalPoints', 'desc')
+        );
+        
+        const querySnapshot = await getDocs(q);
+        
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const username = data.username.trim();
+          
+          if (!userTotalScores.has(username)) {
+            userTotalScores.set(username, {
+              username: username,
+              totalPoints: 0,
+              categories: new Map(),
+              timestamp: data.timestamp
+            });
+          }
+          
+          const userData = userTotalScores.get(username);
+          
+          // Keep track of best score per category
+          if (!userData.categories.has(cat) || 
+              userData.categories.get(cat) < data.totalPoints) {
+            
+            const previousScore = userData.categories.get(cat) || 0;
+            userData.categories.set(cat, data.totalPoints);
+            
+            // Update total points (subtract old score, add new score)
+            userData.totalPoints = userData.totalPoints - previousScore + data.totalPoints;
+            
+            // Update timestamp to most recent
+            if (data.timestamp > userData.timestamp) {
+              userData.timestamp = data.timestamp;
+            }
+          }
+        });
+      }
+      
+      // Convert to array and sort by total points
+      const leaderboard = Array.from(userTotalScores.values())
+        .sort((a, b) => b.totalPoints - a.totalPoints)
+        .slice(0, limitCount)
+        .map((entry, index) => ({
+          rank: index + 1,
+          username: entry.username,
+          totalPoints: entry.totalPoints,
+          timestamp: entry.timestamp,
+          id: `overall_${entry.username}` // synthetic ID for overall
+        }));
+      
+      return leaderboard;
+    } catch (error) {
+      console.error('Error getting overall leaderboard:', error);
+      return [];
+    }
+  }
+
+  // Get player's rank (based on best score only)
   async getPlayerRank(username, category = 'overall') {
     try {
-      const leaderboard = await this.getLeaderboard(category, 100); // Get top 100
+      const leaderboard = await this.getLeaderboard(category, 1000); // Get more entries to ensure accurate rank
       const playerEntry = leaderboard.find(entry => entry.username === username.trim());
       return playerEntry ? playerEntry.rank : null;
     } catch (error) {
