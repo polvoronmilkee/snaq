@@ -981,11 +981,12 @@ renderShopItems(category) {
       let html = '';
       leaderboard.forEach((entry, index) => {
         const isCurrentPlayer = this.username && entry.username === this.username;
+        const rank = entry.rank || (index + 1); // Use entry.rank or fallback to index + 1
         html += `
           <div class="leaderboard-entry ${isCurrentPlayer ? 'current-player' : ''}">
-            <span class="rank">#${entry.rank}</span>
+            <span class="rank">#${rank}</span>
             <span class="username">${entry.username}</span>
-            <span class="score">${entry.totalPoints.toLocaleString()}</span>
+            <span class="score">${entry.totalPoints ? entry.totalPoints.toLocaleString() : '0'}</span>
           </div>
         `;
       });
@@ -1012,7 +1013,7 @@ renderShopItems(category) {
       const currentPlayerRank = $$("current-player-rank");
       
       if (rankDisplay && currentPlayerRank) {
-        if (rank) {
+        if (rank && !isNaN(rank)) {
           currentPlayerRank.textContent = `#${rank}`;
           rankDisplay.classList.remove('hidden');
         } else {
@@ -1209,12 +1210,6 @@ purchaseBtn.addEventListener("click", () => {
     alert(`✅ You selected ${selectedPackage.coins} coins for ₱${selectedPackage.price}.\n(Purchases disabled in demo)`);
   }
 });
-// ======================
-
-
-
-
-
 
 document.addEventListener("DOMContentLoaded", () => {
   new LandingPage();
