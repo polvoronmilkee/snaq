@@ -193,7 +193,7 @@ class SnakeMathGame {
     localStorage.setItem("musicEnabled", this.musicEnabled.toString())
 
     const musicBtn = $id("music-btn")
-    musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+    musicBtn.textContent = this.musicEnabled ? "🎵" : "🤫"
     musicBtn.classList.toggle("active", this.musicEnabled)
 
     if (this.musicEnabled) {
@@ -268,7 +268,7 @@ class SnakeMathGame {
     }
 
     if (musicBtn) {
-      musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+      musicBtn.textContent = this.musicEnabled ? "🎵" : "🤫"
       musicBtn.classList.toggle("active", this.musicEnabled)
 
       if (this.musicEnabled) {
