@@ -1592,7 +1592,7 @@ function checkZoomLevel() {
 
   const modal = document.getElementById("zoom-warning");
   
-  if (zoom >= 70) {
+  if (zoom >= 100) {
     modal.style.display = "flex"; // show popup
   } else {
     modal.style.display = "none"; // hide popup
