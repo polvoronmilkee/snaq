@@ -23,7 +23,7 @@ class SnakeScienceGame {
 
         const canvasContainer = document.querySelector(".canvas-container");
 
-        canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../../assets/images/snake-skins/volt_snake/Tile.png)` : `url("../../assets/images/icons/Tile.png")`;
+        if (this.gameSettings.selectedSkin !== "green") canvasContainer.style.backgroundImage = `url(../../assets/images/snake-skins/${this.selectedSkin}_snake/Tile.png)`
 
         const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../../assets/images/snake-skins/volt_snake/sounds" : "../../assets/sounds"
 
@@ -234,6 +234,8 @@ class SnakeScienceGame {
         this.confirmBackMenuBtn = $id("confirm-back-menu")
         this.cancelBackMenuBtn = $id("cancel-back-menu")
         this.backToMenu = $id("back-to-menu")
+        this.initDpad()
+
 
         if (this.questionElement) {
             this.questionElement.style.fontSize = "15px"
@@ -407,6 +409,29 @@ class SnakeScienceGame {
         this.updateShieldUI();
     }
 
+    initDpad() {
+        const controls = {
+            "btn-up": "w",
+            "btn-down": "s",
+            "btn-left": "a",
+            "btn-right": "d",
+        };
+
+        Object.entries(controls).forEach(([id, key]) => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+
+            btn.addEventListener("click", () => {
+                this.handleKeyDown({
+                    key: key,
+                    code: key.toUpperCase(), // simulate KeyW, KeyS, etc.
+                    preventDefault: () => {}, 
+                    repeat: false
+                });
+            });
+        });
+    }
+
     updateOptionsDisplay() {
         if (!this.optionsContainer || !this.currentQuestion) return
 
@@ -436,10 +461,6 @@ class SnakeScienceGame {
             const optionText = document.createElement("span")
             optionText.className = "option-text"
             optionText.textContent = option
-            // Make answers larger and more readable
-            optionText.style.fontSize = "15px"
-            optionText.style.lineHeight = "1.4"
-            optionText.style.fontWeight = "600"
 
             optionDiv.appendChild(appleIcon)
             optionDiv.appendChild(optionText)
@@ -524,6 +545,8 @@ class SnakeScienceGame {
         this.updateUI()
         this.hideOverlays()
         this.updateShieldUI();
+
+    
     }
 
     startTimer() {
@@ -1500,12 +1523,36 @@ function checkZoomLevel() {
 
   const modal = document.getElementById("zoom-warning");
   
-  if (zoom >= 70) {
+  if (zoom >= 100) {
     modal.style.display = "flex"; // show popup
   } else {
     modal.style.display = "none"; // hide popup
   }
 }
+
+// Make the D-pad draggable
+const dpad = document.getElementById("dpad");
+
+let isDragging = false;
+let offsetX, offsetY;
+
+dpad.addEventListener("mousedown", (e) => {
+  isDragging = true;
+  offsetX = e.clientX - dpad.getBoundingClientRect().left;
+  offsetY = e.clientY - dpad.getBoundingClientRect().top;
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+  dpad.style.left = e.clientX - offsetX + "px";
+  dpad.style.top = e.clientY - offsetY + "px";
+  dpad.style.right = "auto";  // so right/bottom don’t override
+  dpad.style.bottom = "auto";
+});
+
+document.addEventListener("mouseup", () => {
+  isDragging = false;
+});
 
 // Close button
 document.getElementById("close-zoom-warning").addEventListener("click", () => {

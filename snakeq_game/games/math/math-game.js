@@ -21,7 +21,7 @@ class SnakeMathGame {
 
     const canvasContainer = document.querySelector(".canvas-container");
 
-    canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../../assets/images/snake-skins/volt_snake/Tile.png)` : `url("../../assets/images/icons/Tile.png")`;
+    if (this.gameSettings.selectedSkin !== "green") canvasContainer.style.backgroundImage = `url(../../assets/images/snake-skins/${this.selectedSkin}_snake/Tile.png)`
 
     const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../../assets/images/snake-skins/volt_snake/sounds" : "../../assets/sounds"
 
@@ -241,6 +241,8 @@ class SnakeMathGame {
     this.confirmBackMenuBtn = $id("confirm-back-menu");
     this.cancelBackMenuBtn = $id("cancel-back-menu");
     this.backToMenu = $id("back-to-menu");
+    this.initDpad();
+  
 
     if (this.questionElement) {
       this.questionElement.style.fontSize = "18px"
@@ -365,7 +367,6 @@ class SnakeMathGame {
         this.hideEscMenu();
       } else if (e.target.id === 'settings-btn') {
         this.playSound("click");
-        this.showNotification("Settings feature coming soon!", "correct");
         this.hideEscMenu();
       } else if (e.target.id === 'main-menu-btn') {
         this.playSound("click");
@@ -422,6 +423,30 @@ class SnakeMathGame {
     })
     this.updateShieldUI();
   }
+
+  initDpad() {
+    const controls = {
+        "btn-up": "w",
+        "btn-down": "s",
+        "btn-left": "a",
+        "btn-right": "d",
+    };
+
+    Object.entries(controls).forEach(([id, key]) => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+
+        btn.addEventListener("click", () => {
+            this.handleKeyDown({
+                key: key,
+                code: key.toUpperCase(), // simulate KeyW, KeyS, etc.
+                preventDefault: () => {}, 
+                repeat: false
+            });
+        });
+    });
+}
+
 
   generateQuestion() {
     const difficulty = this.gameSettings.difficulty;
@@ -1793,12 +1818,21 @@ function checkZoomLevel() {
 
   const modal = document.getElementById("zoom-warning");
   
-  if (zoom >= 70) {
+  if (zoom >= 100) {
     modal.style.display = "flex"; // show popup
   } else {
     modal.style.display = "none"; // hide popup
   }
 }
+
+
+const settingsBtn = document.getElementById("settings-btn");
+const settingsMenu = document.getElementById("settings-menu");
+
+settingsBtn.addEventListener("click", () => {
+    settingsMenu.classList.toggle("hidden");
+});
+
 
 // Close button
 document.getElementById("close-zoom-warning").addEventListener("click", () => {
@@ -1824,23 +1858,29 @@ if (closeAbout) {
   });
 }
 
+// Make the D-pad draggable
+const dpad = document.getElementById("dpad");
 
-const copyrightModal = $id("copyright-modal");
-const closeCopyright = $id("close-copyright");
-const copyrightBtn = $id("copyright-btn"); // You can place a button in header/footer
+let isDragging = false;
+let offsetX, offsetY;
 
-if (copyrightBtn) {
-  copyrightBtn.addEventListener("click", () => {
-    copyrightModal.classList.remove("hidden");
-  });
-}
+dpad.addEventListener("mousedown", (e) => {
+  isDragging = true;
+  offsetX = e.clientX - dpad.getBoundingClientRect().left;
+  offsetY = e.clientY - dpad.getBoundingClientRect().top;
+});
 
-if (closeCopyright) {
-  closeCopyright.addEventListener("click", () => {
-    copyrightModal.classList.add("hidden");
-  });
-}
+document.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+  dpad.style.left = e.clientX - offsetX + "px";
+  dpad.style.top = e.clientY - offsetY + "px";
+  dpad.style.right = "auto";  // so right/bottom don’t override
+  dpad.style.bottom = "auto";
+});
 
+document.addEventListener("mouseup", () => {
+  isDragging = false;
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   new SnakeMathGame()
