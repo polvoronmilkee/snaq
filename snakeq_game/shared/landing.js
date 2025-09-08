@@ -1072,8 +1072,15 @@ renderShopItems(category) {
   saveUsername() {
     const usernameInput = $$("username-input");
     const usernameError = $$("username-error");
+    const saveBtn = $$("save-username");
     
     if (!usernameInput) return;
+    
+    // Prevent spamming by disabling button
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Saving...";
+    }
     
     const username = usernameInput.value.trim();
     
@@ -1081,14 +1088,27 @@ renderShopItems(category) {
     if (username.length < 3 || username.length > 20) {
       usernameError.classList.remove('hidden');
       usernameError.textContent = 'Username must be 3-20 characters long';
+      // Re-enable button on error
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save Username";
+      }
       return;
     }
     
     if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
       usernameError.classList.remove('hidden');
       usernameError.textContent = 'Username can only contain letters, numbers, - and _';
+      // Re-enable button on error
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save Username";
+      }
       return;
     }
+    
+    // Hide error message if validation passes
+    usernameError.classList.add('hidden');
     
     // Save username
     this.username = username;
@@ -1099,8 +1119,28 @@ renderShopItems(category) {
       this.submitScoreToLeaderboard('overall');
     }
     
+    // Close modal and show success
     this.hideUsernameModal();
     this.showNotification(`Welcome, ${username}! 🎮`);
+    this.updateUsernameDisplay();
+    
+    // Re-enable button for future use
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Save Username";
+    }
+  }
+
+  // Submit score to leaderboard
+  async submitScoreToLeaderboard(category = 'overall') {
+    if (!this.username || !this.leaderboardManager) return;
+    
+    try {
+      await this.leaderboardManager.submitScore(this.username, this.points, category);
+      console.log(`Score submitted to ${category} leaderboard`);
+    } catch (error) {
+      console.error('Error submitting score to leaderboard:', error);
+    }
   }
 
 }
