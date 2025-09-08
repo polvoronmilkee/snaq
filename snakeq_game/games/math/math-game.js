@@ -367,7 +367,6 @@ class SnakeMathGame {
         this.hideEscMenu();
       } else if (e.target.id === 'settings-btn') {
         this.playSound("click");
-        this.showNotification("Settings feature coming soon!", "correct");
         this.hideEscMenu();
       } else if (e.target.id === 'main-menu-btn') {
         this.playSound("click");
@@ -1819,6 +1818,15 @@ function checkZoomLevel() {
   }
 }
 
+
+const settingsBtn = document.getElementById("settings-btn");
+const settingsMenu = document.getElementById("settings-menu");
+
+settingsBtn.addEventListener("click", () => {
+    settingsMenu.classList.toggle("hidden");
+});
+
+
 // Close button
 document.getElementById("close-zoom-warning").addEventListener("click", () => {
   document.getElementById("zoom-warning").style.display = "none";
@@ -1866,24 +1874,6 @@ document.addEventListener("mousemove", (e) => {
 document.addEventListener("mouseup", () => {
   isDragging = false;
 });
-
-
-
-const copyrightModal = $id("copyright-modal");
-const closeCopyright = $id("close-copyright");
-const copyrightBtn = $id("copyright-btn"); // You can place a button in header/footer
-
-if (copyrightBtn) {
-  copyrightBtn.addEventListener("click", () => {
-    copyrightModal.classList.remove("hidden");
-  });
-}
-
-if (closeCopyright) {
-  closeCopyright.addEventListener("click", () => {
-    copyrightModal.classList.add("hidden");
-  });
-}
 
 document.addEventListener("DOMContentLoaded", () => {
   new SnakeMathGame()
