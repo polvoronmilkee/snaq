@@ -464,10 +464,6 @@ class SnakeGeneralKnowledgeGame {
             const optionText = document.createElement("span")
             optionText.className = "option-text"
             optionText.textContent = option
-            // Make answers larger and more readable
-            optionText.style.fontSize = "18px"
-            optionText.style.lineHeight = "1.4"
-            optionText.style.fontWeight = "600"
 
             optionDiv.appendChild(appleIcon)
             optionDiv.appendChild(optionText)
@@ -551,7 +547,7 @@ class SnakeGeneralKnowledgeGame {
         this.updateUI()
         this.hideOverlays()
         this.updateShieldUI();
-        
+
         const dpad = document.getElementById("dpad");
 
         let isDragging = false;
