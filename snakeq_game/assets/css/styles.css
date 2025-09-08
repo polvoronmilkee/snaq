@@ -11,8 +11,9 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
   overflow-x: hidden;
+  overflow-y: scroll;
+  min-height: 100%;
 }
 
 body {
@@ -38,6 +39,82 @@ body::before {
   filter: blur(4px);
   transform: scale(1.05);
   z-index: -1;
+}
+
+.main-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  padding-top: 100px;
+  transform: scale(0.8)
+}
+
+/* Floating container */
+.dpad {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: #111;
+  border: 4px solid #000;
+  border-radius: 50%;
+  padding: 20px;
+  box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #222;
+  width: 130px;
+  height: 130px;
+  justify-content: center;
+  cursor: grab; /* show draggable cursor */
+  z-index: 9999;
+}
+
+.dpad:active {
+  cursor: grabbing;
+}
+
+.dpad .arrow {
+  background: #333;
+  border: 2px solid #555;
+  color: #fff;
+  font-family: "Press Start 2P", monospace;
+  font-size: 18px;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s ease;
+}
+
+.dpad .arrow:hover {
+  background: #444;
+  transform: translate(1px, 1px);
+}
+
+.dpad .arrow:active {
+  background: #2ecc71; 
+  border-color: #27ae60;
+  transform: translate(2px, 2px);
+}
+
+.middle-row {
+  display: flex;
+  gap: 6px;
+}
+
+
+/* Middle row (left + right buttons side by side) */
+.middle-row {
+  display: flex;
+  gap: 6px;
 }
 
 .pixel-border {
@@ -183,21 +260,10 @@ body::before {
   z-index: 2;
 }
 
-.main-content {
-  position: relative;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  padding: 20px;
-  padding-top: 100px;
-}
 
 .game-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
 }
 
 .logo-container {
@@ -1184,6 +1250,7 @@ body::before {
   top: 0;
   left: 0;
   width: 100%;
+  max-width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.8);
   display: flex;
@@ -1269,7 +1336,6 @@ body::before {
 }
 
 .skin-item {
-    background: #2a2a2a;
     padding: 15px;
     border: 4px solid #000;
     box-shadow: 0 0 0 2px #fff inset;
@@ -1301,7 +1367,7 @@ body::before {
 
 .skin-description {
   margin: 0 0 15px 0;
-  color: #ccc;
+  color: #000000;
   font-size: 12px;
   line-height: 1.4;
 }
@@ -1423,14 +1489,13 @@ body::before {
 }
 
 .skin-shop-content {
-  background: #1a1a1a;
+  background:#febf77;
   padding: 20px;
   max-width: 800px;
   width: 90%;
   max-height: 85vh;
   overflow-y: auto;
   text-align: center;
-  border: 4px solid #000000;
   box-shadow: 0 0 0 2px #fff, 0 0 0 6px #000;
   position: relative;
 }
@@ -2065,7 +2130,8 @@ body::before {
 @media (max-width: 768px) {
 
   body {
-    overflow-y: auto;  
+    overflow-y: auto; 
+     
   }
   /* === GAME CONTAINER === */
   .game-container {
@@ -2096,7 +2162,7 @@ body::before {
     align-items: flex-start;
     gap: 6px;
     font-size: 9px !important;         
-    margin-bottom: 12px;
+    margin-bottom: 5px;
   }
 
   .score, .lives, .correct{
@@ -2105,10 +2171,16 @@ body::before {
 
   .hud .pixel-stat {
     padding: 4px 6px;         
-    font-size: 9px !important;  
+    font-size: 6px !important;  
     min-width: 80px;         
     box-sizing: border-box;
   }
+
+  .apple-sprite {
+    width: 20px;
+    height: 20px;
+    image-rendering: pixelated;
+}
 
   .pixel-stat img {
     width: 14px;
@@ -2117,27 +2189,28 @@ body::before {
 
   /* === QUESTION + OPTIONS === */
     .game-container .question-section .pixel-question {
-      font-size: 9px !important;
-        padding: 6px;
+      font-size:7px !important;
+        padding:1px;
         overflow-wrap: break-word;
-    
+        margin-bottom: 8px
   }
 
   .game-container .instruction {
-      font-size: 8px !important;
+      font-size: 6px !important;
   }
 
 
     .options-container {
         display: flex;
         flex-direction: column; 
-        gap: 6px;   
+        gap: 4px;   
         margin-bottom: 0px;
+        padding: 10px;
 
     }
 
     .option-item {
-        height: 25px;            
+        height: 20px;            
         display: flex;
         justify-content: center;  
         align-items: center;      
@@ -2146,7 +2219,7 @@ body::before {
     }
 
     .option-text {
-      font-size: 8px;
+      font-size: 6px;
     }
 
 
@@ -2174,7 +2247,7 @@ body::before {
 
   /* === INSTRUCTIONS === */
   .instructions {
-    font-size: 9px;
+    font-size: 7px;
     line-height: 1.4;
     text-align: center;
     margin-top: 8px;
@@ -2220,7 +2293,6 @@ body::before {
   }
   
 }
-
 
 #notification {
   position: fixed;
