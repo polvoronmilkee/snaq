@@ -189,7 +189,7 @@ class SnakeGeneralKnowledgeGame {
         localStorage.setItem("musicEnabled", this.musicEnabled.toString())
 
         const musicBtn = $id("music-btn")
-        musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+        musicBtn.textContent = this.musicEnabled ? "🎵" : "🤫"
         musicBtn.classList.toggle("active", this.musicEnabled)
 
         if (this.musicEnabled) {
@@ -268,7 +268,7 @@ class SnakeGeneralKnowledgeGame {
         }
 
         if (musicBtn) {
-            musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+            musicBtn.textContent = this.musicEnabled ? "🎵" : "🤫"
             musicBtn.classList.toggle("active", this.musicEnabled)
 
             if (this.musicEnabled) {
@@ -355,7 +355,6 @@ class SnakeGeneralKnowledgeGame {
                 this.hideEscMenu();
             } else if (e.target.id === 'settings-btn') {
                 this.playSound("click");
-                this.showNotification("Settings feature coming soon!", "correct");
                 this.hideEscMenu();
             } else if (e.target.id === 'main-menu-btn') {
                 this.playSound("click");
@@ -1549,6 +1548,14 @@ function checkZoomLevel() {
   }
 }
 
+const settingsBtn = document.getElementById("settings-btn");
+const settingsMenu = document.getElementById("settings-menu");
+
+settingsBtn.addEventListener("click", () => {
+    settingsMenu.classList.toggle("hidden");
+});
+
+
 // Close button
 document.getElementById("close-zoom-warning").addEventListener("click", () => {
   document.getElementById("zoom-warning").style.display = "none";
@@ -1574,22 +1581,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (closeAbout) {
         closeAbout.addEventListener("click", () => {
             aboutModal.classList.add("hidden");
-        });
-    }
-
-    const copyrightModal = $id("copyright-modal");
-    const closeCopyright = $id("close-copyright");
-    const copyrightBtn = $id("copyright-btn");
-
-    if (copyrightBtn) {
-        copyrightBtn.addEventListener("click", () => {
-            copyrightModal.classList.remove("hidden");
-        });
-    }
-
-    if (closeCopyright) {
-        closeCopyright.addEventListener("click", () => {
-            copyrightModal.classList.add("hidden");
         });
     }
 })

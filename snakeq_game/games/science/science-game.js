@@ -177,7 +177,7 @@ class SnakeScienceGame {
         localStorage.setItem("soundEnabled", this.soundEnabled.toString())
 
         const soundBtn = $id("sound-btn")
-        soundBtn.textContent = this.soundEnabled ? "" : ""
+        soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
         soundBtn.classList.toggle("active", this.soundEnabled)
     }
 
@@ -186,7 +186,7 @@ class SnakeScienceGame {
         localStorage.setItem("musicEnabled", this.musicEnabled.toString())
 
         const musicBtn = $id("music-btn")
-        musicBtn.textContent = this.musicEnabled ? "" : ""
+        musicBtn.textContent = this.musicEnabled ? "🎵" : "🤫"
         musicBtn.classList.toggle("active", this.musicEnabled)
 
         if (this.musicEnabled) {
@@ -265,7 +265,7 @@ class SnakeScienceGame {
         }
 
         if (musicBtn) {
-            musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
+            musicBtn.textContent = this.musicEnabled ? "🎵" : "🤫"
             musicBtn.classList.toggle("active", this.musicEnabled)
 
             if (this.musicEnabled) {
@@ -349,10 +349,6 @@ class SnakeScienceGame {
         document.addEventListener('click', (e) => {
             if (e.target.id === 'resume-btn') {
                 this.playSound("click");
-                this.hideEscMenu();
-            } else if (e.target.id === 'settings-btn') {
-                this.playSound("click");
-                this.showNotification("Settings feature coming soon!", "correct");
                 this.hideEscMenu();
             } else if (e.target.id === 'main-menu-btn') {
                 this.playSound("click");
@@ -1530,6 +1526,7 @@ function checkZoomLevel() {
   }
 }
 
+
 // Make the D-pad draggable
 const dpad = document.getElementById("dpad");
 
@@ -1554,6 +1551,13 @@ document.addEventListener("mouseup", () => {
   isDragging = false;
 });
 
+const settingsBtn = document.getElementById("settings-btn");
+const settingsMenu = document.getElementById("settings-menu");
+
+settingsBtn.addEventListener("click", () => {
+    settingsMenu.classList.toggle("hidden");
+});
+
 // Close button
 document.getElementById("close-zoom-warning").addEventListener("click", () => {
   document.getElementById("zoom-warning").style.display = "none";
@@ -1562,7 +1566,6 @@ document.getElementById("close-zoom-warning").addEventListener("click", () => {
 // Run check on load and whenever window is resized
 window.addEventListener("load", checkZoomLevel);
 window.addEventListener("resize", checkZoomLevel);
-
 
 const aboutModal = $id("about-modal");
 const closeAbout = $id("close-about");
@@ -1577,23 +1580,6 @@ if (aboutBtn) {
 if (closeAbout) {
     closeAbout.addEventListener("click", () => {
         aboutModal.classList.add("hidden");
-    });
-}
-
-
-const copyrightModal = $id("copyright-modal");
-const closeCopyright = $id("close-copyright");
-const copyrightBtn = $id("copyright-btn");
-
-if (copyrightBtn) {
-    copyrightBtn.addEventListener("click", () => {
-        copyrightModal.classList.remove("hidden");
-    });
-}
-
-if (closeCopyright) {
-    closeCopyright.addEventListener("click", () => {
-        copyrightModal.classList.add("hidden");
     });
 }
 
