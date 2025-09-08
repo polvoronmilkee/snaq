@@ -1,4 +1,7 @@
 import wordSets from "../../shared/gamesQuestions/english-question.js"
+
+function $id(id) { return $id(id) }
+
 class SnakeEnglishGame {
     constructor() {
 
@@ -175,7 +178,7 @@ class SnakeEnglishGame {
         this.soundEnabled = !this.soundEnabled
         localStorage.setItem("soundEnabled", this.soundEnabled.toString())
 
-        const soundBtn = document.getElementById("sound-btn")
+        const soundBtn = $id("sound-btn")
         soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
         soundBtn.classList.toggle("active", this.soundEnabled)
     }
@@ -184,7 +187,7 @@ class SnakeEnglishGame {
         this.musicEnabled = !this.musicEnabled
         localStorage.setItem("musicEnabled", this.musicEnabled.toString())
 
-        const musicBtn = document.getElementById("music-btn")
+        const musicBtn = $id("music-btn")
         musicBtn.textContent = this.musicEnabled ? "🎵" : "🔇"
         musicBtn.classList.toggle("active", this.musicEnabled)
 
@@ -197,42 +200,42 @@ class SnakeEnglishGame {
     }
 
     initDOM() {
-        this.canvas = document.getElementById("game-canvas")
+        this.canvas = $id("game-canvas")
         this.ctx = this.canvas.getContext("2d")
-        this.scoreElement = document.getElementById("score-value")
-        this.livesElement = document.getElementById("lives-value")
-        this.correctElement = document.getElementById("correct-value")
-        this.targetElement = document.getElementById("target-value")
-        this.questionElement = document.getElementById("question-display")
-        this.gameOverOverlay = document.getElementById("game-over-overlay")
-        this.gameOverTitle = document.getElementById("game-over-title")
-        this.finalScoreElement = document.getElementById("final-score")
-        this.finalCorrectElement = document.getElementById("final-correct")
-        this.playAgainBtn = document.getElementById("play-again-btn")
-        this.playAgainConfirm = document.getElementById("play-again-confirm")
-        this.playAgainConfirmBtn = document.getElementById("confirm-play-again")
-        this.cancelPlayAgain = document.getElementById("cancel-play-again")
-        this.menuBtn = document.getElementById("menu-btn")
-        this.restartConfirm = document.getElementById("restart-confirm")
-        this.confirmRestartBtn = document.getElementById("confirm-restart")
-        this.cancelRestartBtn = document.getElementById("cancel-restart")
-        this.timerDisplay = document.getElementById("timer-display")
-        this.timerValue = document.getElementById("timer-value")
-        this.optionsContainer = document.getElementById("options-display")
-        this.heartsContainer = document.getElementById("hearts-container")
-        this.helpBtn = document.getElementById("help-btn")
-        this.helpBtnEsc = document.getElementById("help-btn-esc")
-        this.soundBtn = document.getElementById("sound-btn")
-        this.musicBtn = document.getElementById("music-btn")
-        this.instructionsModal = document.getElementById("instructions-modal")
-        this.closeInstructionsBtn = document.getElementById("close-instructions")
-        this.aboutBtn = document.getElementById("about-btn")
-        this.aboutModal = document.getElementById("about-modal")
-        this.closeAboutBtn = document.getElementById("close-about")
-        this.backToMenuConfirm = document.getElementById("back-to-menu-confirm")
-        this.confirmBackMenuBtn = document.getElementById("confirm-back-menu")
-        this.cancelBackMenuBtn = document.getElementById("cancel-back-menu")
-        this.backToMenu = document.getElementById("back-to-menu")
+        this.scoreElement = $id("score-value")
+        this.livesElement = $id("lives-value")
+        this.correctElement = $id("correct-value")
+        this.targetElement = $id("target-value")
+        this.questionElement = $id("question-display")
+        this.gameOverOverlay = $id("game-over-overlay")
+        this.gameOverTitle = $id("game-over-title")
+        this.finalScoreElement = $id("final-score")
+        this.finalCorrectElement = $id("final-correct")
+        this.playAgainBtn = $id("play-again-btn")
+        this.playAgainConfirm = $id("play-again-confirm")
+        this.playAgainConfirmBtn = $id("confirm-play-again")
+        this.cancelPlayAgain = $id("cancel-play-again")
+        this.menuBtn = $id("menu-btn")
+        this.restartConfirm = $id("restart-confirm")
+        this.confirmRestartBtn = $id("confirm-restart")
+        this.cancelRestartBtn = $id("cancel-restart")
+        this.timerDisplay = $id("timer-display")
+        this.timerValue = $id("timer-value")
+        this.optionsContainer = $id("options-display")
+        this.heartsContainer = $id("hearts-container")
+        this.helpBtn = $id("help-btn")
+        this.helpBtnEsc = $id("help-btn-esc")
+        this.soundBtn = $id("sound-btn")
+        this.musicBtn = $id("music-btn")
+        this.instructionsModal = $id("instructions-modal")
+        this.closeInstructionsBtn = $id("close-instructions")
+        this.aboutBtn = $id("about-btn")
+        this.aboutModal = $id("about-modal")
+        this.closeAboutBtn = $id("close-about")
+        this.backToMenuConfirm = $id("back-to-menu-confirm")
+        this.confirmBackMenuBtn = $id("confirm-back-menu")
+        this.cancelBackMenuBtn = $id("cancel-back-menu")
+        this.backToMenu = $id("back-to-menu")
         if (this.questionElement) {
             this.questionElement.style.fontSize = "15px"
             this.questionElement.style.lineHeight = "1.4"
@@ -252,8 +255,8 @@ class SnakeEnglishGame {
     }
 
     initializeAudioStates() {
-        const soundBtn = document.getElementById("sound-btn")
-        const musicBtn = document.getElementById("music-btn")
+        const soundBtn = $id("sound-btn")
+        const musicBtn = $id("music-btn")
 
         if (soundBtn) {
             soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇"
@@ -424,14 +427,14 @@ class SnakeEnglishGame {
             this.restartConfirm.classList.contains("hidden")) {
             this.escMenuActive = true;
             this.paused = true;
-            document.getElementById("esc-menu").classList.remove("hidden");
+            $id("esc-menu").classList.remove("hidden");
         }
     }
 
     hideEscMenu() {
         this.escMenuActive = false;
         this.paused = false;
-        document.getElementById("esc-menu").classList.add("hidden");
+        $id("esc-menu").classList.add("hidden");
     }
 
     showInstructions() {
@@ -861,7 +864,7 @@ class SnakeEnglishGame {
     ensureCountdownComplete() {
         // If countdown gets stuck, force it to complete
         if (this.countdownActive) {
-            const overlay = document.getElementById("countdown-overlay");
+            const overlay = $id("countdown-overlay");
             if (overlay) {
                 overlay.remove();
             }
@@ -1001,7 +1004,7 @@ class SnakeEnglishGame {
     }
 
     updateShieldUI() {
-        const shieldIndicator = document.getElementById('shield-indicator');
+        const shieldIndicator = $id('shield-indicator');
         if (shieldIndicator) {
             if (this.hasShield) {
                 shieldIndicator.innerHTML = '<img src="../../assets/images/icons/shield.png" class="shield-icon" alt="Shield">';
@@ -1581,9 +1584,9 @@ class SnakeEnglishGame {
 }
 
 
-const aboutModal = document.getElementById("about-modal");
-const closeAbout = document.getElementById("close-about");
-const aboutBtn = document.getElementById("about-btn");
+const aboutModal = $id("about-modal");
+const closeAbout = $id("close-about");
+const aboutBtn = $id("about-btn");
 
 if (aboutModal) {
     aboutBtn.addEventListener("click", () => {
@@ -1596,9 +1599,9 @@ if (closeAbout) {
     });
 }
 
-const copyrightModal = document.getElementById("copyright-modal");
-const closeCopyright = document.getElementById("close-copyright");
-const copyrightBtn = document.getElementById("copyright-btn");
+const copyrightModal = $id("copyright-modal");
+const closeCopyright = $id("close-copyright");
+const copyrightBtn = $id("copyright-btn");
 
 if (copyrightBtn) {
     copyrightBtn.addEventListener("click", () => {
