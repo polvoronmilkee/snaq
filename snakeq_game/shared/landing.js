@@ -826,6 +826,14 @@ renderShopItems(category) {
 }
 
 
+const settingsBtn = document.getElementById("settings-btn");
+const settingsMenu = document.getElementById("settings-menu");
+
+settingsBtn.addEventListener("click", () => {
+    settingsMenu.classList.toggle("hidden");
+});
+
+
 // === Buy Coins Modal ===
 const buyCoinsModal = document.getElementById("buy-coins-modal");
 const openBuyCoinsBtn = document.getElementById("buy-coins-btn"); // the "Buy Coins" button in shop
@@ -882,6 +890,11 @@ purchaseBtn.addEventListener("click", () => {
   }
 });
 // ======================
+
+
+
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
   new LandingPage();
