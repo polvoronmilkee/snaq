@@ -1165,9 +1165,15 @@ class SnakeEnglishGame {
             }
             // Show the overlay
             this.gameOverOverlay.classList.remove("hidden");
+
+            // Submit score to the leaderboard
+            const username = localStorage.getItem('playerUsername');
+            if (username && window.LeaderboardManager) {
+                const leaderboardManager = new window.LeaderboardManager();
+                leaderboardManager.submitScore(username, this.score, 'english');
+            }
         }
     }
-
 
     drawPixelSnakeFace(x, y, face) {
         const centerX = x + this.GRID_SIZE / 2

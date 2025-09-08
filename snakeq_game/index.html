@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script type="module" src="database/firebase-config.js"></script>
 </head>
 
 <body>
@@ -209,6 +210,61 @@
             </p>
 
             <button class="close-instructions" id="close-copyright">Close</button>
+        </div>
+    </div>
+
+    <!-- LEADERBOARD MODAL -->
+    <div id="leaderboard-modal" class="instructions-modal hidden">
+        <div class="instructions-content pixel-border">
+            <h3>🏆 Leaderboard</h3>
+            
+            <div class="leaderboard-tabs">
+                <button class="leaderboard-tab pixel-btn active" data-category="overall">Overall</button>
+                <button class="leaderboard-tab pixel-btn" data-category="math">Math</button>
+                <button class="leaderboard-tab pixel-btn" data-category="english">English</button>
+                <button class="leaderboard-tab pixel-btn" data-category="science">Science</button>
+                <button class="leaderboard-tab pixel-btn" data-category="generalknow">General</button>
+            </div>
+
+            <div class="leaderboard-container">
+                <div class="leaderboard-header">
+                    <span class="rank-header">Rank</span>
+                    <span class="username-header">Player</span>
+                    <span class="score-header">Score</span>
+                </div>
+                <div id="leaderboard-list" class="leaderboard-list">
+                    <div class="loading-message">Loading leaderboard...</div>
+                </div>
+            </div>
+
+            <div class="player-stats">
+                <div id="player-rank-display" class="player-rank hidden">
+                    Your Rank: <span id="current-player-rank">-</span>
+                </div>
+                <div id="current-username-display" class="current-username hidden">
+                    Playing as: <span id="display-username">-</span>
+                </div>
+            </div>
+
+            <button class="close-instructions" id="close-leaderboard">Close</button>
+        </div>
+    </div>
+
+    <!-- USERNAME MODAL -->
+    <div id="username-modal" class="instructions-modal hidden">
+        <div class="instructions-content pixel-border">
+            <h3>🎮 Enter Your Username</h3>
+            <p>Choose a username to save your scores to the leaderboard!</p>
+            
+            <div class="username-input-container">
+                <input type="text" id="username-input" class="pixel-input" placeholder="Enter username..." maxlength="20">
+                <div class="username-error hidden" id="username-error">Please enter a valid username (3-20 characters)</div>
+            </div>
+
+            <div class="username-actions">
+                <button class="pixel-btn" id="save-username">Save Username</button>
+                <button class="pixel-btn" id="skip-username">Skip for Now</button>
+            </div>
         </div>
     </div>
 

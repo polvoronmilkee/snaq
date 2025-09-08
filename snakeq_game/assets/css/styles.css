@@ -2500,3 +2500,231 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   font-size: 12px;
   font-family: "Press Start 2P", monospace;
 }
+
+/* Leaderboard Styles */
+.leaderboard-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.leaderboard-tab {
+  padding: 8px 12px;
+  font-size: 10px;
+  background: #333;
+  color: #fff;
+  border: 2px solid #555;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.leaderboard-tab:hover {
+  background: #444;
+  border-color: #666;
+}
+
+.leaderboard-tab.active {
+  background: #4a90e2;
+  border-color: #6bb6ff;
+  color: #fff;
+}
+
+.leaderboard-container {
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid #333;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.leaderboard-header {
+  display: grid;
+  grid-template-columns: 60px 1fr 100px;
+  gap: 12px;
+  padding: 8px 12px;
+  background: #222;
+  border: 1px solid #444;
+  margin-bottom: 8px;
+  font-size: 10px;
+  color: #f2ff65;
+  font-weight: bold;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.leaderboard-entry {
+  display: grid;
+  grid-template-columns: 60px 1fr 100px;
+  gap: 12px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-size: 10px;
+  transition: background 0.2s;
+}
+
+.leaderboard-entry:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.leaderboard-entry.current-player {
+  background: rgba(74, 144, 226, 0.2);
+  border-color: #4a90e2;
+  color: #6bb6ff;
+}
+
+.leaderboard-entry .rank {
+  color: #f2ff65;
+  font-weight: bold;
+}
+
+.leaderboard-entry .username {
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard-entry .score {
+  color: #4CAF50;
+  text-align: right;
+  font-weight: bold;
+}
+
+.loading-message, .error-message, .empty-message {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+  font-size: 10px;
+}
+
+.error-message {
+  color: #ff6b6b;
+}
+
+.empty-message {
+  color: #f2ff65;
+}
+
+.player-stats {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.player-rank {
+  background: rgba(74, 144, 226, 0.2);
+  border: 1px solid #4a90e2;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 10px;
+  color: #6bb6ff;
+}
+
+.current-username {
+  background: rgba(76, 175, 80, 0.2);
+  border: 1px solid #4CAF50;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 10px;
+  color: #81C784;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.change-username-btn {
+  padding: 4px 8px;
+  font-size: 8px;
+  background: #4CAF50;
+  color: #fff;
+  border: 1px solid #66BB6A;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.change-username-btn:hover {
+  background: #66BB6A;
+  border-color: #81C784;
+}
+
+/* Username Modal Styles */
+.username-input-container {
+  margin: 20px 0;
+}
+
+.pixel-input {
+  width: 100%;
+  padding: 12px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  background: #222;
+  border: 2px solid #444;
+  color: #fff;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.pixel-input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.pixel-input::placeholder {
+  color: #666;
+}
+
+.username-error {
+  color: #ff6b6b;
+  font-size: 8px;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.username-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.username-actions .pixel-btn {
+  padding: 10px 16px;
+  font-size: 10px;
+}
+
+/* Responsive adjustments for leaderboard */
+@media (max-width: 600px) {
+  .leaderboard-tabs {
+    gap: 4px;
+  }
+  
+  .leaderboard-tab {
+    padding: 6px 8px;
+    font-size: 8px;
+  }
+  
+  .leaderboard-header,
+  .leaderboard-entry {
+    grid-template-columns: 50px 1fr 80px;
+    gap: 8px;
+    padding: 6px 8px;
+    font-size: 8px;
+  }
+  
+  .username-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+}

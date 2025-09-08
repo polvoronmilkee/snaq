@@ -261,7 +261,11 @@
         </div>
     </div>
 
-        <script type="module" src="../../games/english/english-game.js"></script>
+    <script type="module">
+        import { LeaderboardManager } from '../../database/firebase-config.js';
+        window.LeaderboardManager = LeaderboardManager;
+    </script>
+    <script type="module" src="../../games/english/english-game.js"></script>
 </body>
 
 </html>
