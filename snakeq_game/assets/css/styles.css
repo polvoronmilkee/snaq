@@ -54,6 +54,41 @@ body::before {
   transform: scale(0.8)
 }
 
+.settings-menu {
+  position: absolute;
+  top: 60px; /* just under header */
+  right: 20px;
+  background: #111;
+  border: 2px solid #444;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  z-index: 999;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.4);
+}
+
+.settings-item {
+  background: #222;
+  border: 2px solid #333;
+  padding: 8px 12px;
+  color: #fff;
+  font-family: "Press Start 2P", monospace;
+  cursor: pointer;
+  text-align: left;
+}
+
+.settings-item:hover {
+  background: #2ecc71;
+  border-color: #27ae60;
+}
+
+.hidden {
+  display: none;
+}
+
+
 /* Floating container */
 .dpad {
   position: fixed;
@@ -598,6 +633,9 @@ body::before {
   font-size: 20px;
 }
 
+#about-btn {
+  cursor: pointer;
+}
 .about-name {
   font-size: 12px;
 }
