@@ -57,6 +57,7 @@ body::before {
 .settings-menu {
   position: absolute;
   top: 60px; /* just under header */
+  top: 60px;
   right: 20px;
   background: #111;
   border: 2px solid #444;
@@ -2769,5 +2770,16 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   .username-actions {
     flex-direction: column;
     align-items: center;
+  }
+}
+/* Default: hide on big screens */
+#dpad {
+  display: none;
+}
+
+/* Show only on small screens (phones) */
+@media (max-width: 768px) {
+  #dpad {
+    display: flex;
   }
 }
