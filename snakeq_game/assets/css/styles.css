@@ -312,7 +312,7 @@ body::before {
 .logo-icon {
   width: 30vw;
   max-width: 100%;
-  margin-bottom: -100px;
+  margin-bottom: -50px;
   height: auto;
   image-rendering: pixelated;
 }
