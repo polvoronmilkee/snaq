@@ -241,6 +241,8 @@ class SnakeMathGame {
     this.confirmBackMenuBtn = $id("confirm-back-menu");
     this.cancelBackMenuBtn = $id("cancel-back-menu");
     this.backToMenu = $id("back-to-menu");
+    this.initDpad();
+  
 
     if (this.questionElement) {
       this.questionElement.style.fontSize = "18px"
@@ -422,6 +424,30 @@ class SnakeMathGame {
     })
     this.updateShieldUI();
   }
+
+  initDpad() {
+    const controls = {
+        "btn-up": "w",
+        "btn-down": "s",
+        "btn-left": "a",
+        "btn-right": "d",
+    };
+
+    Object.entries(controls).forEach(([id, key]) => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+
+        btn.addEventListener("click", () => {
+            this.handleKeyDown({
+                key: key,
+                code: key.toUpperCase(), // simulate KeyW, KeyS, etc.
+                preventDefault: () => {}, 
+                repeat: false
+            });
+        });
+    });
+}
+
 
   generateQuestion() {
     const difficulty = this.gameSettings.difficulty;
@@ -1817,6 +1843,31 @@ if (closeAbout) {
   });
 }
 
+// Make the D-pad draggable
+const dpad = document.getElementById("dpad");
+
+let isDragging = false;
+let offsetX, offsetY;
+
+dpad.addEventListener("mousedown", (e) => {
+  isDragging = true;
+  offsetX = e.clientX - dpad.getBoundingClientRect().left;
+  offsetY = e.clientY - dpad.getBoundingClientRect().top;
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+  dpad.style.left = e.clientX - offsetX + "px";
+  dpad.style.top = e.clientY - offsetY + "px";
+  dpad.style.right = "auto";  // so right/bottom don’t override
+  dpad.style.bottom = "auto";
+});
+
+document.addEventListener("mouseup", () => {
+  isDragging = false;
+});
+
+
 
 const copyrightModal = $id("copyright-modal");
 const closeCopyright = $id("close-copyright");
@@ -1833,7 +1884,6 @@ if (closeCopyright) {
     copyrightModal.classList.add("hidden");
   });
 }
-
 
 document.addEventListener("DOMContentLoaded", () => {
   new SnakeMathGame()

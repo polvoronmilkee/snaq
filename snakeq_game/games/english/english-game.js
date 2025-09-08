@@ -604,6 +604,8 @@ class SnakeEnglishGame {
         this.paused = false
         this.inputLocked = false
         this.speed = this.baseSpeed
+        this.initDpad()
+    
 
         // Setup timer for timed mode
         if (this.gameSettings.mode === "timed") {
@@ -634,6 +636,29 @@ class SnakeEnglishGame {
         this.updateUI()
         this.hideOverlays()
         this.updateShieldUI();
+
+        const dpad = document.getElementById("dpad");
+
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        dpad.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.clientX - dpad.getBoundingClientRect().left;
+        offsetY = e.clientY - dpad.getBoundingClientRect().top;
+        });
+
+        document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        dpad.style.left = e.clientX - offsetX + "px";
+        dpad.style.top = e.clientY - offsetY + "px";
+        dpad.style.right = "auto";  // so right/bottom don’t override
+        dpad.style.bottom = "auto";
+        });
+
+        document.addEventListener("mouseup", () => {
+        isDragging = false;
+        });
     }
 
     startTimer() {
@@ -657,6 +682,28 @@ class SnakeEnglishGame {
         }, 1000);
     }
     
+        initDpad() {
+        const controls = {
+            "btn-up": "w",
+            "btn-down": "s",
+            "btn-left": "a",
+            "btn-right": "d",
+        };
+
+        Object.entries(controls).forEach(([id, key]) => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+
+            btn.addEventListener("click", () => {
+                this.handleKeyDown({
+                    key: key,
+                    code: key.toUpperCase(), // simulate KeyW, KeyS, etc.
+                    preventDefault: () => {}, 
+                    repeat: false
+                });
+            });
+        });
+    }
 
     handleKeyDown(e) {
         const key = e.key.toLowerCase()

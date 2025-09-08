@@ -238,6 +238,7 @@ class SnakeGeneralKnowledgeGame {
         this.cancelBackMenuBtn = $id("cancel-back-menu")
         this.backToMenu = $id("back-to-menu")
         this.aboutBtn = $id("about-btn")
+        this.initDpad()
 
         if (this.questionElement) {
             this.questionElement.style.fontSize = "15px"
@@ -411,6 +412,29 @@ class SnakeGeneralKnowledgeGame {
         this.updateShieldUI();
     }
 
+    initDpad() {
+        const controls = {
+            "btn-up": "w",
+            "btn-down": "s",
+            "btn-left": "a",
+            "btn-right": "d",
+        };
+
+        Object.entries(controls).forEach(([id, key]) => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+
+            btn.addEventListener("click", () => {
+                this.handleKeyDown({
+                    key: key,
+                    code: key.toUpperCase(), // simulate KeyW, KeyS, etc.
+                    preventDefault: () => {}, 
+                    repeat: false
+                });
+            });
+        });
+    }
+
     updateOptionsDisplay() {
         if (!this.optionsContainer || !this.currentQuestion) return
 
@@ -527,6 +551,30 @@ class SnakeGeneralKnowledgeGame {
         this.updateUI()
         this.hideOverlays()
         this.updateShieldUI();
+        
+        const dpad = document.getElementById("dpad");
+
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        dpad.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.clientX - dpad.getBoundingClientRect().left;
+        offsetY = e.clientY - dpad.getBoundingClientRect().top;
+        });
+
+        document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        dpad.style.left = e.clientX - offsetX + "px";
+        dpad.style.top = e.clientY - offsetY + "px";
+        dpad.style.right = "auto";  // so right/bottom don’t override
+        dpad.style.bottom = "auto";
+        });
+
+        document.addEventListener("mouseup", () => {
+        isDragging = false;
+        });
+
     }
 
     startTimer() {
@@ -1478,6 +1526,7 @@ class SnakeGeneralKnowledgeGame {
         return !(cX2 <= rect.x || rX2 <= cellX || cY2 <= rect.y || rY2 <= cellY)
     }
 }
+
 
 function checkZoomLevel() {
   // 🚫 Skip check for mobile devices
