@@ -26,12 +26,42 @@ class LandingPage {
     this.ownedEffects = JSON.parse(localStorage.getItem("ownedEffects")) || [];
     this.selectedEffect = localStorage.getItem("selectedEffect") || null;
     
+    // Leaderboard system
+    this.username = localStorage.getItem("playerUsername") || null;
+    this.leaderboardManager = null;
+    this.currentLeaderboardCategory = 'overall';
+    
     this.init();
   }
 
-  init() {
+  async init() {
     this.bindEvents();
     this.initializeAudioStates();
+    await this.initializeLeaderboard();
+    this.checkUsernamePrompt();
+  }
+
+  async initializeLeaderboard() {
+    try {
+      // Initialize Firebase leaderboard manager
+      if (window.LeaderboardManager) {
+        this.leaderboardManager = new window.LeaderboardManager();
+        console.log('Leaderboard system initialized');
+      } else {
+        console.warn('LeaderboardManager not available - Firebase may not be loaded');
+      }
+    } catch (error) {
+      console.error('Failed to initialize leaderboard:', error);
+    }
+  }
+
+  checkUsernamePrompt() {
+    // Show username modal if no username is set and user has points
+    if (!this.username && this.points > 0) {
+      setTimeout(() => {
+        this.showUsernameModal();
+      }, 1000);
+    }
   }
 
   initializeAudioStates() {
@@ -192,6 +222,78 @@ class LandingPage {
     if (aboutBtn) {
       aboutBtn.addEventListener("click", () => {
         $$("about-modal").classList.remove("hidden");
+      });
+    }
+
+    // Leaderboard event bindings
+    const leaderboardBtn = $$("leaderboard-btn");
+    const leaderboardModal = $$("leaderboard-modal");
+    const closeLeaderboardBtn = $$("close-leaderboard");
+    const leaderboardTabs = document.querySelectorAll('.leaderboard-tab');
+
+    if (leaderboardBtn) {
+      leaderboardBtn.addEventListener("click", () => {
+        this.playClickSound();
+        this.showLeaderboard();
+      });
+    }
+
+    if (closeLeaderboardBtn) {
+      closeLeaderboardBtn.addEventListener("click", () => {
+        this.playClickSound();
+        this.hideLeaderboard();
+      });
+    }
+
+    if (leaderboardModal) {
+      leaderboardModal.addEventListener("click", (e) => {
+        if (e.target === leaderboardModal) {
+          this.hideLeaderboard();
+        }
+      });
+    }
+
+    leaderboardTabs.forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        this.playClickSound();
+        this.selectLeaderboardCategory(e);
+      });
+    });
+
+
+    // Username modal event bindings
+    const usernameModal = $$("username-modal");
+    const saveUsernameBtn = $$("save-username");
+    const skipUsernameBtn = $$("skip-username");
+    const usernameInput = $$("username-input");
+
+    if (saveUsernameBtn) {
+      saveUsernameBtn.addEventListener("click", () => {
+        this.playClickSound();
+        this.saveUsername();
+      });
+    }
+
+    if (skipUsernameBtn) {
+      skipUsernameBtn.addEventListener("click", () => {
+        this.playClickSound();
+        this.hideUsernameModal();
+      });
+    }
+
+    if (usernameInput) {
+      usernameInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          this.saveUsername();
+        }
+      });
+    }
+
+    if (usernameModal) {
+      usernameModal.addEventListener("click", (e) => {
+        if (e.target === usernameModal) {
+          this.hideUsernameModal();
+        }
       });
     }
 
@@ -823,6 +925,184 @@ renderShopItems(category) {
       }, 1000);
     }, 2000);
   }
+
+  // Leaderboard functionality
+  async showLeaderboard() {
+    const leaderboardModal = $$("leaderboard-modal");
+    if (leaderboardModal) {
+      leaderboardModal.classList.remove("hidden");
+      await this.loadLeaderboard(this.currentLeaderboardCategory);
+    }
+  }
+
+  hideLeaderboard() {
+    const leaderboardModal = $$("leaderboard-modal");
+    if (leaderboardModal) {
+      leaderboardModal.classList.add("hidden");
+    }
+  }
+
+  selectLeaderboardCategory(e) {
+    const tab = e.target.closest('.leaderboard-tab');
+    if (!tab) return;
+    
+    // Remove active class from all tabs
+    document.querySelectorAll('.leaderboard-tab').forEach(t => {
+      t.classList.remove('active');
+    });
+    
+    // Add active class to clicked tab
+    tab.classList.add('active');
+    
+    // Load leaderboard for selected category
+    this.currentLeaderboardCategory = tab.dataset.category;
+    this.loadLeaderboard(this.currentLeaderboardCategory);
+  }
+
+  async loadLeaderboard(category = 'overall') {
+    const leaderboardList = $$("leaderboard-list");
+    if (!leaderboardList || !this.leaderboardManager) {
+      if (leaderboardList) {
+        leaderboardList.innerHTML = '<div class="error-message">Leaderboard unavailable - Firebase not connected</div>';
+      }
+      return;
+    }
+
+    leaderboardList.innerHTML = '<div class="loading-message">Loading leaderboard...</div>';
+
+    try {
+      const leaderboard = await this.leaderboardManager.getLeaderboard(category, 10);
+      
+      if (leaderboard.length === 0) {
+        leaderboardList.innerHTML = '<div class="empty-message">No scores yet. Be the first!</div>';
+        return;
+      }
+
+      let html = '';
+      leaderboard.forEach((entry, index) => {
+        const isCurrentPlayer = this.username && entry.username === this.username;
+        html += `
+          <div class="leaderboard-entry ${isCurrentPlayer ? 'current-player' : ''}">
+            <span class="rank">#${entry.rank}</span>
+            <span class="username">${entry.username}</span>
+            <span class="score">${entry.totalPoints.toLocaleString()}</span>
+          </div>
+        `;
+      });
+      
+      leaderboardList.innerHTML = html;
+      
+      // Update player rank display
+      if (this.username) {
+        await this.updatePlayerRank(category);
+        this.updateUsernameDisplay();
+      }
+    } catch (error) {
+      console.error('Error loading leaderboard:', error);
+      leaderboardList.innerHTML = '<div class="error-message">Failed to load leaderboard</div>';
+    }
+  }
+
+  async updatePlayerRank(category = 'overall') {
+    if (!this.username || !this.leaderboardManager) return;
+
+    try {
+      const rank = await this.leaderboardManager.getPlayerRank(this.username, category);
+      const rankDisplay = $$("player-rank-display");
+      const currentPlayerRank = $$("current-player-rank");
+      
+      if (rankDisplay && currentPlayerRank) {
+        if (rank) {
+          currentPlayerRank.textContent = `#${rank}`;
+          rankDisplay.classList.remove('hidden');
+        } else {
+          rankDisplay.classList.add('hidden');
+        }
+      }
+    } catch (error) {
+      console.error('Error getting player rank:', error);
+    }
+  }
+
+  updateUsernameDisplay() {
+    const usernameDisplay = $$("current-username-display");
+    const displayUsername = $$("display-username");
+    
+    if (usernameDisplay && displayUsername) {
+      if (this.username) {
+        displayUsername.textContent = this.username;
+        usernameDisplay.classList.remove('hidden');
+      } else {
+        usernameDisplay.classList.add('hidden');
+      }
+    }
+  }
+
+  // Username functionality
+  showUsernameModal() {
+    const usernameModal = $$("username-modal");
+    if (usernameModal) {
+      usernameModal.classList.remove("hidden");
+      const usernameInput = $$("username-input");
+      if (usernameInput) {
+        // Pre-fill with current username if changing
+        if (this.username) {
+          usernameInput.value = this.username;
+        } else {
+          usernameInput.value = "";
+        }
+        usernameInput.focus();
+      }
+      
+      // Update modal title based on context
+      const modalTitle = usernameModal.querySelector("h3");
+      if (modalTitle) {
+        modalTitle.textContent = this.username ? "🎮 Change Your Username" : "🎮 Enter Your Username";
+      }
+    }
+  }
+
+  hideUsernameModal() {
+    const usernameModal = $$("username-modal");
+    if (usernameModal) {
+      usernameModal.classList.add("hidden");
+    }
+  }
+
+  saveUsername() {
+    const usernameInput = $$("username-input");
+    const usernameError = $$("username-error");
+    
+    if (!usernameInput) return;
+    
+    const username = usernameInput.value.trim();
+    
+    // Validate username
+    if (username.length < 3 || username.length > 20) {
+      usernameError.classList.remove('hidden');
+      usernameError.textContent = 'Username must be 3-20 characters long';
+      return;
+    }
+    
+    if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+      usernameError.classList.remove('hidden');
+      usernameError.textContent = 'Username can only contain letters, numbers, - and _';
+      return;
+    }
+    
+    // Save username
+    this.username = username;
+    localStorage.setItem("playerUsername", username);
+    
+    // Submit current score to leaderboard
+    if (this.points > 0) {
+      this.submitScoreToLeaderboard('overall');
+    }
+    
+    this.hideUsernameModal();
+    this.showNotification(`Welcome, ${username}! 🎮`);
+  }
+
 }
 
 
