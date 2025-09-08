@@ -199,6 +199,21 @@ class SnakeEnglishGame {
         }
     }
 
+    togglePause() {
+        this.paused = !this.paused;
+        localStorage.setItem("paused", this.paused.toString());
+
+        const pauseBtn = $id("pause-btn");
+        pauseBtn.textContent = this.paused ? "▶" : "▐▐";
+        pauseBtn.classList.toggle("active", this.paused);   
+
+        if (this.paused) {
+            this.playSound("pause");
+        } else {    
+            this.playSound("pause");    
+        }
+}
+
     initDOM() {
         this.canvas = $id("game-canvas")
         this.ctx = this.canvas.getContext("2d")
@@ -1633,6 +1648,7 @@ class SnakeEnglishGame {
         const newTotal = currentTotal + points
         localStorage.setItem("totalPoints", newTotal.toString())
     }
+
 }
 
 
