@@ -23,7 +23,7 @@ class SnakeScienceGame {
 
         const canvasContainer = document.querySelector(".canvas-container");
 
-        canvasContainer.style.backgroundImage = (this.gameSettings.selectedSkin === "volt") ? `url(../../assets/images/snake-skins/volt_snake/Tile.png)` : `url("../../assets/images/icons/Tile.png")`;
+        if (this.gameSettings.selectedSkin !== "green") canvasContainer.style.backgroundImage = `url(../../assets/images/snake-skins/${this.selectedSkin}_snake/Tile.png)`
 
         const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../../assets/images/snake-skins/volt_snake/sounds" : "../../assets/sounds"
 
