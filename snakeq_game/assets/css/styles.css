@@ -1179,7 +1179,7 @@ body::before {
 }
 
 /* Skin Shop Modal Styles */
-.skin-shop-modal {
+#skin-shop-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -1195,9 +1195,8 @@ body::before {
 .skin-shop-modal.hidden {
   display: none;
 }
-
-.skin-shop-content {
-  background: #1a1a1a;
+#skin-shop-content {
+  background: #7c6f34;
   padding: 20px;
   max-width: 650px;
   width: 90%;
