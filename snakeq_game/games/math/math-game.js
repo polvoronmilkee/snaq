@@ -1776,9 +1776,35 @@ class SnakeMathGame {
   }
 }
 
-const aboutModal = $id("about-modal");
-const closeAbout = $id("close-about");
-const aboutBtn = $id("about-btn");
+function checkZoomLevel() {
+  // 🚫 Skip check for mobile devices
+  if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    return;
+  }
+
+  // Calculate zoom (innerWidth / outerWidth is more accurate across browsers)
+  const zoom = (window.outerWidth / window.innerWidth) * 100;
+
+  const modal = document.getElementById("zoom-warning");
+  
+  if (zoom >= 70) {
+    modal.style.display = "flex"; // show popup
+  } else {
+    modal.style.display = "none"; // hide popup
+  }
+}
+
+// Close button
+document.getElementById("close-zoom-warning").addEventListener("click", () => {
+  document.getElementById("zoom-warning").style.display = "none";
+});
+
+// Run check on load and whenever window is resized
+window.addEventListener("load", checkZoomLevel);
+window.addEventListener("resize", checkZoomLevel);
+const aboutModal = document.getElementById("about-modal");
+const closeAbout = document.getElementById("close-about");
+const aboutBtn = document.getElementById("about-btn");
 
 if (aboutBtn) {
   aboutBtn.addEventListener("click", () => {
