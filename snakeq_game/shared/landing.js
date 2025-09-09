@@ -1029,7 +1029,7 @@ renderShopItems(category) {
         <p class="skin-description">${item.desc}</p>
         <div class="skin-status">
           ${isOwned ? 
-            `<span class="skin-owned">✓ Owned</span>
+            `<span class="skin-owned">Owned</span>
              <button class="action-btn ${isSelected ? 'selected' : ''}" 
                      data-category="${category}" data-id="${item.id}" data-action="select">
                ${isSelected ? 'Selected' : 'Select'}
@@ -1165,6 +1165,31 @@ renderShopItems(category) {
     if (category === 'skins') {
       this.selectedSkin = itemId;
       localStorage.setItem("selectedSkin", itemId);
+      
+      // Show selected skin notification
+      const notification = document.createElement('div');
+      notification.className = 'selected-skin-notification';
+      notification.innerHTML = `
+        <span>${this.getItemName(category, itemId)} selected!</span>
+      `;
+      
+      // Remove any existing notifications
+      const existingNotification = document.querySelector('.selected-skin-notification');
+      if (existingNotification) {
+        existingNotification.remove();
+      }
+      
+      // Add new notification
+      document.body.appendChild(notification);
+      
+      // Remove notification after 2 seconds
+      setTimeout(() => {
+        notification.style.animation = 'fadeOut 0.3s ease-out';
+        setTimeout(() => {
+          notification.remove();
+        }, 300);
+      }, 2000);
+      
     } else if (category === 'accessories') {
       this.selectedAccessory = itemId;
       localStorage.setItem("selectedAccessory", itemId);
@@ -1180,7 +1205,10 @@ renderShopItems(category) {
     }
     
     this.playClickSound();
-    this.showNotification(`${this.getItemName(category, itemId)} selected!`);
+    // Only show default notification for non-skin selections
+    if (category !== 'skins') {
+      this.showNotification(`${this.getItemName(category, itemId)} selected!`);
+    }
   }
   
   getItemName(category, itemId) {

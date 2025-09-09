@@ -394,16 +394,16 @@
     <script src="shared/landing.js"></script>
     <script>
         window.onload = function() {
-            // Check if we've shown the storyboard before
-            const storyboardCount = parseInt(localStorage.getItem('storyboardCount') || '0');
-            
-            // Only redirect to intro if we haven't shown it yet (or shown it less than 3 times for testing)
-            if (storyboardCount < 3) {
-                localStorage.setItem('storyboardCount', (storyboardCount + 1).toString());
-                window.location.href = "shared/intro.html";
-            }
-            // If we've shown it enough times, don't redirect
+          const hasSeenIntro = localStorage.getItem('hasSeenIntro') === 'true';
+      
+          if (!hasSeenIntro) {
+            // First time → go to intro video
+            window.location.href = "shared/intro.html";
+          } else {
+            // Otherwise → stay on landing page normally
+            console.log("Welcome back! Skipping intro.");
+          }
         }
-    </script>
+      </script>
 </body>
 </html>
