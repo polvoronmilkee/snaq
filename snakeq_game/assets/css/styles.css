@@ -626,10 +626,6 @@ body::before {
   image-rendering: pixelated;
 }
 
-.score {
-  border-color: #4a90e2;
-  background: #1a1a2e;
-}
 
 .lives {
   border-color: #ff4444;
@@ -1454,12 +1450,6 @@ body::before {
   margin-bottom: 15px;
 }
 
-.skin-image {
-  width: 80px;
-  height: 80px;
-  image-rendering: pixelated;
-}
-
 .skin-info h4 {
   margin: 0 0 8px 0;
   color: #fff;
@@ -1480,11 +1470,7 @@ body::before {
   gap: 8px;
 }
 
-.skin-owned {
-  color: #00ff00;
-  font-size: 14px;
-  font-weight: bold;
-}
+
 
 .skin-price {
   color: #ffaa00;
@@ -1681,19 +1667,12 @@ body::before {
   width: 80px;
   height: 80px;
   image-rendering: pixelated;
-  border: 2px solid #666;
 }
 
-.skin-info h4 {
-  font-size: 12px;
-  margin-bottom: 8px;
-  color: #fff;
-  text-shadow: 1px 1px 0 #000;
-}
 
 .skin-description {
   font-size: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 1px;
   min-height: 32px;
   line-height: 1.4;
 }
@@ -1708,17 +1687,22 @@ body::before {
   gap: 8px;
 }
 
+.conversion-note {
+  font-weight: bold 
+}
 .skin-owned {
-  color: #32cd32;
-  background: rgba(50, 205, 50, 0.1);
+  color: #089d08;
+  background: rgba(0, 0, 0, 0.144);
   border: 1px solid #32cd32;
   padding: 4px 8px;
+  font-weight: bold;
+  font-size: 14px;
 }
 
 .skin-price {
-  color: #ffaa00;
-  background: rgba(255, 170, 0, 0.1);
-  border: 1px solid #ffaa00;
+  color: #000000;
+  background-color: #ffcc00;
+  border: 3px solid #000000;
   padding: 4px 8px;
 }
 
@@ -2773,11 +2757,19 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   white-space: nowrap;
   font-weight: 500;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  text-align: center;
 }
 
-.leaderboard-entry .score {
+.leaderboard-entry{
   color: #4CAF50;
   text-align: right;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+ .score {
+  color: #0af112;
+  text-align: center;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }

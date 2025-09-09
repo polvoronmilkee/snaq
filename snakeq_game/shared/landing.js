@@ -984,7 +984,21 @@ renderShopItems(category) {
       
       if (leaderboard.length === 0) {
         const categoryName = category === 'overall' ? 'overall' : category;
-        leaderboardList.innerHTML = `<div class="empty-message">No scores yet in ${categoryName}. Be the first! 🏆</div>`;
+        if (categoryName && categoryName.trim() !== "") {
+          if (categoryName.toLowerCase() === "generalknow") {
+            leaderboardList.innerHTML = `<div class="empty-message">No scores yet in General Knowledge. Be the first! 🏆</div>`;
+          } else if (categoryName.toLowerCase() === "science") {
+            leaderboardList.innerHTML = `<div class="empty-message">No scores yet in Science. Be the first! 🏆</div>`;
+          } else if (categoryName.toLowerCase() === "math") {
+            leaderboardList.innerHTML = `<div class="empty-message">No scores yet in Math. Be the first! 🏆</div>`;
+          } else if (categoryName.toLowerCase() === "english") {
+            leaderboardList.innerHTML = `<div class="empty-message">No scores yet in English. Be the first! 🏆</div>`;
+          } else {
+            leaderboardList.innerHTML = `<div class="empty-message">No scores yet in ${categoryName}. Be the first! 🏆</div>`;
+          }
+        } else {
+          leaderboardList.innerHTML = `<div class="empty-message">No scores yet. Be the first! 🏆</div>`;
+        }
         return;
       }
 
