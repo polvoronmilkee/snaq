@@ -199,6 +199,21 @@ class SnakeEnglishGame {
         }
     }
 
+    togglePause() {
+        this.paused = !this.paused;
+        localStorage.setItem("paused", this.paused.toString());
+
+        const pauseBtn = $id("pause-btn");
+        pauseBtn.textContent = this.paused ? "▶" : "▐▐";
+        pauseBtn.classList.toggle("active", this.paused);   
+
+        if (this.paused) {
+            this.playSound("pause");
+        } else {    
+            this.playSound("pause");    
+        }
+}
+
     initDOM() {
         this.canvas = $id("game-canvas")
         this.ctx = this.canvas.getContext("2d")
@@ -358,6 +373,13 @@ class SnakeEnglishGame {
             }
         });
 
+            // ✅ Pause button
+        const pauseBtn = document.getElementById("pause-btn");
+            pauseBtn.addEventListener("click", () => {
+                this.togglePause();
+            });
+        
+
         const canvasContainer = document.querySelector(".canvas-container");
 
         const tryActivateSprint = () => {
@@ -418,8 +440,16 @@ class SnakeEnglishGame {
 
     }
 
+    togglePause() {
+        this.paused = !this.paused;
+        this.playSound("click");
 
+        // Change button symbol
+        const btn = document.getElementById("pause-btn");
+        btn.textContent = this.paused ? "▶" : "❚❚";
 
+        console.log(this.paused ? "⏸ Game Paused" : "▶ Game Resumed");
+    }
 
     showEscMenu() {
         if (this.gameRunning && !this.paused && !this.countdownActive &&
@@ -1633,6 +1663,7 @@ class SnakeEnglishGame {
         const newTotal = currentTotal + points
         localStorage.setItem("totalPoints", newTotal.toString())
     }
+
 }
 
 

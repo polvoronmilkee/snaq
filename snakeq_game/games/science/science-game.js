@@ -357,6 +357,25 @@ class SnakeScienceGame {
                 this.paused = true;
             }
         });
+
+            // ✅ Pause button
+        const pauseBtn = document.getElementById("pause-btn");
+            pauseBtn.addEventListener("click", () => {
+                this.togglePause();
+            });
+
+  }
+
+    togglePause() {
+      this.paused = !this.paused;
+      this.playSound("click");
+
+      // Change button symbol
+      const btn = document.getElementById("pause-btn");
+      btn.textContent = this.paused ? "▶" : "❚❚";
+
+      console.log(this.paused ? "⏸ Game Paused" : "▶ Game Resumed");
+
     }
 
     showEscMenu() {

@@ -50,7 +50,7 @@ body::before {
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
-  padding-top: 100px;
+  padding-top: 5px;
   transform: scale(0.8)
 }
 
@@ -953,6 +953,12 @@ body::before {
   padding: 24px;
 }
 
+.game-over-overlay-content {
+  background: #2a2a2a;
+  padding: 24px;
+  text-align: center;
+  max-width: 300px;
+}
 .overlay-content {
   background: #2a2a2a;
   padding: 24px;
@@ -960,7 +966,7 @@ body::before {
   max-width: 300px;
 }
 
-.overlay-content h2 {
+.game-over-overlay-content h2, .overlay-content h2 {
   font-size: 16px;
   margin-bottom: 16px;
   word-wrap: break-word;
@@ -969,7 +975,7 @@ body::before {
   padding: 24px;
 }
 
-.overlay-content h2.won {
+.game-over-overlay-content h2.won, .overlay-content h2.won {
   color: #32cd32;
   padding: 24px;
   word-wrap: break-word;
@@ -977,16 +983,15 @@ body::before {
   white-space: pre-line;
 }
 
-.overlay-content h2.lost {
+.game-over-overlay-content h2.lost, .overlay-content h2.lost {
   color: #ff4444;
   padding: 24px;
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: pre-line;
-
 }
 
-.overlay-content p {
+.game-over-overlay-content p,.overlay-content p {
   font-size: 11px;
   margin-bottom: 30px;
   color: #ccc;
@@ -1111,6 +1116,14 @@ body::before {
   max-height: 80vh;
   overflow-y: auto;
   text-align: center;
+  
+  /* Hide scrollbar but keep functionality */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.instructions-content::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .instructions-content h3 {
@@ -2324,7 +2337,7 @@ body::before {
       margin-bottom: 16px;
       max-width: 850px;
       background-image: url("../assets/icons/Tile.png");
-      background-size: 10%;
+      background-size: 16px 16px;
       background-repeat: repeat;
       image-rendering: pixelated;
       width: 100%;
@@ -2356,23 +2369,31 @@ body::before {
 
   }
 
-  .overlay .overlay-content h2 {
-    font-size: 8px;
-    margin-top: -13px;
-    margin-bottom: 0px;
-    padding: 12px;
+  .game-over-overlay-content {
+    width: 90%;          
+    max-width: 320px;   
+    padding: 7px;      
+    font-size: 10px;     
+    text-align: center;  
+    height: 125%;
+    justify-content: center;
 
   }
 
-  .overlay .overlay-content p {
+  .game-over-overlay-content h2,.overlay .overlay-content h2 {
+    font-size: 11px;
+    margin-top: -13px;
+    margin-bottom: -6px;
+  }
+
+  .game-over-overlay-content p,.overlay .overlay-content p {
     font-size: 8px;    
-    margin-bottom: 7px;
+    margin-bottom: 9px;
     margin-top: 0;
   }
 
 
-
-  .overlay .overlay-content button {
+  .game-over-overlay-content button, .overlay .overlay-content button {
     font-size: 8px;
     height: 8px;
     text-align: center;
@@ -2546,44 +2567,109 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 }
 
 /* Leaderboard Styles */
+.leaderboard-header-section {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 20px !important;
+  text-align: left !important;
+}
+
+.leaderboard-header-section h3 {
+  margin: 0 !important;
+  color: #32cd32 !important;
+  font-size: 14px !important;
+  text-shadow: 2px 2px 0 #000 !important;
+  text-align: left !important;
+  flex-grow: 1 !important;
+}
+
+.refresh-leaderboard-btn {
+  padding: 8px !important;
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%) !important;
+  border: 2px solid #6bb6ff !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  flex-shrink: 0 !important;
+  display: block !important;
+}
+
+.refresh-leaderboard-btn:hover {
+  background: linear-gradient(135deg, #5ba0f2 0%, #4a90e2 100%) !important;
+  transform: translateY(-1px) rotate(90deg) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+.refresh-leaderboard-btn:active {
+  transform: translateY(0) rotate(180deg) !important;
+}
+
 .leaderboard-tabs {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 20px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .leaderboard-tab {
-  padding: 8px 12px;
+  padding: 10px 16px;
   font-size: 10px;
-  background: #754d11;
-  border-radius: 10px;
+  background: #333;
   color: #fff;
-  border: 2px solid rgb(48, 36, 20)d11;
+  border: 2px solid #555;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.leaderboard-tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
 }
 
 .leaderboard-tab:hover {
-  background: #503307;
-  border-color: rgb(53, 27, 5)d11;
+  background: #444;
+  border-color: #666;
 }
 
 .leaderboard-tab.active {
-  background: #4a90e2;
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
   border-color: #6bb6ff;
   color: #fff;
+  box-shadow: 0 0 15px rgba(74, 144, 226, 0.4);
+  transform: translateY(-1px);
 }
 
 .leaderboard-container {
   background: rgba(0, 0, 0, 0.3);
-  border: 2px solid #754d11;
+  border: 2px solid #333;
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
   max-height: 400px;
   overflow-y: auto;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+  
+  /* Hide scrollbar but keep functionality */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.leaderboard-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .leaderboard-header {
@@ -2591,45 +2677,93 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   grid-template-columns: 60px 1fr 100px;
   gap: 12px;
   padding: 8px 12px;
-  background: #754d11;
+  background: #222;
   border: 1px solid #444;
   margin-bottom: 8px;
   font-size: 10px;
   color: #f2ff65;
   font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .leaderboard-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .leaderboard-entry {
   display: grid;
   grid-template-columns: 60px 1fr 100px;
   gap: 12px;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.05);
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 10px;
-  transition: background 0.2s;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.leaderboard-entry::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  transition: left 0.5s;
 }
 
 .leaderboard-entry:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.leaderboard-entry:hover::before {
+  left: 100%;
 }
 
 .leaderboard-entry.current-player {
-  background: rgba(74, 144, 226, 0.2);
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.3) 0%, rgba(74, 144, 226, 0.15) 100%);
   border-color: #4a90e2;
   color: #6bb6ff;
+  box-shadow: 0 0 20px rgba(74, 144, 226, 0.3);
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(74, 144, 226, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(74, 144, 226, 0.5);
+  }
 }
 
 .leaderboard-entry .rank {
   color: #f2ff65;
   font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px; /* Larger size for medals */
+}
+
+.leaderboard-entry:nth-child(n+4) .rank {
+  font-size: 10px; /* Regular size for rank 4 and below */
+}
+
+.leaderboard-entry:nth-child(n+4) .rank::before {
+  content: '#';
+  opacity: 0.7;
+  margin-right: 2px;
 }
 
 .leaderboard-entry .username {
@@ -2637,70 +2771,107 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 .leaderboard-entry .score {
   color: #4CAF50;
   text-align: right;
   font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .loading-message, .error-message, .empty-message {
   text-align: center;
-  padding: 20px;
+  padding: 30px 20px;
   color: #999;
-  font-size: 10px;
+  font-size: 11px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border-radius: 8px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-message::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: loading-shimmer 2s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
 }
 
 .error-message {
   color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.3);
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 107, 107, 0.05) 100%);
 }
 
 .empty-message {
   color: #f2ff65;
+  border-color: rgba(242, 255, 101, 0.3);
+  background: linear-gradient(135deg, rgba(242, 255, 101, 0.1) 0%, rgba(242, 255, 101, 0.05) 100%);
 }
 
 .player-stats {
-  margin-top: 16px;
+  margin-top: 20px;
   text-align: center;
 }
 
 .player-rank {
-  background: rgba(74, 144, 226, 0.2);
-  border: 1px solid #4a90e2;
-  border-radius: 4px;
-  padding: 8px 12px;
-  font-size: 10px;
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.3) 0%, rgba(74, 144, 226, 0.15) 100%);
+  border: 2px solid #4a90e2;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 11px;
   color: #6bb6ff;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 .current-username {
-  background: rgba(76, 175, 80, 0.9);
+  background: rgba(76, 175, 80, 0.2);
   border: 1px solid #4CAF50;
   border-radius: 4px;
   padding: 8px 12px;
   font-size: 10px;
-  color: #ecf5ed;
+  color: #81C784;
   margin-top: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 .change-username-btn {
-  padding: 4px 8px;
-  font-size: 8px;
-  background: #4CAF50;
+  padding: 6px 12px;
+  font-size: 9px;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
   color: #fff;
-  border: 1px solid #66BB6A;
+  border: 2px solid #66BB6A;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 .change-username-btn:hover {
-  background: #66BB6A;
+  background: linear-gradient(135deg, #66BB6A 0%, #4CAF50 100%);
   border-color: #81C784;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 /* Username Modal Styles */
@@ -2710,67 +2881,133 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 
 .pixel-input {
   width: 100%;
-  padding: 12px;
+  padding: 14px 16px;
   font-family: "Press Start 2P", monospace;
   font-size: 10px;
-  background: #222;
+  background: linear-gradient(135deg, #222 0%, #1a1a1a 100%);
   border: 2px solid #444;
   color: #fff;
-  border-radius: 4px;
+  border-radius: 6px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .pixel-input:focus {
   border-color: #4a90e2;
-  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #2a2a2a 0%, #222 100%);
 }
 
 .pixel-input::placeholder {
   color: #666;
+  opacity: 0.8;
 }
 
 .username-error {
   color: #ff6b6b;
   font-size: 8px;
-  margin-top: 8px;
+  margin-top: 10px;
   text-align: center;
+  padding: 8px;
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  border-radius: 4px;
 }
 
 .username-actions {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 .username-actions .pixel-btn {
-  padding: 10px 16px;
+  padding: 12px 20px;
   font-size: 10px;
+  transition: all 0.3s ease;
 }
 
 /* Responsive adjustments for leaderboard */
 @media (max-width: 600px) {
+  .leaderboard-header-section {
+    margin-bottom: 16px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+  
+  .leaderboard-header-section h3 {
+    font-size: 12px !important;
+    text-align: left !important;
+    margin: 0 !important;
+  }
+  
+  .refresh-leaderboard-btn {
+    padding: 6px !important;
+    font-size: 12px !important;
+    display: block !important;
+    flex-shrink: 0 !important;
+  }
+  
   .leaderboard-tabs {
-    gap: 4px;
+    gap: 6px;
+    margin-bottom: 16px;
   }
   
   .leaderboard-tab {
-    padding: 6px 8px;
+    padding: 8px 12px;
     font-size: 8px;
+    border-radius: 4px;
   }
   
   .leaderboard-header,
   .leaderboard-entry {
     grid-template-columns: 50px 1fr 80px;
     gap: 8px;
-    padding: 6px 8px;
+    padding: 8px 12px;
     font-size: 8px;
+  }
+  
+  .leaderboard-entry .rank {
+    font-size: 14px; /* Medals still visible on mobile */
+  }
+  
+  .leaderboard-entry:nth-child(n+4) .rank {
+    font-size: 8px; /* Smaller rank numbers on mobile */
+  }
+  
+  .leaderboard-header {
+    padding: 8px 12px;
+    font-size: 9px;
+  }
+  
+  .loading-message, .error-message, .empty-message {
+    padding: 20px 16px;
+    font-size: 9px;
   }
   
   .username-actions {
     flex-direction: column;
     align-items: center;
+    gap: 12px;
+  }
+  
+  .username-actions .pixel-btn {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .current-username {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  
+  .change-username-btn {
+    width: 100%;
+    max-width: 150px;
   }
 }
 /* Default: hide on big screens */
@@ -2784,3 +3021,4 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     display: flex;
   }
 }
+

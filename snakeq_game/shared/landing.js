@@ -229,6 +229,7 @@ class LandingPage {
     const leaderboardBtn = $$("leaderboard-btn");
     const leaderboardModal = $$("leaderboard-modal");
     const closeLeaderboardBtn = $$("close-leaderboard");
+    const refreshLeaderboardBtn = $$("refresh-leaderboard");
     const leaderboardTabs = document.querySelectorAll('.leaderboard-tab');
 
     if (leaderboardBtn) {
@@ -242,6 +243,14 @@ class LandingPage {
       closeLeaderboardBtn.addEventListener("click", () => {
         this.playClickSound();
         this.hideLeaderboard();
+      });
+    }
+
+    if (refreshLeaderboardBtn) {
+      refreshLeaderboardBtn.addEventListener("click", () => {
+        this.playClickSound();
+        this.showNotification("Refreshing leaderboard... 🔄");
+        this.loadLeaderboard(this.currentLeaderboardCategory);
       });
     }
 
@@ -968,24 +977,33 @@ renderShopItems(category) {
       return;
     }
 
-    leaderboardList.innerHTML = '<div class="loading-message">Loading leaderboard...</div>';
+    leaderboardList.innerHTML = `<div class="loading-message">Loading ${category} leaderboard...</div>`;
 
     try {
       const leaderboard = await this.leaderboardManager.getLeaderboard(category, 10);
       
       if (leaderboard.length === 0) {
-        leaderboardList.innerHTML = '<div class="empty-message">No scores yet. Be the first!</div>';
+        const categoryName = category === 'overall' ? 'overall' : category;
+        leaderboardList.innerHTML = `<div class="empty-message">No scores yet in ${categoryName}. Be the first! 🏆</div>`;
         return;
       }
 
       let html = '';
       leaderboard.forEach((entry, index) => {
         const isCurrentPlayer = this.username && entry.username === this.username;
+        const rank = entry.rank || (index + 1);
+        
+        // Add medal emojis for top 3
+        let rankDisplay = `#${rank}`;
+        if (rank === 1) rankDisplay = '🥇';
+        else if (rank === 2) rankDisplay = '🥈'; 
+        else if (rank === 3) rankDisplay = '🥉';
+        
         html += `
           <div class="leaderboard-entry ${isCurrentPlayer ? 'current-player' : ''}">
-            <span class="rank">#${entry.rank}</span>
+            <span class="rank">${rankDisplay}</span>
             <span class="username">${entry.username}</span>
-            <span class="score">${entry.totalPoints.toLocaleString()}</span>
+            <span class="score">${entry.totalPoints ? entry.totalPoints.toLocaleString() : '0'}</span>
           </div>
         `;
       });
@@ -999,7 +1017,7 @@ renderShopItems(category) {
       }
     } catch (error) {
       console.error('Error loading leaderboard:', error);
-      leaderboardList.innerHTML = '<div class="error-message">Failed to load leaderboard</div>';
+      leaderboardList.innerHTML = '<div class="error-message">Failed to load leaderboard. Please try again.</div>';
     }
   }
 
@@ -1012,7 +1030,7 @@ renderShopItems(category) {
       const currentPlayerRank = $$("current-player-rank");
       
       if (rankDisplay && currentPlayerRank) {
-        if (rank) {
+        if (rank && !isNaN(rank)) {
           currentPlayerRank.textContent = `#${rank}`;
           rankDisplay.classList.remove('hidden');
         } else {
@@ -1114,10 +1132,8 @@ renderShopItems(category) {
     this.username = username;
     localStorage.setItem("playerUsername", username);
     
-    // Submit current score to leaderboard
-    if (this.points > 0) {
-      this.submitScoreToLeaderboard('overall');
-    }
+    // Note: Scores are now submitted from individual games to their specific categories
+    // Overall leaderboard is calculated automatically by summing all category scores
     
     // Close modal and show success
     this.hideUsernameModal();
@@ -1209,12 +1225,6 @@ purchaseBtn.addEventListener("click", () => {
     alert(`✅ You selected ${selectedPackage.coins} coins for ₱${selectedPackage.price}.\n(Purchases disabled in demo)`);
   }
 });
-// ======================
-
-
-
-
-
 
 document.addEventListener("DOMContentLoaded", () => {
   new LandingPage();
