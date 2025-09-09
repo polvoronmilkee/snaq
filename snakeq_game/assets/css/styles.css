@@ -2066,6 +2066,10 @@ body::before {
   box-shadow: 1px 1px 0px #000;
 }
 
+#choose-un {
+  color: black
+}
+
 @media (max-width: 768px) {
   .game-container {
     padding: 80px 10px 20px;
@@ -3010,6 +3014,13 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 
 /* Show only on small screens (phones) */
 @media (max-width: 768px) {
+  #dpad {
+    display: flex;
+  }
+}
+
+/* Tablets (portrait & landscape) */
+@media (min-width: 769px) and (max-width: 1024px) {
   #dpad {
     display: flex;
   }

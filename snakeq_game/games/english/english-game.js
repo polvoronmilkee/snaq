@@ -373,6 +373,7 @@ class SnakeEnglishGame {
             }
         });
 
+
             // ✅ Pause button
         const pauseBtn = document.getElementById("pause-btn");
             pauseBtn.addEventListener("click", () => {
@@ -688,6 +689,12 @@ class SnakeEnglishGame {
         document.addEventListener("mouseup", () => {
         isDragging = false;
         });
+
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        if (isMobile) {
+        document.getElementById("dpad").style.display = "flex";
+        }
     }
 
     startTimer() {
