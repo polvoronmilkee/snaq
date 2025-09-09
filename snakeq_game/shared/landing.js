@@ -1085,6 +1085,21 @@ renderShopItems(category) {
     }
   }
 
+  // Reset username for demo purposes
+  resetUsername() {
+    // Clear username from localStorage and memory
+    this.username = null;
+    localStorage.removeItem("playerUsername");
+    
+    // Update display
+    this.updateUsernameDisplay();
+    
+    // Show username modal immediately
+    this.showUsernameModal();
+    
+    console.log("Username reset - ready for demo!");
+  }
+
   // Username functionality
   showUsernameModal() {
     const usernameModal = $$("username-modal");
