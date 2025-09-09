@@ -35,6 +35,26 @@ class LandingPage {
   }
 
   async init() {
+    // Check if we should show the intro video
+    const hasSeenIntro = localStorage.getItem('hasSeenIntro') === 'true';
+    const fromIntro = new URLSearchParams(window.location.search).get('fromIntro');
+    
+    if (!hasSeenIntro && !fromIntro) {
+      // Show the intro video with unskippable flag
+      const url = new URL(window.location.origin);
+      url.pathname = '/snakeq_game/shared/intro.html';
+      url.searchParams.set('unskippable', 'true');
+      window.location.href = url.toString();
+      return; // Don't initialize the rest if we're redirecting
+    }
+    
+    // Clear the URL parameter if we came from intro
+    if (fromIntro) {
+      const url = new URL(window.location);
+      url.searchParams.delete('fromIntro');
+      window.history.replaceState({}, '', url);
+    }
+    
     this.bindEvents();
     this.initializeAudioStates();
     await this.initializeLeaderboard();
@@ -163,6 +183,15 @@ class LandingPage {
       closeAboutBtn.addEventListener("click", () => {
         this.playClickSound();
         this.closeAbout();
+      });
+    }
+
+    // Intro button event
+    const introBtn = $$("intro-btn");
+    if (introBtn) {
+      introBtn.addEventListener("click", () => {
+        this.playClickSound();
+        window.location.href = 'shared/intro.html';
       });
     }
 
