@@ -1021,7 +1021,7 @@ body::before {
   background: #000;
   margin-bottom: 16px;
   max-width: 850px;
-  background-image: url("../images/icons/Tile.png");
+  background-image: url("../images/tiles/Tile.png");
   background-size: 10%;
   background-repeat: repeat;
   image-rendering: pixelated;
