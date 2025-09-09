@@ -8,6 +8,7 @@ class TutorialManager {
         this.tutorialBox = null;
         this.gameInstance = null;
         this.originalGameState = null;
+        this.hasCompletedTutorial = localStorage.getItem('tutorialCompleted') === 'true';
         
         this.init();
     }
@@ -60,6 +61,9 @@ class TutorialManager {
     startTutorial() {
         this.isActive = true;
         this.currentStep = 0;
+        
+        // Check if user has completed tutorial before
+        this.hasCompletedTutorial = localStorage.getItem('tutorialCompleted') === 'true';
         
         // Define tutorial steps
         this.tutorialSteps = [
@@ -437,7 +441,7 @@ class TutorialManager {
     }
 
     positionTutorialBox(targetRect, position) {
-        const boxWidth = 400;
+        const boxWidth = 600;
         const boxHeight = 200;
         const margin = 20;
         
@@ -454,7 +458,7 @@ class TutorialManager {
                 break;
             case 'left':
                 top = targetRect.top + (targetRect.height / 2) - (boxHeight / 2);
-                left = targetRect.left - boxWidth - (margin * 6);
+                left = targetRect.left - boxWidth;
                 break;
             case 'right':
                 top = targetRect.top + (targetRect.height / 2) - (boxHeight / 2);
@@ -467,7 +471,12 @@ class TutorialManager {
         
         // Keep box within viewport
         top = Math.max(10, Math.min(top, window.innerHeight - boxHeight - 10));
-        left = Math.max(10, Math.min(left, window.innerWidth - boxWidth - 10));
+        // Allow left positioning to go to screen edge for better adjacency
+        if (position === 'left') {
+            left = Math.max(left, 0);
+        } else {
+            left = Math.max(10, Math.min(left, window.innerWidth - boxWidth - 10));
+        }
         
         this.tutorialBox.style.position = 'fixed';
         this.tutorialBox.style.top = top + 'px';
@@ -482,22 +491,25 @@ class TutorialManager {
         const hasWaitCondition = step.waitForClick || step.waitForMovement || step.waitForAnswer ||
                                  step.waitForSprint || step.waitForPause;
     
+        // Check if skip button should be shown (only for users who completed tutorial before)
+        const canSkip = this.hasCompletedTutorial && !hasWaitCondition;
+        
         this.tutorialBox.innerHTML = `
             <div class="tutorial-header">
                 <h3>${step.title}</h3>
             </div>
             <div class="tutorial-content">
                 <p>${step.content.replace(/\n/g, '<br>')}</p>
+                ${step.action === 'movement' ? this.createMovementIndicator() : ''}
+                ${step.action === 'sprint' ? this.createSprintIndicator() : ''}
+                ${step.action === 'pause' ? this.createPauseIndicator() : ''}
             </div>
             <div class="tutorial-footer">
-                <div class="tutorial-progress">
-                    Step ${this.currentStep + 1} of ${this.tutorialSteps.length}
-                </div>
+                <div class="tutorial-progress">Step ${this.currentStep + 1} of ${this.tutorialSteps.length}</div>
                 <div class="tutorial-buttons">
-                    ${!hasWaitCondition ? `<button class="tutorial-btn tutorial-next">
-                        ${isLastStep ? 'Finish' : 'Next'}
-                    </button>` : ''}
-                    <button class="tutorial-btn tutorial-skip">Skip Tutorial</button>
+                    ${!hasWaitCondition && !isLastStep ? `<button class="tutorial-btn tutorial-next" onclick="window.tutorialManager.nextStep()">Next</button>` : ''}
+                    ${!hasWaitCondition && isLastStep ? `<button class="tutorial-btn tutorial-next" onclick="window.tutorialManager.completeTutorial()">Finish</button>` : ''}
+                    ${canSkip ? `<button class="tutorial-btn tutorial-skip" onclick="window.tutorialManager.skipTutorial()">Skip Tutorial</button>` : ''}
                 </div>
             </div>
         `;

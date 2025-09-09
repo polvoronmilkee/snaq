@@ -66,7 +66,7 @@
 
 .tutorial-progress {
   color: #cccccc;
-  font-size: 8px;
+  font-size: 11px;
 }
 
 .tutorial-buttons {
@@ -3380,8 +3380,8 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   border: 2px solid #00ff00;
   border-radius: 12px;
   padding: 20px;
-  max-width: 500px;
-  min-width: 500px;
+  max-width: 600px;
+  min-width: 600px;
   box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
   z-index: 10001;
   color: #fff;
@@ -3618,7 +3618,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   font-size: 12px;
   cursor: pointer;
   transition: all 0.1s ease;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   min-width: 36px;
@@ -3653,4 +3653,3 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     justify-content: center;
   }
 }
-
