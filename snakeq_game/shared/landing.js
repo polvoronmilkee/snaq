@@ -16,6 +16,8 @@ class LandingPage {
     // Skin system
     this.points = parseInt(localStorage.getItem("totalPoints")) || 0;
     this.coins = parseInt(localStorage.getItem("totalCoins")) || Math.floor(this.points / 10); // Load coins from storage or calculate from points
+    
+    // console.log('LandingPage initialized - Points:', this.points, 'Coins:', this.coins);
     this.totalPointsDisplay = $$("current-points");
     this.ownedSkins = JSON.parse(localStorage.getItem("ownedSkins")) || ["green"];
     this.selectedSkin = localStorage.getItem("selectedSkin") || "green";
@@ -25,6 +27,10 @@ class LandingPage {
     this.selectedAccessory = localStorage.getItem("selectedAccessory") || null;
     this.ownedEffects = JSON.parse(localStorage.getItem("ownedEffects")) || [];
     this.selectedEffect = localStorage.getItem("selectedEffect") || null;
+    
+    // Game mode unlock system
+    // this.unlockedModes = JSON.parse(localStorage.getItem("unlockedModes")) || ["quiz"]; // Quiz mode is always unlocked
+    // this.pendingUnlock = null; // Track current unlock attempt
     
     // Leaderboard system
     this.username = localStorage.getItem("playerUsername") || null;
@@ -378,6 +384,33 @@ class LandingPage {
       });
     }
 
+    // Unlock modal event bindings
+    const unlockModal = $$("unlock-modal");
+    const confirmUnlockBtn = $$("confirm-unlock-btn");
+    const cancelUnlockBtn = $$("cancel-unlock-btn");
+
+    if (confirmUnlockBtn) {
+      confirmUnlockBtn.addEventListener("click", () => {
+        this.playClickSound();
+        this.confirmUnlock();
+      });
+    }
+
+    if (cancelUnlockBtn) {
+      cancelUnlockBtn.addEventListener("click", () => {
+        this.playClickSound();
+        this.hideUnlockModal();
+      });
+    }
+
+    if (unlockModal) {
+      unlockModal.addEventListener("click", (e) => {
+        if (e.target === unlockModal) {
+          this.hideUnlockModal();
+        }
+      });
+    }
+
     // Skin shop event bindings
     const skinBtn = $$("skin-btn");
     const skinShopModal = $$("skin-shop-modal");
@@ -570,10 +603,117 @@ class LandingPage {
   showGameModeModal() {
     if (!this.selectedCategory) return;
 
+    // console.log('showGameModeModal called');
     const modal = $$("gameModeModal");
     if (modal) {
       modal.classList.remove("hidden");
+      // console.log('Modal opened, calling lock updates');
+      // Check and apply lock states when modal opens
+      // this.updateGameModeLocks();
+      
+      // Add a small delay to ensure DOM is ready
+      // setTimeout(() => {
+      //   this.updateDifficultyLocks();
+      // }, 100);
     }
+  }
+
+  updateGameModeLocks() {
+    /*
+    const modeBtns = document.querySelectorAll(".mode-btn");
+
+    modeBtns.forEach((btn) => {
+      const cost = parseInt(btn.dataset.cost) || 0;
+      const mode = btn.dataset.mode;
+      
+      // Remove existing lock overlay if any
+      const existingOverlay = btn.parentElement.querySelector(`[data-lock-for="${mode}"]`);
+      if (existingOverlay) {
+        existingOverlay.remove();
+      }
+      
+      // Check if mode is permanently unlocked or free
+      if (cost === 0 || this.unlockedModes.includes(mode)) {
+        // Mode is free or already unlocked
+        btn.classList.remove("locked");
+        btn.disabled = false;
+      } else {
+        // Mode needs to be unlocked (regardless of current coin amount)
+        btn.classList.add("locked");
+        btn.disabled = false; // Allow clicking to show unlock modal
+        
+        // Create lock overlay outside the button
+        const lockOverlay = document.createElement("div");
+        lockOverlay.className = "mode-lock-overlay";
+        lockOverlay.textContent = "🔒";
+        lockOverlay.setAttribute("data-lock-for", mode);
+        
+        // Position relative to button
+        const btnRect = btn.getBoundingClientRect();
+        const parentRect = btn.parentElement.getBoundingClientRect();
+        
+        lockOverlay.style.position = "absolute";
+        lockOverlay.style.left = (btnRect.left - parentRect.left + btnRect.width / 2) + "px";
+        lockOverlay.style.top = (btnRect.top - parentRect.top + btnRect.height / 2) + "px";
+        
+        btn.parentElement.appendChild(lockOverlay);
+      }
+    });
+
+    // Also update difficulty locks
+    this.updateDifficultyLocks();
+    */
+  }
+
+  updateDifficultyLocks() {
+    /*
+    // console.log('updateDifficultyLocks called, current coins:', this.coins);
+    const difficultyBtns = document.querySelectorAll(".difficulty-btn");
+    // console.log('Found difficulty buttons:', difficultyBtns.length);
+    
+    difficultyBtns.forEach((btn) => {
+      const difficulty = btn.dataset.difficulty;
+      
+      // Remove existing lock overlay if any
+      const existingOverlay = btn.parentElement.querySelector(`[data-difficulty-lock-for="${difficulty}"]`);
+      if (existingOverlay) {
+        existingOverlay.remove();
+      }
+      
+      // Get required coins from data-cost attribute or use default values
+      const requiredCoins = parseInt(btn.dataset.cost) || 0;
+      // console.log(`Difficulty: ${difficulty}, required coins: ${requiredCoins}, user coins: ${this.coins}`);
+      
+      if (requiredCoins === 0 || this.coins >= requiredCoins) {
+        // Difficulty is free or user has enough coins
+        // console.log(`Unlocking ${difficulty} difficulty`);
+        btn.classList.remove("locked");
+        btn.disabled = false;
+      } else {
+        // Difficulty needs to be unlocked
+        // console.log(`Locking ${difficulty} difficulty`);
+        btn.classList.add("locked");
+        btn.disabled = false; // Allow clicking to show info
+        
+        // Create lock overlay outside the button
+        const lockOverlay = document.createElement("div");
+        lockOverlay.className = "difficulty-lock-overlay";
+        lockOverlay.textContent = "🔒";
+        lockOverlay.setAttribute("data-difficulty-lock-for", difficulty);
+        
+        // Position relative to button
+        const btnRect = btn.getBoundingClientRect();
+        const parentRect = btn.parentElement.getBoundingClientRect();
+        
+        lockOverlay.style.position = "absolute";
+        lockOverlay.style.left = (btnRect.left - parentRect.left + btnRect.width / 2) + "px";
+        lockOverlay.style.top = (btnRect.top - parentRect.top + btnRect.height / 2) + "px";
+        
+        btn.parentElement.appendChild(lockOverlay);
+        // console.log(`Lock overlay added for ${difficulty}`);
+      }
+    });
+    */
   }
 
   hideGameModeModal() {
@@ -585,25 +725,200 @@ class LandingPage {
   }
 
   selectMode(e) {
+    const btn = e.target.closest('.mode-btn');
+    if (!btn) return;
+
+    const mode = btn.dataset.mode;
+    const cost = parseInt(btn.dataset.cost) || 0;
+
+    // Normal mode selection (all modes available)
     document.querySelectorAll(".mode-btn").forEach((btn) => {
       btn.classList.remove("selected");
     });
 
-    e.target.classList.add("selected");
-    this.selectedMode = e.target.dataset.mode;
-
+    btn.classList.add("selected");
+    this.selectedMode = btn.dataset.mode;
     this.updateStartButton();
+
+    /*
+    // Check if mode is permanently unlocked or free
+    if (cost === 0 || this.unlockedModes.includes(mode)) {
+      // Normal mode selection for free or permanently unlocked modes
+      document.querySelectorAll(".mode-btn").forEach((btn) => {
+        btn.classList.remove("selected");
+      });
+
+      btn.classList.add("selected");
+      this.selectedMode = btn.dataset.mode;
+      this.updateStartButton();
+      return;
+    }
+
+    // For modes that need to be unlocked, show unlock modal
+    this.showUnlockModal(mode, cost);
+    */
+  }
+
+  showUnlockModal(mode, cost) {
+    /*
+    const unlockModal = $$("unlock-modal");
+    const modeTitle = $$("unlock-mode-title");
+    const modeDescription = $$("unlock-mode-description");
+    const costAmount = $$("unlock-cost-amount");
+    const currentCoins = $$("unlock-current-coins");
+    const insufficientMsg = $$("unlock-insufficient");
+    const confirmBtn = $$("confirm-unlock-btn");
+
+    if (!unlockModal) return;
+
+    const modeName = mode === 'endless' ? 'Endless Mode' : 'Timed Mode (1 min)';
+    const modeDesc = mode === 'endless' 
+      ? 'Play without limits! Survive as long as you can and grow your snake endlessly.' 
+      : 'Fast-paced 60-second challenge! Answer as many questions as possible in one minute.';
+
+    // Update modal content
+    if (modeTitle) modeTitle.textContent = `🔒 Unlock ${modeName}`;
+    if (modeDescription) modeDescription.textContent = modeDesc;
+    if (costAmount) costAmount.textContent = `${cost} coins`;
+    if (currentCoins) currentCoins.textContent = this.coins;
+
+    // Check if user can afford it
+    const canAfford = this.coins >= cost;
+    if (insufficientMsg) {
+      if (canAfford) {
+        insufficientMsg.classList.add('hidden');
+      } else {
+        insufficientMsg.classList.remove('hidden');
+      }
+    }
+
+    if (confirmBtn) {
+      confirmBtn.disabled = !canAfford;
+      confirmBtn.textContent = canAfford ? 'Unlock Mode' : 'Need More Coins';
+    }
+
+    // Store current unlock attempt
+    this.pendingUnlock = { mode, cost };
+
+    // Show modal
+    unlockModal.classList.remove("hidden");
+    */
+  }
+
+  hideUnlockModal() {
+    /*
+    const unlockModal = $$("unlock-modal");
+    if (unlockModal) {
+      unlockModal.classList.add("hidden");
+    }
+    this.pendingUnlock = null;
+    */
+  }
+
+  confirmUnlock() {
+    /*
+    if (!this.pendingUnlock) return;
+
+    const { mode, cost } = this.pendingUnlock;
+
+    if (this.coins >= cost) {
+      this.unlockGameMode(mode, cost);
+      this.hideUnlockModal();
+    } else {
+      this.hideUnlockModal();
+      this.showNotification(`💰 Not enough coins! Play the unlocked or free modes to gain more points, then visit the shop to convert them!`);
+    }
+    */
+  }
+
+  unlockGameMode(mode, cost) {
+    /*
+    // Deduct coins and points
+    this.coins -= cost;
+    this.points -= (cost * 10); // Convert coins back to points for storage consistency
+    
+    // Update storage
+    localStorage.setItem("totalCoins", this.coins.toString());
+    localStorage.setItem("totalPoints", this.points.toString());
+    
+    // Store unlocked mode
+    const unlockedModes = JSON.parse(localStorage.getItem("unlockedModes")) || ["quiz"];
+    if (!unlockedModes.includes(mode)) {
+      unlockedModes.push(mode);
+      localStorage.setItem("unlockedModes", JSON.stringify(unlockedModes));
+    }
+    
+    // Update the instance variable to reflect the change
+    this.unlockedModes = unlockedModes;
+    
+    // Update displays
+    const pointsDisplay = $$("current-points");
+    if (pointsDisplay) {
+      pointsDisplay.textContent = this.points;
+    }
+    
+    const coinsDisplay = $$("current-coins");
+    if (coinsDisplay) {
+      coinsDisplay.textContent = this.coins;
+    }
+    
+    // Update lock states
+    this.updateGameModeLocks();
+    
+    // Show success notification
+    const modeName = mode === 'endless' ? 'Endless Mode' : 'Timed Mode';
+    this.showNotification(`🎉 ${modeName} unlocked! Enjoy the new challenge!`);
+    
+    // Auto-select the newly unlocked mode
+    const modeBtn = document.querySelector(`[data-mode="${mode}"]`);
+    if (modeBtn) {
+      // Clear previous selections
+      document.querySelectorAll(".mode-btn").forEach((btn) => {
+        btn.classList.remove("selected");
+      });
+      
+      // Select the unlocked mode
+      modeBtn.classList.add("selected");
+      this.selectedMode = mode;
+      this.updateStartButton();
+    }
+    */
   }
 
   selectDifficulty(e) {
+    const btn = e.target.closest('.difficulty-btn');
+    if (!btn) return;
+
+    const difficulty = btn.dataset.difficulty;
+    // const requiredCoins = parseInt(btn.dataset.cost) || 0;
+
+    // Normal difficulty selection (all difficulties available)
     document.querySelectorAll(".difficulty-btn").forEach((btn) => {
       btn.classList.remove("selected");
     });
 
-    e.target.classList.add("selected");
-    this.selectedDifficulty = e.target.dataset.difficulty;
-
+    btn.classList.add("selected");
+    this.selectedDifficulty = btn.dataset.difficulty;
     this.updateStartButton();
+
+    /*
+    // Check if difficulty is free or user has enough coins
+    if (requiredCoins === 0 || this.coins >= requiredCoins) {
+      // Normal difficulty selection
+      document.querySelectorAll(".difficulty-btn").forEach((btn) => {
+        btn.classList.remove("selected");
+      });
+
+      btn.classList.add("selected");
+      this.selectedDifficulty = btn.dataset.difficulty;
+      this.updateStartButton();
+      return;
+    }
+
+    // For locked difficulties, show notification
+    const difficultyName = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+    this.showNotification(`💰 ${difficultyName} difficulty requires ${requiredCoins} coins! Play more to earn coins.`);
+    */
   }
 
   updateStartButton() {
@@ -830,6 +1145,11 @@ renderShopItems(category) {
         coinsDisplay.textContent = this.coins;
     }
 
+    // Update game mode locks if modal is open
+    // const gameModeModal = $$("gameModeModal");
+    // if (gameModeModal && !gameModeModal.classList.contains("hidden")) {
+    //   this.updateGameModeLocks();
+    // }
     
     // Re-render items to show updated status
     const activeTab = document.querySelector('.inventory-tab.active');

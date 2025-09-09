@@ -323,9 +323,15 @@
             <div class="setting-group">
                 <h4>Game Mode</h4>
                 <div class="mode-buttons">
-                    <button class="mode-btn pixel-btn" data-mode="quiz">Quiz Mode</button>
-                    <button class="mode-btn pixel-btn" data-mode="endless">Endless Mode</button>
-                    <button class="mode-btn pixel-btn" data-mode="timed">Timed (1 min)</button>
+                    <button class="mode-btn pixel-btn" data-mode="quiz">
+                        Quiz Mode
+                    </button>
+                    <button class="mode-btn pixel-btn" data-mode="endless" data-cost="50">
+                        Endless Mode
+                    </button>
+                    <button class="mode-btn pixel-btn" data-mode="timed" data-cost="30">
+                        Timed (1 min)
+                    </button>
                 </div>
             </div>
 
@@ -333,14 +339,35 @@
                 <h4>Difficulty Level</h4>
                 <div class="difficulty-buttons">
                     <button class="difficulty-btn pixel-btn easy" data-difficulty="easy">Easy</button>
-                    <button class="difficulty-btn pixel-btn medium" data-difficulty="medium">Medium</button>
-                    <button class="difficulty-btn pixel-btn hard" data-difficulty="hard">Hard</button>
+                    <button class="difficulty-btn pixel-btn medium" data-difficulty="medium" data-cost="25">Medium</button>
+                    <button class="difficulty-btn pixel-btn hard" data-difficulty="hard" data-cost="50">Hard</button>
                 </div>
             </div>
 
             <div class="modal-actions">
                 <button id="startGameBtn" class="start-btn pixel-btn" disabled>Start Game</button>
                 <button id="cancelBtn" class="cancel-btn pixel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Mode Unlock Modal -->
+    <div id="unlock-modal" class="modal hidden">
+        <div class="modal-content pixel-border">
+            <h3 id="unlock-mode-title">🔒 Unlock Game Mode</h3>
+            <div id="unlock-mode-info">
+                <p id="unlock-mode-description"></p>
+                <div class="unlock-cost-display">
+                    <span id="unlock-cost-amount">50 coins</span>
+                </div>
+                <div class="unlock-balance-info">
+                    <p>Your coins: <span id="unlock-current-coins">0</span></p>
+                    <p id="unlock-insufficient" class="hidden" style="color: #ff4444;">❌ Insufficient coins!</p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="confirm-unlock-btn" class="start-btn pixel-btn">Unlock Mode</button>
+                <button id="cancel-unlock-btn" class="cancel-btn pixel-btn">Cancel</button>
             </div>
         </div>
     </div>
