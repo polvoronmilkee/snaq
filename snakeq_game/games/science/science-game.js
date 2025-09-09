@@ -235,6 +235,7 @@ class SnakeScienceGame {
         this.cancelBackMenuBtn = $id("cancel-back-menu")
         this.backToMenu = $id("back-to-menu")
         this.initDpad()
+        this.restartBtn= $id("restart-btn")
 
 
         if (this.questionElement) {
@@ -339,6 +340,8 @@ class SnakeScienceGame {
             this.playSound("click")
             this.showInstructions()
         })
+        this.restartBtn.addEventListener("click", () => this.showRestartConfirm())
+        
         // Close instructions modal when clicking outside
         this.instructionsModal.addEventListener("click", (e) => {
             if (e.target === this.instructionsModal) {

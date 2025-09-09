@@ -226,6 +226,7 @@ class SnakeMathGame {
     this.cancelRestartBtn = $id("cancel-restart")
     this.timerDisplay = $id("timer-display")
     this.timerValue = $id("timer-value")
+    this.restartBtn= $id("restart-btn")
 
     this.heartsContainer = $id("hearts-container")
     this.helpBtn = $id("help-btn")
@@ -348,6 +349,7 @@ class SnakeMathGame {
 
     this.soundBtn.addEventListener("click", () => this.toggleSound())
     this.musicBtn.addEventListener("click", () => this.toggleMusic())
+    this.restartBtn.addEventListener("click", () => this.showRestartConfirm())
     this.closeInstructionsBtn.addEventListener("click", () => {
       this.playSound("click")
       this.hideInstructions()

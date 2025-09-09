@@ -250,6 +250,7 @@ class SnakeEnglishGame {
         this.backToMenuConfirm = $id("back-to-menu-confirm")
         this.confirmBackMenuBtn = $id("confirm-back-menu")
         this.cancelBackMenuBtn = $id("cancel-back-menu")
+        this.restartBtn = $id("restart-btn")
         this.backToMenu = $id("back-to-menu")
         if (this.questionElement) {
             this.questionElement.style.fontSize = "15px"
@@ -348,6 +349,7 @@ class SnakeEnglishGame {
         this.helpBtn.addEventListener("click", () => this.showInstructions())
         this.soundBtn.addEventListener("click", () => this.toggleSound())
         this.musicBtn.addEventListener("click", () => this.toggleMusic())
+        this.restartBtn.addEventListener("click", () => this.showRestartConfirm())
 
         // Close instructions modal when clicking outside
         this.instructionsModal.addEventListener("click", (e) => {

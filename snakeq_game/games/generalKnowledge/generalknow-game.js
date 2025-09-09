@@ -238,6 +238,7 @@ class SnakeGeneralKnowledgeGame {
         this.cancelBackMenuBtn = $id("cancel-back-menu")
         this.backToMenu = $id("back-to-menu")
         this.aboutBtn = $id("about-btn")
+        this.restartBtn = $id("restart-btn")
         this.initDpad()
 
         if (this.questionElement) {
@@ -333,6 +334,7 @@ class SnakeGeneralKnowledgeGame {
             this.paused = true
         })
         this.confirmRestartBtn.addEventListener("click", () => this.confirmRestart())
+        this.restartBtn.addEventListener("click", () => this.showRestartConfirm())
         this.cancelRestartBtn.addEventListener("click", () => this.cancelRestart())
         this.helpBtn.addEventListener("click", () => this.showInstructions())
         this.soundBtn.addEventListener("click", () => this.toggleSound())
