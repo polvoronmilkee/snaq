@@ -22,6 +22,7 @@
             </div>
         </div>
         <div class="header-controls">
+            <button class="tutorial-btn-header" id="tutorial-btn" title="Start Tutorial">📚</button>
             <button class="header-btn" id="help-btn" title="Instructions">?</button>
             <button class="header-btn" id="settings-btn" title="Sound Settings">🎧</button>
         </div>
@@ -237,7 +238,7 @@
     <div id="username-modal" class="instructions-modal hidden">
         <div class="instructions-content pixel-border">
             <h3>🎮 Enter Your Username</h3>
-            <p>Choose a username to save your scores to the leaderboard!</p>
+            <p>Choose a username for your snake</p>
             
             <div class="username-input-container">
                 <input type="text" id="username-input" class="pixel-input" placeholder="Enter username..." maxlength="20">
@@ -246,7 +247,6 @@
 
             <div class="username-actions">
                 <button class="pixel-btn" id="save-username">Save Username</button>
-                <button class="pixel-btn" id="skip-username">Skip for Now</button>
             </div>
         </div>
     </div>
@@ -365,6 +365,7 @@
 
     <div class="spacer"></div>
 
+    <script src="shared/tutorial.js"></script>
     <script src="shared/landing.js"></script>
 
 </body>

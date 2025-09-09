@@ -1060,6 +1060,7 @@ class SnakeMathGame {
         this.correctAnswers++
         this.addToTotalPoints(10) // Add points to total points system
 
+
         this.playSound("correct")
         this.playSound("biteApple")
 

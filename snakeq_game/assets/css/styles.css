@@ -1,6 +1,306 @@
 /* Press Start 2P Font Import */
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
+/* Tutorial System Styles */
+.tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 99999;
+  pointer-events: auto;
+}
+
+.tutorial-overlay.hidden {
+  display: none;
+}
+
+.tutorial-highlight {
+  position: fixed;
+  border: 2px solid #ffff00;
+  box-shadow: 0 0 15px #ffff00;
+  background: rgba(255, 255, 0, 0.1);
+  border-radius: 5px;
+  pointer-events: none;
+  z-index: 100000;
+}
+
+.tutorial-box {
+  position: fixed;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border: 3px solid #00ff00;
+  border-radius: 10px;
+  padding: 20px;
+  color: white;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  line-height: 1.6;
+  max-width: 550px;
+  z-index: 100001;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+.tutorial-header h3 {
+  margin: 0 0 15px 0;
+  color: #00ff00;
+  font-size: 16px;
+  text-align: center;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.tutorial-content p {
+  margin: 0;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.tutorial-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.tutorial-progress {
+  color: #cccccc;
+  font-size: 8px;
+}
+
+.tutorial-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.tutorial-btn {
+  background: linear-gradient(135deg, #00aa00 0%, #008800 100%);
+  border: 2px solid #00ff00;
+  color: white;
+  padding: 8px 12px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.2s;
+}
+
+.tutorial-btn:hover {
+  background: linear-gradient(135deg, #00cc00 0%, #00aa00 100%);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.tutorial-skip {
+  background: linear-gradient(135deg, #aa0000 0%, #880000 100%);
+  border-color: #ff0000;
+}
+
+.tutorial-skip:hover {
+  background: linear-gradient(135deg, #cc0000 0%, #aa0000 100%);
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+/* Tutorial Animations */
+@keyframes tutorialPulse {
+  0% {
+    box-shadow: 0 0 20px #00ff00, inset 0 0 20px rgba(0, 255, 0, 0.2);
+    border-color: #00ff00;
+  }
+  50% {
+    box-shadow: 0 0 30px #00ff00, inset 0 0 30px rgba(0, 255, 0, 0.4);
+    border-color: #44ff44;
+  }
+  100% {
+    box-shadow: 0 0 20px #00ff00, inset 0 0 20px rgba(0, 255, 0, 0.2);
+    border-color: #00ff00;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Tutorial Indicator Styles */
+.tutorial-movement-indicator .key,
+.tutorial-sprint-indicator .key,
+.tutorial-pause-indicator .key {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid #fff;
+  border-radius: 5px;
+  padding: 5px 8px;
+  margin: 2px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  text-align: center;
+  min-width: 30px;
+}
+
+.tutorial-movement-indicator .movement-title,
+.tutorial-sprint-indicator .sprint-text,
+.tutorial-pause-indicator .pause-text {
+  margin-bottom: 10px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.tutorial-movement-indicator .or-text {
+  margin: 10px 0;
+  font-size: 8px;
+  opacity: 0.7;
+}
+
+.tutorial-completion-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100002;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.tutorial-completion-notification .notification-content {
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border: 3px solid #00ff00;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  color: white;
+  font-family: "Press Start 2P", monospace;
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+}
+
+.tutorial-completion-notification h3 {
+  color: #00ff00;
+  margin: 0 0 15px 0;
+  font-size: 14px;
+}
+
+.tutorial-completion-notification p {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.tutorial-completion-notification.fade-out {
+  animation: fadeOut 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
+
+/* Tutorial-specific styles */
+.tutorial-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 10px 20px;
+  z-index: 99998;
+  border-bottom: 2px solid #00ff00;
+}
+
+.progress-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid #00ff00;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ff00, #44ff44);
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+.progress-text {
+  color: #00ff00;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.tutorial-badge {
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 8px;
+  font-family: "Press Start 2P", monospace;
+  border: 2px solid #fff;
+  animation: pulse 2s infinite;
+}
+
+.game-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.tutorial-tip {
+  color: #ffeb3b;
+  font-size: 8px;
+  margin-top: 5px;
+}
+
+/* Key indicator styles for tutorial */
+.key-indicator {
+  background: #333;
+  border: 2px solid #00ff00;
+  border-radius: 5px;
+  padding: 8px 12px;
+  color: #00ff00;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  display: inline-block;
+  margin: 5px;
+  animation: pulse 2s infinite;
+}
+
 /* Global Styles */
 * {
   box-sizing: border-box;
@@ -3027,6 +3327,338 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 @media (max-width: 768px) {
   #dpad {
     display: flex;
+  }
+}
+
+/* Tutorial Styles */
+.tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 99999 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tutorial-overlay * {
+    pointer-events: auto;
+}
+
+.tutorial-box {
+    pointer-events: auto;
+}
+
+.tutorial-btn {
+    pointer-events: auto !important;
+    z-index: 10002;
+}
+
+.tutorial-overlay.hidden {
+  display: none;
+}
+
+.tutorial-highlight {
+  position: fixed;
+  border: 3px solid #00ff00;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+  pointer-events: none;
+  z-index: 9999;
+  animation: tutorialPulse 2s infinite;
+}
+
+@keyframes tutorialPulse {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    border-color: #00ff00;
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+    border-color: #66ff66;
+  }
+}
+
+.tutorial-box {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border: 2px solid #00ff00;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 550px;
+  min-width: 500px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  color: white;
+  font-family: 'Courier New', monospace;
+  z-index: 100000 !important;
+  position: relative;
+}
+
+.tutorial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+}
+
+.tutorial-header h3 {
+  margin: 0;
+  color: #00ff00;
+  font-size: 20px;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.tutorial-close {
+  background: #ff4444;
+  border: none;
+  color: white;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tutorial-close:hover {
+  background: #ff6666;
+}
+
+.tutorial-content {
+  margin-bottom: 20px;
+  line-height: 1.8;
+  font-size: 18px;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.tutorial-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tutorial-progress {
+  font-size: 13px;
+  color: #aaa;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.tutorial-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.tutorial-btn {
+  padding: 8px 16px;
+  border: 2px solid #00ff00;
+  background: transparent;
+  color: #00ff00;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  z-index: 10001;
+  pointer-events: auto !important;
+}
+
+.tutorial-btn:hover {
+  background: #00ff00;
+  color: #000;
+}
+
+.tutorial-next {
+  background: #00ff00;
+  color: #000;
+}
+
+.tutorial-next:hover {
+  background: #66ff66;
+}
+
+.tutorial-completion-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10001;
+  animation: slideInFromTop 0.5s ease-out;
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.notification-content {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: white;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+  border: 2px solid #00ff00;
+}
+
+.notification-content h2 {
+  color: #00ff00;
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+
+.notification-content p {
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.notification-btn {
+  padding: 12px 24px;
+  background: #00ff00;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.notification-btn:hover {
+  background: #66ff66;
+}
+
+/* Tutorial Key Indicators */
+.tutorial-movement-indicator,
+.tutorial-sprint-indicator,
+.tutorial-pause-indicator {
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+}
+
+.movement-keys {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.key-row {
+  display: flex;
+  gap: 5px;
+}
+
+.arrow-keys {
+  display: flex;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.key {
+  background: linear-gradient(145deg, #333, #555);
+  border: 2px solid #666;
+  border-radius: 6px;
+  padding: 8px 12px;
+  min-width: 30px;
+  text-align: center;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.key:hover {
+  background: linear-gradient(145deg, #555, #777);
+  transform: translateY(-1px);
+}
+
+.shift-key {
+  background: linear-gradient(145deg, #ff8c00, #ffa500);
+  border-color: #ff6600;
+  color: #000;
+  font-size: 12px;
+  padding: 10px 15px;
+}
+
+.esc-key {
+  background: linear-gradient(145deg, #dc3545, #e74c3c);
+  border-color: #c82333;
+  color: white;
+  font-size: 12px;
+  padding: 10px 15px;
+}
+
+.sprint-text,
+.pause-text {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+/* Tutorial button styles */
+.tutorial-btn-header {
+  background: #ff6b35;
+  border: 2px solid #ff8e53;
+  color: #fff;
+  padding: 6px 10px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 32px;
+  border-radius: 4px;
+}
+
+.tutorial-btn-header:hover {
+  background: #ff8e53;
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px #cc5529;
+}
+
+.tutorial-btn-header:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #cc5529;
+}
+
+/* Responsive tutorial styles */
+@media (max-width: 768px) {
+  .tutorial-box {
+    max-width: 90vw;
+    min-width: 280px;
+  }
+  
+  .tutorial-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .tutorial-buttons {
+    justify-content: center;
   }
 }
 
