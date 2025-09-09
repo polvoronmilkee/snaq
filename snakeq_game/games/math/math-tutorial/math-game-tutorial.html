@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnaQ - Math Tutorial</title>
+    <link rel="icon" type="image/png" href="../../../assets/images/icons/snake-icon.png">
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="sticky-header">
+        <div class="header-left">
+            <button id="back-to-menu" class="header-btn back-btn-header" title="Back to Menu">
+                <img src="../../../assets/images/icons/back-icon.png" alt="Back" class="header-icon" />
+            </button>
+            <div class="header-logo">
+                <img src="../../../assets/images/icons/snake-icon.png" alt="SnAQ Logo" id="about-btn" title="About Us"/>
+            </div>
+        </div>
+        <div class="header-controls">
+            <button class="header-btn" id="tutorial-skip-btn" title="Skip Tutorial">📚</button>
+            <button class="header-btn" id="help-btn" title="Instructions">?</button>
+            <button class="header-btn" id="settings-btn" title="Sound Settings">🎧</button>
+        </div>
+
+        <!-- Settings Dropdown -->
+        <div id="settings-menu" class="settings-menu hidden">
+            <button class="settings-item" id="sound-btn" title="Sound Effects">🔊</button>
+            <button class="settings-item" id="music-btn" title="Background Music">🎵</button>
+        </div>
+    </header>
+
+    <!-- Tutorial Progress Bar -->
+   
+
+    <div id="zoom-warning" class="zoom-modal">
+        <div class="zoom-modal-content">
+            <h2>⚠️ Zoom Level Warning</h2>
+            <p>Please zoom out to play properly.</p>
+            <p>Recommended: 80%</p>
+            <p>Hold Ctrl and - key.</p>
+            <button id="close-zoom-warning">OK</button>
+        </div>
+    </div>
+
+    <!-- Floating Circle D-Pad -->
+    <div id="dpad" class="dpad">
+        <button id="btn-up" class="arrow up">▲</button>
+        <div class="middle-row">
+            <button id="btn-left" class="arrow left">◀</button>
+            <button id="btn-right" class="arrow right">▶</button>
+        </div>
+        <button id="btn-down" class="arrow down">▼</button>
+    </div>
+
+    <!--About Us modal-->
+    <div id="about-modal" class="about-modal hidden">
+        <div class="about-content pixel-border">
+            <h3>About Us</h3>
+            <h4>Team Apple Juice 🧃</h4>
+            <p>Hi! We're 2nd Year BS Software Engineering students from Central Philippine University (CPU), Iloilo
+                City. <br></p>
+            <ul>
+                <li>Poral, Danielle Anne — UI/UX Designer</li>
+                <li>Luceño, Lemuel — UI/UX Designer</li>
+                <li>Mendoza, Sophia Marielle — Programmer</li>
+                <li>Alera, Ahron — Programmer</li>
+                <li>Llacer, Joseph — Programmer</li>
+            </ul>
+            <p2><i>Together, we created SnaQ — a quiz game that mixes fun, learning, and quick thinking.</i></p2>
+            <p3><br><br>Development began: August 2025</p3>
+            <button class="close-about" id="close-about">Close</button>
+        </div>
+    </div>
+
+    <!-- Instructions modal -->
+    <div id="instructions-modal" class="instructions-modal hidden">
+        <div class="instructions-content pixel-border">
+            <h3>Tutorial Mode - How to Play SnaQ Math</h3>
+
+            <h4>🎯 Tutorial Objective</h4>
+            <p>This interactive tutorial will teach you every aspect of the math game step by step. Follow the guided instructions to master all game mechanics!</p>
+
+            <h4>🕹️ Controls You'll Learn</h4>
+            <ul>
+                <li>WASD or Arrow Keys to move the snake</li>
+                <li>SHIFT to sprint / move faster</li>
+                <li>ESC to pause the game</li>
+                <li>SPACE to resume after pausing</li>
+                <li>R to restart the current game</li>
+            </ul>
+
+            <h4>📚 What You'll Learn</h4>
+            <ul>
+                <li>Understanding the game interface (Score, Lives, Correct Counter)</li>
+                <li>How to read math questions and find correct answers</li>
+                <li>Snake movement and control</li>
+                <li>Strategic use of sprint feature</li>
+                <li>Pause and resume mechanics</li>
+                <li>Game progression and winning conditions</li>
+            </ul>
+
+            <button class="close-instructions" id="close-instructions">Start Learning!</button>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="game-board pixel-border">
+            <div class="game-header-bar">
+                <h1 class="game-title">MATHEMATICS SnaQ - TUTORIAL</h1>
+                <img src="../../../assets/images/icons/math-icon.png" alt="Math" class="game-icon" />
+
+            </div>
+
+            <!-- HUD -->
+            <div class="hud pixel-hud">
+                <div class="score pixel-stat">
+                    <img src="../../../assets/images/icons/score-icon.png" alt="Score" class="stat-icon" />
+                    Score: <span id="score-value">0</span>
+                </div>
+
+                <div class="lives pixel-stat">
+                    <span>Lives:</span>
+                    <div class="hearts-container" id="hearts-container">
+                        <div class="heart filled"></div>
+                        <div class="heart filled"></div>
+                        <div class="heart filled"></div>
+                    </div>
+                </div>
+                <div class="correct pixel-stat">
+                    <img src="../../../assets/images/icons/correct-icon.png" alt="Correct" class="stat-icon" />
+                    Correct: <span id="correct-value">0</span>/<span id="target-value">10</span>
+                </div>
+            </div>
+
+            <!-- Question Section -->
+            <div class="question-section">
+                <div class="question pixel-question" id="question-display">Welcome to the Math Tutorial!</div>
+                <div class="instruction">Follow the tutorial instructions to learn how to play!</div>
+            </div>
+
+            <!-- Game Canvas -->
+            <div class="canvas-container pixel-border">
+                <canvas id="game-canvas" width="800" height="480"></canvas>
+
+                <!-- Tutorial Complete Overlay -->
+                <div id="tutorial-complete-overlay" class="overlay hidden">
+                    <div class="overlay-content pixel-border">
+                        <h2>🎉 Tutorial Complete!</h2>
+                        <p>Congratulations! You've mastered all the game mechanics.</p>
+                        <p>You're now ready to play the full math game!</p>
+                        <button id="play-full-game-btn" class="btn pixel-btn btn-green">Play Full Game</button>
+                        <button id="restart-tutorial-btn" class="btn pixel-btn btn-blue">Restart Tutorial</button>
+                        <button id="menu-btn" class="btn pixel-btn btn-red">Main Menu</button>
+                    </div>
+                </div>
+
+                <!-- Tutorial Skip Confirmation -->
+                <div id="skip-tutorial-confirm" class="modal hidden">
+                    <div class="modal-content pixel-border">
+                        <h3>Skip Tutorial?</h3>
+                        <p>Are you sure you want to skip the tutorial and go to the full game?</p>
+                        <div class="modal-buttons">
+                            <button id="confirm-skip-tutorial" class="btn pixel-btn btn-green">Yes, Skip</button>
+                            <button id="cancel-skip-tutorial" class="btn pixel-btn btn-red">Continue Tutorial</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions pixel-instructions">
+                <p id="tutorial-instruction-text">🎓 Welcome to SnaQ Math Tutorial! Follow the guided instructions to learn all game mechanics.</p>
+                <p class="tutorial-tip">💡 Tip: Take your time and follow each step carefully for the best learning experience!</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { LeaderboardManager } from '../../../database/firebase-config.js';
+        window.LeaderboardManager = LeaderboardManager;
+    </script>
+    <script src="math-tutorial.js"></script>
+    <script type="module" src="../math-game.js"></script>
+    <script>
+        // Initialize tutorial when game loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait for game to initialize, then start tutorial
+            setTimeout(() => {
+                if (window.gameInstance && window.MathTutorialManager) {
+                    const mathTutorial = new MathTutorialManager(window.gameInstance);
+                    
+                    // Auto-start tutorial if not completed
+                    if (!MathTutorialManager.hasCompletedTutorial()) {
+                        mathTutorial.startTutorial();
+                    }
+                    
+                    // Make tutorial available globally for manual start
+                    window.mathTutorial = mathTutorial;
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html>

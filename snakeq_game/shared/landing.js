@@ -166,6 +166,15 @@ class LandingPage {
       });
     }
 
+    // Tutorial button event
+    const tutorialBtn = $$("tutorial-btn");
+    if (tutorialBtn) {
+      tutorialBtn.addEventListener("click", () => {
+        this.playClickSound();
+        this.startTutorial();
+      });
+    }
+
     if (helpBtn) {
       helpBtn.addEventListener("click", (e) => {
         e.preventDefault();
@@ -597,6 +606,7 @@ class LandingPage {
     }
   }
 
+
   startGame() {
     const gameSettings = {
       category: this.selectedCategory,
@@ -613,8 +623,21 @@ class LandingPage {
       this.backgroundMusic.pause();
     }
 
+    // Check sessionStorage for tutorial mode
+    const gameMode = sessionStorage.getItem('gameMode');
+    const isTutorialMode = gameMode === 'tutorial';
+    
+    // Clear tutorial mode after checking to prevent repeated redirects
+    if (isTutorialMode) {
+      sessionStorage.removeItem('gameMode');
+    }
+
     if (this.selectedCategory === "math") {
-      window.location.href = "games/math/math-game.html";
+      if (isTutorialMode) {
+        window.location.href = "games/math/math-tutorial/math-game-tutorial.html";
+      } else {
+        window.location.href = "games/math/math-game.html";
+      }
     } else if (this.selectedCategory === "english") {
       window.location.href = "games/english/english-game.html";
     } else if (this.selectedCategory === "science") {
@@ -1173,8 +1196,30 @@ renderShopItems(category) {
     }
   }
 
+  // Tutorial method
+  startTutorial() {
+    console.log('Starting tutorial...');
+    
+    // Set tutorial mode in sessionStorage
+    sessionStorage.setItem('gameMode', 'tutorial');
+    
+    // Start the landing page tutorial
+    if (window.tutorialManager) {
+      window.tutorialManager.startTutorial();
+    } else {
+      console.warn('Tutorial manager not available, retrying in 100ms...');
+      // Retry after a short delay in case the tutorial manager isn't loaded yet
+      setTimeout(() => {
+        if (window.tutorialManager) {
+          window.tutorialManager.startTutorial();
+        } else {
+          console.error('Tutorial manager still not available');
+          alert('Tutorial system is not ready. Please refresh the page and try again.');
+        }
+      }, 100);
+    }
+  }
 }
-
 
 const settingsBtn = document.getElementById("settings-btn");
 const settingsMenu = document.getElementById("settings-menu");
