@@ -123,7 +123,7 @@ class LeaderboardManager {
     }
   }
 
-  // Get overall leaderboard by summing all categories
+  // Get overall leaderboard by summing ALL scores from all categories
   async getOverallLeaderboard(limitCount = 10) {
     try {
       const categories = ['math', 'english', 'science', 'generalknow'];
@@ -147,27 +147,18 @@ class LeaderboardManager {
             userTotalScores.set(username, {
               username: username,
               totalPoints: 0,
-              categories: new Map(),
               timestamp: data.timestamp
             });
           }
           
           const userData = userTotalScores.get(username);
           
-          // Keep track of best score per category
-          if (!userData.categories.has(cat) || 
-              userData.categories.get(cat) < data.totalPoints) {
-            
-            const previousScore = userData.categories.get(cat) || 0;
-            userData.categories.set(cat, data.totalPoints);
-            
-            // Update total points (subtract old score, add new score)
-            userData.totalPoints = userData.totalPoints - previousScore + data.totalPoints;
-            
-            // Update timestamp to most recent
-            if (data.timestamp > userData.timestamp) {
-              userData.timestamp = data.timestamp;
-            }
+          // Add ALL points from this game session (accumulate everything)
+          userData.totalPoints += data.totalPoints;
+          
+          // Update timestamp to most recent
+          if (data.timestamp > userData.timestamp) {
+            userData.timestamp = data.timestamp;
           }
         });
       }

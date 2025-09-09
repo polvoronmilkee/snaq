@@ -877,9 +877,9 @@ renderShopItems(category) {
     const items = {
       skins: [
         { id: 'green', name: 'Classic Green', desc: 'The original snake look', price: 0 },
-        { id: 'pink', name: 'Sugar Strike', desc: 'A sweet pink variation', price: 150 },
-        { id: 'blue', name: 'Ocean Fang', desc: 'Cool as the deep sea', price: 200 },
-        { id: 'volt', name: 'Zap Viper', desc: 'Charged with voltech energy', price: 999 }
+        { id: 'pink', name: 'Sugar Strike', desc: 'A sweet pink variation', price: 100 },
+        { id: 'blue', name: 'Ocean Fang', desc: 'Cool as the deep sea', price: 100 },
+        { id: 'volt', name: 'Zap Viper', desc: 'Charged with voltech energy', price: 250 }
       ],
       accessories: [
         { id: 'hat', name: 'Top Hat', desc: 'A dapper accessory', price: 100 },
