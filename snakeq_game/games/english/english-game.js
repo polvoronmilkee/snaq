@@ -387,7 +387,7 @@ class SnakeEnglishGame {
 
         const tryActivateSprint = () => {
 
-            // skip print if restart modal is open
+            // skip sprint if restart modal is open
             if (!this.restartConfirm.classList.contains("hidden")) return;
 
             // Only activate sprint if game is not paused and snake is moving
