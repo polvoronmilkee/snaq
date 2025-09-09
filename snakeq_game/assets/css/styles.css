@@ -2435,7 +2435,6 @@ body::before {
   }
 
   .game-actions {
-    flex-direction: column;
     gap: 16px;
   }
 
