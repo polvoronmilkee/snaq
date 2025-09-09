@@ -2,7 +2,8 @@ function $id(id) { return document.getElementById(id) }
 
 class SnakeMathGame {
   constructor() {
-    // Game constants
+
+        
     this.gameSettings = JSON.parse(localStorage.getItem("gameSettings")) || {
       mode: "quiz",
       difficulty: "easy",
@@ -20,9 +21,8 @@ class SnakeMathGame {
     this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
 
     const canvasContainer = document.querySelector(".canvas-container");
-
-    if (this.gameSettings.selectedSkin !== "green") canvasContainer.style.backgroundImage = `url(../../assets/images/snake-skins/${this.selectedSkin}_snake/Tile.png)`
-
+    canvasContainer.style.backgroundImage = `url(../../assets/images/tiles/Tile.png)`
+    
     const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../../assets/images/snake-skins/volt_snake/sounds" : "../../assets/sounds"
 
     this.sounds = {

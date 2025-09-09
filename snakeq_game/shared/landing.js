@@ -25,11 +25,12 @@ class LandingPage {
     // Shop system
     this.ownedAccessories = JSON.parse(localStorage.getItem("ownedAccessories")) || [];
     this.selectedAccessory = localStorage.getItem("selectedAccessory") || null;
-    this.ownedEffects = JSON.parse(localStorage.getItem("ownedEffects")) || [];
-    this.selectedEffect = localStorage.getItem("selectedEffect") || null;
     
-    // this.unlockedModes = JSON.parse(localStorage.getItem("unlockedModes")) || ["quiz"];
-    // this.pendingUnlock = null;
+    this.ownedTiles = JSON.parse(localStorage.getItem("ownedTiles")) || ["Tile"];
+    this.selectedTiles = localStorage.getItem("selectedTiles") || "Tile";
+    
+    this.unlockedModes = JSON.parse(localStorage.getItem("unlockedModes")) || ["quiz"];
+    this.pendingUnlock = null;
     
     // Leaderboard system
     this.username = localStorage.getItem("playerUsername") || null;
@@ -614,7 +615,7 @@ class LandingPage {
   }
 
   updateGameModeLocks() {
-    /*
+    
     const modeBtns = document.querySelectorAll(".mode-btn");
 
     modeBtns.forEach((btn) => {
@@ -650,11 +651,11 @@ class LandingPage {
     });
 
     this.updateDifficultyLocks();
-    */
+    
   }
 
   updateDifficultyLocks() {
-    /*
+    
     const difficultyBtns = document.querySelectorAll(".difficulty-btn");
     
     difficultyBtns.forEach((btn) => {
@@ -689,7 +690,7 @@ class LandingPage {
         btn.parentElement.appendChild(lockOverlay);
       }
     });
-    */
+    
   }
 
   hideGameModeModal() {
@@ -715,7 +716,7 @@ class LandingPage {
     this.selectedMode = btn.dataset.mode;
     this.updateStartButton();
 
-    /*
+    
     if (cost === 0 || this.unlockedModes.includes(mode)) {
       document.querySelectorAll(".mode-btn").forEach((btn) => {
         btn.classList.remove("selected");
@@ -728,11 +729,11 @@ class LandingPage {
     }
 
     this.showUnlockModal(mode, cost);
-    */
+    
   }
 
   showUnlockModal(mode, cost) {
-    /*
+    
     const unlockModal = $$("unlock-modal");
     const modeTitle = $$("unlock-mode-title");
     const modeDescription = $$("unlock-mode-description");
@@ -770,21 +771,21 @@ class LandingPage {
     this.pendingUnlock = { mode, cost };
 
     unlockModal.classList.remove("hidden");
-    */
+    
   }
 
   hideUnlockModal() {
-    /*
+    
     const unlockModal = $$("unlock-modal");
     if (unlockModal) {
       unlockModal.classList.add("hidden");
     }
     this.pendingUnlock = null;
-    */
+    
   }
 
   confirmUnlock() {
-    /*
+    
     if (!this.pendingUnlock) return;
 
     const { mode, cost } = this.pendingUnlock;
@@ -796,11 +797,11 @@ class LandingPage {
       this.hideUnlockModal();
       this.showNotification(`💰 Not enough coins! Play the unlocked or free modes to gain more points, then visit the shop to convert them!`);
     }
-    */
+    
   }
 
   unlockGameMode(mode, cost) {
-    /*
+    
     this.coins -= cost;
     this.points -= (cost * 10);
     
@@ -840,7 +841,7 @@ class LandingPage {
       this.selectedMode = mode;
       this.updateStartButton();
     }
-    */
+    
   }
 
   selectDifficulty(e) {
@@ -859,7 +860,7 @@ class LandingPage {
     this.selectedDifficulty = btn.dataset.difficulty;
     this.updateStartButton();
 
-    /*
+    
     // Check if difficulty is free or user has enough coins
     if (requiredCoins === 0 || this.coins >= requiredCoins) {
       // Normal difficulty selection
@@ -876,7 +877,7 @@ class LandingPage {
     // For locked difficulties, show notification
     const difficultyName = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
     this.showNotification(`💰 ${difficultyName} difficulty requires ${requiredCoins} coins! Play more to earn coins.`);
-    */
+    
   }
 
   updateStartButton() {
@@ -1030,8 +1031,8 @@ renderShopItems(category) {
       return this.ownedSkins.includes(itemId);
     } else if (category === 'accessories') {
       return this.ownedAccessories.includes(itemId);
-    } else if (category === 'effects') {
-      return this.ownedEffects.includes(itemId);
+    } else if (category === 'tiles') {
+      return this.ownedTiles.includes(itemId);
     }
     return false;
   }
@@ -1041,8 +1042,8 @@ renderShopItems(category) {
       return this.selectedSkin === itemId;
     } else if (category === 'accessories') {
       return this.selectedAccessory === itemId;
-    } else if (category === 'effects') {
-      return this.selectedEffect === itemId;
+    } else if (category === 'tiles') {
+      return this.selectedTiles === itemId;
     }
     return false;
   }
@@ -1084,10 +1085,10 @@ renderShopItems(category) {
         this.ownedAccessories.push(itemId);
         localStorage.setItem("ownedAccessories", JSON.stringify(this.ownedAccessories));
       }
-    } else if (category === 'effects') {
-      if (!this.ownedEffects.includes(itemId)) {
-        this.ownedEffects.push(itemId);
-        localStorage.setItem("ownedEffects", JSON.stringify(this.ownedEffects));
+    } else if (category === 'tiles') {
+      if (!this.ownedTiles.includes(itemId)) {
+        this.ownedTiles.push(itemId);
+        localStorage.setItem("ownedTiles", JSON.stringify(this.ownedTiles));
       }
     }
     
@@ -1104,10 +1105,10 @@ renderShopItems(category) {
     }
 
     // Update game mode locks if modal is open
-    // const gameModeModal = $$("gameModeModal");
-    // if (gameModeModal && !gameModeModal.classList.contains("hidden")) {
-    //   this.updateGameModeLocks();
-    // }
+    const gameModeModal = $$("gameModeModal");
+    if (gameModeModal && !gameModeModal.classList.contains("hidden")) {
+      this.updateGameModeLocks();
+    }
     
     // Re-render items to show updated status
     const activeTab = document.querySelector('.inventory-tab.active');
@@ -1151,7 +1152,7 @@ renderShopItems(category) {
     } else if (category === 'accessories') {
       this.selectedAccessory = itemId;
       localStorage.setItem("selectedAccessory", itemId);
-    } else if (category === 'effects') {
+    } else if (category === 'tiles') {
       this.selectedEffect = itemId;
       localStorage.setItem("selectedEffect", itemId);
     }
@@ -1222,11 +1223,11 @@ renderShopItems(category) {
         { id: 'crown', name: 'Golden Crown', desc: 'Royal headpiece', price: 250 },
         { id: 'bow', name: 'Red Bow', desc: 'Elegant ribbon accessory', price: 50 }
       ],
-      effects: [
-        { id: 'trail', name: 'Rainbow Trail', desc: 'Colorful trail effect', price: 150 },
-        { id: 'sparkle', name: 'Sparkle Effect', desc: 'Glittering sparkles', price: 100 },
-        { id: 'fire', name: 'Fire Effect', desc: 'Flaming hot trail', price: 200 },
-        { id: 'ice', name: 'Ice Effect', desc: 'Frosty cool trail', price: 175 }
+      tiles: [
+        { id: 'Tile', name: 'Emerald Mist', desc: 'A soothing green aura', price: 150 },
+        { id: 'pinkTile', name: 'Sugar Rush', desc: 'A burst of colorful energy', price: 100 },
+        { id: 'blueTile', name: 'Ocean Blaze', desc: 'A fiery passion', price: 200 },
+        { id: 'voltTile', name: 'Volt Vortex', desc: 'A mesmerizing swirl of electricity', price: 175 }
       ]
     };
     

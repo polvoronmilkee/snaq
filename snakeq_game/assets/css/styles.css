@@ -912,7 +912,6 @@ body::before {
   gap: 4px;
   min-width: 120px;
 }
-
 .pixel-stat .points-value,
 .pixel-stat .coins-value {
   color: #32cd32 !important;
@@ -1818,10 +1817,6 @@ body::before {
   cursor: default;
 }
 
-.select-skin-btn.selected:hover {
-  background: #dbf46c;
-  transform: none;
-}
 
 .skin-selected {
   color: #00aa00;
@@ -1951,10 +1946,6 @@ body::before {
   transform: translateY(-2px);
 }
 
-.skin-preview {
-  margin-bottom: 10px;
-}
-
 .skin-image {
   width: 80px;
   height: 80px;
@@ -2029,7 +2020,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(213, 93, 93, 0.8);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2617,7 +2608,7 @@ body::before {
       height: auto;
       margin-bottom: 16px;
       max-width: 850px;
-      background-image: url("../assets/icons/Tile.png");
+      background-image: url("../assets/images/tutorialPulse/Tile.png");
       background-size: 16px 16px;
       background-repeat: repeat;
       image-rendering: pixelated;
