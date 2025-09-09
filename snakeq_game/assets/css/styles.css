@@ -3702,11 +3702,9 @@ body::before {
   gap: 8px;
 }
 
-.coins-label {
-  color: black
-}
-.points-label {
-  font-size: 12px;
+
+.points-label, .coins-label{
+  font-size: 16px;
   color: black
 }
 
