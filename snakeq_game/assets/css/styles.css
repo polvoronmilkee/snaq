@@ -1104,7 +1104,7 @@ body::before {
 }
 
 .instructions-content {
-  background: #2a2a2a;
+  background: #f8c87a;
   padding: 24px;
   max-width: 500px;
   width: 90%;
@@ -2557,16 +2557,17 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 .leaderboard-tab {
   padding: 8px 12px;
   font-size: 10px;
-  background: #333;
+  background: #754d11;
+  border-radius: 10px;
   color: #fff;
-  border: 2px solid #555;
+  border: 2px solid rgb(48, 36, 20)d11;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .leaderboard-tab:hover {
-  background: #444;
-  border-color: #666;
+  background: #503307;
+  border-color: rgb(53, 27, 5)d11;
 }
 
 .leaderboard-tab.active {
@@ -2577,7 +2578,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 
 .leaderboard-container {
   background: rgba(0, 0, 0, 0.3);
-  border: 2px solid #333;
+  border: 2px solid #754d11;
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
@@ -2590,7 +2591,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   grid-template-columns: 60px 1fr 100px;
   gap: 12px;
   padding: 8px 12px;
-  background: #222;
+  background: #754d11;
   border: 1px solid #444;
   margin-bottom: 8px;
   font-size: 10px;
@@ -2674,12 +2675,12 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 }
 
 .current-username {
-  background: rgba(76, 175, 80, 0.2);
+  background: rgba(76, 175, 80, 0.9);
   border: 1px solid #4CAF50;
   border-radius: 4px;
   padding: 8px 12px;
   font-size: 10px;
-  color: #81C784;
+  color: #ecf5ed;
   margin-top: 8px;
   display: flex;
   align-items: center;
