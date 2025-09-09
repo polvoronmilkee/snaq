@@ -386,6 +386,10 @@ class SnakeEnglishGame {
         const canvasContainer = document.querySelector(".canvas-container");
 
         const tryActivateSprint = () => {
+
+            // skip print if restart modal is open
+            if (!this.restartConfirm.classList.contains("hidden")) return;
+
             // Only activate sprint if game is not paused and snake is moving
             if (!this.paused && this.sprint.energy > 0 && this.direction) {
                 this.sprint.active = true;
