@@ -911,13 +911,18 @@ body::before {
 .pixel-stat {
   padding: 8px 12px;
   font-size: 10px;
-  background: #754d11;
-  color: #fff;
-  border: 2px solid #fff;
+  background: #f8c87a;
+  color: #412906;
+  border: none;
   display: flex;
   align-items: center;
   gap: 4px;
   min-width: 120px;
+}
+
+.pixel-stat .points-value,
+.pixel-stat .coins-value {
+  color: #32cd32 !important;
 }
 
 .stat-icon {
@@ -1536,9 +1541,9 @@ body::before {
 .pixel-stat {
   padding: 10px 14px;
   font-size: 12px;
-  background: #754d11;
-  color: #fff;
-  border: 2px solid #fff;
+  background: #f8c87a;
+  color: #412906;
+  border: none;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1700,7 +1705,7 @@ body::before {
 }
 
 .points-display {
-  background: #754d11;
+  background: rgba(117, 77, 17, 0.3);
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 25px;
@@ -1712,12 +1717,12 @@ body::before {
 
 .points-label {
   font-size: 14px;
-  color: #ccc;
+  color: #412906;
 }
 
 .points-value {
   font-size: 12px;
-  color: gold;
+  color: #32cd32;
   font-weight: bold;
 }
 
@@ -1743,7 +1748,7 @@ body::before {
 
 .skin-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 0 2px #32cd32 inset;
+    box-shadow: 0 0 0 2px #dbf46c inset;
 }
 
 .skin-preview {
@@ -1802,9 +1807,9 @@ body::before {
 }
 
 .select-skin-btn {
-  background: #0066cc;
+  background: #754d11;
   color: white;
-  border: none;
+  border: 2px solid #332002;
   padding: 8px 16px;
   border-radius: 4px;
   font-family: "Press Start 2P", monospace;
@@ -1814,17 +1819,19 @@ body::before {
 }
 
 .select-skin-btn:hover {
-  background: #0088ff;
+  background: #444;
   transform: translateY(-1px);
 }
 
 .select-skin-btn.selected {
-  background: #00aa00;
+  background: #dbf46c;
+  border-color: #228b22;
+  color: #000;
   cursor: default;
 }
 
 .select-skin-btn.selected:hover {
-  background: #00aa00;
+  background: #dbf46c;
   transform: none;
 }
 
@@ -1906,9 +1913,9 @@ body::before {
 }
 
 .points-display {
-  background: #754d11;
+  background: rgba(117, 77, 17, 0.3);
   padding: 10px 15px;
-  border: 2px solid #555;
+  border: 2px solid rgba(85, 85, 85, 0.5);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1920,12 +1927,13 @@ body::before {
 
 .points-value {
   font-size: 12px;
-  color: gold;
+  color: #412906;
   font-weight: bold;
 }
 
 .coins-value {
-  color: gold
+  color: #412906;
+  font-weight: bold;
 }
 
 .shop-container {
@@ -1955,7 +1963,7 @@ body::before {
 }
 
 .skin-item:hover {
-  border-color: #32cd32;
+  border-color: #dbf46c;
   transform: translateY(-2px);
 }
 
@@ -1991,9 +1999,9 @@ body::before {
   font-weight: bold 
 }
 .skin-owned {
-  color: #089d08;
+  color: #dbf46c;
   background: rgba(0, 0, 0, 0.144);
-  border: 1px solid #32cd32;
+  border: 1px solid #dbf46c;
   padding: 4px 8px;
   font-weight: bold;
   font-size: 14px;
@@ -2245,17 +2253,18 @@ body::before {
 
 /* Select button specific styles */
 .action-btn[data-action="select"] {
-    background: #4a90e2;
-    border-color: #3578c5;
+    background: #754d11;
+    border-color: #332002;
 }
 
 .action-btn[data-action="select"]:hover:not(:disabled) {
-    background: #5a9ff2;
+    background: #444;
 }
 
 .action-btn[data-action="select"].selected {
-    background: #32cd32;
+    background: #dbf46c;
     border-color: #228b22;
+    color: #000;
 }
 
 /* Inventory Tabs */
@@ -2367,7 +2376,7 @@ body::before {
 }
 
 #choose-un {
-  color: black
+  color: rgb(255, 255, 255)
 }
 
 @media (max-width: 768px) {
