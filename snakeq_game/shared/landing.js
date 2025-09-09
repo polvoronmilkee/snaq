@@ -1031,7 +1031,7 @@ renderShopItems(category) {
         const rank = entry.rank || (index + 1);
         
         // Add medal emojis for top 3
-        let rankDisplay = `#${rank}`;
+        let rankDisplay = `${rank}`;
         if (rank === 1) rankDisplay = '🥇';
         else if (rank === 2) rankDisplay = '🥈'; 
         else if (rank === 3) rankDisplay = '🥉';
