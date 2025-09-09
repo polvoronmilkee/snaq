@@ -307,14 +307,6 @@ class LandingPage {
       });
     }
 
-    if (usernameModal) {
-      usernameModal.addEventListener("click", (e) => {
-        if (e.target === usernameModal) {
-          this.hideUsernameModal();
-        }
-      });
-    }
-
     const modal = $$("gameModeModal");
     const cancelBtn = $$("cancelBtn");
     const startBtn = $$("startGameBtn");
