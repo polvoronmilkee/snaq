@@ -454,7 +454,7 @@ class TutorialManager {
                 break;
             case 'left':
                 top = targetRect.top + (targetRect.height / 2) - (boxHeight / 2);
-                left = targetRect.left - boxWidth - margin;
+                left = targetRect.left - boxWidth - (margin * 6);
                 break;
             case 'right':
                 top = targetRect.top + (targetRect.height / 2) - (boxHeight / 2);
