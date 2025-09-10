@@ -1361,16 +1361,18 @@ class LandingPage {
         { id: 'green', name: 'Classic Green', desc: 'The original snake look', price: 0 },
         { id: 'pink', name: 'Sugar Rush', desc: 'A sweet pink variation', price: 100 },
         { id: 'blue', name: 'Ocean Fang', desc: 'A bubbly blue variation', price: 100 },
-        { id: 'volt', name: 'Ghost Shock', desc: 'A ghostly snake with shock energy', price: 250 },
         { id: 'gold', name: 'Royal Glimmer', desc: 'A royalty shining snake', price: 300 },
-        { id: 'white', name: 'Crimson Pale', desc: 'A pale vampire-like snake', price: 500 }
+        { id: 'white', name: 'Crimson Pale', desc: 'A pale vampire-like snake', price: 500 },
+        { id: 'volt', name: 'Ghost Shock', desc: 'A ghostly snake with shock energy', price: 999 },
+
       ],
       accessories: [
         { id: 'none', name: 'Default', desc: 'No accessory', price: 0 },
-        { id: 'hat', name: 'Cook Hat', desc: 'An extension of your mind', price: 100 },
+        { id: 'bow', name: 'Red Bow', desc: 'Elegant ribbon accessory', price: 50 },
         { id: 'glasses', name: 'Sunglasses', desc: 'Cool shades to cover your eyes', price: 75 },
+        { id: 'hat', name: 'Cook Hat', desc: 'An extension of your mind', price: 100 },
+        { id: 'mustache', name: 'Mustache', desc: 'A gentlemen\'s mustache', price: 100 },
         { id: 'crown', name: 'Golden Crown', desc: 'Royal headpiece', price: 250 },
-        { id: 'bow', name: 'Red Bow', desc: 'Elegant ribbon accessory', price: 50 }
       ],
       tiles: [
         { id: 'Tile', name: 'Classic Tiles', desc: 'A classic tile design', price: 150 },
