@@ -16,27 +16,27 @@ class LandingPage {
     // Skin system
     this.points = parseInt(localStorage.getItem("totalPoints")) || 0;
     this.coins = parseInt(localStorage.getItem("totalCoins")) || Math.floor(this.points / 10); // Load coins from storage or calculate from points
-    
+
     // console.log('LandingPage initialized - Points:', this.points, 'Coins:', this.coins);
     this.totalPointsDisplay = $$("current-points");
     this.ownedSkins = JSON.parse(localStorage.getItem("ownedSkins")) || ["green"];
     this.selectedSkin = localStorage.getItem("selectedSkin") || "green";
-    
+
     // Shop system
     this.ownedAccessories = JSON.parse(localStorage.getItem("ownedAccessories")) || [];
     this.selectedAccessory = localStorage.getItem("selectedAccessory") || null;
-    
+
     this.ownedTiles = JSON.parse(localStorage.getItem("ownedTiles")) || ["Tile"];
     this.selectedTile = localStorage.getItem("selectedTile") || "Tile";
-    
+
     this.unlockedModes = JSON.parse(localStorage.getItem("unlockedModes")) || ["quiz"];
     this.pendingUnlock = null;
-    
+
     // Leaderboard system
     this.username = localStorage.getItem("playerUsername") || null;
     this.leaderboardManager = null;
     this.currentLeaderboardCategory = 'overall';
-    
+
     this.init();
   }
 
@@ -44,7 +44,7 @@ class LandingPage {
     // Check if we should show the intro video
     const hasSeenIntro = localStorage.getItem('hasSeenIntro') === 'true';
     const fromIntro = new URLSearchParams(window.location.search).get('fromIntro');
-    
+
     if (!hasSeenIntro && !fromIntro) {
       // Show the intro video with unskippable flag
       const url = new URL(window.location.origin);
@@ -53,14 +53,14 @@ class LandingPage {
       window.location.href = url.toString();
       return; // Don't initialize the rest if we're redirecting
     }
-    
+
     // Clear the URL parameter if we came from intro
     if (fromIntro) {
       const url = new URL(window.location);
       url.searchParams.delete('fromIntro');
       window.history.replaceState({}, '', url);
     }
-    
+
     this.bindEvents();
     this.initializeAudioStates();
     await this.initializeLeaderboard();
@@ -106,7 +106,7 @@ class LandingPage {
 
       if (this.musicEnabled) {
         this.backgroundMusic.volume = 1;
-        this.backgroundMusic.play().catch(() => {});
+        this.backgroundMusic.play().catch(() => { });
       }
     }
 
@@ -123,15 +123,15 @@ class LandingPage {
   selectInventoryTab(e) {
     const tab = e.target.closest('.inventory-tab');
     if (!tab) return;
-    
+
     // Remove active class from all tabs
     document.querySelectorAll('.inventory-tab').forEach(t => {
       t.classList.remove('active');
     });
-    
+
     // Add active class to clicked tab
     tab.classList.add('active');
-    
+
     // Render items for the selected category
     this.renderShopItems(tab.dataset.category);
   }
@@ -140,7 +140,7 @@ class LandingPage {
     if (this.soundEnabled && this.clickSound) {
       const sfx = this.clickSound.cloneNode(true); // new audio element
       sfx.volume = 0.5;
-      sfx.play().catch(() => {});
+      sfx.play().catch(() => { });
       sfx.addEventListener("ended", () => sfx.remove());
     }
   }
@@ -249,7 +249,7 @@ class LandingPage {
 
     const copyrightModal = $$("copyright-modal");
     const closeCopyright = $$("close-copyright");
-    const copyrightBtn = $$("copyright-btn"); 
+    const copyrightBtn = $$("copyright-btn");
 
     if (copyrightBtn) {
       copyrightBtn.addEventListener("click", () => {
@@ -545,10 +545,10 @@ class LandingPage {
       soundBtn.textContent = this.soundEnabled ? "🔊" : "🔇";
       soundBtn.classList.toggle("active", this.soundEnabled);
     }
-    
+
     this.updateSoundMenuButton();
   }
-  
+
   updateSoundMenuButton() {
     const soundMenuBtn = $$("sound-menu-btn");
     if (soundMenuBtn) {
@@ -567,7 +567,7 @@ class LandingPage {
       musicBtn.classList.toggle("active", this.musicEnabled);
 
       if (this.musicEnabled) {
-        this.backgroundMusic.play().catch(() => {});
+        this.backgroundMusic.play().catch(() => { });
       } else {
         this.backgroundMusic.pause();
       }
@@ -586,7 +586,7 @@ class LandingPage {
     // Find the actual button element (handles clicks on child elements)
     const btn = e.target.closest('.category-btn');
     if (!btn) return;
-    
+
     document.querySelectorAll(".category-btn").forEach((btn) => {
       btn.classList.remove("selected");
     });
@@ -611,19 +611,19 @@ class LandingPage {
   }
 
   updateGameModeLocks() {
-    
+
     const modeBtns = document.querySelectorAll(".mode-btn");
 
     modeBtns.forEach((btn) => {
       const cost = parseInt(btn.dataset.cost) || 0;
       const mode = btn.dataset.mode;
-      
+
       // Remove any existing overlays (cleanup from old system)
       const existingOverlay = btn.parentElement.querySelector(`[data-lock-for="${mode}"]`);
       if (existingOverlay) {
         existingOverlay.remove();
       }
-      
+
       if (cost === 0 || this.unlockedModes.includes(mode)) {
         btn.classList.remove("locked");
         btn.removeAttribute("data-cost-display");
@@ -636,24 +636,24 @@ class LandingPage {
     });
 
     this.updateDifficultyLocks();
-    
+
   }
 
   updateDifficultyLocks() {
-    
+
     const difficultyBtns = document.querySelectorAll(".difficulty-btn");
-    
+
     difficultyBtns.forEach((btn) => {
       const difficulty = btn.dataset.difficulty;
-      
+
       // Remove any existing overlays (cleanup from old system)
       const existingOverlay = btn.parentElement.querySelector(`[data-difficulty-lock-for="${difficulty}"]`);
       if (existingOverlay) {
         existingOverlay.remove();
       }
-      
+
       const requiredCoins = parseInt(btn.dataset.cost) || 0;
-      
+
       if (requiredCoins === 0 || this.coins >= requiredCoins) {
         btn.classList.remove("locked");
         btn.removeAttribute("data-cost-display");
@@ -664,7 +664,7 @@ class LandingPage {
         btn.disabled = false; // Keep clickable for potential future unlock functionality
       }
     });
-    
+
   }
 
   hideGameModeModal() {
@@ -690,7 +690,7 @@ class LandingPage {
     this.selectedMode = btn.dataset.mode;
     this.updateStartButton();
 
-    
+
     if (cost === 0 || this.unlockedModes.includes(mode)) {
       document.querySelectorAll(".mode-btn").forEach((btn) => {
         btn.classList.remove("selected");
@@ -703,11 +703,11 @@ class LandingPage {
     }
 
     this.showUnlockModal(mode, cost);
-    
+
   }
 
   showUnlockModal(mode, cost) {
-    
+
     const unlockModal = $$("unlock-modal");
     const modeTitle = $$("unlock-mode-title");
     const modeDescription = $$("unlock-mode-description");
@@ -719,8 +719,8 @@ class LandingPage {
     if (!unlockModal) return;
 
     const modeName = mode === 'endless' ? 'Endless Mode' : 'Timed Mode (1 min)';
-    const modeDesc = mode === 'endless' 
-      ? 'Play without limits! ' 
+    const modeDesc = mode === 'endless'
+      ? 'Play without limits! '
       : 'Fast-paced 60-second challenge! ';
 
     if (modeTitle) modeTitle.textContent = `🔒 Unlock ${modeName}`;
@@ -745,21 +745,21 @@ class LandingPage {
     this.pendingUnlock = { mode, cost };
 
     unlockModal.classList.remove("hidden");
-    
+
   }
 
   hideUnlockModal() {
-    
+
     const unlockModal = $$("unlock-modal");
     if (unlockModal) {
       unlockModal.classList.add("hidden");
     }
     this.pendingUnlock = null;
-    
+
   }
 
   confirmUnlock() {
-    
+
     if (!this.pendingUnlock) return;
 
     const { mode, difficulty, cost, type } = this.pendingUnlock;
@@ -775,55 +775,55 @@ class LandingPage {
       this.hideUnlockModal();
       this.showNotification(`💰 Not enough coins! Play the unlocked or free modes to gain more points, then visit the shop to convert them!`);
     }
-    
+
   }
 
   unlockGameMode(mode, cost) {
-    
+
     this.coins -= cost;
     this.points -= (cost * 10);
-    
+
     localStorage.setItem("totalCoins", this.coins.toString());
     localStorage.setItem("totalPoints", this.points.toString());
-    
+
     const unlockedModes = JSON.parse(localStorage.getItem("unlockedModes")) || ["quiz"];
     if (!unlockedModes.includes(mode)) {
       unlockedModes.push(mode);
       localStorage.setItem("unlockedModes", JSON.stringify(unlockedModes));
     }
-    
+
     this.unlockedModes = unlockedModes;
-    
+
     const pointsDisplay = $$("current-points");
     if (pointsDisplay) {
       pointsDisplay.textContent = this.points;
     }
-    
+
     const coinsDisplay = $$("current-coins");
     if (coinsDisplay) {
       coinsDisplay.textContent = this.coins;
     }
-    
+
     this.updateGameModeLocks();
-    
+
     const modeName = mode === 'endless' ? 'Endless Mode' : 'Timed Mode';
     this.showNotification(`🎉 ${modeName} unlocked! Enjoy the new challenge!`);
-    
+
     const modeBtn = document.querySelector(`[data-mode="${mode}"]`);
     if (modeBtn) {
       document.querySelectorAll(".mode-btn").forEach((btn) => {
         btn.classList.remove("selected");
       });
-      
+
       modeBtn.classList.add("selected");
       this.selectedMode = mode;
       this.updateStartButton();
     }
-    
+
   }
 
   showDifficultyUnlockModal(difficulty, cost) {
-    
+
     const unlockModal = $$("unlock-modal");
     const modeTitle = $$("unlock-mode-title");
     const modeDescription = $$("unlock-mode-description");
@@ -835,8 +835,8 @@ class LandingPage {
     if (!unlockModal) return;
 
     const difficultyName = difficulty.charAt(0).toUpperCase() + difficulty.slice(1) + ' Difficulty';
-    const difficultyDesc = difficulty === 'medium' 
-      ? 'Moderate challenge with balanced questions and slightly faster gameplay.' 
+    const difficultyDesc = difficulty === 'medium'
+      ? 'Moderate challenge with balanced questions and slightly faster gameplay.'
       : 'Ultimate challenge! Hardest questions with the fastest gameplay speed.';
 
     if (modeTitle) modeTitle.textContent = `🔒 Unlock ${difficultyName}`;
@@ -861,43 +861,43 @@ class LandingPage {
     this.pendingUnlock = { difficulty, cost, type: 'difficulty' };
 
     unlockModal.classList.remove("hidden");
-    
+
   }
 
   unlockDifficulty(difficulty, cost) {
-    
+
     this.coins -= cost;
     this.points -= (cost * 10);
-    
+
     localStorage.setItem("totalCoins", this.coins.toString());
     localStorage.setItem("totalPoints", this.points.toString());
-    
+
     const pointsDisplay = $$("current-points");
     if (pointsDisplay) {
       pointsDisplay.textContent = this.points;
     }
-    
+
     const coinsDisplay = $$("current-coins");
     if (coinsDisplay) {
       coinsDisplay.textContent = this.coins;
     }
-    
+
     this.updateGameModeLocks();
-    
+
     const difficultyName = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
     this.showNotification(`🎉 ${difficultyName} difficulty unlocked! Ready for the challenge!`);
-    
+
     const difficultyBtn = document.querySelector(`[data-difficulty="${difficulty}"]`);
     if (difficultyBtn) {
       document.querySelectorAll(".difficulty-btn").forEach((btn) => {
         btn.classList.remove("selected");
       });
-      
+
       difficultyBtn.classList.add("selected");
       this.selectedDifficulty = difficulty;
       this.updateStartButton();
     }
-    
+
   }
 
   selectDifficulty(e) {
@@ -965,7 +965,7 @@ class LandingPage {
     // Check sessionStorage for tutorial mode
     const gameMode = sessionStorage.getItem('gameMode');
     const isTutorialMode = gameMode === 'tutorial';
-    
+
     // Clear tutorial mode after checking to prevent repeated redirects
     if (isTutorialMode) {
       sessionStorage.removeItem('gameMode');
@@ -990,42 +990,42 @@ class LandingPage {
   selectShopCategory(e) {
     const btn = e.target.closest('.shop-category-btn');
     if (!btn) return;
-    
+
     document.querySelectorAll(".shop-category-btn").forEach((btn) => {
       btn.classList.remove("active");
     });
-    
+
     btn.classList.add("active");
     const category = btn.dataset.category;
     this.renderShopItems(category);
   }
-renderShopItems(category) {
-  const itemsContainer = document.getElementById("shop-items-container");
-  if (!itemsContainer) return;
-  
-  itemsContainer.innerHTML = '';
-  
-  const items = this.getShopItemsByCategory(category);
-  
-  if (items.length === 0) {
-    itemsContainer.innerHTML = '<p class="coming-soon">Coming soon!</p>';
-    return;
-  }
-  
-  // Create grid container
-  const grid = document.createElement('div');
-  grid.className = 'skins-grid';
-  
-  items.forEach(item => {
-    const isOwned = this.isItemOwned(category, item.id);
-    const isSelected = this.isItemSelected(category, item.id);
-    const canAfford = this.coins >= item.price; // 
+  renderShopItems(category) {
+    const itemsContainer = document.getElementById("shop-items-container");
+    if (!itemsContainer) return;
 
-    const itemElement = document.createElement('div');
-    itemElement.className = 'skin-item shop-item';
+    itemsContainer.innerHTML = '';
 
-    if (category === "skins") {
-      itemElement.innerHTML = `
+    const items = this.getShopItemsByCategory(category);
+
+    if (items.length === 0) {
+      itemsContainer.innerHTML = '<p class="coming-soon">Coming soon!</p>';
+      return;
+    }
+
+    // Create grid container
+    const grid = document.createElement('div');
+    grid.className = 'skins-grid';
+
+    items.forEach(item => {
+      const isOwned = this.isItemOwned(category, item.id);
+      const isSelected = this.isItemSelected(category, item.id);
+      const canAfford = this.coins >= item.price; // 
+
+      const itemElement = document.createElement('div');
+      itemElement.className = 'skin-item shop-item';
+
+      if (category === "skins") {
+        itemElement.innerHTML = `
         <div class="skin-preview">
           <img src="assets/images/snake-skins/${item.id}_snake/SnakeHeadDown.png" alt="${item.name}" class="skin-image" />
         </div>
@@ -1033,24 +1033,24 @@ renderShopItems(category) {
           <h4>${item.name}</h4>
           <p class="skin-description">${item.desc}</p>
           <div class="skin-status">
-            ${isOwned ? 
-              `<span class="skin-owned">Owned</span>
+            ${isOwned ?
+            `<span class="skin-owned">Owned</span>
               <button class="action-btn ${isSelected ? 'selected' : ''}" 
                       data-category="${category}" data-id="${item.id}" data-action="select">
                 ${isSelected ? 'Selected' : 'Select'}
-              </button>` : 
-              `<span class="skin-price">${item.price} coins</span>  
+              </button>` :
+            `<span class="skin-price">${item.price} coins</span>  
               <button class="action-btn ${canAfford ? '' : 'disabled'}" 
                       data-category="${category}" data-id="${item.id}" data-action="buy"
                       ${canAfford ? '' : 'disabled'}>
                 ${canAfford ? 'Buy' : 'Need More Coins'}
               </button>`
-            }
+          }
           </div>
         </div>
       `;
-    } else if (category === "accessories") {
-      itemElement.innerHTML = `
+      } else if (category === "accessories") {
+        itemElement.innerHTML = `
         <div class="skin-preview">
           <img src="assets/images/accessory/${item.id}Down.png" alt="${item.name}" class="skin-image" />
         </div>
@@ -1058,24 +1058,24 @@ renderShopItems(category) {
           <h4>${item.name}</h4>
           <p class="skin-description">${item.desc}</p>
           <div class="skin-status">
-            ${isOwned ? 
-              `<span class="skin-owned">Owned</span>
+            ${isOwned ?
+            `<span class="skin-owned">Owned</span>
               <button class="action-btn ${isSelected ? 'selected' : ''}" 
                       data-category="${category}" data-id="${item.id}" data-action="select">
                 ${isSelected ? 'Selected' : 'Select'}
-              </button>` : 
-              `<span class="skin-price">${item.price} coins</span>  
+              </button>` :
+            `<span class="skin-price">${item.price} coins</span>  
               <button class="action-btn ${canAfford ? '' : 'disabled'}" 
                       data-category="${category}" data-id="${item.id}" data-action="buy"
                       ${canAfford ? '' : 'disabled'}>
                 ${canAfford ? 'Buy' : 'Need More Coins'}
               </button>`
-            }
+          }
           </div>
         </div>
       `;
-    } else if (category === "tiles") {
-      itemElement.innerHTML = `
+      } else if (category === "tiles") {
+        itemElement.innerHTML = `
         <div class="skin-preview">
           <img src="assets/images/tiles/${item.id}.png" alt="${item.name}" class="skin-image" />
         </div>
@@ -1083,28 +1083,28 @@ renderShopItems(category) {
           <h4>${item.name}</h4>
           <p class="skin-description">${item.desc}</p>
           <div class="skin-status">
-            ${isOwned ? 
-              `<span class="skin-owned">Owned</span>
+            ${isOwned ?
+            `<span class="skin-owned">Owned</span>
               <button class="action-btn ${isSelected ? 'selected' : ''}" 
                       data-category="${category}" data-id="${item.id}" data-action="select">
                 ${isSelected ? 'Selected' : 'Select'}
-              </button>` : 
-              `<span class="skin-price">${item.price} coins</span>  
+              </button>` :
+            `<span class="skin-price">${item.price} coins</span>  
               <button class="action-btn ${canAfford ? '' : 'disabled'}" 
                       data-category="${category}" data-id="${item.id}" data-action="buy"
                       ${canAfford ? '' : 'disabled'}>
                 ${canAfford ? 'Buy' : 'Need More Coins'}
               </button>`
-            }
+          }
           </div>
         </div>
       `;
-    }
-    
-    grid.appendChild(itemElement);
-  });
-  
-  itemsContainer.appendChild(grid);
+      }
+
+      grid.appendChild(itemElement);
+    });
+
+    itemsContainer.appendChild(grid);
 
 
     // Add event listeners to action buttons
@@ -1113,7 +1113,7 @@ renderShopItems(category) {
         const category = button.dataset.category;
         const itemId = button.dataset.id;
         const action = button.dataset.action;
-        
+
         if (action === 'buy') {
           this.buyItem(category, itemId);
         } else if (action === 'select') {
@@ -1122,7 +1122,7 @@ renderShopItems(category) {
       });
     });
   }
-  
+
   isItemOwned(category, itemId) {
     if (category === 'skins') {
       return this.ownedSkins.includes(itemId);
@@ -1133,7 +1133,7 @@ renderShopItems(category) {
     }
     return false;
   }
-  
+
   isItemSelected(category, itemId) {
     if (category === 'skins') {
       return this.selectedSkin === itemId;
@@ -1144,34 +1144,34 @@ renderShopItems(category) {
     }
     return false;
   }
-  
+
   buyItem(category, itemId) {
     const items = this.getShopItemsByCategory(category);
     const item = items.find(i => i.id === itemId);
-    
+
     if (!item) {
       console.error('Item not found:', itemId);
       return;
     }
-    
+
     // Check if already owned
     if (this.isItemOwned(category, itemId)) {
       this.showNotification('✅ You already own this item!');
       return;
     }
-    
+
     // Check if user has enough coins
     if (this.coins < item.price) {
       this.showNotification('❌ Not enough coins!');
       return;
     }
-    
+
     // Deduct coins and corresponding points (10 points = 1 coin)
     this.coins -= item.price;
     this.points -= (item.price * 10);
     localStorage.setItem("totalCoins", this.coins.toString());
     localStorage.setItem("totalPoints", this.points.toString());
-    
+
     if (category === 'skins') {
       if (!this.ownedSkins.includes(itemId)) {
         this.ownedSkins.push(itemId);
@@ -1188,7 +1188,7 @@ renderShopItems(category) {
         localStorage.setItem("ownedTiles", JSON.stringify(this.ownedTiles));
       }
     }
-    
+
     // Update points display
     const pointsDisplay = document.getElementById("current-points");
     if (pointsDisplay) {
@@ -1198,7 +1198,7 @@ renderShopItems(category) {
     // Update coins display
     const coinsDisplay = document.getElementById("current-coins");
     if (coinsDisplay) {
-        coinsDisplay.textContent = this.coins;
+      coinsDisplay.textContent = this.coins;
     }
 
     // Update game mode locks if modal is open
@@ -1206,13 +1206,13 @@ renderShopItems(category) {
     if (gameModeModal && !gameModeModal.classList.contains("hidden")) {
       this.updateGameModeLocks();
     }
-    
+
     // Re-render items to show updated status
     const activeTab = document.querySelector('.inventory-tab.active');
     if (activeTab) {
       this.renderShopItems(activeTab.dataset.category);
     }
-    
+
     this.playClickSound();
     this.showNotification(`${item.name} purchased!`);
   }
@@ -1221,23 +1221,23 @@ renderShopItems(category) {
     if (category === 'skins') {
       this.selectedSkin = itemId;
       localStorage.setItem("selectedSkin", itemId);
-      
+
       // Show selected skin notification
       const notification = document.createElement('div');
       notification.className = 'selected-skin-notification';
       notification.innerHTML = `
         <span>${this.getItemName(category, itemId)} selected!</span>
       `;
-      
+
       // Remove any existing notifications
       const existingNotification = document.querySelector('.selected-skin-notification');
       if (existingNotification) {
         existingNotification.remove();
       }
-      
+
       // Add new notification
       document.body.appendChild(notification);
-      
+
       // Remove notification after 2 seconds
       setTimeout(() => {
         notification.style.animation = 'fadeOut 0.3s ease-out';
@@ -1245,7 +1245,7 @@ renderShopItems(category) {
           notification.remove();
         }, 300);
       }, 2000);
-      
+
     } else if (category === 'accessories') {
       this.selectedAccessory = itemId;
       localStorage.setItem("selectedAccessory", itemId);
@@ -1253,20 +1253,20 @@ renderShopItems(category) {
       this.selectedTile = itemId;
       localStorage.setItem("selectedTile", itemId);
     }
-    
+
     // Re-render items to show selection
     const activeTab = document.querySelector('.inventory-tab.active');
     if (activeTab) {
       this.renderShopItems(activeTab.dataset.category);
     }
-    
+
     this.playClickSound();
     // Only show default notification for non-skin selections
     if (category !== 'skins') {
       this.showNotification(`${this.getItemName(category, itemId)} selected!`);
     }
   }
-  
+
   getItemName(category, itemId) {
     const items = this.getShopItemsByCategory(category);
     const item = items.find(i => i.id === itemId);
@@ -1277,7 +1277,7 @@ renderShopItems(category) {
     const skinShopModal = $$("skin-shop-modal");
     if (skinShopModal) {
       skinShopModal.classList.remove("hidden");
-      
+
       // Update points display
       const pointsDisplay = $$("current-points");
       if (pointsDisplay) {
@@ -1286,9 +1286,9 @@ renderShopItems(category) {
 
       const coinsDisplay = $$("current-coins");
       if (coinsDisplay) {
-          coinsDisplay.textContent = this.coins;
+        coinsDisplay.textContent = this.coins;
       }
-      
+
       // Select first category by default
       const firstTab = document.querySelector('.inventory-tab');
       if (firstTab) {
@@ -1296,10 +1296,10 @@ renderShopItems(category) {
         document.querySelectorAll('.inventory-tab').forEach(t => {
           t.classList.remove('active');
         });
-        
+
         // Add active class to first tab
         firstTab.classList.add('active');
-        
+
         // Render items for the first tab
         this.renderShopItems(firstTab.dataset.category);
       }
@@ -1311,10 +1311,12 @@ renderShopItems(category) {
       skins: [
         { id: 'green', name: 'Classic Green', desc: 'The original snake look', price: 0 },
         { id: 'pink', name: 'Sugar Rush', desc: 'A sweet pink variation', price: 100 },
-        { id: 'blue', name: 'Blue Breeze', desc: 'Be one with the ocean', price: 100 },
-        { id: 'volt', name: 'Ghost Shock', desc: 'Charged with voltech energy', price: 250 }
+        { id: 'blue', name: 'Ocean Fang', desc: 'Be one with the ocean', price: 100 },
+        { id: 'volt', name: 'Ghost Shock', desc: 'Charged with voltech energy', price: 250 },
+        { id: 'gold', name: 'Royal Glimmer', desc: 'A royalty shining snake', price: 300 }
       ],
       accessories: [
+        { id: 'none', name: 'Default', desc: 'No accessory', price: 0 },
         { id: 'hat', name: 'Top Hat', desc: 'A dapper accessory', price: 100 },
         { id: 'glasses', name: 'Sunglasses', desc: 'Cool shades for your snake', price: 75 },
         { id: 'crown', name: 'Golden Crown', desc: 'Royal headpiece', price: 250 },
@@ -1327,7 +1329,7 @@ renderShopItems(category) {
         { id: 'voltTile', name: 'Ancient Tech', desc: 'A mystical scripts of the past', price: 175 }
       ]
     };
-    
+
     return items[category] || [];
   }
 
@@ -1337,13 +1339,13 @@ renderShopItems(category) {
       skinShopModal.classList.add("hidden");
     }
   }
-  
+
   toggleGameMenu() {
     const gameMenu = $$("game-menu");
     if (gameMenu) {
       // Toggle the hidden class
       gameMenu.classList.toggle("hidden");
-      
+
       // If menu is now visible, pause the game
       if (!gameMenu.classList.contains("hidden")) {
         // Add any game pausing logic here if needed
@@ -1352,7 +1354,7 @@ renderShopItems(category) {
         // Add any game resuming logic here if needed
         console.log("Game resumed - menu closed");
       }
-      
+
       // Update sound button text in menu
       this.updateSoundMenuButton();
       this.updateMusicMenuButton();
@@ -1368,12 +1370,12 @@ renderShopItems(category) {
       notification.className = "hidden";
       document.body.appendChild(notification);
     }
-    
+
     // Set message and show
     notification.textContent = message;
     notification.classList.remove("hidden");
     notification.classList.add("show");
-    
+
     // Hide after 2 seconds
     setTimeout(() => {
       notification.classList.remove("show");
@@ -1402,15 +1404,15 @@ renderShopItems(category) {
   selectLeaderboardCategory(e) {
     const tab = e.target.closest('.leaderboard-tab');
     if (!tab) return;
-    
+
     // Remove active class from all tabs
     document.querySelectorAll('.leaderboard-tab').forEach(t => {
       t.classList.remove('active');
     });
-    
+
     // Add active class to clicked tab
     tab.classList.add('active');
-    
+
     // Load leaderboard for selected category
     this.currentLeaderboardCategory = tab.dataset.category;
     this.loadLeaderboard(this.currentLeaderboardCategory);
@@ -1429,7 +1431,7 @@ renderShopItems(category) {
 
     try {
       const leaderboard = await this.leaderboardManager.getLeaderboard(category, 10);
-      
+
       if (leaderboard.length === 0) {
         const categoryName = category === 'overall' ? 'overall' : category;
         if (categoryName && categoryName.trim() !== "") {
@@ -1454,13 +1456,13 @@ renderShopItems(category) {
       leaderboard.forEach((entry, index) => {
         const isCurrentPlayer = this.username && entry.username === this.username;
         const rank = entry.rank || (index + 1);
-        
+
         // Add medal emojis for top 3
         let rankDisplay = `${rank}`;
         if (rank === 1) rankDisplay = '🥇';
-        else if (rank === 2) rankDisplay = '🥈'; 
+        else if (rank === 2) rankDisplay = '🥈';
         else if (rank === 3) rankDisplay = '🥉';
-        
+
         html += `
           <div class="leaderboard-entry ${isCurrentPlayer ? 'current-player' : ''}">
             <span class="rank">${rankDisplay}</span>
@@ -1469,9 +1471,9 @@ renderShopItems(category) {
           </div>
         `;
       });
-      
+
       leaderboardList.innerHTML = html;
-      
+
       // Update player rank display
       if (this.username) {
         await this.updatePlayerRank(category);
@@ -1490,7 +1492,7 @@ renderShopItems(category) {
       const rank = await this.leaderboardManager.getPlayerRank(this.username, category);
       const rankDisplay = $$("player-rank-display");
       const currentPlayerRank = $$("current-player-rank");
-      
+
       if (rankDisplay && currentPlayerRank) {
         if (rank && !isNaN(rank)) {
           currentPlayerRank.textContent = `#${rank}`;
@@ -1507,7 +1509,7 @@ renderShopItems(category) {
   updateUsernameDisplay() {
     const usernameDisplay = $$("current-username-display");
     const displayUsername = $$("display-username");
-    
+
     if (usernameDisplay && displayUsername) {
       if (this.username) {
         displayUsername.textContent = this.username;
@@ -1523,13 +1525,13 @@ renderShopItems(category) {
     // Clear username from localStorage and memory
     this.username = null;
     localStorage.removeItem("playerUsername");
-    
+
     // Update display
     this.updateUsernameDisplay();
-    
+
     // Show username modal immediately
     this.showUsernameModal();
-    
+
     console.log("Username reset - ready for demo!");
   }
 
@@ -1548,7 +1550,7 @@ renderShopItems(category) {
         }
         usernameInput.focus();
       }
-      
+
       // Update modal title based on context
       const modalTitle = usernameModal.querySelector("h3");
       if (modalTitle) {
@@ -1568,17 +1570,17 @@ renderShopItems(category) {
     const usernameInput = $$("username-input");
     const usernameError = $$("username-error");
     const saveBtn = $$("save-username");
-    
+
     if (!usernameInput) return;
-    
+
     // Prevent spamming by disabling button
     if (saveBtn) {
       saveBtn.disabled = true;
       saveBtn.textContent = "Saving...";
     }
-    
+
     const username = usernameInput.value.trim();
-    
+
     // Validate username
     if (username.length < 3 || username.length > 20) {
       usernameError.classList.remove('hidden');
@@ -1590,7 +1592,7 @@ renderShopItems(category) {
       }
       return;
     }
-    
+
     if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
       usernameError.classList.remove('hidden');
       usernameError.textContent = 'Username can only contain letters, numbers, - and _';
@@ -1601,22 +1603,22 @@ renderShopItems(category) {
       }
       return;
     }
-    
+
     // Hide error message if validation passes
     usernameError.classList.add('hidden');
-    
+
     // Save username
     this.username = username;
     localStorage.setItem("playerUsername", username);
-    
+
     // Note: Scores are now submitted from individual games to their specific categories
     // Overall leaderboard is calculated automatically by summing all category scores
-    
+
     // Close modal and show success
     this.hideUsernameModal();
     this.showNotification(`Welcome, ${username}! 🎮`);
     this.updateUsernameDisplay();
-    
+
     // Re-enable button for future use
     if (saveBtn) {
       saveBtn.disabled = false;
@@ -1627,7 +1629,7 @@ renderShopItems(category) {
   // Submit score to leaderboard
   async submitScoreToLeaderboard(category = 'overall') {
     if (!this.username || !this.leaderboardManager) return;
-    
+
     try {
       await this.leaderboardManager.submitScore(this.username, this.points, category);
       console.log(`Score submitted to ${category} leaderboard`);
@@ -1639,10 +1641,10 @@ renderShopItems(category) {
   // Tutorial method
   startTutorial() {
     console.log('Starting tutorial...');
-    
+
     // Set tutorial mode in sessionStorage
     sessionStorage.setItem('gameMode', 'tutorial');
-    
+
     // Start the landing page tutorial
     if (window.tutorialManager) {
       window.tutorialManager.startTutorial();
@@ -1665,7 +1667,7 @@ const settingsBtn = document.getElementById("settings-btn");
 const settingsMenu = document.getElementById("settings-menu");
 
 settingsBtn.addEventListener("click", () => {
-    settingsMenu.classList.toggle("hidden");
+  settingsMenu.classList.toggle("hidden");
 });
 
 
