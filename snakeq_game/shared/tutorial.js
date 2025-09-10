@@ -40,6 +40,7 @@ class TutorialManager {
         
         // Add overlay to body
         document.body.appendChild(this.overlay);
+        
     }
 
     bindEvents() {
@@ -492,7 +493,7 @@ class TutorialManager {
                                  step.waitForSprint || step.waitForPause;
     
         // Check if skip button should be shown (only for users who completed tutorial before)
-        const canSkip = this.hasCompletedTutorial && !hasWaitCondition;
+        const canSkip =  !hasWaitCondition;
         
         this.tutorialBox.innerHTML = `
             <div class="tutorial-header">
