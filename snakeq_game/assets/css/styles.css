@@ -2146,7 +2146,6 @@ body::before {
   width: 400px;
   max-width: 90%;
   text-align: center;
-  box-shadow: 0 0 0 2px #fff, 0 0 0 6px #000;
   position: relative;
 }
 
@@ -2209,7 +2208,7 @@ body::before {
 }
 
 .price-btn {
-  background: linear-gradient(145deg, #ffbf91,#b87722);
+  background: linear-gradient(145deg, #ffbf91,#ffcc00);
   border: 2px solid #654321;
   padding: 5px 15px;
   cursor: pointer;
@@ -2227,7 +2226,7 @@ body::before {
 }
 
 .purchase-btn {
-  background: linear-gradient(145deg, #ee8b44,#b87722);
+  background: linear-gradient(145deg, #ee8b44,#ffcc00);
   border: 3px solid #654321;
   margin-bottom: 10px;
   padding: 8px 18px;
