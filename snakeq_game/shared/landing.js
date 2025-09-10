@@ -1010,7 +1010,8 @@ class LandingPage {
 
     if (this.selectedCategory === "math") {
       if (isTutorialMode) {
-        window.location.href = "games/math/math-tutorial/math-game-tutorial.html";
+        window.location.href = "games/math/math-game.html";
+        // window.location.href = "games/math/math-tutorial/math-game-tutorial.html";
       } else {
         window.location.href = "games/math/math-game.html";
       }
