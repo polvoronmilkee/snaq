@@ -603,6 +603,7 @@ class SnakeMathGame {
     this.notificationTimer = 0
     this.waitingForMove = true
     this.paused = false
+    this.inputLocked = false
     this.speed = this.baseSpeed
 
     // Setup timer for timed mode
