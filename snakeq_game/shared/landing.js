@@ -909,7 +909,7 @@ class LandingPage {
       difficulty: this.selectedDifficulty,
       selectedSkin: this.selectedSkin,
       selectedAccessory: this.selectedAccessory,
-      selectedEffect: this.selectedEffect
+      selectedTile: this.selectedTile
     };
 
     localStorage.setItem("gameSettings", JSON.stringify(gameSettings));
@@ -979,30 +979,83 @@ renderShopItems(category) {
 
     const itemElement = document.createElement('div');
     itemElement.className = 'skin-item shop-item';
-    itemElement.innerHTML = `
-      <div class="skin-preview">
-        <img src="assets/images/snake-skins/${item.id}_snake/SnakeHead.png" alt="${item.name}" class="skin-image" />
-      </div>
-      <div class="skin-info">
-        <h4>${item.name}</h4>
-        <p class="skin-description">${item.desc}</p>
-        <div class="skin-status">
-          ${isOwned ? 
-            `<span class="skin-owned">Owned</span>
-             <button class="action-btn ${isSelected ? 'selected' : ''}" 
-                     data-category="${category}" data-id="${item.id}" data-action="select">
-               ${isSelected ? 'Selected' : 'Select'}
-             </button>` : 
-            `<span class="skin-price">${item.price} coins</span>  
-             <button class="action-btn ${canAfford ? '' : 'disabled'}" 
-                     data-category="${category}" data-id="${item.id}" data-action="buy"
-                     ${canAfford ? '' : 'disabled'}>
-               ${canAfford ? 'Buy' : 'Need More Coins'}
-             </button>`
-          }
+
+    if (category === "skins") {
+      itemElement.innerHTML = `
+        <div class="skin-preview">
+          <img src="assets/images/snake-skins/${item.id}_snake/SnakeHeadDown.png" alt="${item.name}" class="skin-image" />
         </div>
-      </div>
-    `;
+        <div class="skin-info">
+          <h4>${item.name}</h4>
+          <p class="skin-description">${item.desc}</p>
+          <div class="skin-status">
+            ${isOwned ? 
+              `<span class="skin-owned">Owned</span>
+              <button class="action-btn ${isSelected ? 'selected' : ''}" 
+                      data-category="${category}" data-id="${item.id}" data-action="select">
+                ${isSelected ? 'Selected' : 'Select'}
+              </button>` : 
+              `<span class="skin-price">${item.price} coins</span>  
+              <button class="action-btn ${canAfford ? '' : 'disabled'}" 
+                      data-category="${category}" data-id="${item.id}" data-action="buy"
+                      ${canAfford ? '' : 'disabled'}>
+                ${canAfford ? 'Buy' : 'Need More Coins'}
+              </button>`
+            }
+          </div>
+        </div>
+      `;
+    } else if (category === "accessories") {
+      itemElement.innerHTML = `
+        <div class="skin-preview">
+          <img src="assets/images/accessory/${item.id}Down.png" alt="${item.name}" class="skin-image" />
+        </div>
+        <div class="skin-info">
+          <h4>${item.name}</h4>
+          <p class="skin-description">${item.desc}</p>
+          <div class="skin-status">
+            ${isOwned ? 
+              `<span class="skin-owned">Owned</span>
+              <button class="action-btn ${isSelected ? 'selected' : ''}" 
+                      data-category="${category}" data-id="${item.id}" data-action="select">
+                ${isSelected ? 'Selected' : 'Select'}
+              </button>` : 
+              `<span class="skin-price">${item.price} coins</span>  
+              <button class="action-btn ${canAfford ? '' : 'disabled'}" 
+                      data-category="${category}" data-id="${item.id}" data-action="buy"
+                      ${canAfford ? '' : 'disabled'}>
+                ${canAfford ? 'Buy' : 'Need More Coins'}
+              </button>`
+            }
+          </div>
+        </div>
+      `;
+    } else if (category === "tiles") {
+      itemElement.innerHTML = `
+        <div class="skin-preview">
+          <img src="assets/images/tiles/${item.id}.png" alt="${item.name}" class="skin-image" />
+        </div>
+        <div class="skin-info">
+          <h4>${item.name}</h4>
+          <p class="skin-description">${item.desc}</p>
+          <div class="skin-status">
+            ${isOwned ? 
+              `<span class="skin-owned">Owned</span>
+              <button class="action-btn ${isSelected ? 'selected' : ''}" 
+                      data-category="${category}" data-id="${item.id}" data-action="select">
+                ${isSelected ? 'Selected' : 'Select'}
+              </button>` : 
+              `<span class="skin-price">${item.price} coins</span>  
+              <button class="action-btn ${canAfford ? '' : 'disabled'}" 
+                      data-category="${category}" data-id="${item.id}" data-action="buy"
+                      ${canAfford ? '' : 'disabled'}>
+                ${canAfford ? 'Buy' : 'Need More Coins'}
+              </button>`
+            }
+          </div>
+        </div>
+      `;
+    }
     
     grid.appendChild(itemElement);
   });
@@ -1153,8 +1206,8 @@ renderShopItems(category) {
       this.selectedAccessory = itemId;
       localStorage.setItem("selectedAccessory", itemId);
     } else if (category === 'tiles') {
-      this.selectedEffect = itemId;
-      localStorage.setItem("selectedEffect", itemId);
+      this.selectedTile = itemId;
+      localStorage.setItem("selectedTile", itemId);
     }
     
     // Re-render items to show selection
@@ -1213,9 +1266,9 @@ renderShopItems(category) {
     const items = {
       skins: [
         { id: 'green', name: 'Classic Green', desc: 'The original snake look', price: 0 },
-        { id: 'pink', name: 'Sugar Strike', desc: 'A sweet pink variation', price: 100 },
-        { id: 'blue', name: 'Ocean Fang', desc: 'Cool as the deep sea', price: 100 },
-        { id: 'volt', name: 'Zap Viper', desc: 'Charged with voltech energy', price: 250 }
+        { id: 'pink', name: 'Sugar Rush', desc: 'A sweet pink variation', price: 100 },
+        { id: 'blue', name: 'Blue Breeze', desc: 'Be one with the ocean', price: 100 },
+        { id: 'volt', name: 'Ghost Shock', desc: 'Charged with voltech energy', price: 250 }
       ],
       accessories: [
         { id: 'hat', name: 'Top Hat', desc: 'A dapper accessory', price: 100 },
@@ -1224,10 +1277,10 @@ renderShopItems(category) {
         { id: 'bow', name: 'Red Bow', desc: 'Elegant ribbon accessory', price: 50 }
       ],
       tiles: [
-        { id: 'Tile', name: 'Emerald Mist', desc: 'A soothing green aura', price: 150 },
-        { id: 'pinkTile', name: 'Sugar Rush', desc: 'A burst of colorful energy', price: 100 },
-        { id: 'blueTile', name: 'Ocean Blaze', desc: 'A fiery passion', price: 200 },
-        { id: 'voltTile', name: 'Volt Vortex', desc: 'A mesmerizing swirl of electricity', price: 175 }
+        { id: 'Tile', name: 'Classic Tiles', desc: 'Feel the woodsy floor', price: 150 },
+        { id: 'pinkTile', name: 'Sugar Rush', desc: 'Yumm!!', price: 100 },
+        { id: 'blueTile', name: 'Ocean Blaze', desc: 'Like the rushing waves', price: 200 },
+        { id: 'voltTile', name: 'Ancient Tech', desc: 'A mystical scripts of the past', price: 175 }
       ]
     };
     

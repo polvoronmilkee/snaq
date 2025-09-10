@@ -4,14 +4,11 @@ class SnakeMathGame {
   constructor() {
 
         
-    this.gameSettings = JSON.parse(localStorage.getItem("gameSettings")) || {
-      mode: "quiz",
-      difficulty: "easy",
-      selectedSkin: "green"
-    }
+    this.gameSettings = JSON.parse(localStorage.getItem("gameSettings"))
 
     // Skin system
-    this.selectedSkin = this.gameSettings.selectedSkin || "green"
+    this.selectedSkin = this.gameSettings.selectedSkin
+    this.selectedAccessory = this.gameSettings.selectedAccessory
 
     this.setDifficultySettings()
 
@@ -133,6 +130,7 @@ class SnakeMathGame {
 
   loadSprites() {
     const skinPath = `../../assets/images/snake-skins/${this.selectedSkin}_snake`
+    const accessoryPath = `../../assets/images/accessory/${this.selectedAccessory}`
     const spritePaths = {
       // Snake movement sprites (using selected skin)
       "SnakeHead": `${skinPath}/SnakeHead.png`,
@@ -159,6 +157,11 @@ class SnakeMathGame {
       "SnakeCornerLeftUp": `${skinPath}/SnakeCornerLeftUp.png`,
       "SnakeCornerRightDown": `${skinPath}/SnakeCornerRightDown.png`,
       "SnakeCornerRightUp": `${skinPath}/SnakeCornerRightUp.png`,
+      // Accessory sprites
+      "Accessory" : `${accessoryPath}.png`,
+      "AccessoryLeft" : `${accessoryPath}Left.png`,
+      "AccessoryRight" : `${accessoryPath}Right.png`,
+      "AccessoryDown" : `${accessoryPath}Down.png`,
       // Apple sprites
       "apple": "../../assets/images/apples/apple.png",
       // Icon sprites
@@ -600,6 +603,7 @@ class SnakeMathGame {
     this.notificationTimer = 0
     this.waitingForMove = true
     this.paused = false
+    this.inputLocked = false
     this.speed = this.baseSpeed
 
     // Setup timer for timed mode
@@ -1430,34 +1434,38 @@ class SnakeMathGame {
 
 
         let headSprite = this.sprites.SnakeHead;  // default (North)
+        let accessorySprite = this.sprites.Accessory;
 
         if (this.direction.x === 1) { // Facing East
 
           if (outOfBoundY === 1) { // Going North turning East
-            headSprite = this.sprites.SnakeHeadCorner4
+            headSprite = this.sprites.SnakeHeadCorner4;
           } else if (outOfBoundY === -1) { // Going South turning East
             headSprite = this.sprites.SnakeHeadCorner6
-          } else { //Straight going East
+          } else { //Straight going East;
             headSprite = this.sprites.SnakeHeadRight;
           }
+          accessorySprite = this.sprites.AccessoryRight;
         } else if (this.direction.x === -1) { // Facing West
 
           if (outOfBoundY === 1) { // Going North turning West
-            headSprite = this.sprites.SnakeHeadCorner8
+            headSprite = this.sprites.SnakeHeadCorner8;
           } else if (outOfBoundY === -1) { // Going South turning West
-            headSprite = this.sprites.SnakeHeadCorner2
+            headSprite = this.sprites.SnakeHeadCorner2;
           } else { //Straight going West
             headSprite = this.sprites.SnakeHeadLeft;
           }
+          accessorySprite = this.sprites.AccessoryLeft;
         } else if (this.direction.y === 1) { // Facing South
 
           if (outOfBoundX === 1) { // Going East turning South
-            headSprite = this.sprites.SnakeHeadCorner7
+            headSprite = this.sprites.SnakeHeadCorner7;
           } else if (outOfBoundX === -1) { // Going West turning South
-            headSprite = this.sprites.SnakeHeadCorner3
+            headSprite = this.sprites.SnakeHeadCorner3;
           } else { //Straight going West
             headSprite = this.sprites.SnakeHeadDown;
           }
+          accessorySprite = this.sprites.AccessoryDown;
 
         } else { // Facing North
 
@@ -1468,10 +1476,15 @@ class SnakeMathGame {
           } else { //Straight going North
             headSprite = this.sprites.SnakeHead;
           }
+          accessorySprite = this.sprites.Accessory;
         }
 
         if (headSprite?.complete && headSprite) {
           this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
+        } 
+        
+        if (accessorySprite?.complete && accessorySprite) {
+          this.ctx.drawImage(accessorySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
         } else {
           this.ctx.fillStyle = "#32cd32";
           this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
