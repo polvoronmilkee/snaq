@@ -1972,7 +1972,7 @@ class LandingPage {
     this.renderAchievements();
 
     // Show success notification
-    this.showNotification(`🎉 Claimed ${achievement.reward} coins for "${achievement.name}"!`);
+    this.showNotification(`Claimed ${achievement.reward} coins for "${achievement.name}"!`);
     this.playClickSound();
   }
 
