@@ -10,8 +10,8 @@ class SnakeEnglishGame {
         this.gameSettings = JSON.parse(localStorage.getItem("gameSettings"))
 
         // Skin system
-        this.selectedSkin = this.gameSettings.selectedSkin
-        this.selectedAccessory = this.gameSettings.selectedAccessory
+        this.selectedSkin = this.gameSettings.selectedSkin || 'default'
+        this.selectedAccessory = this.gameSettings.selectedAccessory || 'none'
 
         this.setDifficultySettings()
 
