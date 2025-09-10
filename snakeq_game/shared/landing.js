@@ -1723,7 +1723,8 @@ class LandingPage {
       scholar: { unlocked: false, claimed: false },
       perfectionist: { unlocked: false, claimed: false },
       collector: { unlocked: false, claimed: false },
-      marathoner: { unlocked: false, claimed: false }
+      marathoner: { unlocked: false, claimed: false },
+      tutorialMaster: { unlocked: false, claimed: false }
     };
     
     return JSON.parse(localStorage.getItem("achievements")) || defaultAchievements;
@@ -1813,6 +1814,16 @@ class LandingPage {
         requirement: () => this.gameStats.totalPlayTime >= 3600000, // 60 minutes in milliseconds
         progress: () => Math.min(Math.floor(this.gameStats.totalPlayTime / 1000), 3600), // Convert to seconds for display
         maxProgress: 3600
+      },
+      {
+        id: 'tutorialMaster',
+        name: 'Tutorial Master',
+        description: 'Complete the game tutorial',
+        icon: '🎓',
+        reward: 25,
+        requirement: () => this.gameStats.tutorialCompleted === true,
+        progress: () => this.gameStats.tutorialCompleted ? 1 : 0,
+        maxProgress: 1
       }
     ];
   }

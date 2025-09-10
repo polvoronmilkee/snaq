@@ -94,7 +94,13 @@ class TutorialManager {
                 position: 'left',
                 action: null
             },
-            
+            {
+                target: '.achievements-btn',
+                title: 'Achievement System',
+                content: 'Unlock achievements by completing challenges! Each achievement rewards you with coins. Track your progress and claim rewards here. Complete this tutorial to earn your first achievement!',
+                position: 'left',
+                action: null
+            },
             // Skins explanation
             {
                 target: '.skin-shop-btn',
@@ -103,6 +109,7 @@ class TutorialManager {
                 position: 'right',
                 action: null
             },
+            
             
             // Math category selection
             {
@@ -364,40 +371,56 @@ class TutorialManager {
         }
     
         const targetElement = document.querySelector(step.target);
+    
+        // 🔧 FIX: don’t skip if missing, just retry
         if (!targetElement) {
-            console.warn(`Tutorial target not found: ${step.target}`);
-            this.nextStep();
+            console.warn(`Tutorial target not found: ${step.target}, retrying...`);
+            setTimeout(() => this.showStep(this.currentStep), 300);
             return;
         }
     
+        // Calculate position + highlight
         const rect = targetElement.getBoundingClientRect();
-        
-        // Enhanced highlighting with special effects for important elements
         this.highlightElement.style.display = 'block';
-        this.highlightElement.style.top = (rect.top - 10) + 'px';
-        this.highlightElement.style.left = (rect.left - 10) + 'px';
-        this.highlightElement.style.width = (rect.width + 20) + 'px';
-        this.highlightElement.style.height = (rect.height + 20) + 'px';
-        
-        // Add special highlighting for key game elements
-        if (step.highlight) {
-            this.highlightElement.style.border = '3px solid #00ff00';
-            this.highlightElement.style.boxShadow = '0 0 20px #00ff00, inset 0 0 20px rgba(0, 255, 0, 0.2)';
-            this.highlightElement.style.animation = 'tutorialPulse 2s infinite';
-        } else {
-            this.highlightElement.style.border = '2px solid #ffff00';
-            this.highlightElement.style.boxShadow = '0 0 15px #ffff00';
-            this.highlightElement.style.animation = 'none';
+        this.highlightElement.style.top = `${rect.top + window.scrollY - 5}px`;
+        this.highlightElement.style.left = `${rect.left + window.scrollX - 5}px`;
+        this.highlightElement.style.width = `${rect.width + 10}px`;
+        this.highlightElement.style.height = `${rect.height + 10}px`;
+    
+        // Position tutorial box
+        let top = rect.top + window.scrollY;
+        let left = rect.left + window.scrollX;
+    
+        switch (step.position) {
+            case 'top':
+                top -= this.tutorialBox.offsetHeight + 10;
+                left += (rect.width - this.tutorialBox.offsetWidth) / 2;
+                break;
+            case 'bottom':
+                top += rect.height + 10;
+                left += (rect.width - this.tutorialBox.offsetWidth) / 2;
+                break;
+            case 'left':
+                top += (rect.height - this.tutorialBox.offsetHeight) / 2;
+                left -= this.tutorialBox.offsetWidth + 10;
+                break;
+            case 'right':
+                top += (rect.height - this.tutorialBox.offsetHeight) / 2;
+                left += rect.width + 10;
+                break;
         }
+    
+        this.tutorialBox.style.position = 'absolute';
+        this.tutorialBox.style.top = `${top}px`;
+        this.tutorialBox.style.left = `${left}px`;
+        this.tutorialBox.style.transform = 'none';
         
-        // Make highlighted element clickable only if required
+        // Create clickable area if this step requires it
         if (step.waitForClick) {
             this.createClickableArea(targetElement, rect);
         }
-    
-        // Position tutorial box
-        this.positionTutorialBox(rect, step.position);
     }
+    
     createClickableArea(targetElement, rect) {
         // Remove any existing clickable area
         const existingArea = document.getElementById('tutorial-clickable-area');
@@ -492,9 +515,9 @@ class TutorialManager {
         const hasWaitCondition = step.waitForClick || step.waitForMovement || step.waitForAnswer ||
                                  step.waitForSprint || step.waitForPause;
     
-        // Check if skip button should be shown (only for users who completed tutorial before)
-        const canSkip =  !hasWaitCondition;
-        
+        const canSkip = !hasWaitCondition;
+    
+        // Render HTML WITHOUT inline onclick attributes
         this.tutorialBox.innerHTML = `
             <div class="tutorial-header">
                 <h3>${step.title}</h3>
@@ -508,20 +531,18 @@ class TutorialManager {
             <div class="tutorial-footer">
                 <div class="tutorial-progress">Step ${this.currentStep + 1} of ${this.tutorialSteps.length}</div>
                 <div class="tutorial-buttons">
-                    ${!hasWaitCondition && !isLastStep ? `<button class="tutorial-btn tutorial-next" onclick="window.tutorialManager.nextStep()">Next</button>` : ''}
-                    ${!hasWaitCondition && isLastStep ? `<button class="tutorial-btn tutorial-next" onclick="window.tutorialManager.completeTutorial()">Finish</button>` : ''}
-                    ${canSkip ? `<button class="tutorial-btn tutorial-skip" onclick="window.tutorialManager.skipTutorial()">Skip Tutorial</button>` : ''}
+                    ${!hasWaitCondition && !isLastStep ? `<button class="tutorial-btn tutorial-next">Next</button>` : ''}
+                    ${!hasWaitCondition && isLastStep ? `<button class="tutorial-btn tutorial-finish">Finish</button>` : ''}
+                    ${canSkip ? `<button class="tutorial-btn tutorial-skip">Skip Tutorial</button>` : ''}
                 </div>
             </div>
         `;
     
-        // Ensure tutorial overlay has highest z-index
+        // Ensure overlay and box stacking order (tutorialBox above clickable area)
         this.overlay.style.zIndex = '99999';
-        this.tutorialBox.style.zIndex = '100000';
+        this.tutorialBox.style.zIndex = '100005';
     
-        // ✅ Attach listeners after HTML is injected with proper event handling
-        // No close button anymore - removed from HTML
-    
+        // Attach listeners (only on the freshly-created elements)
         const nextBtn = this.tutorialBox.querySelector('.tutorial-next');
         if (nextBtn) {
             nextBtn.addEventListener('click', (e) => {
@@ -529,6 +550,15 @@ class TutorialManager {
                 e.stopPropagation();
                 console.log(`Next button clicked on step ${this.currentStep}`);
                 this.nextStep();
+            });
+        }
+    
+        const finishBtn = this.tutorialBox.querySelector('.tutorial-finish');
+        if (finishBtn) {
+            finishBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.completeTutorial();
             });
         }
     
@@ -910,11 +940,86 @@ class TutorialManager {
         // Mark tutorial as completed
         localStorage.setItem('tutorialCompleted', 'true');
         
+        // Award tutorial completion achievement
+        this.awardTutorialAchievement();
+        
         // Clean up any event listeners
         window.tutorialAnswered = null;
         
         // Show completion message
         this.showCompletionMessage();
+    }
+
+    awardTutorialAchievement() {
+        // Update game stats for tutorial completion
+        let gameStats = JSON.parse(localStorage.getItem('gameStats')) || {
+            totalGamesPlayed: 0,
+            totalCorrectAnswers: 0,
+            totalWrongAnswers: 0,
+            longestStreak: 0,
+            tutorialCompleted: false
+        };
+        
+        gameStats.tutorialCompleted = true;
+        localStorage.setItem('gameStats', JSON.stringify(gameStats));
+        
+        // Check if landing page exists to trigger achievement check
+        if (window.landingPage && typeof window.landingPage.checkAchievements === 'function') {
+            window.landingPage.checkAchievements();
+        }
+        
+        // Show tutorial achievement notification
+        this.showTutorialAchievementNotification();
+    }
+
+    showTutorialAchievementNotification() {
+        const notification = document.createElement('div');
+        notification.className = 'achievement-notification tutorial-achievement';
+        notification.innerHTML = `
+            <div class="achievement-content">
+                <div class="achievement-icon">🎓</div>
+                <div class="achievement-text">
+                    <h4>Achievement Unlocked!</h4>
+                    <p>Tutorial Master</p>
+                    <small>+25 coins reward available!</small>
+                </div>
+            </div>
+        `;
+        
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.5s ease;
+            max-width: 300px;
+            font-family: "Press Start 2P", monospace;
+            font-size: 8px;
+            line-height: 1.4;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // Animate out after 4 seconds
+        setTimeout(() => {
+            notification.style.transform = 'translateX(400px)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    document.body.removeChild(notification);
+                }
+            }, 500);
+        }, 4000);
     }
 
     showCompletionMessage() {
