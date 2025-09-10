@@ -1001,17 +1001,7 @@ body::before {
   flex-wrap: wrap;
 }
 
-.pixel-stat {
-  padding: 8px 12px;
-  font-size: 10px;
-  background: #f8c87a;
-  color: #412906;
-  border: none;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  min-width: 120px;
-}
+
 .pixel-stat .points-value,
 .pixel-stat .coins-value {
   color: white !important;
@@ -1640,13 +1630,12 @@ body::before {
   font-size: 12px;
   background: #f8c87a;
   color: #412906;
-  border: none;
   display: flex;
   align-items: center;
   gap: 6px;
   min-width: 140px;
+  border: 3px solid  #412906;
 }
-
 
 .options-container {
   background: #1a1a1a;
