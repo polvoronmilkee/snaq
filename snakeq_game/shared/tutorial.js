@@ -9,7 +9,7 @@ class TutorialManager {
         this.gameInstance = null;
         this.originalGameState = null;
         this.hasCompletedTutorial = localStorage.getItem('tutorialCompleted') === 'true';
-        
+        this.hasSeenIntro = localStorage.getItem('hasSeenIntro') === 'true';
         this.init();
     }
 
@@ -56,6 +56,7 @@ class TutorialManager {
                 }
             }
         });
+        
     }
 
     startTutorial() {
@@ -946,6 +947,7 @@ class TutorialManager {
         localStorage.removeItem('tutorialCompleted');
     }
 }
+
 
 // Initialize tutorial manager and make it globally available
 window.tutorialManager = null;
