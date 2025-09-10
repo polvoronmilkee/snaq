@@ -918,22 +918,43 @@ class TutorialManager {
 
     showCompletionMessage() {
         const notification = document.createElement('div');
-        notification.className = 'tutorial-completion-notification';
+        notification.className = 'achievement-notification';
         notification.innerHTML = `
-            <div class="notification-content pixel-border">
-                <h3>🎉 Tutorial Complete!</h3>
-                <p>You're now ready to play SnaQ! Good luck and have fun!</p>
+            <div class="achievement-content">
+                <div class="achievement-icon">🏆</div>
+                <div class="achievement-text">
+                    <h4>Tutorial Complete!</h4>
+                    <p>You're now ready to play SnaQ! Good luck and have fun!</p>
+                    <small>Click to dismiss</small>
+                </div>
             </div>
         `;
         
+        notification.addEventListener('click', () => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    document.body.removeChild(notification);
+                }
+            }, 500);
+        });
+        
         document.body.appendChild(notification);
         
+        // Trigger the show animation
+        setTimeout(() => notification.classList.add('show'), 10);
+        
+        // Auto-dismiss after 5 seconds
         setTimeout(() => {
-            notification.classList.add('fade-out');
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 500);
-        }, 3000);
+            if (notification.parentNode) {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        document.body.removeChild(notification);
+                    }
+                }, 500);
+            }
+        }, 5000);
     }
 
     // Check if tutorial has been completed
