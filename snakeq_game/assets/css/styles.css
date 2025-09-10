@@ -3106,8 +3106,8 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 
 .refresh-leaderboard-btn {
   padding: 8px !important;
-  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%) !important;
-  border: 2px solid #6bb6ff !important;
+  background: linear-gradient(135deg, #7c4b00 0%, #cb7726 100%) !important;
+  border: 2px solid #e5af5d !important;
   color: #fff !important;
   border-radius: 6px !important;
   cursor: pointer !important;
@@ -3119,7 +3119,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 }
 
 .refresh-leaderboard-btn:hover {
-  background: linear-gradient(135deg, #5ba0f2 0%, #4a90e2 100%) !important;
+  background: linear-gradient(135deg, #7c4b00 0%, #cb7726 100%) !important;
   transform: translateY(-1px) rotate(90deg) !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
 }
