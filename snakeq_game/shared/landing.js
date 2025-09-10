@@ -2077,4 +2077,7 @@ purchaseBtn.addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  const landingPage = new LandingPage();
+  // Make it globally accessible for debugging
+  window.landingPageInstance = landingPage;
 });
