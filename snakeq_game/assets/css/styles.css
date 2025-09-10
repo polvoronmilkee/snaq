@@ -1025,7 +1025,7 @@ body::before {
   width: 16px;
   height: 16px;
   image-rendering: pixelated;
-  filter: drop-shadow(1px .5px .5px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.5));
 }
 
 
