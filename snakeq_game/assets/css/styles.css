@@ -1,6 +1,106 @@
 /* Press Start 2P Font Import */
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
+/* Locked Game Mode Styles */
+.mode-btn.locked {
+  position: relative;
+  filter: blur(1px);
+  opacity: 0.7;
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+}
+
+.mode-btn.locked::before {
+  content: "🔒";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  z-index: 10;
+  filter: none;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 1), 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.mode-btn.locked::after {
+  content: attr(data-cost-display);
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: #ffd700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 8px;
+  font-weight: bold;
+  white-space: nowrap;
+  border: 1px solid #ffd700;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  filter: none;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.mode-btn.locked:hover {
+  filter: blur(0.5px);
+  opacity: 0.85;
+  transform: none;
+  box-shadow: 3px 3px 0 #000;
+}
+
+.difficulty-btn.locked {
+  position: relative;
+  filter: blur(1px);
+  opacity: 0.7;
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+}
+
+.difficulty-btn.locked::before {
+  content: "🔒";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  z-index: 10;
+  filter: none;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 1), 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.difficulty-btn.locked::after {
+  content: attr(data-cost-display);
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: #ffd700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 8px;
+  font-weight: bold;
+  white-space: nowrap;
+  border: 1px solid #ffd700;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  filter: none;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.difficulty-btn.locked:hover {
+  filter: blur(0.5px);
+  opacity: 0.85;
+  transform: none;
+  box-shadow: 3px 3px 0 #000;
+}
+
+/* Ensure parent containers have relative positioning for absolute positioning of cost display */
+.mode-buttons,
+.difficulty-buttons {
+  position: relative;
+  padding-bottom: 25px;
+}
+
 /* Tutorial System Styles */
 .tutorial-overlay {
   position: fixed;
@@ -914,7 +1014,11 @@ body::before {
 }
 .pixel-stat .points-value,
 .pixel-stat .coins-value {
-  color: #32cd32 !important;
+  color: white !important;
+  text-shadow: 0 0 1px #32cd32, 0 0 2px #32cd32, 0 0 2px ;
+  position: relative;
+  display: inline-block;
+  font-size: calc(1em + 2px) !important;
 }
 
 .stat-icon {
@@ -1883,7 +1987,6 @@ body::before {
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 10px;
-  border-bottom: 2px solid #333;
 }
 
 .shop-title {
@@ -2248,7 +2351,6 @@ body::before {
     justify-content: center;
     gap: 10px;
     margin-bottom: 20px;
-    border-bottom: 2px solid #333;
     padding-bottom: 10px;
 }
 
@@ -2880,7 +2982,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 }
 
  .score {
-  color: #0af112;
+  color: #c0c0c0; /* Silver color */
   text-align: center;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);

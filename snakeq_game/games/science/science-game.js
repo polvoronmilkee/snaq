@@ -19,8 +19,8 @@ class SnakeScienceGame {
         this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
 
         const canvasContainer = document.querySelector(".canvas-container");
-
-        canvasContainer.style.backgroundImage = `url(../../assets/images/tiles/Tile.png)`
+        const selectedTile = this.gameSettings.selectedTile || 'Tile';
+        canvasContainer.style.backgroundImage = `url(../../assets/images/tiles/${selectedTile}.png)`
 
         const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../../assets/images/snake-skins/volt_snake/sounds" : "../../assets/sounds"
 

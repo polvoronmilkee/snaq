@@ -18,7 +18,8 @@ class SnakeMathGame {
     this.GRID_HEIGHT = Math.floor(this.CANVAS_HEIGHT / this.GRID_SIZE)
 
     const canvasContainer = document.querySelector(".canvas-container");
-    canvasContainer.style.backgroundImage = `url(../../assets/images/tiles/Tile.png)`
+    const selectedTile = this.gameSettings.selectedTile || 'Tile';
+    canvasContainer.style.backgroundImage = `url(../../assets/images/tiles/${selectedTile}.png)`
     
     const soundPath = (this.gameSettings.selectedSkin === "volt") ? "../../assets/images/snake-skins/volt_snake/sounds" : "../../assets/sounds"
 
@@ -1479,16 +1480,17 @@ class SnakeMathGame {
           accessorySprite = this.sprites.Accessory;
         }
 
-        if (headSprite?.complete && headSprite) {
+        if (headSprite?.complete && headSprite.naturalWidth > 0) {
           this.ctx.drawImage(headSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
-        } 
-        
-        if (accessorySprite?.complete && accessorySprite) {
-          this.ctx.drawImage(accessorySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
         } else {
+          // Fallback head rendering
           this.ctx.fillStyle = "#32cd32";
           this.ctx.fillRect(x, y, this.GRID_SIZE, this.GRID_SIZE);
           this.drawPixelSnakeFace(x, y, this.snakeFace);
+        }
+        
+        if (accessorySprite?.complete && accessorySprite.naturalWidth > 0) {
+          this.ctx.drawImage(accessorySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
         }
       } else if (index === this.snake.length - 1) {
         // ===== TAIL =====
@@ -1507,7 +1509,7 @@ class SnakeMathGame {
         else if (outOfBoundPrevY === -1) tailSprite = this.sprites.SnakeTailDown;
         else tailSprite = this.sprites.SnakeTail;
 
-        if (tailSprite?.complete) {
+        if (tailSprite?.complete && tailSprite.naturalWidth > 0) {
           this.ctx.drawImage(tailSprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
         } else {
           this.ctx.fillStyle = "#228b22";
@@ -1569,7 +1571,7 @@ class SnakeMathGame {
         }
 
         // Draw body
-        if (bodySprite?.complete) {
+        if (bodySprite?.complete && bodySprite.naturalWidth > 0) {
           this.ctx.drawImage(bodySprite, x, y, this.GRID_SIZE, this.GRID_SIZE);
         } else {
           this.ctx.fillStyle = "#006400";
@@ -1597,7 +1599,7 @@ class SnakeMathGame {
       const drawW = (apple.width || 1) * this.GRID_SIZE
       const drawH = (apple.height || 1) * this.GRID_SIZE
 
-      if (appleSprite && appleSprite.complete) {
+      if (appleSprite && appleSprite.complete && appleSprite.naturalWidth > 0) {
         this.ctx.drawImage(appleSprite, x, y, drawW, drawH)
       } else {
         // Fallback to red rectangle if sprite not loaded

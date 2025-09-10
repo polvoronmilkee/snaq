@@ -6,6 +6,7 @@
     <title>SnaQ - Quiz Your Brain, Grow Your Snake!</title>
     <link rel="icon" type="image/png" href="assets/images/icons/snake-icon.png">
     <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/gameMenu.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -377,9 +378,13 @@
             <h2 class="menu-title">Settings</h2>
             <div class="menu-options">
                 <button class="menu-btn" id="how-to-play-btn">How to Play?</button>
-                <button class="menu-btn" id="shop-menu-btn">Shop</button>
                 <button class="menu-btn" id="sound-menu-btn">Sound: On</button>
                 <button class="menu-btn" id="music-menu-btn">Music: On</button>
+                <button class="menu-btn" id="shop-menu-btn">Shop</button>
+                <button class="menu-btn" id="leaderboard-menu-btn">Leaderboard</button>
+                <button class="menu-btn" onclick="window.location.href = 'intro.html'">Intro</button>
+                <button class="menu-btn" id="tutorial-menu-btn">Tutorial</button>
+                <button class="menu-btn" id="about-menu-btn">About Us</button>
             </div>
         </div>
     </div>
@@ -390,7 +395,8 @@
     <div class="spacer"></div>
 
     <script src="shared/tutorial.js"></script>
-    <script src="shared/landing.js"></script>
+    <script src="shared/gameMenu.js" type="module"></script>
+    <script src="shared/landing.js" type="module"></script>
     <script>
         window.onload = function() {
           const hasSeenIntro = localStorage.getItem('hasSeenIntro') === 'true';
