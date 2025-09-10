@@ -909,7 +909,7 @@ class LandingPage {
       difficulty: this.selectedDifficulty,
       selectedSkin: this.selectedSkin,
       selectedAccessory: this.selectedAccessory,
-      selectedEffect: this.selectedEffect
+      selectedTile: this.selectedTile
     };
 
     localStorage.setItem("gameSettings", JSON.stringify(gameSettings));
@@ -983,7 +983,7 @@ renderShopItems(category) {
     if (category === "skins") {
       itemElement.innerHTML = `
         <div class="skin-preview">
-          <img src="assets/images/snake-skins/${item.id}_snake/SnakeHead.png" alt="${item.name}" class="skin-image" />
+          <img src="assets/images/snake-skins/${item.id}_snake/SnakeHeadDown.png" alt="${item.name}" class="skin-image" />
         </div>
         <div class="skin-info">
           <h4>${item.name}</h4>
@@ -1008,7 +1008,7 @@ renderShopItems(category) {
     } else if (category === "accessories") {
       itemElement.innerHTML = `
         <div class="skin-preview">
-          <img src="assets/images/accessory/${item.id}.png" alt="${item.name}" class="skin-image" />
+          <img src="assets/images/accessory/${item.id}Down.png" alt="${item.name}" class="skin-image" />
         </div>
         <div class="skin-info">
           <h4>${item.name}</h4>
@@ -1206,8 +1206,8 @@ renderShopItems(category) {
       this.selectedAccessory = itemId;
       localStorage.setItem("selectedAccessory", itemId);
     } else if (category === 'tiles') {
-      this.selectedEffect = itemId;
-      localStorage.setItem("selectedEffect", itemId);
+      this.selectedTile = itemId;
+      localStorage.setItem("selectedTile", itemId);
     }
     
     // Re-render items to show selection
