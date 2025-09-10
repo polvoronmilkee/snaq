@@ -232,6 +232,25 @@
         </div>
     </div>
 
+    <!-- ACHIEVEMENTS MODAL -->
+    <div id="achievements-modal" class="instructions-modal hidden">
+        <div class="instructions-content pixel-border">
+            <h3>🏆 Achievements</h3>
+            
+            <div class="achievements-container">
+                <div id="achievements-list" class="achievements-list">
+                    <!-- Achievements will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="achievements-info">
+                <p class="achievements-note">Complete challenges to unlock coin rewards!</p>
+            </div>
+
+            <button class="close-instructions" id="close-achievements">Close</button>
+        </div>
+    </div>
+
     <!-- USERNAME MODAL -->
     <div id="username-modal" class="instructions-modal hidden">
         <div class="instructions-content pixel-border color-white">
@@ -304,10 +323,16 @@
                     <button class="play-btn" id="playBtn" disabled>
                         <img src="assets/images/icons/play-icon.png" alt="Play" class="btn-icon" />
                         <span>START GAME</span>
-                        <button class="leaderboard-btn" id="leaderboard-btn" title="Leaderboard">
+                    <button class="leaderboard-btn" id="leaderboard-btn" title="Leaderboard">
+                        <div class="skin-btn-content">
+                            <span class="skin-text">Leaderboard</span>
+                            <img src="assets/images/icons/score-icon.png" alt="Leaderboard" class="btn-icon" />
+                        </div>
+                    </button>
+                        <button class="achievements-btn" id="achievements-btn" title="Achievements">
                             <div class="skin-btn-content">
-                                <span class="skin-text">Leaderboard</span>
-                                <img src="assets/images/icons/score-icon.png" alt="Leaderboard" class="btn-icon" />
+                                <span class="skin-text">Achievements</span>
+                                <img src="assets/images/icons/correct-icon.png" alt="Achievements" class="btn-icon" />
                             </div>
                         </button>
                     </button>
