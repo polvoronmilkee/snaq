@@ -9,7 +9,7 @@ class TutorialManager {
         this.gameInstance = null;
         this.originalGameState = null;
         this.hasCompletedTutorial = localStorage.getItem('tutorialCompleted') === 'true';
-        this.hasSeenIntro = localStorage.getItem('hasSeenIntro') === 'true';
+        
         this.init();
     }
 
@@ -56,7 +56,6 @@ class TutorialManager {
                 }
             }
         });
-        
     }
 
     startTutorial() {
@@ -266,7 +265,7 @@ class TutorialManager {
             
             {
                 target: '#game-canvas',
-                title: '🎉 Perfect! Snake Growth',
+                title: 'Perfect! Snake Growth',
                 content: 'Amazing! When you eat the correct apple, three things happen:\n\n✅ Your snake grows longer\n📈 You earn 10 points\n🔢 Your correct counter increases\n\nThe longer your snake gets, the more challenging the game becomes!',
                 position: 'top',
                 action: null
@@ -308,7 +307,7 @@ class TutorialManager {
             
             {
                 target: null,
-                title: '🎓 Tutorial Complete - You\'re Ready!',
+                title: 'Tutorial Complete - You\'re Ready!',
                 content: '🎉 Congratulations! You\'ve mastered all the game mechanics:\n\n✅ Understanding the interface (Score, Lives, Correct Counter)\n✅ Reading math questions and finding correct apples\n✅ Snake movement with WASD/Arrow keys\n✅ Answering questions correctly\n✅ Using sprint (SHIFT) strategically\n✅ Pausing (ESC) and resuming (SPACE)\n✅ Restarting games (R)\n\n🎯 Goal: Get 10 correct answers to win!\n\nNow play on your own and have fun! Thank you for playing the tutorial!',
                 position: 'center',
                 action: 'complete'
@@ -918,22 +917,24 @@ class TutorialManager {
     }
 
     showCompletionMessage() {
-        const notification = document.createElement('div');
-        notification.className = 'tutorial-completion-notification';
-        notification.innerHTML = `
-            <div class="notification-content pixel-border">
-                <h3>🎉 Tutorial Complete!</h3>
-                <p>You're now ready to play SnaQ! Good luck and have fun!</p>
-            </div>
-        `;
-        
+        // Use the same notification system as the shop
+        const notification = document.createElement("div");
+        notification.id = "notification";
+        notification.className = "";
+        notification.textContent = "Tutorial Complete! You're now ready to play SnaQ!";
         document.body.appendChild(notification);
-        
+
+        // Show the notification
+        setTimeout(() => notification.classList.add("show"), 10);
+
+        // Hide after 3 seconds
         setTimeout(() => {
-            notification.classList.add('fade-out');
+            notification.classList.remove("show");
             setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 500);
+                if (notification.parentNode) {
+                    document.body.removeChild(notification);
+                }
+            }, 1000);
         }, 3000);
     }
 
@@ -947,7 +948,6 @@ class TutorialManager {
         localStorage.removeItem('tutorialCompleted');
     }
 }
-
 
 // Initialize tutorial manager and make it globally available
 window.tutorialManager = null;

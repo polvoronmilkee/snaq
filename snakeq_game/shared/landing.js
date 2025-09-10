@@ -1009,6 +1009,7 @@ class LandingPage {
     if (this.musicEnabled) {
       this.backgroundMusic.pause();
     }
+    
 
     // Check sessionStorage for tutorial mode
     const gameMode = sessionStorage.getItem('gameMode');
