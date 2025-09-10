@@ -27,7 +27,7 @@ class LandingPage {
     this.selectedAccessory = localStorage.getItem("selectedAccessory") || null;
     
     this.ownedTiles = JSON.parse(localStorage.getItem("ownedTiles")) || ["Tile"];
-    this.selectedTiles = localStorage.getItem("selectedTiles") || "Tile";
+    this.selectedTile = localStorage.getItem("selectedTile") || "Tile";
     
     this.unlockedModes = JSON.parse(localStorage.getItem("unlockedModes")) || ["quiz"];
     this.pendingUnlock = null;
@@ -603,14 +603,10 @@ class LandingPage {
   showGameModeModal() {
     if (!this.selectedCategory) return;
 
-    // console.log('showGameModeModal called');
     const modal = $$("gameModeModal");
     if (modal) {
       modal.classList.remove("hidden");
-      // this.updateGameModeLocks();
-      // setTimeout(() => {
-      //   this.updateDifficultyLocks();
-      // }, 100);
+      this.updateGameModeLocks();
     }
   }
 
@@ -622,6 +618,7 @@ class LandingPage {
       const cost = parseInt(btn.dataset.cost) || 0;
       const mode = btn.dataset.mode;
       
+      // Remove any existing overlays (cleanup from old system)
       const existingOverlay = btn.parentElement.querySelector(`[data-lock-for="${mode}"]`);
       if (existingOverlay) {
         existingOverlay.remove();
@@ -629,24 +626,12 @@ class LandingPage {
       
       if (cost === 0 || this.unlockedModes.includes(mode)) {
         btn.classList.remove("locked");
+        btn.removeAttribute("data-cost-display");
         btn.disabled = false;
       } else {
         btn.classList.add("locked");
-        btn.disabled = false;
-        
-        const lockOverlay = document.createElement("div");
-        lockOverlay.className = "mode-lock-overlay";
-        lockOverlay.textContent = "🔒";
-        lockOverlay.setAttribute("data-lock-for", mode);
-        
-        const btnRect = btn.getBoundingClientRect();
-        const parentRect = btn.parentElement.getBoundingClientRect();
-        
-        lockOverlay.style.position = "absolute";
-        lockOverlay.style.left = (btnRect.left - parentRect.left + btnRect.width / 2) + "px";
-        lockOverlay.style.top = (btnRect.top - parentRect.top + btnRect.height / 2) + "px";
-        
-        btn.parentElement.appendChild(lockOverlay);
+        btn.setAttribute("data-cost-display", `${cost} coins needed`);
+        btn.disabled = false; // Keep clickable to show unlock modal
       }
     });
 
@@ -661,6 +646,7 @@ class LandingPage {
     difficultyBtns.forEach((btn) => {
       const difficulty = btn.dataset.difficulty;
       
+      // Remove any existing overlays (cleanup from old system)
       const existingOverlay = btn.parentElement.querySelector(`[data-difficulty-lock-for="${difficulty}"]`);
       if (existingOverlay) {
         existingOverlay.remove();
@@ -670,24 +656,12 @@ class LandingPage {
       
       if (requiredCoins === 0 || this.coins >= requiredCoins) {
         btn.classList.remove("locked");
+        btn.removeAttribute("data-cost-display");
         btn.disabled = false;
       } else {
         btn.classList.add("locked");
-        btn.disabled = false;
-        
-        const lockOverlay = document.createElement("div");
-        lockOverlay.className = "difficulty-lock-overlay";
-        lockOverlay.textContent = "🔒";
-        lockOverlay.setAttribute("data-difficulty-lock-for", difficulty);
-        
-        const btnRect = btn.getBoundingClientRect();
-        const parentRect = btn.parentElement.getBoundingClientRect();
-        
-        lockOverlay.style.position = "absolute";
-        lockOverlay.style.left = (btnRect.left - parentRect.left + btnRect.width / 2) + "px";
-        lockOverlay.style.top = (btnRect.top - parentRect.top + btnRect.height / 2) + "px";
-        
-        btn.parentElement.appendChild(lockOverlay);
+        btn.setAttribute("data-cost-display", `${requiredCoins} coins needed`);
+        btn.disabled = false; // Keep clickable for potential future unlock functionality
       }
     });
     
@@ -746,8 +720,8 @@ class LandingPage {
 
     const modeName = mode === 'endless' ? 'Endless Mode' : 'Timed Mode (1 min)';
     const modeDesc = mode === 'endless' 
-      ? 'Play without limits! Survive as long as you can and grow your snake endlessly.' 
-      : 'Fast-paced 60-second challenge! Answer as many questions as possible in one minute.';
+      ? 'Play without limits! ' 
+      : 'Fast-paced 60-second challenge! ';
 
     if (modeTitle) modeTitle.textContent = `🔒 Unlock ${modeName}`;
     if (modeDescription) modeDescription.textContent = modeDesc;
@@ -788,10 +762,14 @@ class LandingPage {
     
     if (!this.pendingUnlock) return;
 
-    const { mode, cost } = this.pendingUnlock;
+    const { mode, difficulty, cost, type } = this.pendingUnlock;
 
     if (this.coins >= cost) {
-      this.unlockGameMode(mode, cost);
+      if (type === 'difficulty') {
+        this.unlockDifficulty(difficulty, cost);
+      } else {
+        this.unlockGameMode(mode, cost);
+      }
       this.hideUnlockModal();
     } else {
       this.hideUnlockModal();
@@ -844,23 +822,91 @@ class LandingPage {
     
   }
 
+  showDifficultyUnlockModal(difficulty, cost) {
+    
+    const unlockModal = $$("unlock-modal");
+    const modeTitle = $$("unlock-mode-title");
+    const modeDescription = $$("unlock-mode-description");
+    const costAmount = $$("unlock-cost-amount");
+    const currentCoins = $$("unlock-current-coins");
+    const insufficientMsg = $$("unlock-insufficient");
+    const confirmBtn = $$("confirm-unlock-btn");
+
+    if (!unlockModal) return;
+
+    const difficultyName = difficulty.charAt(0).toUpperCase() + difficulty.slice(1) + ' Difficulty';
+    const difficultyDesc = difficulty === 'medium' 
+      ? 'Moderate challenge with balanced questions and slightly faster gameplay.' 
+      : 'Ultimate challenge! Hardest questions with the fastest gameplay speed.';
+
+    if (modeTitle) modeTitle.textContent = `🔒 Unlock ${difficultyName}`;
+    if (modeDescription) modeDescription.textContent = difficultyDesc;
+    if (costAmount) costAmount.textContent = `${cost} coins`;
+    if (currentCoins) currentCoins.textContent = this.coins;
+
+    const canAfford = this.coins >= cost;
+    if (insufficientMsg) {
+      if (canAfford) {
+        insufficientMsg.classList.add('hidden');
+      } else {
+        insufficientMsg.classList.remove('hidden');
+      }
+    }
+
+    if (confirmBtn) {
+      confirmBtn.disabled = !canAfford;
+      confirmBtn.textContent = canAfford ? 'Unlock Difficulty' : 'Need More Coins';
+    }
+
+    this.pendingUnlock = { difficulty, cost, type: 'difficulty' };
+
+    unlockModal.classList.remove("hidden");
+    
+  }
+
+  unlockDifficulty(difficulty, cost) {
+    
+    this.coins -= cost;
+    this.points -= (cost * 10);
+    
+    localStorage.setItem("totalCoins", this.coins.toString());
+    localStorage.setItem("totalPoints", this.points.toString());
+    
+    const pointsDisplay = $$("current-points");
+    if (pointsDisplay) {
+      pointsDisplay.textContent = this.points;
+    }
+    
+    const coinsDisplay = $$("current-coins");
+    if (coinsDisplay) {
+      coinsDisplay.textContent = this.coins;
+    }
+    
+    this.updateGameModeLocks();
+    
+    const difficultyName = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+    this.showNotification(`🎉 ${difficultyName} difficulty unlocked! Ready for the challenge!`);
+    
+    const difficultyBtn = document.querySelector(`[data-difficulty="${difficulty}"]`);
+    if (difficultyBtn) {
+      document.querySelectorAll(".difficulty-btn").forEach((btn) => {
+        btn.classList.remove("selected");
+      });
+      
+      difficultyBtn.classList.add("selected");
+      this.selectedDifficulty = difficulty;
+      this.updateStartButton();
+    }
+    
+  }
+
   selectDifficulty(e) {
     const btn = e.target.closest('.difficulty-btn');
     if (!btn) return;
 
     const difficulty = btn.dataset.difficulty;
-    // const requiredCoins = parseInt(btn.dataset.cost) || 0;
+    const requiredCoins = parseInt(btn.dataset.cost) || 0;
 
-    // Normal difficulty selection (all difficulties available)
-    document.querySelectorAll(".difficulty-btn").forEach((btn) => {
-      btn.classList.remove("selected");
-    });
-
-    btn.classList.add("selected");
-    this.selectedDifficulty = btn.dataset.difficulty;
-    this.updateStartButton();
-
-    
     // Check if difficulty is free or user has enough coins
     if (requiredCoins === 0 || this.coins >= requiredCoins) {
       // Normal difficulty selection
@@ -874,10 +920,8 @@ class LandingPage {
       return;
     }
 
-    // For locked difficulties, show notification
-    const difficultyName = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
-    this.showNotification(`💰 ${difficultyName} difficulty requires ${requiredCoins} coins! Play more to earn coins.`);
-    
+    // For locked difficulties, show unlock modal
+    this.showDifficultyUnlockModal(difficulty, requiredCoins);
   }
 
   updateStartButton() {
@@ -1096,7 +1140,7 @@ renderShopItems(category) {
     } else if (category === 'accessories') {
       return this.selectedAccessory === itemId;
     } else if (category === 'tiles') {
-      return this.selectedTiles === itemId;
+      return this.selectedTile === itemId;
     }
     return false;
   }
