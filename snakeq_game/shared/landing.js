@@ -1351,7 +1351,8 @@ class LandingPage {
         { id: 'pink', name: 'Sugar Rush', desc: 'A sweet pink variation', price: 100 },
         { id: 'blue', name: 'Ocean Fang', desc: 'A bubbly blue variation', price: 100 },
         { id: 'volt', name: 'Ghost Shock', desc: 'A ghostly snake with shock energy', price: 250 },
-        { id: 'gold', name: 'Royal Glimmer', desc: 'A royalty shining snake', price: 300 }
+        { id: 'gold', name: 'Royal Glimmer', desc: 'A royalty shining snake', price: 300 },
+        { id: 'white', name: 'Crimson Pale', desc: 'A pale vampire-like snake', price: 500 }
       ],
       accessories: [
         { id: 'none', name: 'Default', desc: 'No accessory', price: 0 },
