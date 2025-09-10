@@ -1634,7 +1634,6 @@ body::before {
   align-items: center;
   gap: 6px;
   min-width: 140px;
-  border: 3px solid  #412906;
 }
 
 .options-container {

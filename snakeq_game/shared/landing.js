@@ -1311,19 +1311,19 @@ class LandingPage {
       skins: [
         { id: 'green', name: 'Classic Green', desc: 'The original snake look', price: 0 },
         { id: 'pink', name: 'Sugar Rush', desc: 'A sweet pink variation', price: 100 },
-        { id: 'blue', name: 'Ocean Fang', desc: 'Be one with the ocean', price: 100 },
-        { id: 'volt', name: 'Ghost Shock', desc: 'Charged with voltech energy', price: 250 },
+        { id: 'blue', name: 'Ocean Fang', desc: 'A bubbly blue variation', price: 100 },
+        { id: 'volt', name: 'Ghost Shock', desc: 'A ghostly snake with shock energy', price: 250 },
         { id: 'gold', name: 'Royal Glimmer', desc: 'A royalty shining snake', price: 300 }
       ],
       accessories: [
         { id: 'none', name: 'Default', desc: 'No accessory', price: 0 },
-        { id: 'hat', name: 'Top Hat', desc: 'A dapper accessory', price: 100 },
-        { id: 'glasses', name: 'Sunglasses', desc: 'Cool shades for your snake', price: 75 },
+        { id: 'hat', name: 'Cook Hat', desc: 'An extension of your mind', price: 100 },
+        { id: 'glasses', name: 'Sunglasses', desc: 'Cool shades to cover your eyes', price: 75 },
         { id: 'crown', name: 'Golden Crown', desc: 'Royal headpiece', price: 250 },
         { id: 'bow', name: 'Red Bow', desc: 'Elegant ribbon accessory', price: 50 }
       ],
       tiles: [
-        { id: 'Tile', name: 'Classic Tiles', desc: 'Feel the woodsy floor', price: 150 },
+        { id: 'Tile', name: 'Classic Tiles', desc: 'A classic tile design', price: 150 },
         { id: 'pinkTile', name: 'Sugar Rush', desc: 'Yumm!!', price: 100 },
         { id: 'blueTile', name: 'Ocean Blaze', desc: 'Like the rushing waves', price: 200 },
         { id: 'voltTile', name: 'Ancient Tech', desc: 'A mystical scripts of the past', price: 175 }
