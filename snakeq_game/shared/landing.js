@@ -44,38 +44,49 @@ class LandingPage {
     this.init();
   }
 
-  async init() {
-    // Check if we should show the intro video
-    const hasSeenIntro = localStorage.getItem('hasSeenIntro') === 'true';
-    const fromIntro = new URLSearchParams(window.location.search).get('fromIntro');
+      async init() {
+        // Track how many times intro has been seen
+        let introCount = parseInt(localStorage.getItem('introCount') || '0', 10);
+        const fromIntro = new URLSearchParams(window.location.search).get('fromIntro');
 
-    if (!hasSeenIntro && !fromIntro) {
-      // Show the intro video with unskippable flag
-      const url = new URL(window.location.origin);
-      url.pathname = '/snakeq_game/shared/intro.html';
-      url.searchParams.set('unskippable', 'true');
-      window.location.href = url.toString();
-      return; // Don't initialize the rest if we're redirecting
-    }
+        if (introCount === 0 && !fromIntro) {
+          // First ever time → show intro
+          const url = new URL(window.location.origin);
+          url.pathname = '/snakeq_game/shared/intro.html';
+          url.searchParams.set('unskippable', 'true');
+          url.searchParams.set('fromIntro', 'true'); // so we know we came back
+          window.location.href = url.toString();
+          return; // Stop init
+        }
 
-    // Clear the URL parameter if we came from intro
-    if (fromIntro) {
-      const url = new URL(window.location);
-      url.searchParams.delete('fromIntro');
-      window.history.replaceState({}, '', url);
-    }
+        if (fromIntro) {
+          // Increase intro count
+          introCount++;
+          localStorage.setItem('introCount', introCount);
 
-    this.bindEvents();
-    this.initializeAudioStates();
-    await this.initializeLeaderboard();
-    this.checkUsernamePrompt();
-    this.setupMessageListener();
-    
-    // Check for new achievements on page load
-    setTimeout(() => {
-      this.checkAchievements();
-    }, 1000);
-  }
+          // Clear the param
+          const url = new URL(window.location);
+          url.searchParams.delete('fromIntro');
+          window.history.replaceState({}, '', url);
+
+          // First time back from intro → show tutorial
+          if (introCount === 1) {
+            this.startTutorial();
+          }
+        }
+
+        this.bindEvents();
+        this.initializeAudioStates();
+        await this.initializeLeaderboard();
+        this.checkUsernamePrompt();
+        this.setupMessageListener();
+
+        // Check for new achievements on page load
+        setTimeout(() => {
+          this.checkAchievements();
+        }, 1000);
+      }
+
 
   async initializeLeaderboard() {
     try {
