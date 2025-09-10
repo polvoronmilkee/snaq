@@ -1852,7 +1852,8 @@ body::before {
 
 .skin-info h4 {
   margin: 0 0 8px 0;
-  color: #fff;
+  color: #654321;
+  text-shadow: 1px 1px 0 #fff;
   font-size: 16px;
 }
 
@@ -1873,9 +1874,11 @@ body::before {
 
 
 .skin-price {
-  color: #ffaa00;
+  background: linear-gradient(145deg, #ffbf91, #ffcc00);
+  border: 2px solid #654321;
   font-size: 14px;
   font-weight: bold;
+  color: #654321 ;
 }
 
 .buy-skin-btn {
@@ -2090,12 +2093,16 @@ body::before {
   font-size: 14px;
 }
 
+
 .skin-price {
-  color: #000000;
-  background-color: #ffcc00;
-  border: 3px solid #000000;
-  padding: 4px 8px;
+  background: linear-gradient(145deg, #ffbf91, #ffcc00);
+  border: 2px solid #654321;
+  font-size: 14px;
+  font-weight: bold;
+  color: #221a11 ;
+    padding: 4px 8px;
 }
+
 
 .shop-actions {
   margin-top: 20px;
@@ -2104,7 +2111,8 @@ body::before {
   flex-direction: column;
 }
 
-.buy-coins {
+.buy-coins {background: linear-gradient(145deg, #ffbf91, #ffcc00);
+  border: 2px solid #654321;
   background-color: #ffcc00;
   color: #222;
   font-weight: bold;
