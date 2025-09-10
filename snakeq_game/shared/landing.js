@@ -36,7 +36,11 @@ class LandingPage {
     this.username = localStorage.getItem("playerUsername") || null;
     this.leaderboardManager = null;
     this.currentLeaderboardCategory = 'overall';
-
+    
+    // Achievement system
+    this.achievements = this.loadAchievements();
+    this.gameStats = this.loadGameStats();
+    
     this.init();
   }
 
@@ -65,6 +69,12 @@ class LandingPage {
     this.initializeAudioStates();
     await this.initializeLeaderboard();
     this.checkUsernamePrompt();
+    this.setupMessageListener();
+    
+    // Check for new achievements on page load
+    setTimeout(() => {
+      this.checkAchievements();
+    }, 1000);
   }
 
   async initializeLeaderboard() {
@@ -312,6 +322,33 @@ class LandingPage {
         this.selectLeaderboardCategory(e);
       });
     });
+
+    // Achievements event bindings
+    const achievementsBtn = $$("achievements-btn");
+    const achievementsModal = $$("achievements-modal");
+    const closeAchievementsBtn = $$("close-achievements");
+
+    if (achievementsBtn) {
+      achievementsBtn.addEventListener("click", () => {
+        this.playClickSound();
+        this.showAchievements();
+      });
+    }
+
+    if (closeAchievementsBtn) {
+      closeAchievementsBtn.addEventListener("click", () => {
+        this.playClickSound();
+        this.hideAchievements();
+      });
+    }
+
+    if (achievementsModal) {
+      achievementsModal.addEventListener("click", (e) => {
+        if (e.target === achievementsModal) {
+          this.hideAchievements();
+        }
+      });
+    }
 
 
     // Username modal event bindings
@@ -1661,7 +1698,319 @@ class LandingPage {
       }, 100);
     }
   }
+
+  // Achievement System
+  loadAchievements() {
+    const defaultAchievements = {
+      hungrySnake: { unlocked: false, claimed: false },
+      speedDemon: { unlocked: false, claimed: false },
+      scholar: { unlocked: false, claimed: false },
+      perfectionist: { unlocked: false, claimed: false },
+      collector: { unlocked: false, claimed: false },
+      marathoner: { unlocked: false, claimed: false }
+    };
+    
+    return JSON.parse(localStorage.getItem("achievements")) || defaultAchievements;
+  }
+
+  loadGameStats() {
+    const defaultStats = {
+      totalApplesEaten: 0,
+      correctAnswers: 0,
+      gamesPlayed: 0,
+      perfectGames: 0,
+      totalPlayTime: 0
+    };
+    
+    const stats = JSON.parse(localStorage.getItem("gameStats")) || defaultStats;
+    console.log('Loaded game stats:', stats);
+    return stats;
+  }
+
+  saveAchievements() {
+    localStorage.setItem("achievements", JSON.stringify(this.achievements));
+  }
+
+  saveGameStats() {
+    console.log('Saving game stats:', this.gameStats);
+    localStorage.setItem("gameStats", JSON.stringify(this.gameStats));
+  }
+
+  getAchievementList() {
+    return [
+      {
+        id: 'hungrySnake',
+        name: 'Hungry Snake',
+        description: 'Eat 100 apples overall',
+        icon: '🍎',
+        reward: 20,
+        requirement: () => this.gameStats.totalApplesEaten >= 100,
+        progress: () => Math.min(this.gameStats.totalApplesEaten, 100),
+        maxProgress: 100
+      },
+      {
+        id: 'speedDemon',
+        name: 'Speed Demon',
+        description: 'Answer 50 questions correctly',
+        icon: '⚡',
+        reward: 15,
+        requirement: () => this.gameStats.correctAnswers >= 50,
+        progress: () => Math.min(this.gameStats.correctAnswers, 50),
+        maxProgress: 50
+      },
+      {
+        id: 'scholar',
+        name: 'Scholar',
+        description: 'Play 25 games across all categories',
+        icon: '🎓',
+        reward: 25,
+        requirement: () => this.gameStats.gamesPlayed >= 25,
+        progress: () => Math.min(this.gameStats.gamesPlayed, 25),
+        maxProgress: 25
+      },
+      {
+        id: 'perfectionist',
+        name: 'Perfectionist',
+        description: 'Complete 5 games with perfect score',
+        icon: '🏆',
+        reward: 30,
+        requirement: () => this.gameStats.perfectGames >= 5,
+        progress: () => Math.min(this.gameStats.perfectGames, 5),
+        maxProgress: 5
+      },
+      {
+        id: 'collector',
+        name: 'Collector',
+        description: 'Own 3 different snake skins',
+        icon: '🐍',
+        reward: 10,
+        requirement: () => this.ownedSkins.length >= 3,
+        progress: () => Math.min(this.ownedSkins.length, 3),
+        maxProgress: 3
+      },
+      {
+        id: 'marathoner',
+        name: 'Marathoner',
+        description: 'Play for a total of 60 minutes',
+        icon: '⏱️',
+        reward: 40,
+        requirement: () => this.gameStats.totalPlayTime >= 3600000, // 60 minutes in milliseconds
+        progress: () => Math.min(Math.floor(this.gameStats.totalPlayTime / 1000), 3600), // Convert to seconds for display
+        maxProgress: 3600
+      }
+    ];
+  }
+
+  checkAchievements() {
+    console.log('Checking achievements with current stats:', this.gameStats);
+    const achievementList = this.getAchievementList();
+    let newAchievements = [];
+
+    achievementList.forEach(achievement => {
+      const currentlyUnlocked = this.achievements[achievement.id].unlocked;
+      const meetsRequirement = achievement.requirement();
+      console.log(`Achievement ${achievement.id}: unlocked=${currentlyUnlocked}, meetsRequirement=${meetsRequirement}`);
+      
+      if (!currentlyUnlocked && meetsRequirement) {
+        console.log(`Unlocking achievement: ${achievement.id}`);
+        this.achievements[achievement.id].unlocked = true;
+        newAchievements.push(achievement);
+      }
+    });
+
+    if (newAchievements.length > 0) {
+      console.log('New achievements unlocked:', newAchievements.map(a => a.id));
+      this.saveAchievements();
+      newAchievements.forEach(achievement => {
+        this.showAchievementNotification(achievement);
+      });
+    }
+  }
+
+  showAchievementNotification(achievement) {
+    // Create achievement notification
+    const notification = document.createElement('div');
+    notification.className = 'achievement-notification';
+    notification.innerHTML = `
+      <div class="achievement-content">
+        <div class="achievement-icon">${achievement.icon}</div>
+        <div class="achievement-text">
+          <h4>Achievement Unlocked!</h4>
+          <p>${achievement.name}</p>
+          <small>+${achievement.reward} coins reward available!</small>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(notification);
+
+    // Animate in
+    setTimeout(() => {
+      notification.classList.add('show');
+    }, 100);
+
+    // Remove after 4 seconds
+    setTimeout(() => {
+      notification.classList.remove('show');
+      setTimeout(() => {
+        notification.remove();
+      }, 500);
+    }, 4000);
+  }
+
+  showAchievements() {
+    const achievementsModal = document.getElementById("achievements-modal");
+    if (achievementsModal) {
+      achievementsModal.classList.remove("hidden");
+      this.renderAchievements();
+    }
+  }
+
+  hideAchievements() {
+    const achievementsModal = document.getElementById("achievements-modal");
+    if (achievementsModal) {
+      achievementsModal.classList.add("hidden");
+    }
+  }
+
+  renderAchievements() {
+    const achievementsList = document.getElementById("achievements-list");
+    if (!achievementsList) return;
+
+    const achievementList = this.getAchievementList();
+    achievementsList.innerHTML = '';
+
+    achievementList.forEach(achievement => {
+      const isUnlocked = this.achievements[achievement.id].unlocked;
+      const isClaimed = this.achievements[achievement.id].claimed;
+      const progress = achievement.progress();
+      const maxProgress = achievement.maxProgress;
+      const progressPercent = (progress / maxProgress) * 100;
+
+      const achievementElement = document.createElement('div');
+      achievementElement.className = `achievement-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+      
+      achievementElement.innerHTML = `
+        <div class="achievement-icon-large">${achievement.icon}</div>
+        <div class="achievement-info">
+          <h4 class="achievement-title">${achievement.name}</h4>
+          <p class="achievement-description">${achievement.description}</p>
+          <div class="achievement-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${progressPercent}%"></div>
+            </div>
+            <span class="progress-text">${progress}/${maxProgress}</span>
+          </div>
+        </div>
+        <div class="achievement-reward">
+          ${isUnlocked ? 
+            (isClaimed ? 
+              '<span class="claimed">✅ Claimed</span>' : 
+              `<button class="claim-btn pixel-btn" data-achievement="${achievement.id}">
+                Claim ${achievement.reward} coins
+              </button>`
+            ) : 
+            `<span class="reward-preview">+${achievement.reward} coins</span>`
+          }
+        </div>
+      `;
+
+      achievementsList.appendChild(achievementElement);
+    });
+
+    // Add event listeners to claim buttons
+    achievementsList.querySelectorAll('.claim-btn').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const achievementId = button.dataset.achievement;
+        this.claimAchievementReward(achievementId);
+      });
+    });
+  }
+
+  claimAchievementReward(achievementId) {
+    const achievement = this.getAchievementList().find(a => a.id === achievementId);
+    if (!achievement || !this.achievements[achievementId].unlocked || this.achievements[achievementId].claimed) {
+      return;
+    }
+
+    // Award coins
+    this.coins += achievement.reward;
+    this.points += (achievement.reward * 10); // Maintain point-coin ratio
+
+    // Mark as claimed
+    this.achievements[achievementId].claimed = true;
+
+    // Save changes
+    localStorage.setItem("totalCoins", this.coins.toString());
+    localStorage.setItem("totalPoints", this.points.toString());
+    this.saveAchievements();
+
+    // Update displays
+    const pointsDisplay = document.getElementById("current-points");
+    if (pointsDisplay) {
+      pointsDisplay.textContent = this.points;
+    }
+
+    const coinsDisplay = document.getElementById("current-coins");
+    if (coinsDisplay) {
+      coinsDisplay.textContent = this.coins;
+    }
+
+    // Update achievements modal displays if open
+    const achievementsPointsDisplay = document.getElementById("achievements-points");
+    if (achievementsPointsDisplay) {
+      achievementsPointsDisplay.textContent = this.points;
+    }
+
+    const achievementsCoinsDisplay = document.getElementById("achievements-coins");
+    if (achievementsCoinsDisplay) {
+      achievementsCoinsDisplay.textContent = this.coins;
+    }
+
+    // Re-render achievements to show claimed status
+    this.renderAchievements();
+
+    // Show success notification
+    this.showNotification(`🎉 Claimed ${achievement.reward} coins for "${achievement.name}"!`);
+    this.playClickSound();
+  }
+
+  // Method to be called from games to update stats
+  updateGameStats(stats) {
+    console.log('Updating game stats with:', stats);
+    if (stats.applesEaten) this.gameStats.totalApplesEaten += stats.applesEaten;
+    if (stats.correctAnswers) this.gameStats.correctAnswers += stats.correctAnswers;
+    if (stats.gamesPlayed) this.gameStats.gamesPlayed += stats.gamesPlayed;
+    if (stats.perfectGames) this.gameStats.perfectGames += stats.perfectGames;
+    if (stats.perfectGame) this.gameStats.perfectGames += 1; // backward compatibility
+    if (stats.totalPlayTime) this.gameStats.totalPlayTime += stats.totalPlayTime;
+    if (stats.playTime) this.gameStats.totalPlayTime += stats.playTime; // backward compatibility
+
+    console.log('Updated game stats:', this.gameStats);
+    this.saveGameStats();
+    this.checkAchievements();
+  }
+
+  setupMessageListener() {
+    console.log('Setting up message listener...');
+    // Listen for game statistics from game windows
+    window.addEventListener('message', (event) => {
+      console.log('Raw message received:', event);
+      console.log('Message origin:', event.origin);
+      console.log('Message data:', event.data);
+      
+      if (event.data && event.data.type === 'gameStatistics') {
+        console.log('Processing game statistics:', event.data.stats);
+        this.updateGameStats(event.data.stats);
+      } else {
+        console.log('Message ignored - not gameStatistics type');
+      }
+    });
+    console.log('Message listener setup complete');
+  }
 }
+
+
 
 const settingsBtn = document.getElementById("settings-btn");
 const settingsMenu = document.getElementById("settings-menu");
@@ -1728,5 +2077,4 @@ purchaseBtn.addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  new LandingPage();
 });

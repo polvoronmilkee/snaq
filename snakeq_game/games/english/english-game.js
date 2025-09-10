@@ -88,6 +88,14 @@ class SnakeEnglishGame {
         // Animation
         this.lastFrameTime = 0
         this.moveAccumulator = 0
+
+        // Statistics tracking for achievements
+        this.sessionStats = {
+            applesEaten: 0,
+            correctAnswers: 0,
+            startTime: Date.now(),
+            perfectGame: true // Track if no wrong answers in this session
+        }
         this.gameLoopId = null
 
         // to track questions that have been used already
@@ -1017,6 +1025,10 @@ class SnakeEnglishGame {
                 this.correctAnswers++
                 this.addToTotalPoints(10) // Add points to total points system
 
+                // Track statistics for achievements
+                this.sessionStats.applesEaten++
+                this.sessionStats.correctAnswers++
+
                 this.playSound("correct")
                 this.playSound("biteApple")
 
@@ -1054,6 +1066,9 @@ class SnakeEnglishGame {
                 } else {
                     this.score = Math.max(0, this.score - 5)
                     this.lives--
+
+                    // Track that this is no longer a perfect game
+                    this.sessionStats.perfectGame = false
 
                     this.playSound("snakeLosesLife")
 
@@ -1217,6 +1232,9 @@ class SnakeEnglishGame {
                 const leaderboardManager = new window.LeaderboardManager();
                 leaderboardManager.submitScore(username, this.score, 'english');
             }
+
+            // Submit statistics for achievements
+            this.submitGameStatistics();
         }
     }
 
@@ -1688,6 +1706,73 @@ class SnakeEnglishGame {
         const currentTotal = parseInt(localStorage.getItem("totalPoints")) || 0
         const newTotal = currentTotal + points
         localStorage.setItem("totalPoints", newTotal.toString())
+    }
+
+    submitGameStatistics() {
+        // Calculate play time in milliseconds
+        const totalPlayTime = Date.now() - this.sessionStats.startTime;
+        
+        // Prepare statistics
+        const stats = {
+            applesEaten: this.sessionStats.applesEaten,
+            correctAnswers: this.sessionStats.correctAnswers,
+            gamesPlayed: 1,
+            perfectGames: (this.sessionStats.perfectGame && this.gameState === "won") ? 1 : 0,
+            totalPlayTime: totalPlayTime
+        };
+
+        console.log('=== ENGLISH GAME STATISTICS SUBMISSION ===');
+        console.log('Session stats:', this.sessionStats);
+        console.log('Game state:', this.gameState);
+        console.log('Prepared stats:', stats);
+
+        // Try to save to localStorage first as a fallback
+        try {
+            const existingStats = JSON.parse(localStorage.getItem("gameStats")) || {};
+            const updatedStats = {
+                totalApplesEaten: (existingStats.totalApplesEaten || 0) + stats.applesEaten,
+                correctAnswers: (existingStats.correctAnswers || 0) + stats.correctAnswers,
+                gamesPlayed: (existingStats.gamesPlayed || 0) + stats.gamesPlayed,
+                perfectGames: (existingStats.perfectGames || 0) + stats.perfectGames,
+                totalPlayTime: (existingStats.totalPlayTime || 0) + stats.totalPlayTime
+            };
+            
+            localStorage.setItem("gameStats", JSON.stringify(updatedStats));
+            console.log('Statistics saved to localStorage:', updatedStats);
+        } catch (e) {
+            console.error('Failed to save stats to localStorage:', e);
+        }
+
+        // Try to post message to parent/opener
+        try {
+            if (window.parent && window.parent !== window) {
+                console.log('Posting message to parent window...');
+                window.parent.postMessage({
+                    type: 'gameStatistics',
+                    stats: stats
+                }, '*');
+            } else if (window.opener && !window.opener.closed) {
+                console.log('Posting message to opener window...');
+                window.opener.postMessage({
+                    type: 'gameStatistics',
+                    stats: stats
+                }, '*');
+            } else {
+                console.log('No parent or opener window found');
+            }
+        } catch (e) {
+            console.error('Error posting message:', e);
+        }
+        
+        // Also update the landing page if it's in the same window (for testing)
+        try {
+            if (window.landingPageInstance) {
+                console.log('Updating landing page instance directly');
+                window.landingPageInstance.updateGameStats(stats);
+            }
+        } catch (e) {
+            console.error('Error updating landing page instance:', e);
+        }
     }
 
 }
