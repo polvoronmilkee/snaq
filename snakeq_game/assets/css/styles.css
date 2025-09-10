@@ -1832,8 +1832,8 @@ body::before {
 
 .skin-item {
     padding: 15px;
-    background-color: #F0E68C;
-    border: 3px solid #CD853F;
+    background-color: #efd591;
+    border: 3px solid #d3b599;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     text-align: center;
@@ -3097,10 +3097,10 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 
 .leaderboard-header-section h3 {
   margin: 0 !important;
-  color: #32cd32 !important;
+  color: #654322 !important;
   font-size: 14px !important;
-  text-shadow: 2px 2px 0 #000 !important;
-  text-align: left !important;
+  text-shadow: 1px 1px 0 #fff !important;
+  text-align: center !important;
   flex-grow: 1 !important;
 }
 
@@ -3218,8 +3218,8 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   grid-template-columns: 60px 1fr 100px;
   gap: 12px;
   padding: 12px 16px;
-  background: #F0E68C;
-  border: 3px solid #CD853F;
+  background: #efd591;
+  border: 3px solid #d3b599;
   border-radius: 8px;
   font-size: 10px;
   transition: all 0.3s ease;
