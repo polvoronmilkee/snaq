@@ -1758,7 +1758,7 @@ class LandingPage {
         name: 'Hungry Snake',
         description: 'Eat 100 apples overall',
         icon: '🍎',
-        reward: 20,
+        reward: 150,
         requirement: () => this.gameStats.totalApplesEaten >= 100,
         progress: () => Math.min(this.gameStats.totalApplesEaten, 100),
         maxProgress: 100
@@ -1768,7 +1768,7 @@ class LandingPage {
         name: 'Speed Demon',
         description: 'Answer 50 questions correctly',
         icon: '⚡',
-        reward: 15,
+        reward: 250,
         requirement: () => this.gameStats.correctAnswers >= 50,
         progress: () => Math.min(this.gameStats.correctAnswers, 50),
         maxProgress: 50
@@ -1778,7 +1778,7 @@ class LandingPage {
         name: 'Scholar',
         description: 'Play 25 games across all categories',
         icon: '🎓',
-        reward: 25,
+        reward: 350,
         requirement: () => this.gameStats.gamesPlayed >= 25,
         progress: () => Math.min(this.gameStats.gamesPlayed, 25),
         maxProgress: 25
@@ -1788,7 +1788,7 @@ class LandingPage {
         name: 'Perfectionist',
         description: 'Complete 5 games with perfect score',
         icon: '🏆',
-        reward: 30,
+        reward: 500,
         requirement: () => this.gameStats.perfectGames >= 5,
         progress: () => Math.min(this.gameStats.perfectGames, 5),
         maxProgress: 5
@@ -1798,7 +1798,7 @@ class LandingPage {
         name: 'Collector',
         description: 'Own 3 different snake skins',
         icon: '🐍',
-        reward: 10,
+        reward: 1000,
         requirement: () => this.ownedSkins.length >= 3,
         progress: () => Math.min(this.ownedSkins.length, 3),
         maxProgress: 3
@@ -1808,7 +1808,7 @@ class LandingPage {
         name: 'Marathoner',
         description: 'Play for a total of 60 minutes',
         icon: '⏱️',
-        reward: 40,
+        reward: 500,
         requirement: () => this.gameStats.totalPlayTime >= 3600000, // 60 minutes in milliseconds
         progress: () => Math.min(Math.floor(this.gameStats.totalPlayTime / 1000), 3600), // Convert to seconds for display
         maxProgress: 3600
