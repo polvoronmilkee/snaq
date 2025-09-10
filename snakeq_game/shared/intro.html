@@ -59,6 +59,23 @@
         .skip-button.hidden {
             display: none;
         }
+
+        .countdown {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            font-size: 14px;
+            font-family: 'Press Start 2P', monospace;
+            border: 2px solid white;
+            z-index: 999;
+        }
+
+        .countdown.hidden {
+            display: none;
+        }
     </style>
 </head>
 
@@ -68,28 +85,48 @@
             <source src="../assets/storyBoard/storyBoard.mp4" type="video/mp4">
         </video>
         <button id="skipButton" class="skip-button hidden">Skip</button>
+        <div id="countdown" class="countdown hidden">Skip in: 30s</div>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const video = document.getElementById('myVideo');
             const skipButton = document.getElementById('skipButton');
+            const countdownElement = document.getElementById('countdown');
 
             // Use let instead of const (so we can update it later if needed)
             let hasSeenIntro = localStorage.getItem('hasSeenIntro') === 'true';
+            let skipTimer = null;
 
-            // Show skip button only if user has already seen the intro
+            // Show skip button immediately if user has already seen the intro
             if (hasSeenIntro) {
                 skipButton.classList.remove('hidden');
+            } else {
+                // For first-time viewers, show countdown and enable skip after 30 seconds
+                countdownElement.classList.remove('hidden');
+                
+                let secondsLeft = 30;
+                skipTimer = setInterval(function() {
+                    secondsLeft--;
+                    countdownElement.textContent = `Skip in: ${secondsLeft}s`;
+                    
+                    if (secondsLeft <= 0) {
+                        clearInterval(skipTimer);
+                        countdownElement.classList.add('hidden');
+                        skipButton.classList.remove('hidden');
+                    }
+                }, 1000);
             }
 
             // Handle skip button click
             skipButton.addEventListener('click', function () {
+                if (skipTimer) clearInterval(skipTimer);
                 localStorage.setItem('hasSeenIntro', 'true');
                 window.location.href = '../index.html?fromIntro=true';
             });
 
             // Handle video end
             video.addEventListener('ended', function () {
+                if (skipTimer) clearInterval(skipTimer);
                 localStorage.setItem('hasSeenIntro', 'true');
                 localStorage.setItem('hasSeenStoryboard', 'true');
                 hasSeenIntro = true; // update in case we check it again later
@@ -102,7 +139,6 @@
             });
         });
     </script>
-    Your browser does not support the video tag.
 </body>
 
 </html>
