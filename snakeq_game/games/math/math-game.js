@@ -1021,10 +1021,20 @@ class SnakeMathGame {
         // Proceed without penalty (acts like body is intangible during immunity)
       } else {
         this.lives--
-        this.snakeFace = "disgust"
-        this.showNotification("Self-bite! -1 life", "wrong")
 
         this.playSound("snakeLosesLife")
+
+        if (this.lives <= 0) {
+          this.gameState = "lost"
+          this.gameRunning = false
+          this.snakeFace = "dead"
+          this.playSound("snakeDies")
+          this.showGameOver()
+          return
+        }
+
+        this.snakeFace = "disgust"
+        this.showNotification("Self-bite! -1 life", "wrong")
 
         if (this.snake.length > 1) {
           this.snake.pop()
