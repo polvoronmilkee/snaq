@@ -940,9 +940,10 @@ body::before {
 .game-board {
   position: relative;
   z-index: 1;
-  background: linear-gradient(145deg, #F4A460, #DEB887);
-  border: 4px solid #CD853F;
-  box-shadow:none;
+  background-image: url("../images/backgrounds/texture2.png");
+  background-repeat: repeat;        
+  background-size: 200px 200px;     
+  box-shadow: none;
   padding: 24px;
   max-width: 100%;
 }
@@ -3292,7 +3293,6 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
  .score {
   color: #2e1a1a;
   text-align: center;
-  font-weight: bold;
 }
 
 
