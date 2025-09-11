@@ -941,6 +941,7 @@ body::before {
   position: relative;
   z-index: 1;
   background-image: url("../images/backgrounds/texture2.png");
+  border:#472805 4px solid;
   background-repeat: repeat;        
   background-size: 200px 200px;     
   box-shadow: none;
@@ -1020,7 +1021,8 @@ body::before {
 }
 
 .options-container {
-  background: #1a1a1a;
+  border: 3px solid #CD853F;
+  background: linear-gradient(145deg, #F4A460, #DEB887);
   padding: 12px;
   margin-bottom: 16px;
   display: flex;
@@ -1616,7 +1618,8 @@ body::before {
 }
 
 .options-container {
-  background: #1a1a1a;
+  border: 3px solid #CD853F;
+  background: linear-gradient(145deg, #F4A460, #DEB887);
   padding: 15px;
   margin-bottom: 20px;
   display: flex;
