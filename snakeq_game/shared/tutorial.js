@@ -72,16 +72,53 @@ class TutorialManager {
             {
                 target: '.game-header',
                 title: 'Welcome to SnaQ!',
-                content: 'Welcome to SnaQ - Quiz Your Brain, Grow Your Snake! This tutorial will guide you through all the features and gameplay mechanics.',
+                content: 'Welcome to SnaQ - Quiz Your Brain, Grow Your Snake! This tutorial will guide you through all the game',
                 position: 'bottom',
                 action: null
             },
             
+            {
+                target: '#settings-btn',
+                title: 'Sound Settings',
+                content: 'Here you can adjust the sound settings. You can turn on or off sound effects and background music.',
+                position: 'bottom',
+                action: null
+            },
+
+            {
+                target: '#help-btn',
+                title: 'Help',
+                content: 'Here you can find information about the game and how to play.',
+                position: 'bottom',
+                action: null
+            },
+            {
+                target: '#tutorial-btn',
+                title: 'Tutorial',
+                content: 'Here you can start the tutorial. It will guide you through all the features and gameplay mechanics.',
+                position: 'bottom',
+                action: null
+            },
+            {
+                target: '#intro-btn',
+                title: 'Introduction',
+                content: 'Watch our intro animation to get a feel of the game. The animation will automatically start when you click on this button.',
+                position: 'bottom',
+                action: null
+            },
+
+            {
+                target: '#about-btn',
+                title: 'About Us',
+                content: 'Information about the game and developers.',
+                position: 'bottom',
+                action: null
+            },
             // Categories explanation
             {
                 target: '.category-buttons',
                 title: 'Choose Your Adventure',
-                content: 'Here you can select from 4 different quiz categories: Mathematics, English, Science, and General Knowledge. Each category has unique questions to challenge your brain!',
+                content: 'Here you can select from 4 different quiz categories: Mathematics, English, Science, and General Knowledge.',
                 position: 'bottom',
                 action: null
             },
@@ -97,7 +134,7 @@ class TutorialManager {
             {
                 target: '.achievements-btn',
                 title: 'Achievement System',
-                content: 'Unlock achievements by completing challenges! Each achievement rewards you with coins. Track your progress and claim rewards here. Complete this tutorial to earn your first achievement!',
+                content: 'Unlock achievements by completing challenges! Each achievement rewards you with coins.',
                 position: 'left',
                 action: null
             },
@@ -105,7 +142,7 @@ class TutorialManager {
             {
                 target: '.skin-shop-btn',
                 title: 'Skin Shop',
-                content: 'Customize your snake with different skins, accessories, and effects! Earn coins by playing games and spend them in the shop.',
+                content: 'Customize your snake with different skins, accessories, and tiles!',
                 position: 'right',
                 action: null
             },
@@ -120,17 +157,6 @@ class TutorialManager {
                 action: 'click',
                 waitForClick: true
             },
-            
-            // Start game button
-            {
-                target: '.play-btn',
-                title: 'Start the Game',
-                content: 'Great! Now click "START GAME" to proceed to game mode selection.',
-                position: 'top',
-                action: 'click',
-                waitForClick: true
-            },
-            
             // Game mode explanation
             {
                 target: '.mode-buttons',
@@ -409,8 +435,39 @@ class TutorialManager {
                 left += rect.width + 10;
                 break;
         }
-    
+        
         this.tutorialBox.style.position = 'absolute';
+        
+        // Ensure the tutorial box stays within viewport bounds
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const boxWidth = this.tutorialBox.offsetWidth;
+        const boxHeight = this.tutorialBox.offsetHeight;
+        
+        // Adjust left position if the box would go off the right edge
+        if (left + boxWidth > viewportWidth) {
+            left = viewportWidth - boxWidth - 10; // 10px margin from right
+        }
+        // Adjust left position if the box would go off the left edge
+        if (left < 10) {
+            left = 10; // 10px margin from left
+        }
+        
+        // Adjust top position if the box would go off the bottom
+        if (top + boxHeight > viewportHeight + window.scrollY) {
+            // Try to position above the target if there's more space
+            if (rect.top - boxHeight - 10 > 0) {
+                top = rect.top + window.scrollY - boxHeight - 10;
+            } else {
+                // If not enough space above, just keep it at the bottom with margin
+                top = viewportHeight + window.scrollY - boxHeight - 10;
+            }
+        }
+        // Adjust top position if the box would go off the top
+        if (top < window.scrollY + 10) {
+            top = window.scrollY + 10; // 10px margin from top
+        }
+        
         this.tutorialBox.style.top = `${top}px`;
         this.tutorialBox.style.left = `${left}px`;
         this.tutorialBox.style.transform = 'none';
@@ -462,52 +519,6 @@ class TutorialManager {
         
         clickableArea.addEventListener('click', clickHandler);
         document.body.appendChild(clickableArea);
-    }
-
-    positionTutorialBox(targetRect, position) {
-        const boxWidth = 600;
-        const boxHeight = 200;
-        const margin = 20;
-        
-        let top, left;
-        
-        switch (position) {
-            case 'top':
-                top = targetRect.top - boxHeight - margin;
-                left = targetRect.left + (targetRect.width / 2) - (boxWidth / 2);
-                break;
-            case 'bottom':
-                top = targetRect.bottom + margin;
-                left = targetRect.left + (targetRect.width / 2) - (boxWidth / 2);
-                break;
-            case 'left':
-                top = targetRect.top + (targetRect.height / 2) - (boxHeight / 2);
-                left = targetRect.left - boxWidth;
-                break;
-            case 'right':
-                top = targetRect.top + (targetRect.height / 2) - (boxHeight / 2);
-                left = targetRect.right + margin;
-                break;
-            default:
-                top = targetRect.bottom + margin;
-                left = targetRect.left + (targetRect.width / 2) - (boxWidth / 2);
-        }
-        
-        // Keep box within viewport
-        top = Math.max(10, Math.min(top, window.innerHeight - boxHeight - 10));
-        // Allow left positioning to go to screen edge for better adjacency
-        if (position === 'left') {
-            left = Math.max(left, 0);
-        } else {
-            left = Math.max(10, Math.min(left, window.innerWidth - boxWidth - 10));
-        }
-        
-        this.tutorialBox.style.position = 'fixed';
-        this.tutorialBox.style.top = top + 'px';
-        this.tutorialBox.style.left = left + 'px';
-        this.tutorialBox.style.width = boxWidth + 'px';
-        this.tutorialBox.style.minHeight = boxHeight + 'px';
-        this.tutorialBox.style.transform = 'none';
     }
 
     updateTutorialBox(step) {
