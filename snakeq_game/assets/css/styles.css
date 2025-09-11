@@ -843,13 +843,13 @@ body::before {
   color: #fff;
   padding: 8px;
   font-family: "Press Start 2P", monospace;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  image-rendering: pixelated;
+  min-width: 120px;
   box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #225839;
 }
 
@@ -911,7 +911,13 @@ body::before {
 
 .skin-shop-btn:hover {
   background: #25a359;
-  transform: translate(2px, 2px);
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px #fff inset, 6px 6px 0px #1e8449;
+}
+
+.skin-shop-btn:active {
+  background: #1e8449;
+  transform: translateY(0);
   box-shadow: 0 0 0 2px #fff inset, 2px 2px 0px #1e8449;
 }
 
@@ -919,37 +925,6 @@ body::before {
   width: 40px;
   height: 35px;
   image-rendering: pixelated;
-}
-
-.play-btn {
-  background: #32cd32;
-  border: 4px solid #228b22;
-  color: #000;
-  padding: 16px 10px;
-  font-family: "Press Start 2P", monospace;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  position: relative;
-  gap: 8px;
-  justify-content: center;
-  box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #1e7e1e;
-}
-
-.play-btn:hover:not(:disabled) {
-  background: #3ae63a;
-  transform: translate(2px, 2px);
-  box-shadow: 0 0 0 2px #fff inset, 2px 2px 0px #1e7e1e;
-}
-
-.play-btn:disabled {
-  background: #666;
-  border-color: #444;
-  color: #888;
-  cursor: not-allowed;
-  box-shadow: 0 0 0 2px #888 inset, 4px 4px 0px #333;
 }
 
 .game-container {
@@ -2846,14 +2821,16 @@ body::before {
 
   .game-actions {
     gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  .skin-shop-btn {
-    width: 60px;
-    height: 60px;
-    justify-content: center;
-    padding: 12px;
-    font-size: 8px;
+  .skin-shop-btn,
+  .leaderboard-btn,
+  .achievements-btn {
+    min-width: 100px;
+    font-size: 10px;
+    padding: 8px 6px;
   }
 
   .skins-grid {

@@ -183,14 +183,6 @@ class LandingPage {
       });
     });
 
-    const playBtn = $$("playBtn");
-    if (playBtn) {
-      playBtn.addEventListener("click", () => {
-        this.playClickSound();
-        this.showGameModeModal();
-      });
-    }
-
     const helpBtn = $$("help-btn");
     const soundBtn = $$("sound-btn");
     const musicBtn = $$("music-btn");
@@ -642,10 +634,8 @@ class LandingPage {
     btn.classList.add("selected");
     this.selectedCategory = btn.dataset.category;
 
-    const playBtn = document.getElementById("playBtn");
-    if (playBtn) {
-      playBtn.disabled = false;
-    }
+    // Go directly to game mode modal instead of enabling start button
+    this.showGameModeModal();
   }
 
   showGameModeModal() {
