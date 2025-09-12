@@ -22,6 +22,11 @@
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 1), 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
+.welcome-message {
+  color: green;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 1);
+}
+
 .mode-btn.locked::after {
   content: attr(data-cost-display);
   position: absolute;
@@ -3399,6 +3404,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 .pixel-input {
   width: 100%;
   padding: 14px 16px;
+  border-color: #cd853f;
   font-family: "Press Start 2P", monospace;
   font-size: 10px;
   background: linear-gradient(135deg, #222 0%, #1a1a1a 100%);
@@ -3407,12 +3413,10 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   border-radius: 6px;
   outline: none;
   transition: all 0.3s ease;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .pixel-input:focus {
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 3px solid #cd853f;
   background: linear-gradient(135deg, #2a2a2a 0%, #222 100%);
 }
 
