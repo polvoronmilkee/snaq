@@ -740,10 +740,17 @@ body::before {
   color: #fff;
   background: #104c27dd;
   padding: 12px 25px;
-  border: 2px solid #fff;
   text-shadow: none;
   letter-spacing: 1px;
   margin-top: 50px;
+  box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #104c27dd;
+}
+
+.tagline h2 {
+  color: #fff;
+  font-size: 16px;
+  text-shadow: 2px 2px 0px #000;
+  letter-spacing: 1px;
 }
 
 .category-section {
@@ -753,7 +760,6 @@ body::before {
 .pixel-sign {
   font-size: 1px;
   background: #60380d;
-  border: 4px solid #000;
   padding: 5px 40px;
   margin-bottom: 32px;
   box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #654321;
@@ -783,7 +789,6 @@ body::before {
   font-family: "Press Start 2P", monospace;
   font-size: 10px;
   cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
