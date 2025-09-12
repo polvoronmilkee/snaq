@@ -768,7 +768,7 @@ body::before {
 
 .pixel-sign h2 {
   color: #fff;
-  font-size: 13px;
+  font-size: 15px;
   text-shadow: 2px 2px 0px #000;
   letter-spacing: 1px;
 }
@@ -863,6 +863,11 @@ body::before {
   box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #225839;
 }
 
+.skin-shop-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px #fff inset, 6px 6px 0px #225839;
+}
+
 .skin-btn-content {
   display: flex;
   flex-direction: column;
@@ -870,29 +875,29 @@ body::before {
 }
 
 .leaderboard-btn {
-  background: linear-gradient(135deg, #ff6b35 0%, #ff8e53 100%);
-  border: 4px solid  #ff6b35;
+  background: #27ae60;
+  border: 4px solid #229954;
   color: #fff;
+  padding: 8px;
   font-family: "Press Start 2P", monospace;
   font-size: 12px;
-  padding: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
   image-rendering: pixelated;
   min-width: 120px;
-  box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #cc5529;
+  box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #225839;
 }
 
+.leaderboard-icon {
+  width: 28px;
+  height: 28px;
+  image-rendering: pixelated;
+}
 .leaderboard-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 0 2px #fff inset, 6px 6px 0px #cc5529;
-}
-
-.leaderboard-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 0 0 2px #fff inset, 2px 2px 0px #cc5529;
+  box-shadow: 0 0 0 2px #fff inset, 6px 6px 0px #225839;
 }
 
 .leaderboard-btn-content {
@@ -917,18 +922,6 @@ body::before {
   font-size: 8px;
   color: #fff;
   line-height: 1;
-}
-
-.skin-shop-btn:hover {
-  background: #25a359;
-  transform: translateY(-2px);
-  box-shadow: 0 0 0 2px #fff inset, 6px 6px 0px #1e8449;
-}
-
-.skin-shop-btn:active {
-  background: #1e8449;
-  transform: translateY(0);
-  box-shadow: 0 0 0 2px #fff inset, 2px 2px 0px #1e8449;
 }
 
 .pixel-palette-icon {
@@ -2460,31 +2453,30 @@ body::before {
 
 /* Achievement System Styles */
 .achievements-btn {
-  background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
-  border: 4px solid #8e44ad;
+  background: #27ae60;
+  border: 4px solid #229954;
   color: #fff;
+  padding: 8px;
   font-family: "Press Start 2P", monospace;
   font-size: 12px;
-  padding: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
   image-rendering: pixelated;
   min-width: 120px;
-  box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #7d3c98;
+  box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #225839;
 }
 
 .achievements-btn:hover {
-  background: linear-gradient(135deg, #8e44ad 0%, #7d3c98 100%);
   transform: translateY(-2px);
-  box-shadow: 0 0 0 2px #fff inset, 6px 6px 0px #6c3483;
+  box-shadow: 0 0 0 2px #fff inset, 6px 6px 0px #225839;
 }
 
 .achievements-btn:active {
-  background: linear-gradient(135deg, #7d3c98 0%, #6c3483 100%);
+  background: linear-gradient(135deg, #225839 0%, #225839 100%);
   transform: translateY(0);
-  box-shadow: 0 0 0 2px #fff inset, 2px 2px 0px #6c3483;
+  box-shadow: 0 0 0 2px #fff inset, 2px 2px 0px #225839;
 }
 
 .achievements-container {
@@ -2549,10 +2541,34 @@ body::before {
   color: #757575;
 }
 
+/* Base icon size */
 .achievement-icon-large {
-  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  
+  & img {
+    width: 50%;
+    height: 50%;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+  
+  /* Specific style for speed icon */
+  & .speed-icon {
+    width: 85%;
+    height: 85%;
+  }   
+
+  & .scholar-icon {
+    width: 100%;
+    height: 100%;
+  }   
   margin-right: 15px;
   min-width: 45px;
+  height: 45px;
   text-align: center;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
@@ -2901,6 +2917,10 @@ body::before {
     gap: 10px;
   }
   
+  .achievement-icon {
+    width: 50px;
+    height: 50px;
+  }
   .achievement-icon-large {
     margin-right: 0;
     margin-bottom: 10px;
