@@ -1,0 +1,131 @@
+{{ ... }}
+/* Instructions Modal Styles */
+.instructions-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.instructions-content {
+  background: #2c3e50;
+  color: #ecf0f1;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.instructions-content h3 {
+  color: #f1c40f;
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.guide-section {
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.guide-section:last-child {
+  border-bottom: none;
+  margin-bottom: 15px;
+}
+
+.instructions-content h4 {
+  color: #3498db;
+  margin: 20px 0 10px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.instructions-content p {
+  line-height: 1.6;
+  margin: 10px 0 5px;
+  color: #ecf0f1;
+  font-size: 1rem;
+}
+
+.instructions-content strong {
+  color: #f1c40f;
+  font-weight: normal;
+}
+
+.tip {
+  background: rgba(46, 204, 113, 0.1);
+  border-left: 4px solid #2ecc71;
+  padding: 15px;
+  margin: 25px 0 15px;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+}
+
+.close-instructions {
+  display: block;
+  margin: 30px auto 0;
+  padding: 12px 30px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Press Start 2P', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.close-instructions:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close-instructions:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .instructions-content {
+    padding: 20px 15px;
+    max-height: 85vh;
+  }
+  
+  .instructions-content h3 {
+    font-size: 1.5rem;
+  }
+  
+  .instructions-content h4 {
+    font-size: 1.1rem;
+  }
+  
+  .instructions-content p {
+    font-size: 0.95rem;
+  }
+  
+  .close-instructions {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+{{ ... }}
