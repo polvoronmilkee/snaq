@@ -88,7 +88,7 @@
             <source src="../assets/storyBoard/storyBoard.ogg" type="audio/ogg">
         </audio>
         <button id="skipButton" class="skip-button hidden">Skip</button>
-        <div id="countdown" class="countdown hidden">Skip in: 30s</div>
+
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -100,25 +100,16 @@
             let hasSeenIntro = localStorage.getItem('hasSeenIntro') === 'true';
             let skipTimer = null;
 
-            // Show skip button immediately if user has already seen the intro
-            if (hasSeenIntro) {
-                skipButton.classList.remove('hidden');
-            } else {
-                // For first-time viewers, show countdown and enable skip after 30 seconds
-                countdownElement.classList.remove('hidden');
+            skipButton.classList.remove('hidden');
+
+            // // Show skip button immediately if user has already seen the intro
+            // if (hasSeenIntro) {
+            //     skipButton.classList.remove('hidden');
                 
-                let secondsLeft = 30;
-                skipTimer = setInterval(function() {
-                    secondsLeft--;
-                    countdownElement.textContent = `Skip in: ${secondsLeft}s`;
-                    
-                    if (secondsLeft <= 0) {
-                        clearInterval(skipTimer);
-                        countdownElement.classList.add('hidden');
-                        skipButton.classList.remove('hidden');
-                    }
-                }, 1000);
-            }
+            // } else {
+            //     // For first-time viewers, show countdown and enable skip after 30 seconds
+            //     skipButton.classList.remove('hidden');
+            // }
 
             // Handle skip button click
             skipButton.addEventListener('click', function () {
