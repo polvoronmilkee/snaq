@@ -771,9 +771,8 @@ body::before {
 }
 
 .category-btn {
-  background: #f8c87a;
-  border: 4px solid #754d11;
-  border-radius: 10px;
+  background: linear-gradient(145deg, #F4A460, #DEB887);
+  border: 4px solid #CD853F;
   color: #271206;
   padding: 16px 24px;
   font-family: "Press Start 2P", monospace;
@@ -785,7 +784,7 @@ body::before {
   align-items: center;
   gap: 8px;
   min-width: 120px;
-  box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #222;
+  box-shadow: 4px 4px 0px #222;
   position: relative;
   overflow: hidden;
 }
@@ -844,13 +843,13 @@ body::before {
   color: #fff;
   padding: 8px;
   font-family: "Press Start 2P", monospace;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  image-rendering: pixelated;
+  min-width: 120px;
   box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #225839;
 }
 
@@ -912,7 +911,13 @@ body::before {
 
 .skin-shop-btn:hover {
   background: #25a359;
-  transform: translate(2px, 2px);
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px #fff inset, 6px 6px 0px #1e8449;
+}
+
+.skin-shop-btn:active {
+  background: #1e8449;
+  transform: translateY(0);
   box-shadow: 0 0 0 2px #fff inset, 2px 2px 0px #1e8449;
 }
 
@@ -920,37 +925,6 @@ body::before {
   width: 40px;
   height: 35px;
   image-rendering: pixelated;
-}
-
-.play-btn {
-  background: #32cd32;
-  border: 4px solid #228b22;
-  color: #000;
-  padding: 16px 10px;
-  font-family: "Press Start 2P", monospace;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  position: relative;
-  gap: 8px;
-  justify-content: center;
-  box-shadow: 0 0 0 2px #fff inset, 4px 4px 0px #1e7e1e;
-}
-
-.play-btn:hover:not(:disabled) {
-  background: #3ae63a;
-  transform: translate(2px, 2px);
-  box-shadow: 0 0 0 2px #fff inset, 2px 2px 0px #1e7e1e;
-}
-
-.play-btn:disabled {
-  background: #666;
-  border-color: #444;
-  color: #888;
-  cursor: not-allowed;
-  box-shadow: 0 0 0 2px #888 inset, 4px 4px 0px #333;
 }
 
 .game-container {
@@ -966,7 +940,11 @@ body::before {
 .game-board {
   position: relative;
   z-index: 1;
-  background: #2a2a2a;
+  background-image: url("../images/backgrounds/texture2.png");
+  border:#472805 4px solid;
+  background-repeat: repeat;        
+  background-size: 200px 200px;     
+  box-shadow: none;
   padding: 24px;
   max-width: 100%;
 }
@@ -1043,7 +1021,8 @@ body::before {
 }
 
 .options-container {
-  background: #1a1a1a;
+  border: 3px solid #CD853F;
+  background: linear-gradient(145deg, #F4A460, #DEB887);
   padding: 12px;
   margin-bottom: 16px;
   display: flex;
@@ -1137,18 +1116,8 @@ body::before {
   padding: auto;
 }
 
-.pixel-instructions {
-  margin-top: 10px;
-  background: #1a1a1a;
-  padding: 12px 16px;
-  border: 2px solid #333;
-  font-size: 8.5px;
-  line-height: 1.4;
-  text-align: center;
-}
-
 .controls {
-  color: #e0c490;
+  color: rgb(145, 242, 242);
   margin-top: 8px;
 }
 
@@ -1265,11 +1234,11 @@ body::before {
   color: #fff;
   padding: 11px 14px;
   font-family: "Press Start 2P", monospace;
-  font-size: 11px;
+  font-size: 9px;
   cursor: pointer;
   transition: all 0.12s ease;
   min-width: 120px;
-  box-shadow: 3px 3px 0 #000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .pixel-btn:hover {
@@ -1499,7 +1468,6 @@ body::before {
 .instructions-content {
   background: linear-gradient(145deg, #F4A460, #DEB887);
   border: 3px solid #CD853F;
-  border-radius: 20px;
   padding: 24px;
   max-width: 500px;
   width: 90%;
@@ -1523,7 +1491,7 @@ body::before {
   font-size: 14px;
   margin-bottom: 16px;
   text-align: center;
-  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
+  text-shadow: 3px 3px 2px rgba(255, 255, 255, 0.6);
   font-weight: bold;
 }
 
@@ -1536,11 +1504,12 @@ body::before {
 
 .instructions-content p,
 .instructions-content li {
-  font-size: 8px;
+  font-size: 9px;
   line-height: 1.4;
   color: #5D4037;
   margin-bottom: 8px;
-  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+  text-shadow: 2px 2px 2px rgba(255, 255, 255, 0.4);
 }
 
 .instructions-content ul {
@@ -1559,7 +1528,6 @@ body::before {
   margin: 16px auto 0;
   display: block;
   transition: all 0.2s ease;
-  border-radius: 8px;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
@@ -1650,7 +1618,8 @@ body::before {
 }
 
 .options-container {
-  background: #1a1a1a;
+  border: 3px solid #CD853F;
+  background: linear-gradient(145deg, #F4A460, #DEB887);
   padding: 15px;
   margin-bottom: 20px;
   display: flex;
@@ -1676,9 +1645,12 @@ body::before {
 }
 
 .pixel-instructions {
-  background: #1a1a1a;
-  padding: 12px 16px;
-  border: 2px solid #333;
+  margin-top: 10px;
+  background: rgba(210, 105, 30, 0.1);
+  border: 1px solid #ff8c00;
+  padding: 15px;
+  box-shadow: inset 2px 2px 6px rgba(205, 133, 63, 0.4),
+              0 4px 12px rgba(0, 0, 0, 0.3);;
   font-size: 12px;
   line-height: 1.4;
   text-align: center;
@@ -1745,6 +1717,7 @@ body::before {
 
 /* Skin Shop Modal Styles */
 #skin-shop-modal {
+  background-color: linear-gradient(145deg, #F4A460, #DEB887);
   position: fixed;
   top: 0;
   left: 0;
@@ -1762,8 +1735,9 @@ body::before {
   display: none;
 }
 #skin-shop-content {
-  background: #f8c87a;
-  border-color: #754d11;
+  background: linear-gradient(145deg, #F4A460, #DEB887);
+  border: 3px solid #CD853F;
+  box-shadow: none;
   padding: 20px;
   max-width: 650px;
   width: 90%;
@@ -1832,9 +1806,10 @@ body::before {
 
 .skin-item {
     padding: 15px;
-    border: 4px solid #754d11;
+    background-color: #efd591;
+    border: 3px solid #d3b599;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-    box-shadow: 0 0 0 2px #fff inset;
     text-align: center;
     transition: all 0.1s ease;
     position: relative;
@@ -1851,7 +1826,8 @@ body::before {
 
 .skin-info h4 {
   margin: 0 0 8px 0;
-  color: #fff;
+  color: #654321;
+  text-shadow: 1px 1px 0 #fff;
   font-size: 16px;
 }
 
@@ -1872,9 +1848,11 @@ body::before {
 
 
 .skin-price {
-  color: #ffaa00;
+  background: linear-gradient(145deg, #ffbf91, #ffcc00);
+  border: 2px solid #654321;
   font-size: 14px;
   font-weight: bold;
+  color: #654321 ;
 }
 
 .buy-skin-btn {
@@ -1947,6 +1925,7 @@ body::before {
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
+  
 }
 
 .close-skin-shop:hover {
@@ -1993,9 +1972,9 @@ body::before {
 }
 
 .shop-title {
-  color: #32cd32;
+  color: #654321;
   font-size: 18px;
-  text-shadow: 2px 2px 0 #000;
+  text-shadow: 1px 1px 0 #fff;
   margin: 0;
   flex: 1;
   text-align: center;
@@ -2088,12 +2067,16 @@ body::before {
   font-size: 14px;
 }
 
+
 .skin-price {
-  color: #000000;
-  background-color: #ffcc00;
-  border: 3px solid #000000;
-  padding: 4px 8px;
+  background: linear-gradient(145deg, #ffbf91, #ffcc00);
+  border: 2px solid #654321;
+  font-size: 14px;
+  font-weight: bold;
+  color: #221a11 ;
+    padding: 4px 8px;
 }
+
 
 .shop-actions {
   margin-top: 20px;
@@ -2102,7 +2085,8 @@ body::before {
   flex-direction: column;
 }
 
-.buy-coins {
+.buy-coins {background: linear-gradient(145deg, #ffbf91, #ffcc00);
+  border: 2px solid #654321;
   background-color: #ffcc00;
   color: #222;
   font-weight: bold;
@@ -2138,13 +2122,12 @@ body::before {
 }
 
 .buy-coins-content {
-  background: #1a1a1a;
+  background: linear-gradient(145deg, #F4A460, #DEB887);
+  border: 3px solid #CD853F;
   padding: 20px;
   width: 400px;
   max-width: 90%;
   text-align: center;
-  border: 4px solid #000000;
-  box-shadow: 0 0 0 2px #fff, 0 0 0 6px #000;
   position: relative;
 }
 
@@ -2198,41 +2181,39 @@ body::before {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #2a2a2a;
-  border: 2px solid #000;
+  background: #F0E68C;
+  border: 3px solid #BDBDBD;;
   padding: 10px;
   font-size: 16px;
-  color: #fff;
-  box-shadow: 0 0 0 2px #555 inset;
+  color:  #654321;
+
 }
 
 .price-btn {
-  background: #ffd700;
-  border: 2px solid #000;
+  background: linear-gradient(145deg, #ffbf91,#ffcc00);
+  border: 2px solid #654321;
   padding: 5px 15px;
   cursor: pointer;
-  box-shadow: 2px 2px 0 #000;
-  color: #000;
+  color: #332002;
 }
 
 .price-btn:hover {
-  background: #32cd32; /* green on hover */
+  background: #ffbd7c; /* green on hover */
   color: #000000;
 }
 
 .coin-package.selected {
-  border: 2px solid #32cd32;
-  box-shadow: 0 0 5px #32cd32;
+  border: 2px solid #654321;
+  box-shadow: 0 0 5px #ff8810;
 }
 
 .purchase-btn {
-  background: #32cd32;
-  border: 2px solid #000;
+  background: linear-gradient(145deg, #ee8b44,#ffcc00);
+  border: 3px solid #654321;
   margin-bottom: 10px;
   padding: 8px 18px;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 2px 2px 0 #000;
 }
 
 .purchase-btn.hidden {
@@ -2241,33 +2222,42 @@ body::before {
 
 
 #close-buy-coins {
-  margin-top: 15px;
-  background: #ff4c4c;
-  border: 2px solid #000;
-  padding: 6px 14px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #fff;
-  cursor: pointer;
-  box-shadow: 2px 2px 0 #000;
+  background: linear-gradient(145deg, #8B4513, #A0522D);
+    border: 3px solid #654321;
+    color: #FFF8DC;
+    padding: 10px 20px;
+    font-family: "Press Start 2P", monospace;
+    font-size: 8px;
+    cursor: pointer;
+    margin: 16px auto 0;
+    display: block;
+    transition: all 0.2sease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+
 #close-buy-coins:hover {
-  background: #ff6f6f;
+  background: linear-gradient(145deg, #A0522D, #CD853F);
+  border-color: #8B4513;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 
 .close-shop {
-  background: #ff4444;
-  border: 2px solid #cc3333;
-  color: #fff;
-  padding: 10px 10px;
+  background: linear-gradient(145deg, #8B4513, #A0522D);
+  border: 3px solid #654321;
+  color: #FFF8DC;
+  padding: 10px 20px;
   font-family: "Press Start 2P", monospace;
-  font-size: 12px;
+  font-size: 8px;
   cursor: pointer;
-  width: 60%;
-  align-self: center;
-  transition: all 0.1s ease;
+  margin: 16px auto 0;
+  display: block;
+  transition: all 0.2sease;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .close-shop:hover {
@@ -2361,7 +2351,6 @@ body::before {
     padding: 8px 16px;
     background: #754d11;
     border: 2px solid #754d11;
-    border-radius: 10px;
     color: #fff;
     font-family: "Press Start 2P", monospace;
     font-size: 10px;
@@ -2493,7 +2482,6 @@ body::before {
   overflow-y: auto;
   margin: 20px 0;
   border: 3px solid #CD853F;
-  border-radius: 8px;
   background: linear-gradient(145deg, #F4A460, #DEB887);
   padding: 15px;
   box-shadow: inset 2px 2px 6px rgba(205, 133, 63, 0.4),
@@ -2666,7 +2654,6 @@ body::before {
   margin-top: 20px;
   padding: 15px;
   background: rgba(210, 105, 30, 0.1);
-  border-radius: 8px;
   border: 1px solid #ff8c00;
 }
 
@@ -2833,14 +2820,16 @@ body::before {
 
   .game-actions {
     gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  .skin-shop-btn {
-    width: 60px;
-    height: 60px;
-    justify-content: center;
-    padding: 12px;
-    font-size: 8px;
+  .skin-shop-btn,
+  .leaderboard-btn,
+  .achievements-btn {
+    min-width: 100px;
+    font-size: 10px;
+    padding: 8px 6px;
   }
 
   .skins-grid {
@@ -3098,17 +3087,17 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 
 .leaderboard-header-section h3 {
   margin: 0 !important;
-  color: #32cd32 !important;
+  color: #654322 !important;
   font-size: 14px !important;
-  text-shadow: 2px 2px 0 #000 !important;
-  text-align: left !important;
+  text-shadow: 1px 1px 0 #fff !important;
+  text-align: center !important;
   flex-grow: 1 !important;
 }
 
 .refresh-leaderboard-btn {
   padding: 8px !important;
-  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%) !important;
-  border: 2px solid #6bb6ff !important;
+  background: linear-gradient(135deg, #7c4b00 0%, #cb7726 100%) !important;
+  border: 2px solid #e5af5d !important;
   color: #fff !important;
   border-radius: 6px !important;
   cursor: pointer !important;
@@ -3120,7 +3109,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 }
 
 .refresh-leaderboard-btn:hover {
-  background: linear-gradient(135deg, #5ba0f2 0%, #4a90e2 100%) !important;
+  background: linear-gradient(135deg, #7c4b00 0%, #cb7726 100%) !important;
   transform: translateY(-1px) rotate(90deg) !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
 }
@@ -3141,9 +3130,8 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   padding: 10px 16px;
   font-size: 10px;
   background: #754d11;
-  border-radius: 10px;
   color: #fff;
-  border: 2px solid #555;
+  border: 3px solid #e7b178;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -3168,16 +3156,16 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 }
 
 .leaderboard-tab.active {
-  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
-  border-color: #6bb6ff;
+  background: linear-gradient(358deg, #3c2709 0%, #c78f3b 100%);
+  border: 3px solid #2a1e0b;
   color: #fff;
   box-shadow: 0 0 15px rgba(74, 144, 226, 0.4);
   transform: translateY(-1px);
 }
 
 .leaderboard-container {
-  background: rgba(0, 0, 0, 0.3);
-  border: 2px solid #754d11;
+  background: linear-gradient(145deg, #F4A460, #DEB887);
+  border:  3px solid #CD853F;
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
@@ -3220,8 +3208,8 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   grid-template-columns: 60px 1fr 100px;
   gap: 12px;
   padding: 12px 16px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #efd591;
+  border: 3px solid #d3b599;
   border-radius: 8px;
   font-size: 10px;
   transition: all 0.3s ease;
@@ -3306,10 +3294,8 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 }
 
  .score {
-  color: #0af112;
+  color: #2e1a1a;
   text-align: center;
-  font-weight: bold;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 
