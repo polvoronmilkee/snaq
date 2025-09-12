@@ -149,43 +149,38 @@
         <div class="instructions-content pixel-border color-white">
             <h3>How to Play SnaQ</h3>
 
-            <h4>🎯 Pick Your Adventure</h4>
-            <p>Choose from Mathematics, English, Science, or General Knowledge. Answer questions to help your hungry snake grow!</p>
+            <div class="guide-section">
+                <h4>🎯 Pick Your Adventure</h4>
+                <p>Choose from Mathematics, English, Science, or General Knowledge. Answer questions to help your hungry snake grow!</p>
+            </div>
 
-            <h4>🕹️ Controls</h4>
-            <ul>
-                <li>Use WASD or Arrow Keys to slither around</li>
-                <li>Hold SHIFT to turbo sprint (don't run out of energy!)</li>
-                <li>Press ESC to pause the game</li>
-                <li>Press SPACE to resume the game</li>
-                <li>Press R to restart the current game</li>
-            </ul>
+            <div class="guide-section">
+                <h4>🕹️ Controls</h4>
+                <p>Use <strong>WASD</strong> or <strong>Arrow Keys</strong> to slither around. Hold <strong>SHIFT</strong> to turbo sprint (watch your energy!). Pause with <strong>ESC</strong>, resume with <strong>SPACE</strong>, or restart with <strong>R</strong>.</p>
+            </div>
 
-            <h4>🍎 Your Mission</h4>
-            <ul>
-                <li>Read the question at the top</li>
-                <li><strong>Eat the colored apple that matches your answer choice!</strong></li>
-                <li>Correct bites give points and make your snake longer</li>
-                <li>Wrong bites make your snake say "yuck!" and cost a life</li>
-            </ul>
+            <div class="guide-section">
+                <h4>🍎 Your Mission</h4>
+                <p>Read the question at the top and eat the colored apple that matches your answer! Correct answers make your snake grow longer, while wrong ones cost you a life.</p>
+            </div>
 
-            <h4>🛡️ Power‑Ups & Special Features</h4>
-            <ul>
-                <li><strong>Shield:</strong> Spawns when you're low on lives. Grab it to block one mistake!</li>
-                <li><strong>Sprint Bar:</strong> Hold SHIFT to move faster. Energy refills over time.</li>
-                <li><strong>Volt Tech Skin:</strong> Special skin with +10% max energy, -15% drain, +15% regen!</li>
-                <li><strong>Shop System:</strong> Earn points to unlock new snake skins and accessories!</li>
-                <li><strong>Fresh Questions:</strong> API integration provides varied trivia content!</li>
-            </ul>
+            <div class="guide-section">
+                <h4>🛡️ Power‑Ups & Features</h4>
+                <p><strong>Shield:</strong> Appears when you're low on lives - grab it to block one mistake!<br>
+                <strong>Sprint Bar:</strong> Hold SHIFT to move faster (energy refills over time).<br>
+                <strong>Volt Tech Skin:</strong> +10% max energy, -15% drain, +15% regen!<br>
+                <strong>Shop System:</strong> Earn points to unlock new skins and accessories!<br>
+                <strong>Fresh Questions:</strong> Always new trivia to challenge you!</p>
+            </div>
 
-            <h4>🏆 Game Modes</h4>
-            <ul>
-                <li><strong>Quiz:</strong> Get 10 right to win</li>
-                <li><strong>Endless:</strong> How long can you grow?</li>
-                <li><strong>Timed:</strong> 60 seconds of speedy snacking</li>
-            </ul>
+            <div class="guide-section">
+                <h4>🏆 Game Modes</h4>
+                <p><strong>Quiz:</strong> Get 10 right to win<br>
+                <strong>Endless:</strong> How long can you grow?<br>
+                <strong>Timed:</strong> 60 seconds of speedy snacking</p>
+            </div>
             
-            <p>Tip: Think fast, slither smart, and have fun. Let's make your brain and snake super strong!</p>
+            <p class="tip">💡 <em>Think fast, slither smart, and have fun. Let's make your brain and snake super strong!</em></p>
             
             <button class="close-instructions" id="close-instructions">Got It!</button>
         </div>
@@ -235,10 +230,13 @@
     <!-- ACHIEVEMENTS MODAL -->
     <div id="achievements-modal" class="instructions-modal hidden">
         <div class="instructions-content pixel-border">
-            <h3>🏅 Achievements</h3>
+            <h3 style="display: flex; align-items: center; gap: 10px; justify-content: center">
+                <img src="assets/images/icons/achievement-icon.png" height="30" width="30" alt="Achievements" />
+                <span>Achievements</span>
+            </h3>
             
             <div class="achievements-container">
-                <div id="achievements-list" class="achievements-list">
+                <div id="achievements-list" class="achievements-list">  
                     <!-- Achievements will be populated by JavaScript -->
                 </div>
             </div>
@@ -282,7 +280,7 @@
                     <img src="assets/images/icons/snake-icon-boxed.png" alt="Snake" class="logo-icon" />
                 </div>
                 <p><br></p>
-                <p class="tagline">Quiz Your Brain, Grow Your Snake!</p>
+                <div class="tagline"> <h2>Quiz Your Brain, Grow Your Snake!</h2></div>
             </header>
 
             <!-- Category selection -->
@@ -311,7 +309,7 @@
                 </div>
 
 
-                <p class="coming-soon">... more quests coming soon!</p>
+                <p class="coming-soon">... more adventures coming soon!</p>
 
                 <div class="game-actions">
                     <button class="skin-shop-btn" id="skin-btn" title="Skin Shop">
@@ -323,13 +321,13 @@
                     <button class="leaderboard-btn" id="leaderboard-btn" title="Leaderboard">
                         <div class="skin-btn-content">
                             <span class="skin-text">Leaderboard</span>
-                            <img src="assets/images/icons/score-icon.png" alt="Leaderboard" class="btn-icon" />
+                            <img src="assets/images/icons/achievement-icon2.png" alt="Leaderboard" class="leaderboard-icon" />
                         </div>
                     </button>
                     <button class="achievements-btn" id="achievements-btn" title="Achievements">
                         <div class="skin-btn-content">
                             <span class="skin-text">Achievements</span>
-                            <img src="assets/images/icons/correct-icon.png" alt="Achievements" class="btn-icon" />
+                            <img src="assets/images/icons/achievement-icon.png" alt="Achievements" class="btn-icon" />
                         </div>
                     </button>
                 </div>
