@@ -1393,8 +1393,9 @@ class LandingPage {
         { id: 'pinkTile', name: 'Sugar Rush', desc: 'Yumm!!', price: 100 },
         { id: 'blueTile', name: 'Ocean Blaze', desc: 'Like the rushing waves', price: 200 },
         { id: 'voltTile', name: 'Ancient Tech', desc: 'A mystical scripts of the past', price: 175 },
-        { id: 'black&whiteTile', name: 'Black and White', desc: 'For the monochromatics', price: 100 },
+        { id: 'blackWhite1B', name: 'Black and White', desc: 'For the monochromatics', price: 100 },
         { id: 'free-palestineTile', name: 'Free Palestine', desc: 'From the river to the sea!', price: 5 },
+        { id: 'minecraft2', name: 'Minecraft', desc: 'A minecraft inspired tile', price: 150 },
       ]
     };
 
