@@ -2724,16 +2724,22 @@ body::before {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: linear-gradient(135deg, #d2691e, #daa520);
+  background: linear-gradient(135deg, #d2691e, #daa520); /* warm orange-gold gradient */
   border: 3px solid #ff8c00;
   border-radius: 12px;
   padding: 18px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
   z-index: 10000;
+  max-width: 320px;
+  
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
   transform: translateX(400px);
   opacity: 0;
   transition: all 0.5s ease;
-  max-width: 320px;
+  
   animation: achievementGlow 2s infinite alternate;
 }
 
@@ -2742,40 +2748,51 @@ body::before {
   opacity: 1;
 }
 
-.achievement-content {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.achievement-notification .achievement-icon {
+.achievement-icon {
   font-size: 28px;
   min-width: 35px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.achievement-notification .achievement-text h4 {
-  margin: 0 0 8px 0;
+.achievement-icon img {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+
+.achievement-text h4 {
+  margin: 0 0 6px 0;
   font-family: 'Press Start 2P', monospace;
   font-size: 12px;
   color: white;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
-.achievement-notification .achievement-text p {
-  margin: 0 0 6px 0;
+.achievement-text p {
+  margin: 0 0 4px 0;
   font-family: 'Press Start 2P', monospace;
   font-size: 10px;
   color: white;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 
-.achievement-notification .achievement-text small {
+.achievement-text small {
   font-size: 8px;
   color: #f1c40f;
   font-family: 'Press Start 2P', monospace;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
 }
+
+/* glow effect */
+@keyframes achievementGlow {
+  from {
+    box-shadow: 0 0 8px #ff8c00, 0 0 15px rgba(0, 0, 0, 0.4);
+  }
+  to {
+    box-shadow: 0 0 16px #ffd700, 0 0 30px rgba(0, 0, 0, 0.6);
+  }
+}
+
 
 @keyframes rainbowBorder {
   0% { background-position: 0% 50%; }
