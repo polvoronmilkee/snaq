@@ -1391,6 +1391,7 @@ class LandingPage {
         { id: 'blueTile', name: 'Ocean Blaze', desc: 'Like the rushing waves', price: 200 },
         { id: 'voltTile', name: 'Ancient Tech', desc: 'A mystical scripts of the past', price: 175 },
         { id: 'black&whiteTile', name: 'Black and White', desc: 'For the monochromatics', price: 100 },
+        { id: 'free-palestineTile', name: '#FreePalestine', desc: 'From the river to the sea!', price: 5 },
       ]
     };
 
