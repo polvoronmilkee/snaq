@@ -1762,11 +1762,13 @@ body::before {
   border: 3px solid #CD853F;
   box-shadow: none;
   padding: 20px;
-  max-width: 650px;
-  width: 90%;
-  max-height: 85vh;
+  max-width: 900px;
+  width: 95%;
+  max-height: 90vh;
   overflow-y: auto;
   text-align: center;
+  margin: 2vh auto;
+  border-radius: 10px;
 }
 
 /* Pixelated scrollbar for skin shop */
@@ -2039,14 +2041,27 @@ body::before {
 
 .skins-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, minmax(200px, 1fr));
   gap: 15px;
+  padding: 15px;
+  justify-content: center;
+  align-items: start;
 }
 
 .skin-item {
-  padding: 15px;
+  padding: 20px 15px;
   text-align: center;
-  transition: all 0.1s ease;
+  transition: all 0.2s ease;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 320px;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
 .skin-item:hover {
@@ -2055,27 +2070,51 @@ body::before {
 }
 
 .skin-image {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
+  min-height: 100px;
   image-rendering: pixelated;
+  object-fit: contain;
+  margin: 0 auto 10px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Make accessories preview even bigger */
+.skin-item[data-category="accessories"] .skin-image {
+  width: 120px;
+  height: 120px;
+  min-height: 120px;
+  margin: 0 auto 10px;
 }
 
 
 .skin-description {
   font-size: 8px;
-  margin-bottom: 1px;
+  margin: 10px 0;
   min-height: 32px;
   line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  flex-shrink: 0;
 }
 
 .skin-status {
   font-size: 10px;
-  margin-bottom: 10px;
+  margin: 10px 0;
   padding: 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  width: 100%;
+  position: relative;
+  flex-grow: 1;
+  justify-content: flex-end;
 }
 
 .conversion-note {
@@ -2294,19 +2333,25 @@ body::before {
     background: #444;
     border: 2px solid #666;
     color: #fff;
-    font-family: "Press Start 2P", monospace;
-    font-size: 8px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    text-align: center;
     cursor: pointer;
     width: 60%;
     transition: all 0.1s ease;
     box-shadow: 2px 2px 0px #000;
     image-rendering: pixelated;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    min-width: 120px;
 }
 
 .action-btn:hover:not(:disabled) {
     background: #555;
     transform: translate(1px, 1px);
-    box-shadow: 1px 1px 0px #000;
+    box-shadow: 0 0 0 2px #caa574 inset, 0 0 10px rgba(205, 133, 63, 0.8);
 }
 
 .action-btn:disabled {
@@ -2315,50 +2360,57 @@ body::before {
     cursor: not-allowed;
     transform: none;
     box-shadow: 2px 2px 0px #000;
+    opacity: 0.7;
 }
 
 .action-btn.selected {
-    background: #32cd32;
-    border-color: #228b22;
-    color: #000;
-    box-shadow: 0 0 0 2px #fff inset, 2px 2px 0px #1e7e1e;
+    background: #B8860B;
+    border-color: #754d11;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    
 }
 
-.action-btn.selected:hover {
-    background: #3ae63a;
-    transform: translate(1px, 1px);
-    box-shadow: 0 0 0 2px #fff inset, 1px 1px 0px #1e7e1e;
+/* Button group styles */
+.button-group {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin: 10px 0;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-/* Buy button specific styles */
-.action-btn[data-action="buy"] {
-    background: #444;
-    border-color: #666;
+.button-group .action-btn {
+    flex: 1 1 auto;
+    max-width: 150px;
+    min-width: 100px;
+    margin: 5px 0;
 }
 
-.action-btn[data-action="buy"]:hover:not(:disabled) {
-    background: #555;
-}
-
-.action-btn[data-action="buy"].selected {
-    background: #32cd32;
-    border-color: #228b22;
-}
-
-/* Select button specific styles */
 .action-btn[data-action="select"] {
     background: #754d11;
-    border-color: #332002;
+    border-color: #5a3b0d;
+    color: #ffd700;
 }
 
 .action-btn[data-action="select"]:hover:not(:disabled) {
-    background: #444;
+    background: #8a5a0b;
+    border-color: #6d4a0f;
+    color: #fff;
 }
 
 .action-btn[data-action="select"].selected {
-    background: #dbf46c;
-    border-color: #228b22;
-    color: #000;
+    background: #b8860b;
+    border-color: #8a5a0b;
+    box-shadow: 0 0 0 2px #DEB887 inset, 0 0 10px rgba(139, 90, 11, 0.8);
+}
+
+/* Ensure all action buttons have consistent text alignment and padding */
+.action-btn span {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1.2;
 }
 
 /* Inventory Tabs */
@@ -2368,31 +2420,36 @@ body::before {
     gap: 10px;
     margin-bottom: 20px;
     padding-bottom: 10px;
+    
 }
 
 .inventory-tab {
     padding: 8px 16px;
     background: #754d11;
     border: 2px solid #754d11;
-    color: #fff;
+    color: #f0cd94;
     font-family: "Press Start 2P", monospace;
     font-size: 10px;
     cursor: pointer;
     transition: all 0.1s ease;
     position: relative;
     z-index: 1;
+    box-shadow: 2px 2px 0px #000;
+    
 }
 
 .inventory-tab:hover {
-    background: #444;
+    background: #b8860b;
     transform: translate(1px, 1px);
+    box-shadow: 0 0 0 2px #bb9461 inset, 0 0 10px rgba(139, 90, 11, 0.8);
 }
 
 .inventory-tab.active {
-    background: #32cd32;
-    border-color: #228b22;
-    color: #000;
+    background: #b8860b;
+    border-color: #8a5a0b;
+    color: #8a5a0b;
     transform: translateY(2px);
+    box-shadow: 0 0 0 2px #DEB887 inset, 0 0 10px rgba(139, 90, 11, 0.8);
 }
 
 .shop-content {

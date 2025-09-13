@@ -1381,9 +1381,12 @@ class LandingPage {
         { id: 'none', name: 'Default', desc: 'No accessory', price: 0 },
         { id: 'bow', name: 'Red Bow', desc: 'Elegant ribbon accessory', price: 50 },
         { id: 'glasses', name: 'Sunglasses', desc: 'Cool shades to cover your eyes', price: 75 },
-        { id: 'hat', name: 'Cook Hat', desc: 'An extension of your mind', price: 100 },
+        { id: 'hat', name: 'Top Hat', desc: 'An extension of your mind', price: 100 },
         { id: 'mustache', name: 'Mustache', desc: 'A gentlemen\'s mustache', price: 100 },
+        { id: 'eyePatch', name: 'Eye Patch', desc: 'A pirate eye patch', price: 100 },
         { id: 'crown', name: 'Golden Crown', desc: 'Royal headpiece', price: 250 },
+        { id: 'visor', name: 'Cyber Visor', desc: 'A cyberpunk kinda visor', price: 100 },
+        { id: 'halo', name: 'Halo', desc: 'A angelic halo', price: 250 },
       ],
       tiles: [
         { id: 'Tile', name: 'Classic Tiles', desc: 'A classic tile design', price: 150 },
