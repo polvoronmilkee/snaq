@@ -1356,6 +1356,7 @@ class LandingPage {
         { id: 'gold', name: 'Royal Glimmer', desc: 'A royalty shining snake', price: 300 },
         { id: 'white', name: 'Crimson Pale', desc: 'A pale vampire-like snake', price: 500 },
         { id: 'gray', name: 'Scarred Shadow', desc: 'A mysterious snake above the gray fog', price: 500 },
+        { id: 'robin', name: 'Robin', desc: 'Sidekick of Batman', price: 500 },
         { id: 'volt', name: 'Ghost Shock', desc: 'A ghostly snake with shock energy', price: 999 },
         { id: 'centipede', name: 'Bore Centipede', desc: 'Mortal enemy of SnaQ, BEWARE!!', price: 4999 },
       ],
