@@ -1372,7 +1372,8 @@ class LandingPage {
         { id: 'Tile', name: 'Classic Tiles', desc: 'A classic tile design', price: 150 },
         { id: 'pinkTile', name: 'Sugar Rush', desc: 'Yumm!!', price: 100 },
         { id: 'blueTile', name: 'Ocean Blaze', desc: 'Like the rushing waves', price: 200 },
-        { id: 'voltTile', name: 'Ancient Tech', desc: 'A mystical scripts of the past', price: 175 }
+        { id: 'voltTile', name: 'Ancient Tech', desc: 'A mystical scripts of the past', price: 175 },
+        { id: 'black&whiteTile', name: 'Black and White', desc: 'For the monochromatics', price: 100 },
       ]
     };
 
