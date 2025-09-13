@@ -401,15 +401,16 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("../images/backgrounds/pixelForestBg.png");
+  background-image: var(--before-bg, url("../images/backgrounds/pixelForestBg.png"));
   background-repeat: no-repeat;
   background-size: 130% 110%;
   background-position: center;
-  image-rendering: pixelated;
   filter: blur(4px);
   transform: scale(1.05);
   z-index: -1;
+  transition: background-image 1s ease-in-out; /* smooth fade */
 }
+
 
 .main-content {
   position: relative;
