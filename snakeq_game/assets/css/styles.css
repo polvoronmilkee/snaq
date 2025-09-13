@@ -1033,15 +1033,6 @@ body::before {
   gap: 8px;
 }
 
-.option-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: #333;
-  border: 1px solid #555;
-  font-size: 10px;
-}
 
 .big-juice {
   font-size: 20px;
@@ -1664,7 +1655,7 @@ body::before {
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  background: #333;
+  background: #533200;
   border: 1px solid #555;
   font-size: 14px;
 }
@@ -3370,7 +3361,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 }
 
  .score {
-  color: #2e1a1a;
+  color: #5d451a;
   text-align: center;
 }
 
