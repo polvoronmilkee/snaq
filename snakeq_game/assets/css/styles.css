@@ -986,11 +986,10 @@ body::before {
 
 .pixel-stat .points-value,
 .pixel-stat .coins-value {
-  color: white !important;
-  text-shadow: 0 0 1px #32cd32, 0 0 2px #32cd32, 0 0 2px ;
-  position: relative;
-  display: inline-block;
-  font-size: calc(1em + 2px) !important;
+  color: #4CAF50 !important;
+  text-align: right;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .stat-icon {
