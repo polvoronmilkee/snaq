@@ -3999,3 +3999,17 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 
 }
 }
+
+#options-display {
+  display: flex;
+  flex-direction: row;   
+  justify-content: center;
+  align-items: center;
+  gap: 20px;                 
+}
+
+#options-display > * {
+  line-height: 1.6;         
+  padding: 10px 14px;        
+  text-align: center;
+}
