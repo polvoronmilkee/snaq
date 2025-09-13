@@ -115,7 +115,7 @@
             skipButton.addEventListener('click', function () {
                 if (skipTimer) clearInterval(skipTimer);
                 localStorage.setItem('hasSeenIntro', 'true');
-                window.location.href = '../index.html?fromIntro=true';
+                window.location.href = '../index.html?fromIntro=true&justCompletedIntro=true';
             });
 
             // Handle video end
@@ -124,7 +124,7 @@
                 localStorage.setItem('hasSeenIntro', 'true');
                 localStorage.setItem('hasSeenStoryboard', 'true');
                 hasSeenIntro = true; // update in case we check it again later
-                window.location.href = '../index.html?fromIntro=true';
+                window.location.href = '../index.html?fromIntro=true&justCompletedIntro=true';
             });
 
             // Try to play video (in case autoplay is blocked)

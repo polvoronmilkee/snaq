@@ -942,14 +942,23 @@ class TutorialManager {
         this.isActive = false;
         this.overlay.classList.add('hidden');
         
-        // Clean up clickable area
-        const clickableArea = document.getElementById('tutorial-clickable-area');
-        if (clickableArea) {
-            clickableArea.remove();
+        // Clean up any remaining elements
+        if (this.clickableArea) {
+            this.clickableArea.remove();
         }
         
         // Mark tutorial as completed
+        const wasAlreadyCompleted = localStorage.getItem('tutorialCompleted') === 'true';
         localStorage.setItem('tutorialCompleted', 'true');
+        
+        // Dispatch tutorial complete event only if it wasn't already completed
+        if (!wasAlreadyCompleted) {
+            const event = new CustomEvent('tutorialComplete', {
+                bubbles: true,
+                cancelable: true
+            });
+            document.dispatchEvent(event);
+        }
         
         // Award tutorial completion achievement
         this.awardTutorialAchievement();

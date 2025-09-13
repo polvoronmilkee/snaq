@@ -64,13 +64,34 @@ class LandingPage {
           introCount++;
           localStorage.setItem('introCount', introCount);
 
-          // Clear the param
+          // Check if we just completed the intro
+          const justCompletedIntro = new URLSearchParams(window.location.search).get('justCompletedIntro') === 'true';
+          
+          // Clear the params
           const url = new URL(window.location);
           url.searchParams.delete('fromIntro');
+          url.searchParams.delete('justCompletedIntro');
           window.history.replaceState({}, '', url);
 
           // First time back from intro → show tutorial
           if (introCount === 1) {
+            // Save a flag that we're showing tutorial for the first time
+            const tutorialCompleteHandler = () => {
+              // Remove the event listener to prevent multiple triggers
+              document.removeEventListener('tutorialComplete', tutorialCompleteHandler);
+              
+              // Show username modal if no username is set
+              if (!this.username) {
+                setTimeout(() => {
+                  this.showUsernameModal();
+                }, 1000);
+              }
+            };
+            
+            // Listen for tutorial completion
+            document.addEventListener('tutorialComplete', tutorialCompleteHandler);
+            
+            // Start the tutorial
             this.startTutorial();
           }
         }
@@ -103,12 +124,8 @@ class LandingPage {
   }
 
   checkUsernamePrompt() {
-    // Show username modal if no username is set and user has points
-    if (!this.username && this.points > 0) {
-      setTimeout(() => {
-        this.showUsernameModal();
-      }, 1000);
-    }
+    // This method is kept for backward compatibility but no longer shows the modal
+    // Username prompt is now shown after intro completion
   }
 
   initializeAudioStates() {
