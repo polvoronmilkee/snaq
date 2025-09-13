@@ -971,6 +971,7 @@ body::before {
   color: #f2ff65;
   text-shadow: 2px 2px 0px #000, 1px 1px 0px #fff;
   text-align: center;
+  margin-top: 30px;
 }
 
 .pixel-hud {
