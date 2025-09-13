@@ -2065,6 +2065,7 @@ body::before {
   text-overflow: ellipsis;
   width: 100%;
   flex-shrink: 0;
+  margin-bottom: -8px;
 }
 
 .skin-status {
