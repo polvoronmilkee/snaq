@@ -187,8 +187,9 @@
   font-family: "Press Start 2P", monospace;
   font-size: 8px;
   cursor: pointer;
+  transition: all 0.2s ease;
   border-radius: 5px;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .tutorial-btn:hover {
@@ -265,42 +266,6 @@
   margin: 10px 0;
   font-size: 8px;
   opacity: 0.7;
-}
-
-.tutorial-completion-notification {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 100002;
-  animation: fadeIn 0.5s ease-in;
-}
-
-.tutorial-completion-notification .notification-content {
-  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-  border: 3px solid #00ff00;
-  border-radius: 10px;
-  padding: 30px;
-  text-align: center;
-  color: white;
-  font-family: "Press Start 2P", monospace;
-  box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
-}
-
-.tutorial-completion-notification h3 {
-  color: #00ff00;
-  margin: 0 0 15px 0;
-  font-size: 14px;
-}
-
-.tutorial-completion-notification p {
-  margin: 0;
-  font-size: 10px;
-  line-height: 1.6;
-}
-
-.tutorial-completion-notification.fade-out {
-  animation: fadeOut 0.5s ease-out;
 }
 
 @keyframes fadeIn {
@@ -1469,11 +1434,10 @@ body::before {
   overflow-y: auto;
   text-align: center;
   box-shadow: inset 2px 2px 6px rgba(205, 133, 63, 0.3),
-              0 4px 15px rgba(0, 0, 0, 0.3);
-  
-  /* Hide scrollbar but keep functionality */
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+              0 4px 15px rgba(0, 0, 0, 0.3);;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .instructions-content::-webkit-scrollbar {
@@ -2595,10 +2559,10 @@ body::before {
 .achievement-item.unlocked::before {
   content: '';
   position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
   background: linear-gradient(45deg, #3d0004, #5d0006, #7d0008, #3d0004);
   border-radius: 10px;
   z-index: -1;
@@ -3041,28 +3005,32 @@ body::before {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: #4CAF50;
-  color: white;
-  padding: 12px 18px;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  background: linear-gradient(135deg, #d2691e, #daa520);
+  border: 3px solid #ff8c00;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
   z-index: 10000;
-  font-weight: bold;
-  font-family: "Press Start 2P", monospace;
-  font-size: 15px;
-  transform: translateX(120%);
-  transition: transform 0.3s ease;
-  border: 2px solid #2e7d32;
-  max-width: 4000px;
+  max-width: 320px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transform: translateX(400px);
+  opacity: 0;
+  transition: all 0.5s ease;
+  color: white;
+  font-family: 'Press Start 2P', monospace;
+  animation: achievementGlow 2s infinite alternate;
   word-wrap: break-word;
-}
-
-#notification.hidden {
-  display: none;
 }
 
 #notification.show {
   transform: translateX(0);
+  opacity: 1;
+}
+
+#notification.hidden {
+  display: none;
 }
 
 /* Hide scrollbars but maintain scrolling functionality globally */
@@ -3270,7 +3238,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
   transition: left 0.5s;
 }
 
@@ -3781,7 +3749,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 
 .tutorial-progress {
   font-size: 10px;
-  color: #aaa;
+  color: #cccccc;
   font-family: 'Press Start 2P', cursive;
 }
 
@@ -3995,8 +3963,6 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   .tutorial-buttons {
     justify-content: center;
   }
-}
-
 }
 }
 
