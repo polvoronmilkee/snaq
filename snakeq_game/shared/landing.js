@@ -1718,20 +1718,9 @@ class LandingPage {
       marathoner: { unlocked: false, claimed: false },
       tutorialMaster: { unlocked: false, claimed: false }
     };
-
-    const stored = JSON.parse(localStorage.getItem("achievements")) || {};
     
-    // Merge stored values into defaults
-    const merged = { ...defaultAchievements };
-    for (const key in stored) {
-      if (merged[key]) {
-        merged[key] = { ...merged[key], ...stored[key] };
-      }
-    }
-
-    return merged;
+    return JSON.parse(localStorage.getItem("achievements")) || defaultAchievements;
   }
-
 
   loadGameStats() {
     const defaultStats = {
