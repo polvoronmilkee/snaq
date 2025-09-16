@@ -393,8 +393,10 @@ class SnakeMathGame {
         // ✅ Pause button
     const pauseBtn = document.getElementById("pause-btn");
         pauseBtn.addEventListener("click", () => {
+            this.playSound( );
             this.togglePause();
         });
+
 
   }
 
@@ -683,66 +685,74 @@ class SnakeMathGame {
     }, 1000);
   }
 
-  handleKeyDown(e) {
-    const key = e.key.toLowerCase()
-    const code = e.code
+handleKeyDown(e) {
+  const key = e.key.toLowerCase();
+  const code = e.code;
 
-    // Prevent all key actions when ESC menu is active, except ESC itself
-    if (this.escMenuActive && key !== "escape") {
-      e.preventDefault();
-      return;
+  // Prevent all key actions when ESC menu is active, except ESC itself
+  if (this.escMenuActive && key !== "escape") {
+    e.preventDefault();
+    return;
+  }
+
+  // Prevent snake from moving during countdown
+  if (this.countdownActive) {
+    e.preventDefault();
+    return;
+  }
+
+  if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
+    e.preventDefault();
+  }
+
+  // Ignore auto-repeat when holding a key
+  if (e.repeat) return;
+
+  if (!this.restartConfirm.classList.contains("hidden")) {
+    if (code === "Escape") {
+      this.cancelRestart();
+    } else if (code === "Enter") {
+      this.confirmRestart();
     }
+    return;
+  }
 
-    // Prevent snake from moving during countdown
-    if (this.countdownActive) {
-      e.preventDefault();
-      return;
-    }
+  if (!this.gameRunning && key !== "r") return;
 
-    if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
-      e.preventDefault()
-    }
+  let moved = false;
 
-    // Ignore auto-repeat when holding a key
-    if (e.repeat) return
+  // Pause toggle
+  if (code === "Space" || key === " ") {
+    e.preventDefault();
+    this.paused = !this.paused;
 
-    if (!this.restartConfirm.classList.contains("hidden")) {
-      if (code === "Escape") {
-        this.cancelRestart()
-      } else if (code === "Enter") {
-        this.confirmRestart()
-      }
-      return
-    }
-
-    if (!this.gameRunning && key !== "r") return
-
-    let moved = false
-
-    if (code === "Space" || key === " ") {
-      e.preventDefault()
-      this.paused = !this.paused
+    if (this.soundEnabled) {
       this.sounds.pause.currentTime = 0;
       this.sounds.pause.play();
-      return
+    }
+    return;
+  }
+
+  if (code === "KeyR" || key === "r") {
+    this.showRestartConfirm();
+    return;
+  }
+
+  // Sprint activation with Shift (left or right)
+  if ((code === "ShiftLeft" || code === "ShiftRight") && !this.paused) {
+    if (this.sprint.energy > 0) {
+      this.sprint.active = true;
     }
 
-    if (code === "KeyR" || key === "r") {
-      this.showRestartConfirm()
-      return
-    }
-
-    // Sprint activation with Shift (left or right)
-    if ((code === "ShiftLeft" || code === "ShiftRight") && !this.paused) {
-      if (this.sprint.energy > 0) {
-        this.sprint.active = true
-      }
-
+    if (this.soundEnabled) {
       this.sounds.shift.currentTime = 0;
       this.sounds.shift.play();
-
-      return
     }
+
+    return;
+  }
+
+
 
     // If an input has already been processed for this move window, ignore further movement keys
     const isMovementKey = ["w", "arrowup", "s", "arrowdown", "a", "arrowleft", "d", "arrowright"].includes(key)
