@@ -626,81 +626,60 @@ class SnakeGeneralKnowledgeGame {
         }, 1000);
     }
 
-        handleKeyDown(e) {
-        const key = e.key.toLowerCase();
-        const code = e.code;
+    handleKeyDown(e) {
+        const key = e.key.toLowerCase()
+        const code = e.code
 
-        // Prevent all key actions when ESC menu is active, except ESC itself
         if (this.escMenuActive && key !== "escape") {
             e.preventDefault();
             return;
         }
 
-        // Prevent snake from moving during countdown
         if (this.countdownActive) {
             e.preventDefault();
             return;
         }
 
         if (code === "ArrowUp" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
-            e.preventDefault();
+            e.preventDefault()
         }
 
-        // Ignore auto-repeat when holding a key
-        if (e.repeat) return;
+        if (e.repeat) return
 
         if (!this.restartConfirm.classList.contains("hidden")) {
             if (code === "Escape") {
-            this.cancelRestart();
+                this.cancelRestart()
             } else if (code === "Enter") {
-            this.confirmRestart();
-
-
+                this.confirmRestart()
             }
-            return;
+            return
         }
 
-        if (!this.gameRunning && key !== "r") return;
+        if (!this.gameRunning && key !== "r") return
 
-        let moved = false;
+        let moved = false
 
-        // Pause toggle
         if (code === "Space" || key === " ") {
-            e.preventDefault();
-            this.paused = !this.paused;
-
-            if (this.soundEnabled) {
-
-
+            e.preventDefault()
+            this.paused = !this.paused
             this.sounds.pause.currentTime = 0;
             this.sounds.pause.play();
-
-            }
-            return;
+            return
         }
 
         if (code === "KeyR" || key === "r") {
-            this.showRestartConfirm();
-            return;
+            this.showRestartConfirm()
+            return
         }
 
-        // Sprint activation with Shift (left or right)
+        // Sprint activation (hold Shift)
         if ((code === "ShiftLeft" || code === "ShiftRight") && !this.paused) {
-            if (this.sprint.energy > 0) {
-            this.sprint.active = true;
-            }
+            if (this.sprint.energy > 0) this.sprint.active = true
 
-            if (this.soundEnabled) {
             this.sounds.shift.currentTime = 0;
             this.sounds.shift.play();
-
-
-            }
-
-            return;
+            return
         }
-
-
 
         // Handle ESC key for menu
         if (code === "Escape" || key === "escape") {

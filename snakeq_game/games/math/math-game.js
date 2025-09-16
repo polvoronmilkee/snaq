@@ -752,18 +752,6 @@ handleKeyDown(e) {
     return;
   }
 
-  
-        // Handle ESC key for menu
-        if (code === "Escape" || key === "escape") {
-            e.preventDefault();
-            if (this.escMenuActive) {
-                this.hideEscMenu();
-            } else {
-                this.showEscMenu();
-            }
-            return;
-        }
-
 
 
     // If an input has already been processed for this move window, ignore further movement keys
