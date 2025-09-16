@@ -876,7 +876,8 @@ handleKeyDown(e) {
 
   // Boss apple spawns a single special apple labeled "2B2". When eaten, it
   // switches the game to a multi-operator hard question until solved.
-// switches the game to a multi-operator hard question until solved.
+// switches the game to a 
+// multi-operator hard question until solved.
 spawnBossApple() {
   if (this.bossAppleSpawned || this.inBossChallenge) return;
 
@@ -1903,7 +1904,7 @@ if (eatenApple.type === 'boss') {
       },
       medium: {
         gridSize: 40,
-        baseSpeed: 6.5,
+        baseSpeed: 6.3,
         speedIncrease: 0.55,
       },
       hard: {

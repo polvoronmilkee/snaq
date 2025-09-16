@@ -1540,12 +1540,12 @@ class SnakeScienceGame {
             },
             medium: {
                 gridSize: 40,
-                baseSpeed: 5.5,
+                baseSpeed: 5,
                 speedIncrease: 0.55,
             },
             hard: {
                 gridSize: 40,
-                baseSpeed: 6,
+                baseSpeed: 5.5,
                 speedIncrease: 0.65,
             },
         }
