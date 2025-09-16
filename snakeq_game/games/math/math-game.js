@@ -174,7 +174,7 @@ class SnakeMathGame {
       "apple": "../../assets/images/apples/apple.png",
       // Icon sprites
       "shield": "../../assets/images/icons/shield.png",
-      "skipApple" : "../../assets/images/apples/appleC-blue.png"
+      "skipApple" : "../../assets/images/apples/appleC-blue.png",
     }
 
     Object.entries(spritePaths).forEach(([name, path]) => {
@@ -1123,7 +1123,7 @@ if (eatenApple.type === 'boss') {
   // generate boss answer apples first (don't spawn skip yet — this would overwrite it)
   this.apples = this.generateApples(this.currentQuestion);
 
-  // NOW spawn a SKIP apple (1x1) so it remains on the field during boss challenge
+  // spawn a SKIP apple (1x1) so it remains on the field during boss challenge
   if (!this.apples.some(a => a.type === 'skip')) {
     const usedPositions = new Set();
     this.apples.forEach((a) => {
@@ -1247,7 +1247,7 @@ if (eatenApple.type === 'boss') {
   this.bossAppleSpawned = false;
   this.currentQuestion = this.generateBossQuestion();
   this.apples = this.generateApples(this.currentQuestion);
-  this.showNotification("SnaQ Boss Challenge!", "correct");
+  this.showNotification("Boss!!!", "correct");
 
   // ✅ Spawn a Skip apple somewhere on the grid
   const usedPositions = new Set();
@@ -1262,6 +1262,7 @@ if (eatenApple.type === 'boss') {
     usedPositions.has(`${sx},${sy}`) ||
     this.isCellTooCloseToHead(sx, sy, this.minAppleDistanceFromHead)
   );
+});
 
   this.apples.push({
     x: sx,
