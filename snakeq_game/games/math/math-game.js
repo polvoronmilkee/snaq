@@ -76,7 +76,6 @@ class SnakeMathGame {
     this.inBossChallenge = false
     this.bossAppleSpawned = false
     this.nextBossAt = 5 // spawn boss after this many correct answers, then every +5
-
     // Endless rewards: every N correct answers grant life or shield
     this.lifeRewardInterval = 10
     this.nextLifeRewardAt = 10
@@ -174,7 +173,8 @@ class SnakeMathGame {
       // Apple sprites
       "apple": "../../assets/images/apples/apple.png",
       // Icon sprites
-      "shield": "../../assets/images/icons/shield.png"
+      "shield": "../../assets/images/icons/shield.png",
+      "skipApple" : "../../assets/images/apples/appleC-blue.png"
     }
 
     Object.entries(spritePaths).forEach(([name, path]) => {
@@ -876,49 +876,73 @@ handleKeyDown(e) {
 
   // Boss apple spawns a single special apple labeled "2B2". When eaten, it
   // switches the game to a multi-operator hard question until solved.
-  spawnBossApple() {
-    if (this.bossAppleSpawned || this.inBossChallenge) return
+// switches the game to a multi-operator hard question until solved.
+spawnBossApple() {
+  if (this.bossAppleSpawned || this.inBossChallenge) return;
 
-    const usedPositions = new Set()
-    this.apples.forEach((a) => {
-      const w = a.width || 1
-      const h = a.height || 1
-      for (let dx = 0; dx < w; dx++) {
-        for (let dy = 0; dy < h; dy++) {
-          usedPositions.add(`${a.x + dx},${a.y
-            + dy}`)
-        }
+  const usedPositions = new Set();
+  this.apples.forEach((a) => {
+    const w = a.width || 1;
+    const h = a.height || 1;
+    for (let dx = 0; dx < w; dx++) {
+      for (let dy = 0; dy < h; dy++) {
+        usedPositions.add(`${a.x + dx},${a.y + dy}`);
       }
-    })
-    this.snake.forEach((s) => usedPositions.add(`${s.x},${s.y}`))
-    if (this.shieldPickup) usedPositions.add(`${this.shieldPickup.x},${this.shieldPickup.y}`)
+    }
+  });
+  this.snake.forEach((s) => usedPositions.add(`${s.x},${s.y}`));
+  if (this.shieldPickup) usedPositions.add(`${this.shieldPickup.x},${this.shieldPickup.y}`);
 
-    let x, y
-    do {
-      x = this.randInt(Math.max(1, this.GRID_WIDTH - 1))
-      y = this.randInt(Math.max(1, this.GRID_HEIGHT - 1))
-    } while (
-      usedPositions.has(`${x},${y}`) ||
-      usedPositions.has(`${x + 1},${y}`) ||
-      usedPositions.has(`${x},${y + 1}`) ||
-      usedPositions.has(`${x + 1},${y + 1}`) ||
-      this.cellIntersectsRect(x, y, this.sprintBar) ||
-      this.cellIntersectsRect(x + 1, y, this.sprintBar) ||
-      this.cellIntersectsRect(x, y + 1, this.sprintBar) ||
-      this.cellIntersectsRect(x + 1, y + 1, this.sprintBar) ||
-      this.isCellTooCloseToHead(x, y, this.minAppleDistanceFromHead) ||
-      this.isCellTooCloseToHead(x + 1, y, this.minAppleDistanceFromHead) ||
-      this.isCellTooCloseToHead(x, y + 1, this.minAppleDistanceFromHead) ||
-      this.isCellTooCloseToHead(x + 1, y + 1, this.minAppleDistanceFromHead)
-    )
+  // ⬛ Boss apple (2x2)
+  let bx, by;
+  do {
+    bx = this.randInt(Math.max(1, this.GRID_WIDTH - 1));
+    by = this.randInt(Math.max(1, this.GRID_HEIGHT - 1));
+  } while (
+    usedPositions.has(`${bx},${by}`) ||
+    usedPositions.has(`${bx + 1},${by}`) ||
+    usedPositions.has(`${bx},${by + 1}`) ||
+    usedPositions.has(`${bx + 1},${by + 1}`) ||
+    this.cellIntersectsRect(bx, by, this.sprintBar) ||
+    this.cellIntersectsRect(bx + 1, by, this.sprintBar) ||
+    this.cellIntersectsRect(bx, by + 1, this.sprintBar) ||
+    this.cellIntersectsRect(bx + 1, by + 1, this.sprintBar) ||
+    this.isCellTooCloseToHead(bx, by, this.minAppleDistanceFromHead)
+  );
 
-    this.apples.push({ x, y, value: 'BOSS', isCorrect: false, type: 'boss', width: 2, height: 2 })
-    this.bossAppleSpawned = true
-    this.showNotification('SnaQ boss apple appeared!', 'correct')
-  }
+  this.apples.push({
+    x: bx, y: by,
+    value: 'BOSS',
+    isCorrect: false,
+    type: 'boss',
+    width: 2, height: 2
+  });
+
+  // 🍏 Skip apple (1x1)
+  let sx, sy;
+  do {
+    sx = this.randInt(this.GRID_WIDTH - 1);
+    sy = this.randInt(this.GRID_HEIGHT - 1);
+  } while (
+    usedPositions.has(`${sx},${sy}`) ||
+    this.isCellTooCloseToHead(sx, sy, this.minAppleDistanceFromHead)
+  );
+
+  this.apples.push({
+    x: sx, y: sy,
+    value: 'SKIP',
+    isCorrect: false,
+    type: 'skip'
+  });
+
+  this.bossAppleSpawned = true;
+  this.showNotification('SnaQ boss apple appeared! (Skip available)', 'correct');
+}
+
 
   // Create a hard 3-4 term expression with multiple operators and parentheses
   generateBossQuestion() {
+
     const ops = ['+', '-', '*'] // avoid division to keep integer results predictable
     const randIn = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
 
@@ -1075,21 +1099,78 @@ handleKeyDown(e) {
     const eatenApple = this.getAppleAt(head.x, head.y)
     if (eatenApple) {
       // Boss apple trigger: starts hard multi-operator challenge
-      if (eatenApple.type === 'boss') {
-        // Remove the boss apple and start boss challenge
-        this.playSound("bossApple")
-        this.apples = this.apples.filter((a) => a !== eatenApple)
-        this.inBossChallenge = true
-        this.bossAppleSpawned = false
-        this.currentQuestion = this.generateBossQuestion()
-        this.apples = this.generateApples(this.currentQuestion)
-        this.showNotification("SnaQ Boss Challenge!", "correct")
-        // Grow by one like a normal apple pickup
-        this.snake = newSnake
-        this.updateUI()
-        this.inputLocked = false
-        return
+if (eatenApple.type === 'boss') {
+  // Remove the boss apple and start boss challenge
+  this.playSound("bossApple");
+  this.apples = this.apples.filter((a) => a !== eatenApple);
+  this.inBossChallenge = true;
+  this.bossAppleSpawned = false;
+  this.currentQuestion = this.generateBossQuestion();
+
+  // generate boss answer apples first (don't spawn skip yet — this would overwrite it)
+  this.apples = this.generateApples(this.currentQuestion);
+
+  // NOW spawn a SKIP apple (1x1) so it remains on the field during boss challenge
+  if (!this.apples.some(a => a.type === 'skip')) {
+    const usedPositions = new Set();
+    this.apples.forEach((a) => {
+      const w = a.width || 1;
+      const h = a.height || 1;
+      for (let dx = 0; dx < w; dx++) {
+        for (let dy = 0; dy < h; dy++) {
+          usedPositions.add(`${a.x + dx},${a.y + dy}`);
+        }
       }
+    });
+    this.snake.forEach((s) => usedPositions.add(`${s.x},${s.y}`));
+    if (this.shieldPickup) usedPositions.add(`${this.shieldPickup.x},${this.shieldPickup.y}`);
+
+    let sx, sy, attempts = 0;
+    do {
+      sx = this.randInt(this.GRID_WIDTH);
+      sy = this.randInt(this.GRID_HEIGHT);
+      attempts++;
+      if (attempts > 2000) break; // safety fallback
+    } while (
+      usedPositions.has(`${sx},${sy}`) ||
+      this.cellIntersectsRect(sx, sy, this.sprintBar) ||
+      this.isCellTooCloseToHead(sx, sy, this.minAppleDistanceFromHead)
+    );
+
+    this.apples.push({
+      x: sx,
+      y: sy,
+      value: 'SKIP',
+      isCorrect: false,
+      type: 'skip'
+    });
+  }
+
+  this.showNotification("SnaQ Boss Challenge!", "correct");
+  // Grow by one like a normal apple pickup
+  this.snake = newSnake;
+  this.updateUI();
+  this.inputLocked = false;
+  return;
+}
+
+
+      if (eatenApple.type === 'skip') {
+        // remove both skip and boss apples
+        this.apples = this.apples.filter(a => a.type !== 'boss' && a.type !== 'skip');
+        this.inBossChallenge = false;
+        this.bossAppleSpawned = false;
+
+        this.showNotification("Boss skipped!", "correct");
+
+        this.currentQuestion = this.generateQuestion();
+        this.apples = this.generateApples(this.currentQuestion);
+        this.snake = newSnake;
+        this.updateUI();
+        this.inputLocked = false;
+        return;
+      }
+
       if (eatenApple.isCorrect) {
         this.score += 10
         this.correctAnswers++
@@ -1121,9 +1202,9 @@ handleKeyDown(e) {
         // If inside boss challenge, grant bonus and exit boss mode
         if (this.inBossChallenge) {
           this.snakeFace = "happy"
-          this.score += 15 // extra bonus for boss (total +25)
-          this.addToTotalPoints(15) // Add bonus points to total
-          this.showNotification("Boss cleared! +25 points", "correct")
+          this.score += 50 // extra bonus for boss (total +25)
+          this.addToTotalPoints(50) // Add bonus points to total
+          this.showNotification("+50 points!!", "correct")
           this.inBossChallenge = false
           this.currentQuestion = this.generateQuestion()
           this.apples = this.generateApples(this.currentQuestion)
@@ -1145,6 +1226,45 @@ handleKeyDown(e) {
           this.spawnBossApple()
           this.nextBossAt += 5
         }
+
+        if (eatenApple.type === 'boss') {
+  this.playSound("bossApple");
+  this.apples = this.apples.filter((a) => a !== eatenApple);
+  this.inBossChallenge = true;
+  this.bossAppleSpawned = false;
+  this.currentQuestion = this.generateBossQuestion();
+  this.apples = this.generateApples(this.currentQuestion);
+  this.showNotification("SnaQ Boss Challenge!", "correct");
+
+  // ✅ Spawn a Skip apple somewhere on the grid
+  const usedPositions = new Set();
+  this.snake.forEach((s) => usedPositions.add(`${s.x},${s.y}`));
+  this.apples.forEach((a) => usedPositions.add(`${a.x},${a.y}`));
+
+  let sx, sy;
+  do {
+    sx = this.randInt(this.GRID_WIDTH - 1);
+    sy = this.randInt(this.GRID_HEIGHT - 1);
+  } while (
+    usedPositions.has(`${sx},${sy}`) ||
+    this.isCellTooCloseToHead(sx, sy, this.minAppleDistanceFromHead)
+  );
+
+  this.apples.push({
+    x: sx,
+    y: sy,
+    value: 'SKIP',
+    isCorrect: false,
+    type: 'skip'
+  });
+
+  // Grow snake by one like a normal apple pickup
+  this.snake = newSnake;
+  this.updateUI();
+  this.inputLocked = false;
+  return;
+}
+
 
         // Endless reward: every 10 correct answers -> +1 life, or shield if full
         if (this.gameSettings.mode === 'endless' && this.correctAnswers >= this.nextLifeRewardAt) {
@@ -1632,7 +1752,13 @@ handleKeyDown(e) {
       const x = apple.x * this.GRID_SIZE
       const y = apple.y * this.GRID_SIZE
 
-      const appleSprite = this.sprites.apple
+      
+
+        const appleSprite = 
+    apple.type === 'skip'
+      ? this.sprites.skipApple
+      : this.sprites.apple;
+
       const drawW = (apple.width || 1) * this.GRID_SIZE
       const drawH = (apple.height || 1) * this.GRID_SIZE
 
