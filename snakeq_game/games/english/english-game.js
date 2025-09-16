@@ -237,6 +237,7 @@ class SnakeEnglishGame {
         this.gameOverTitle = $id("game-over-title")
         this.finalScoreElement = $id("final-score")
         this.finalCorrectElement = $id("final-correct")
+        this.correctAnswerDisplay = $id("correct-answer-display")
         this.playAgainBtn = $id("play-again-btn")
         this.playAgainConfirm = $id("play-again-confirm")
         this.playAgainConfirmBtn = $id("confirm-play-again")
@@ -263,6 +264,13 @@ class SnakeEnglishGame {
         this.cancelBackMenuBtn = $id("cancel-back-menu")
         this.restartBtn = $id("restart-btn")
         this.backToMenu = $id("back-to-menu")
+        
+        // Speed control elements
+        this.speedSlider = $id("speed-slider");
+        this.speedValueButton = $id("speed-value-button");
+        this.speedControlButton = $id("speed-control-button");
+        this.speedSliderContainer = $id("speed-slider-container");
+        
         if (this.questionElement) {
             this.questionElement.style.fontSize = "15px"
             this.questionElement.style.lineHeight = "1.4"
@@ -370,6 +378,9 @@ class SnakeEnglishGame {
         })
 
         this.closeInstructionsBtn.addEventListener("click", () => this.hideInstructions())
+
+        // Initialize speed control
+        this.initSpeedControl();
 
         document.addEventListener('click', (e) => {
             if (e.target.id === 'resume-btn') {
@@ -490,6 +501,38 @@ class SnakeEnglishGame {
 
     hideInstructions() {
         this.instructionsModal.classList.add("hidden")
+    }
+
+    initSpeedControl() {
+        // Set initial values
+        this.speedSlider.value = this.speedLevel;
+        this.speedValueButton.textContent = this.speedLevel;
+        
+        // Hide slider initially
+        this.speedSliderContainer.style.display = 'none';
+        
+        // Button click toggles slider visibility
+        this.speedControlButton.addEventListener('click', () => {
+            this.playSound("click");
+            if (this.speedSliderContainer.style.display === 'none') {
+                this.speedSliderContainer.style.display = 'block';
+            } else {
+                this.speedSliderContainer.style.display = 'none';
+            }
+        });
+
+        // Slider changes update speed
+        this.speedSlider.addEventListener('input', (e) => {
+            this.speedLevel = parseInt(e.target.value);
+            this.speedValueButton.textContent = this.speedLevel;
+            this.updateSnakeSpeed();
+        });
+    }
+
+    updateSnakeSpeed() {
+        // Apply speed multiplier to base speed
+        const speedMultiplier = this.speedMultipliers[this.speedLevel - 1];
+        this.speed = this.baseSpeed * speedMultiplier;
     }
 
     updateUI() {
@@ -1233,6 +1276,16 @@ class SnakeEnglishGame {
             if (this.finalCorrectElement) {
                 this.finalCorrectElement.innerHTML = `Corrects: ${this.correctAnswers}/${this.targetAnswers === Infinity ? '<span class="big-infinity">♾️</span>' : this.targetAnswers}`;
             }
+            
+            // Show correct answer if available - FIXED
+            if (this.correctAnswerDisplay && this.currentQuestion) {
+                // Find the correct answer in the options array
+                const correctIndex = this.currentQuestion.options.indexOf(this.currentQuestion.correctAnswer);
+                const correctLetter = String.fromCharCode(65 + correctIndex); // A, B, C
+                
+                this.correctAnswerDisplay.textContent = `Correct answer is: ${correctLetter} ${this.currentQuestion.correctAnswer}`;
+            }
+            
             // Show the overlay
             this.gameOverOverlay.classList.remove("hidden");
 

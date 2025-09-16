@@ -223,6 +223,7 @@ class SnakeGeneralKnowledgeGame {
         this.gameOverTitle = $id("game-over-title")
         this.finalScoreElement = $id("final-score")
         this.finalCorrectElement = $id("final-correct")
+        this.correctAnswerDisplay = $id("correct-answer-display")
         this.playAgainBtn = $id("play-again-btn")
         this.playAgainConfirm = $id("play-again-confirm")
         this.playAgainConfirmBtn = $id("confirm-play-again")
@@ -251,6 +252,12 @@ class SnakeGeneralKnowledgeGame {
         this.aboutBtn = $id("about-btn")
         this.restartBtn = $id("restart-btn")
         this.initDpad()
+        
+        // Speed control elements
+        this.speedSlider = $id("speed-slider");
+        this.speedValueButton = $id("speed-value-button");
+        this.speedControlButton = $id("speed-control-button");
+        this.speedSliderContainer = $id("speed-slider-container");
 
         if (this.questionElement) {
             this.questionElement.style.fontSize = "15px"
@@ -1111,6 +1118,17 @@ class SnakeGeneralKnowledgeGame {
             if (this.finalCorrectElement) {
                 this.finalCorrectElement.innerHTML = `Corrects: ${this.correctAnswers}/${this.targetAnswers === Infinity ? '<span class="big-infinity">♾️</span>' : this.targetAnswers}`;
             }
+            
+            // Show correct answer if available
+            if (this.correctAnswerDisplay && this.currentQuestion) {
+                const correctOption = this.currentQuestion.options.find(opt => opt.isCorrect);
+                if (correctOption) {
+                    this.correctAnswerDisplay.textContent = `Correct answer is: ${correctOption.letter} ${correctOption.text}`;
+                    this.correctAnswerDisplay.style.display = 'block';
+                    this.correctAnswerDisplay.style.visibility = 'visible';
+                }
+            }
+            
             // Show the overlay
             this.gameOverOverlay.classList.remove("hidden");
 

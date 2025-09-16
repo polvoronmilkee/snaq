@@ -72,6 +72,10 @@ class SnakeMathGame {
     this.countdownActive = false
     this.escMenuActive = false
 
+    // Speed control
+    this.speedLevel = 5; // Default speed level (1-10)
+    this.speedMultipliers = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0, 1.2, 1.5, 2.0]; // Speed multipliers for levels 1-10
+
     // Boss challenge state (Endless mode)
     this.inBossChallenge = false
     this.bossAppleSpawned = false
@@ -228,6 +232,7 @@ class SnakeMathGame {
     this.gameOverTitle = $id("game-over-title")
     this.finalScoreElement = $id("final-score")
     this.finalCorrectElement = $id("final-correct")
+    this.correctAnswerDisplay = $id("correct-answer-display")
     this.playAgainBtn = $id("play-again-btn")
     this.menuBtn = $id("menu-btn")
     this.restartConfirm = $id("restart-confirm")
@@ -239,6 +244,12 @@ class SnakeMathGame {
     this.timerDisplay = $id("timer-display")
     this.timerValue = $id("timer-value")
     this.restartBtn= $id("restart-btn")
+
+    // Speed control elements
+    this.speedSlider = $id("speed-slider");
+    this.speedValueButton = $id("speed-value-button");
+    this.speedControlButton = $id("speed-control-button");
+    this.speedSliderContainer = $id("speed-slider-container");
 
     this.heartsContainer = $id("hearts-container")
     this.helpBtn = $id("help-btn")
@@ -367,6 +378,9 @@ class SnakeMathGame {
       this.hideInstructions()
     })
 
+    // Initialize speed control
+    this.initSpeedControl();
+
     // Close instructions modal when clicking outside
     this.instructionsModal.addEventListener("click", (e) => {
       if (e.target === this.instructionsModal) {
@@ -432,6 +446,44 @@ class SnakeMathGame {
 
   hideInstructions() {
     this.instructionsModal.classList.add("hidden")
+  }
+
+  initSpeedControl() {
+    // Set initial values
+    this.speedSlider.value = this.speedLevel;
+    this.speedValueButton.textContent = this.speedLevel;
+    
+    // Hide slider initially
+    this.speedSliderContainer.style.display = 'none';
+    
+    // Button click toggles slider visibility
+    this.speedControlButton.addEventListener('click', () => {
+      this.playSound("click");
+      if (this.speedSliderContainer.style.display === 'none') {
+        this.speedSliderContainer.style.display = 'block';
+      } else {
+        this.speedSliderContainer.style.display = 'none';
+      }
+    });
+
+    // Slider changes update speed
+    this.speedSlider.addEventListener('input', (e) => {
+      this.speedLevel = parseInt(e.target.value);
+      this.speedValueButton.textContent = this.speedLevel;
+      this.updateSnakeSpeed();
+    });
+  }
+
+  updateSnakeSpeed() {
+    // Apply speed multiplier to base speed
+    const speedMultiplier = this.speedMultipliers[this.speedLevel - 1];
+    this.speed = this.baseSpeed * speedMultiplier;
+  }
+
+  updateGameSpeed() {
+    if (this.speedValueButton) {
+      this.speedValueButton.textContent = this.speedLevel;
+    }
   }
 
   updateUI() {
@@ -1352,6 +1404,12 @@ class SnakeMathGame {
       if (this.finalCorrectElement) {
         this.finalCorrectElement.innerHTML = `Corrects: ${this.correctAnswers}/${this.targetAnswers === Infinity ? '<span class="big-infinity">♾️</span>' : this.targetAnswers}`;
       }
+      
+      // Display the correct answer for the last question
+      if (this.correctAnswerDisplay && this.currentQuestion) {
+        this.correctAnswerDisplay.textContent = `The correct answer is ${this.currentQuestion.correctAnswer}`;
+      }
+      
       // Show the overlay
       this.gameOverOverlay.classList.remove("hidden");
 
@@ -1745,7 +1803,9 @@ class SnakeMathGame {
 
     if (!this.waitingForMove && !this.paused) {
       this.moveAccumulator += delta
-      const effectiveSpeed = this.speed * (this.sprint.active && this.sprint.energy > 0 ? this.sprint.multiplier : 1)
+      const speedMultiplier = this.speedMultipliers[this.speedLevel - 1] || 1.0;
+      const baseSpeed = this.speed * speedMultiplier;
+      const effectiveSpeed = baseSpeed * (this.sprint.active && this.sprint.energy > 0 ? this.sprint.multiplier : 1)
       const moveInterval = 1 / effectiveSpeed
 
       while (this.moveAccumulator >= moveInterval) {
