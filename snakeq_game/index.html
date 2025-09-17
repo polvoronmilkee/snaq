@@ -252,7 +252,7 @@
     <!-- USERNAME MODAL -->
     <div id="username-modal" class="instructions-modal hidden">
         <div class="instructions-content pixel-border color-white">
-            <h2 class="welcome-message">Welcome! </h3>
+            <h2 class="welcome-message">Welcome! </h2>
             <p class="choose-un" id="choose-un">What would you like to call your SnaQ?</p>
             
             <div class="username-input-container">
@@ -400,7 +400,7 @@
                 <button class="menu-btn" id="sound-menu-btn">Sound: On</button>
                 <button class="menu-btn" id="music-menu-btn">Music: On</button>
                 <button class="menu-btn" onclick="window.location.href = 'shared/intro.html'">Intro</button>
-                <button class="menu-btn" id="tutorial-btn" onclick="document.getElementById('game-menu').classList.add('hidden');window.tutorialManager.startTutorial();">Tutorial</button>
+                <button class="menu-btn" id="tutorial-menu-btn" aria-label="Start tutorial from menu" onclick="document.getElementById('game-menu').classList.add('hidden');window.tutorialManager.startTutorial();">Tutorial</button>
                 <button class="menu-btn" onclick="document.getElementById('game-menu').classList.add('hidden');document.getElementById('about-modal').classList.remove('hidden');">About Us</button>
             </div>
         </div>

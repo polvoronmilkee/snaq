@@ -59,7 +59,7 @@ class SnakeEnglishGame {
         this.gameRunning = true
         this.gameState = "playing"
         this.score = 0
-        this.lives = 3
+        this.lives = 5
         this.correctAnswers = 0
         this.targetAnswers = this.gameSettings.mode === "endless" ? "♾️" : 10
         this.currentQuestion = null
@@ -507,18 +507,16 @@ class SnakeEnglishGame {
         // Set initial values
         this.speedSlider.value = this.speedLevel;
         this.speedValueButton.textContent = this.speedLevel;
-        
-        // Hide slider initially
-        this.speedSliderContainer.style.display = 'none';
-        
-        // Button click toggles slider visibility
+        // Ensure initial collapsed state and button state
+        this.speedSliderContainer.classList.remove('expanded');
+        if (this.speedControlButton) this.speedControlButton.classList.remove('expanded');
+
+        // Button click toggles slider visibility using CSS class for transition
         this.speedControlButton.addEventListener('click', () => {
             this.playSound("click");
-            if (this.speedSliderContainer.style.display === 'none') {
-                this.speedSliderContainer.style.display = 'block';
-            } else {
-                this.speedSliderContainer.style.display = 'none';
-            }
+            const expanded = this.speedSliderContainer.classList.toggle('expanded');
+            // mirror state on the button for styling
+            this.speedControlButton.classList.toggle('expanded', expanded);
         });
 
         // Slider changes update speed
@@ -683,7 +681,7 @@ class SnakeEnglishGame {
         this.currentQuestion = this.generateQuestion()
         this.apples = this.generateApples(this.currentQuestion)
         this.score = 0
-        this.lives = 3
+        this.lives = 5
         this.correctAnswers = 0
         this.gameState = "playing"
         this.gameRunning = true
@@ -1289,7 +1287,7 @@ class SnakeEnglishGame {
             this.gameOverTitle.classList.add(this.gameState === "won" ? "won" : "lost");
 
             // Update final stats
-            const maxLives = this.maxLives || 3; // fallback if not defined
+            const maxLives = this.maxLives || 5; // fallback if not defined
 
             this.finalScoreElement.textContent = `Final Score: ${this.score}`;
             if (this.finalCorrectElement) {

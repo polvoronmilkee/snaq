@@ -58,7 +58,7 @@ class SnakeGeneralKnowledgeGame {
         this.gameRunning = true
         this.gameState = "playing"
         this.score = 0
-        this.lives = 3
+        this.lives = 5
         this.correctAnswers = 0
         this.targetAnswers = this.gameSettings.mode === "endless" ? "♾️" : 10
         this.currentQuestion = null
@@ -96,6 +96,9 @@ class SnakeGeneralKnowledgeGame {
             startTime: Date.now(),
             perfectGame: true // Track if no wrong answers in this session
         }
+
+        // Track if last answer was wrong (for game over screen)
+        this.lastAnswerWasWrong = false
 
         // to track questions that have been used already
         this.usedWords = this.usedWords || {
@@ -270,11 +273,37 @@ class SnakeGeneralKnowledgeGame {
         this.bindEvents()
         this.gameLoop()
         this.initializeAudioStates()
+        // Initialize speed control UI (was missing)
+        if (typeof this.initSpeedControl === 'function') this.initSpeedControl()
 
         // Ensure countdown doesn't get stuck
         setTimeout(() => {
             this.ensureCountdownComplete();
         }, 5000); // After 5 seconds, force countdown to complete
+    }
+
+    initSpeedControl() {
+        // Set initial values
+        this.speedSlider.value = this.speedLevel;
+        this.speedValueButton.textContent = this.speedLevel;
+
+        // Ensure initial collapsed state and button state
+        this.speedSliderContainer.classList.remove('expanded');
+        if (this.speedControlButton) this.speedControlButton.classList.remove('expanded');
+
+        // Button click toggles slider visibility using CSS class for transition
+        this.speedControlButton.addEventListener('click', () => {
+            this.playSound("click");
+            const expanded = this.speedSliderContainer.classList.toggle('expanded');
+            this.speedControlButton.classList.toggle('expanded', expanded);
+        });
+
+        // Slider changes update speed
+        this.speedSlider.addEventListener('input', (e) => {
+            this.speedLevel = parseInt(e.target.value);
+            this.speedValueButton.textContent = this.speedLevel;
+            this.updateSnakeSpeed();
+        });
     }
 
     initializeAudioStates() {
@@ -545,7 +574,7 @@ class SnakeGeneralKnowledgeGame {
         )
         this.apples = this.generateApples(this.currentQuestion)
         this.score = 0
-        this.lives = 3
+        this.lives = 5
         this.correctAnswers = 0
         this.gameState = "playing"
         this.gameRunning = true
@@ -926,6 +955,7 @@ class SnakeGeneralKnowledgeGame {
         const eatenApple = this.apples.find((apple) => apple.x === head.x && apple.y === head.y)
         if (eatenApple) {
             if (eatenApple.isCorrect) {
+                this.lastAnswerWasWrong = false
                 this.score += 10
                 this.correctAnswers++
 
@@ -962,6 +992,7 @@ class SnakeGeneralKnowledgeGame {
                 )
                 this.apples = this.generateApples(this.currentQuestion)
             } else {
+                this.lastAnswerWasWrong = true
                 // Wrong answer: shield blocks once
                 if (this.hasShield) {
                     this.hasShield = false
@@ -1133,20 +1164,27 @@ class SnakeGeneralKnowledgeGame {
             this.gameOverTitle.classList.add(this.gameState === "won" ? "won" : "lost");
 
             // Update final stats
-            const maxLives = this.maxLives || 3; // fallback if not defined
+            const maxLives = this.maxLives || 5; // fallback if not defined
 
             this.finalScoreElement.textContent = `Final Score: ${this.score}`;
             if (this.finalCorrectElement) {
                 this.finalCorrectElement.innerHTML = `Corrects: ${this.correctAnswers}/${this.targetAnswers === Infinity ? '<span class="big-infinity">♾️</span>' : this.targetAnswers}`;
             }
             
-            // Show correct answer if available
+            // Show correct answer if last answer was wrong
             if (this.correctAnswerDisplay && this.currentQuestion) {
-                const correctOption = this.currentQuestion.options.find(opt => opt.isCorrect);
-                if (correctOption) {
-                    this.correctAnswerDisplay.textContent = `Correct answer is: ${correctOption.letter} ${correctOption.text}`;
-                    this.correctAnswerDisplay.style.display = 'block';
-                    this.correctAnswerDisplay.style.visibility = 'visible';
+                if (this.lastAnswerWasWrong) {
+                    const correctIndex = this.currentQuestion.options.indexOf(this.currentQuestion.correctAnswer);
+                    const correctLetter = correctIndex >= 0 ? String.fromCharCode(65 + correctIndex) : '';
+                    const correctText = this.currentQuestion.correctAnswer || '';
+                    if (correctLetter || correctText) {
+                        this.correctAnswerDisplay.textContent = `Correct answer is: ${correctLetter} ${correctText}`.trim();
+                        this.correctAnswerDisplay.style.display = 'block';
+                        this.correctAnswerDisplay.style.visibility = 'visible';
+                    }
+                } else {
+                    this.correctAnswerDisplay.textContent = '';
+                    this.correctAnswerDisplay.style.display = 'none';
                 }
             }
             

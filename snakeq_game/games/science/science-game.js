@@ -3,8 +3,11 @@ import { generateQuestion } from "../../shared/utils/questionsUtils.js"
 
 function $id(id) { return document.getElementById(id) }
 class SnakeScienceGame {
+    // Track if last answer was wrong (for game over screen)
     constructor() {
-        // Game constants
+    // Track if last answer was wrong (for game over screen)
+    this.lastAnswerWasWrong = false;
+    // Game constants
         this.gameSettings = JSON.parse(localStorage.getItem("gameSettings"))
 
         // Skin system
@@ -57,7 +60,7 @@ class SnakeScienceGame {
         this.gameRunning = true
         this.gameState = "playing"
         this.score = 0
-        this.lives = 3
+        this.lives = 5
         this.correctAnswers = 0
         this.targetAnswers = this.gameSettings.mode === "endless" ? "♾️" : 10
         this.currentQuestion = null
@@ -125,7 +128,6 @@ class SnakeScienceGame {
         this.initDOM()
         this.init()
     }
-
 
     loadSprites() {
         const skinPath = `../../assets/images/snake-skins/${this.selectedSkin}_snake`
@@ -430,18 +432,15 @@ class SnakeScienceGame {
         // Set initial values
         this.speedSlider.value = this.speedLevel;
         this.speedValueButton.textContent = this.speedLevel;
-        
-        // Hide slider initially
-        this.speedSliderContainer.style.display = 'none';
-        
-        // Button click toggles slider visibility
+        // Ensure initial collapsed state and button state
+        this.speedSliderContainer.classList.remove('expanded');
+        if (this.speedControlButton) this.speedControlButton.classList.remove('expanded');
+
+        // Button click toggles slider visibility using CSS class for transition
         this.speedControlButton.addEventListener('click', () => {
             this.playSound("click");
-            if (this.speedSliderContainer.style.display === 'none') {
-                this.speedSliderContainer.style.display = 'block';
-            } else {
-                this.speedSliderContainer.style.display = 'none';
-            }
+            const expanded = this.speedSliderContainer.classList.toggle('expanded');
+            this.speedControlButton.classList.toggle('expanded', expanded);
         });
 
         // Slider changes update speed
@@ -576,7 +575,7 @@ class SnakeScienceGame {
             
         this.apples = this.generateApples(this.currentQuestion)
         this.score = 0
-        this.lives = 3
+        this.lives = 5
         this.correctAnswers = 0
         this.gameState = "playing"
         this.gameRunning = true
@@ -936,6 +935,7 @@ class SnakeScienceGame {
         const eatenApple = this.apples.find((apple) => apple.x === head.x && apple.y === head.y)
         if (eatenApple) {
             if (eatenApple.isCorrect) {
+                this.lastAnswerWasWrong = false;
                 this.score += 10
                 this.correctAnswers++
                 this.addToTotalPoints(10) // Add points to total points system
@@ -973,6 +973,7 @@ class SnakeScienceGame {
                 )
                 this.apples = this.generateApples(this.currentQuestion)
             } else {
+                this.lastAnswerWasWrong = true;
                 // Wrong answer: shield blocks once
                 if (this.hasShield) {
                     this.hasShield = false
@@ -1029,6 +1030,52 @@ class SnakeScienceGame {
         this.snake = newSnake
         this.updateUI()
         this.inputLocked = false
+    }
+
+    // Show Game Over screen
+    showGameOver() {
+        if (this.gameOverTitle && this.finalScoreElement && this.gameOverOverlay) {
+            // Update the title
+            this.gameOverTitle.textContent =
+                this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀";
+
+            // Toggle classes for styling
+            this.gameOverTitle.classList.remove("won", "lost");
+            this.gameOverTitle.classList.add(this.gameState === "won" ? "won" : "lost");
+
+            // Update final stats
+            const maxLives = this.maxLives || 5; // fallback if not defined
+
+            this.finalScoreElement.textContent = `Final Score: ${this.score}`;
+            if (this.finalCorrectElement) {
+                this.finalCorrectElement.innerHTML = `Corrects: ${this.correctAnswers}/${this.targetAnswers === Infinity ? '<span class=\"big-infinity\">♾️</span>' : this.targetAnswers}`;
+            }
+            // Show correct answer ONLY if last answer was wrong
+            if (this.correctAnswerDisplay && this.currentQuestion) {
+                if (this.lastAnswerWasWrong) {
+                    const correctIndex = this.currentQuestion.options.indexOf(this.currentQuestion.correctAnswer);
+                    const correctLetter = String.fromCharCode(65 + correctIndex); // A, B, C
+                    this.correctAnswerDisplay.textContent = `Correct answer is: ${correctLetter} ${this.currentQuestion.correctAnswer}`;
+                    this.correctAnswerDisplay.style.display = 'block';
+                    this.correctAnswerDisplay.style.visibility = 'visible';
+                } else {
+                    this.correctAnswerDisplay.textContent = "";
+                    this.correctAnswerDisplay.style.display = 'none';
+                }
+            }
+            // Show the overlay
+            this.gameOverOverlay.classList.remove("hidden");
+
+            // Submit score to the leaderboard
+            const username = localStorage.getItem('playerUsername');
+            if (username && window.LeaderboardManager) {
+                const leaderboardManager = new window.LeaderboardManager();
+                leaderboardManager.submitScore(username, this.score, 'science');
+            }
+
+            // Submit statistics for achievements
+            this.submitGameStatistics();
+        }
     }
 
     updateShieldUI() {
@@ -1091,86 +1138,6 @@ class SnakeScienceGame {
             this.shieldPickup = { x, y }
             this.shieldSpawned = true
             this.showNotification("Shield appeared!✨", "correct")
-        }
-    }
-
-
-
-
-
-    showGameOver() {
-        // Stop timer
-        if (this.timerInterval) {
-            clearInterval(this.timerInterval);
-            this.timerInterval = null;
-        }
-
-        // Play appropriate sound
-        if (this.gameState === "won") {
-            this.playSound("youWon");
-        } else {
-            this.playSound("snakeDies");
-        }
-
-        // Update HUD values
-        if (this.scoreElement) this.scoreElement.textContent = this.score;
-        if (this.livesElement) this.livesElement.textContent = this.lives;
-        if (this.correctElement) this.correctElement.textContent = this.correctAnswers;
-
-        // Update hearts in background
-        if (this.heartsContainer) {
-            const hearts = this.heartsContainer.querySelectorAll(".heart");
-            hearts.forEach((heart, index) => {
-                if (index < this.lives) {
-                    heart.classList.add("filled");
-                    heart.classList.remove("empty");
-                } else {
-                    heart.classList.remove("filled");
-                    heart.classList.add("empty");
-                }
-            });
-        }
-
-        // Show Game Over screen
-        if (this.gameOverTitle && this.finalScoreElement && this.gameOverOverlay) {
-            // Update the title
-            this.gameOverTitle.textContent =
-                this.gameState === "won" ? "You Won! 🎉" : "Game Over 💀";
-
-            // Toggle classes for styling
-            this.gameOverTitle.classList.remove("won", "lost");
-            this.gameOverTitle.classList.add(this.gameState === "won" ? "won" : "lost");
-
-            // Update final stats
-            const maxLives = this.maxLives || 3; // fallback if not defined
-
-            this.finalScoreElement.textContent = `Final Score: ${this.score}`;
-            if (this.finalCorrectElement) {
-                this.finalCorrectElement.innerHTML = `Corrects: ${this.correctAnswers}/${this.targetAnswers === Infinity ? '<span class="big-infinity">♾️</span>' : this.targetAnswers}`;
-            }
-            
-            // Show correct answer if available
-            if (this.correctAnswerDisplay && this.currentQuestion) {
-                const correctOption = this.currentQuestion.options.find(opt => opt.isCorrect);
-                if (correctOption) {
-                    this.correctAnswerDisplay.textContent = `Correct answer is: ${correctOption.letter} ${correctOption.text}`;
-                    this.correctAnswerDisplay.style.display = 'block';
-                    this.correctAnswerDisplay.style.visibility = 'visible';
-                }
-            }
-            
-            // Show the overlay
-            this.gameOverOverlay.classList.remove("hidden");
-
-            // Submit score to the leaderboard
-            const username = localStorage.getItem('playerUsername');
-            if (username && window.LeaderboardManager) {
-                const leaderboardManager = new window.LeaderboardManager();
-                leaderboardManager.submitScore(username, this.score, 'science');
-            }
-
-            // Submit statistics for achievements
-            this.submitGameStatistics();
         }
     }
 

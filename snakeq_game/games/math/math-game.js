@@ -58,7 +58,7 @@ class SnakeMathGame {
     this.gameRunning = true
     this.gameState = "playing"
     this.score = 0
-    this.lives = 3
+    this.lives = 5
     this.correctAnswers = 0
     this.targetAnswers = this.gameSettings.mode === "endless" ? "♾️" : 10
     this.currentQuestion = null
@@ -454,18 +454,15 @@ class SnakeMathGame {
     // Set initial values
     this.speedSlider.value = this.speedLevel;
     this.speedValueButton.textContent = this.speedLevel;
-    
-    // Hide slider initially
-    this.speedSliderContainer.style.display = 'none';
-    
-    // Button click toggles slider visibility
+    // Ensure initial collapsed state and button state
+    this.speedSliderContainer.classList.remove('expanded');
+    if (this.speedControlButton) this.speedControlButton.classList.remove('expanded');
+
+    // Button click toggles slider visibility using CSS class for transition
     this.speedControlButton.addEventListener('click', () => {
       this.playSound("click");
-      if (this.speedSliderContainer.style.display === 'none') {
-        this.speedSliderContainer.style.display = 'block';
-      } else {
-        this.speedSliderContainer.style.display = 'none';
-      }
+      const expanded = this.speedSliderContainer.classList.toggle('expanded');
+      this.speedControlButton.classList.toggle('expanded', expanded);
     });
 
     // Slider changes update speed
@@ -657,7 +654,7 @@ class SnakeMathGame {
     this.currentQuestion = this.generateQuestion()
     this.apples = this.generateApples(this.currentQuestion)
     this.score = 0
-    this.lives = 3
+    this.lives = 5
     this.correctAnswers = 0
     this.gameState = "playing"
     this.gameRunning = true
@@ -1333,8 +1330,8 @@ handleKeyDown(e) {
 
         // Endless reward: every 10 correct answers -> +1 life, or shield if full
         if (this.gameSettings.mode === 'endless' && this.correctAnswers >= this.nextLifeRewardAt) {
-          // Determine max lives (default 3)
-          const maxLives = this.maxLives || 3
+          // Determine max lives (default 5)
+          const maxLives = this.maxLives || 5
           if (this.lives < maxLives) {
             this.lives = Math.min(maxLives, this.lives + 1)
             if (this.sounds?.goodJob) this.playSound('goodJob')
@@ -1551,7 +1548,7 @@ handleKeyDown(e) {
       this.gameOverTitle.classList.add(this.gameState === "won" ? "won" : "lost");
 
       // Update final stats
-      const maxLives = this.maxLives || 3; // fallback if not defined
+      const maxLives = this.maxLives || 5; // fallback if not defined
 
       this.finalScoreElement.textContent = `Final Score: ${this.score}`;
       if (this.finalCorrectElement) {
