@@ -3048,6 +3048,140 @@ body::before {
   }
 }
 
+@media (max-width: 480px) {
+  .game-container {
+    padding: 60px 1px 1px;
+  }
+
+  .game-board {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-top: auto;
+}
+
+#options-display {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: left;
+  gap: 8px;
+
+  flex-wrap: nowrap;
+  max-width: 100%;         /* ✅ prevent overflowing horizontally */
+  box-sizing: border-box;  /* ✅ ensure padding is counted in width */
+
+}
+
+#options-display > * {
+  flex: 1 1 auto;           /* ✅ let each child shrink/grow as needed */
+  min-width: 80px;           /* (optional) set a safe minimum size */
+  max-width: 100%;
+}
+
+
+
+  .option-text {
+    font-size: 9px;
+    text-align: left;
+  }
+
+ #question-display{
+    font-size: 10px !important;
+
+  }
+
+  .logo {
+    font-size: 1.5rem;
+  }
+
+  .pixel-hud {
+    gap: 4px;
+  }
+
+  .pixel-stat {
+    font-size: 10px;
+  }
+
+  #game-canvas {
+    width: 100%;
+    height: auto;
+  }
+
+  .category-buttons {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .option-item {
+    padding: 2px 4px;
+  }
+
+  .apple-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 7px;
+  }
+
+  .big-infinity {
+    font-size: 12px;
+  }
+
+  
+  .game-actions {
+    gap: 12px;
+  }
+
+    .apple-sprite {
+    height: 24px;          /* smaller icon */
+    margin-right: 6px;      /* less spacing */
+  }
+
+  .apple-letter {
+    font-size: 8px;          /* smaller text inside */
+    text-shadow: 0.5px 0.5px 0px #000; /* thinner shadow for small text */
+  }
+
+  .skin-shop-btn,
+  .leaderboard-btn,
+  .achievements-btn {
+    min-width: 80px;
+    font-size: 9px;
+    padding: 6px 4px;
+  }
+
+  .inventory-tab {
+    font-size: 7px;
+    padding: 4px 8px;
+  }
+
+  .menu-btn {
+    font-size: 9px;
+    padding: 8px;
+  }
+
+  .achievement-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .achievement-item {
+    gap: 6px;
+  }
+
+  .menu-content {
+    width: 95%;
+    padding: 15px;
+  }
+
+    #dpad {
+    transform: scale(0.8);    /* shrink the whole D-pad */
+    transform-origin: bottom left;
+    margin: 10px;               /* optional spacing from edges */
+  }
+
+}
+
 
 #notification {
   position: fixed;
