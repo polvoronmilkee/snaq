@@ -1397,6 +1397,8 @@ class LandingPage {
         { id: 'metalTile', name: 'Luxe Metal', desc: 'From high-quality, sturdy metal', price: 150 },
         // { id: 'free-palestineTile', name: 'Free Palestine', desc: 'From the river to the sea!', price: 5 },
         // { id: 'minecraft2', name: 'Minecraft', desc: 'A minecraft inspired tile', price: 150 },
+        { id: 'purpleTile', name: 'Purple Majesty', desc: 'A regal purple fit for royalty', price: 100 },
+        { id: 'magentaTile', name: 'Pink Fuchsia', desc: 'A vibrant pink for the bold and beautiful', price: 100 },
       ]
     };
 
