@@ -3974,9 +3974,10 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 
 /* Correct answer display styling */
 .correct-answer-text {
-    color: #32cd32 !important;
+    color: white !important;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+
 }
 
 #speed-control-button.expanded {
