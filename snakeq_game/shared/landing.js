@@ -1457,17 +1457,33 @@ class LandingPage {
 
   // Leaderboard functionality
   async showLeaderboard() {
-    const leaderboardModal = $$("leaderboard-modal");
+    this.playClickSound();
+    const leaderboardModal = document.getElementById("leaderboard-modal");
     if (leaderboardModal) {
+      // Remove hidden class first
       leaderboardModal.classList.remove("hidden");
-      await this.loadLeaderboard(this.currentLeaderboardCategory);
+      // Force reflow to ensure the element is in the DOM
+      void leaderboardModal.offsetWidth;
+      // Add show class to trigger the transition
+      leaderboardModal.classList.add("show");
+      
+      // Load leaderboard data when shown
+      if (this.leaderboardManager) {
+        this.loadLeaderboard(this.currentLeaderboardCategory);
+      }
     }
   }
 
   hideLeaderboard() {
-    const leaderboardModal = $$("leaderboard-modal");
+    this.playClickSound();
+    const leaderboardModal = document.getElementById("leaderboard-modal");
     if (leaderboardModal) {
-      leaderboardModal.classList.add("hidden");
+      // Remove show class to trigger the fade out transition
+      leaderboardModal.classList.remove("show");
+      // After the transition completes, add the hidden class
+      setTimeout(() => {
+        leaderboardModal.classList.add("hidden");
+      }, 300); // Match this with the CSS transition duration
     }
   }
 
@@ -1903,17 +1919,29 @@ class LandingPage {
   }
 
   showAchievements() {
+    this.playClickSound();
     const achievementsModal = document.getElementById("achievements-modal");
     if (achievementsModal) {
+      // Remove hidden class first
       achievementsModal.classList.remove("hidden");
+      // Force reflow to ensure the element is in the DOM
+      void achievementsModal.offsetWidth;
+      // Add show class to trigger the transition
+      achievementsModal.classList.add("show");
       this.renderAchievements();
     }
   }
 
   hideAchievements() {
+    this.playClickSound();
     const achievementsModal = document.getElementById("achievements-modal");
     if (achievementsModal) {
-      achievementsModal.classList.add("hidden");
+      // Remove show class to trigger the fade out transition
+      achievementsModal.classList.remove("show");
+      // After the transition completes, add the hidden class
+      setTimeout(() => {
+        achievementsModal.classList.add("hidden");
+      }, 300); // Match this with the CSS transition duration
     }
   }
 

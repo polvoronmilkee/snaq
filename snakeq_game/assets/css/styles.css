@@ -1475,6 +1475,18 @@ body::before {
   transition: opacity 260ms cubic-bezier(.2,.8,.2,1), transform 260ms cubic-bezier(.2,.8,.2,1);
 }
 
+.instructions-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+.instructions-modal.hidden {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .instructions-content {
   background: linear-gradient(145deg, #F4A460, #DEB887);
   border: 3px solid #CD853F;
@@ -2547,7 +2559,6 @@ body::before {
   font-family: "Press Start 2P", monospace;
   font-size: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
   image-rendering: pixelated;
