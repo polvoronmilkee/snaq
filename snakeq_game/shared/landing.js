@@ -1949,7 +1949,7 @@ class LandingPage {
         <div class="achievement-reward">
           ${isUnlocked ? 
             (isClaimed ? 
-              '<span class="claimed">✅ Claimed</span>' : 
+              '<span class="claimed">Claimed</span>' : 
               `<button class="claim-btn pixel-btn" data-achievement="${achievement.id}">
                 Claim ${achievement.reward} coins
               </button>`
