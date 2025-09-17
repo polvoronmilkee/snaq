@@ -4015,6 +4015,120 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 }
 }
 
+/* Speed Control Styles */
+.speed-control-section {
+    margin: 2px 0px;
+    position: relative;
+}
+
+#speed-control-button {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Correct answer display styling */
+.correct-answer-text {
+    color: white !important;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+
+}
+
+#speed-control-button.expanded {
+    background: #dbf46c;
+    border-color: #228b22;
+    color: #000;
+}
+
+.speed-slider-container {
+    max-height: 0 !important;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+    border: 3px solid #332002;
+    border-top: none;
+    margin-top: 0;
+    padding: 0;
+    opacity: 0;
+    visibility: hidden;
+    border-width: 0;
+}
+
+.speed-slider-container.expanded {
+  /* increased to ensure the slider and labels fit comfortably */
+  max-height: 120px;
+  padding: 30px;
+    opacity: 1;
+    visibility: visible;
+    display: flex;
+}
+
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.speed-label {
+    font-size: 10px;
+    color: #2a2a2a;
+    min-width: 40px;
+    text-align: center;
+}
+
+.speed-slider {
+  flex: 1;
+  height: 18px; /* slightly taller so the thumb doesn't get clipped */
+    -webkit-appearance: none;
+    appearance: none;
+    background: #333;
+    outline: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.speed-slider { margin: 0 10px; }
+
+
+.speed-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #32cd32;
+    cursor: pointer;
+    box-shadow: -407px 0 0 400px #4CAF50;
+}
+
+.speed-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #32cd32;
+    cursor: pointer;
+    border: none;
+}
+
+.speed-display {
+    text-align: center;
+    font-size: 12px;
+    color: #32cd32;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.speed-button-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
 #options-display {
   display: flex;
   flex-direction: row;   
