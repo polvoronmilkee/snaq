@@ -4325,3 +4325,14 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+.age-note {
+  position: fixed;
+  bottom: 5px;
+  left: 8px;
+  font-size: 9px;
+  color: #ffffff;
+  opacity: 0.6;
+  pointer-events: none; /* so it won't block clicks */
+  z-index: 9999;
+}
