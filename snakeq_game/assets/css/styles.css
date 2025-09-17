@@ -22,6 +22,59 @@
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 1), 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
+/* Speed Control Styles */
+.speed-control-section { margin: 2px 0; position: relative; }
+
+#speed-control-button { width: 100%; text-align: center; margin-bottom: 8px; transition: all 0.25s ease; cursor: pointer; }
+#speed-control-button.expanded { background: #dbf46c; border-color: #228b22; color: #000; }
+
+.correct-answer-text { color: #32cd32 !important; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+
+.speed-slider-container {
+  max-height: 0;
+  height: 0;
+  overflow: hidden;
+  /* smoother slide + fade using transform and opacity */
+  transform: translateY(-8px);
+  /* use CSS variable for consistent timing across JS and CSS */
+  --slider-transition-ms: 320ms;
+  transition: transform var(--slider-transition-ms) cubic-bezier(.2,.8,.2,1), max-height var(--slider-transition-ms) cubic-bezier(.2,.8,.2,1), padding var(--slider-transition-ms) cubic-bezier(.2,.8,.2,1), opacity calc(var(--slider-transition-ms) - 80ms) ease;
+  border: 3px solid #332002;
+  border-top: none;
+  margin-top: 0;
+  padding: 0;
+  opacity: 0;
+  visibility: hidden;
+  border-width: 0;
+  display: none; 
+}
+
+.speed-slider-container.expanded {
+  display: flex;
+  max-height: 200px;
+  height: auto;
+  padding: 12px 16px;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  flex-direction: column;
+  gap: 8px;
+}
+
+.speed-control { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.speed-label { font-size: 12px; color: #2a2a2a; min-width: 40px; text-align: center; }
+
+.speed-slider { flex: 1; height: 22px; -webkit-appearance: none; appearance: none; background: #333; outline: none; border-radius: 10px; overflow: hidden; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); margin: 0 10px; }
+.speed-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #32cd32; cursor: pointer; box-shadow: 0 0 0 0 rgba(0,0,0,0.2); }
+.speed-slider::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #32cd32; cursor: pointer; border: none; }
+
+.speed-display { text-align: center; font-size: 12px; color: #32cd32; font-weight: bold; margin-top: 8px; }
+.speed-button-text { display: flex; align-items: center; justify-content: center; gap: 5px; }
+
+#options-display { display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 8px; }
+#options-display > * { line-height: 1.6; padding: 10px 14px; text-align: center; }
+
+
 .welcome-message {
   color: green;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 1);
@@ -1416,6 +1469,10 @@ body::before {
   align-items: center;
   justify-content: center;
   z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.98);
+  transition: opacity 260ms cubic-bezier(.2,.8,.2,1), transform 260ms cubic-bezier(.2,.8,.2,1);
 }
 
 .instructions-content {
@@ -3958,119 +4015,6 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 }
 }
 
-/* Speed Control Styles */
-.speed-control-section {
-    margin: 2px 0px;
-    position: relative;
-}
-
-#speed-control-button {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 8px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-/* Correct answer display styling */
-.correct-answer-text {
-    color: #32cd32 !important;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-}
-
-#speed-control-button.expanded {
-    background: #dbf46c;
-    border-color: #228b22;
-    color: #000;
-}
-
-.speed-slider-container {
-    max-height: 0 !important;
-    overflow: hidden;
-    transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
-    border: 3px solid #332002;
-    border-top: none;
-    margin-top: 0;
-    padding: 0;
-    opacity: 0;
-    visibility: hidden;
-    border-width: 0;
-}
-
-.speed-slider-container.expanded {
-  /* increased to ensure the slider and labels fit comfortably */
-  max-height: 120px;
-  padding: 30px;
-    opacity: 1;
-    visibility: visible;
-    display: flex;
-}
-
-.speed-control {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.speed-label {
-    font-size: 10px;
-    color: #2a2a2a;
-    min-width: 40px;
-    text-align: center;
-}
-
-.speed-slider {
-  flex: 1;
-  height: 18px; /* slightly taller so the thumb doesn't get clipped */
-    -webkit-appearance: none;
-    appearance: none;
-    background: #333;
-    outline: none;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
-}
-
-.speed-slider { margin: 0 10px; }
-
-
-.speed-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #32cd32;
-    cursor: pointer;
-    box-shadow: -407px 0 0 400px #4CAF50;
-}
-
-.speed-slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #32cd32;
-    cursor: pointer;
-    border: none;
-}
-
-.speed-display {
-    text-align: center;
-    font-size: 12px;
-    color: #32cd32;
-    font-weight: bold;
-    margin-top: 8px;
-}
-
-.speed-button-text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-
 #options-display {
   display: flex;
   flex-direction: row;   
@@ -4098,4 +4042,18 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   line-height: 1.6;         
   padding: 10px 14px;        
   text-align: center;
+}
+
+/* Visible state for modal (JS adds .show to animate in before removing .hidden) */
+.instructions-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+/* keep .hidden for instant removal fallback */
+.instructions-modal.hidden {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }

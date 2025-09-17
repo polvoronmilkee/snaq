@@ -283,24 +283,47 @@ class SnakeGeneralKnowledgeGame {
     }
 
     initSpeedControl() {
+        // Guard DOM
+        if (!this.speedSlider || !this.speedValueButton || !this.speedSliderContainer || !this.speedControlButton) {
+            return;
+        }
+
         // Set initial values
         this.speedSlider.value = this.speedLevel;
         this.speedValueButton.textContent = this.speedLevel;
 
-        // Ensure initial collapsed state and button state
-        this.speedSliderContainer.classList.remove('expanded');
-        if (this.speedControlButton) this.speedControlButton.classList.remove('expanded');
+        // Ensure initial collapsed state and button state (hidden by default)
+            this.speedSliderContainer.classList.remove('expanded');
+                this.speedSliderContainer.style.display = 'none';
+        this.speedControlButton.classList.remove('expanded');
 
         // Button click toggles slider visibility using CSS class for transition
         this.speedControlButton.addEventListener('click', () => {
             this.playSound("click");
-            const expanded = this.speedSliderContainer.classList.toggle('expanded');
-            this.speedControlButton.classList.toggle('expanded', expanded);
+            const isExpanded = this.speedSliderContainer.classList.contains('expanded');
+
+            if (!isExpanded) {
+                // Show then force reflow so transition applies
+                this.speedSliderContainer.style.display = 'flex';
+                // force reflow
+                // eslint-disable-next-line no-unused-expressions
+                this.speedSliderContainer.offsetHeight;
+                this.speedSliderContainer.classList.add('expanded');
+                this.speedControlButton.classList.add('expanded');
+            } else {
+                // Collapse and hide after transition
+                this.speedSliderContainer.classList.remove('expanded');
+                this.speedControlButton.classList.remove('expanded');
+                // hide after transition (match CSS transition + buffer)
+                setTimeout(() => {
+                    this.speedSliderContainer.style.display = 'none';
+                }, 360);
+            }
         });
 
         // Slider changes update speed
         this.speedSlider.addEventListener('input', (e) => {
-            this.speedLevel = parseInt(e.target.value);
+            this.speedLevel = parseInt(e.target.value, 10);
             this.speedValueButton.textContent = this.speedLevel;
             this.updateSnakeSpeed();
         });
@@ -447,14 +470,30 @@ class SnakeGeneralKnowledgeGame {
         this.escMenuActive = false;
         this.paused = false;
         $id("esc-menu").classList.add("hidden");
+        try {
+            this.speedSliderContainer.classList.remove('expanded');
+            this.speedControlButton && this.speedControlButton.classList.remove('expanded');
+            setTimeout(() => {
+                this.speedSliderContainer.style.display = 'none';
+            }, 360);
+        } catch (e) {}
     }
 
     showInstructions() {
-        this.instructionsModal.classList.remove("hidden")
+        try {
+            this.instructionsModal.classList.remove('hidden');
+            this.instructionsModal.offsetHeight;
+            this.instructionsModal.classList.add('show');
+        } catch (e) {}
     }
 
     hideInstructions() {
-        this.instructionsModal.classList.add("hidden")
+        try {
+            this.instructionsModal.classList.remove('show');
+            setTimeout(() => {
+                this.instructionsModal.classList.add('hidden');
+            }, 300);
+        } catch (e) {}
     }
 
     updateUI() {
