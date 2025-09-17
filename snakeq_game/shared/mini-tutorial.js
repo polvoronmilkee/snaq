@@ -1,30 +1,40 @@
 class MiniTutorial {
     constructor(gameInstance) {
-        this.gameInstance = gameInstance;
+        this.gameInstance = gameInstance || {}; // Make it work even without gameInstance
         this.steps = [];
         this.currentStep = 0;
         this.overlay = null;
         this.highlight = null;
         this.messageBox = null;
         this.retryCount = 0;
-        this.hasSeenTutorial = localStorage.getItem('miniTutorialSeen') === 'true';
+        
+        // Reset the tutorial state when the tutorial is created
+        // This ensures the tutorial shows every time the page loads
+        this.hasSeenTutorial = false;
         
         this.init();
     }
 
     init() {
-        console.log('MiniTutorial init - hasSeenTutorial:', this.hasSeenTutorial);
-        console.log('localStorage miniTutorialSeen:', localStorage.getItem('miniTutorialSeen'));
+        console.log('MiniTutorial init - always showing tutorial');
         
-        if (this.hasSeenTutorial) {
-            console.log('Tutorial already seen, skipping...');
-            return;
-        }
-        
+        // Always show the tutorial, no conditions
         console.log('Setting up mini tutorial...');
         this.createElements();
         this.setupSteps();
         this.showStep(0);
+        
+        // Pause the game if it's running
+        if (this.gameInstance && this.gameInstance.togglePause) {
+            if (this.gameInstance.gameState === 'playing') {
+                console.log('Pausing game for tutorial...');
+                this.wasPaused = false;
+                this.gameInstance.togglePause();
+            } else {
+                this.wasPaused = true;
+            }
+        }
+        
     }
 
     createElements() {
@@ -65,11 +75,18 @@ class MiniTutorial {
         const buttons = document.createElement('div');
         buttons.className = 'tutorial-buttons';
         
+        // Add skip button
+        const skipButton = document.createElement('button');
+        skipButton.className = 'tutorial-btn tutorial-skip';
+        skipButton.textContent = 'Skip';
+        skipButton.addEventListener('click', () => this.completeTutorial());
+        
         const nextButton = document.createElement('button');
         nextButton.className = 'tutorial-btn tutorial-next';
         nextButton.textContent = 'Next';
         nextButton.addEventListener('click', () => this.nextStep());
         
+        buttons.appendChild(skipButton);
         buttons.appendChild(nextButton);
         footer.appendChild(progress);
         footer.appendChild(buttons);
@@ -232,8 +249,14 @@ class MiniTutorial {
     completeTutorial() {
         console.log('Completing tutorial...');
         
-        // Mark tutorial as seen
-        localStorage.setItem('miniTutorialSeen', 'true');
+        // Don't set the flag in localStorage anymore since we want to show it every time
+        // Just update the instance variable
+        this.hasSeenTutorial = true;
+        
+        // Still update the game instance if it exists
+        if (this.gameInstance) {
+            this.gameInstance.tutorialCompleted = true;
+        }
         
         // Add fade out animation
         if (this.overlay) {
@@ -263,13 +286,13 @@ class MiniTutorial {
                 this.messageBox.parentNode.removeChild(this.messageBox);
             }
             
-            // Resume game if it was paused
-            if (this.gameInstance) {
-                if (this.gameInstance.gameState === 'paused') {
+            // Resume game if it was paused by us
+            if (this.gameInstance && this.gameInstance.togglePause) {
+                if (this.gameInstance.gameState === 'paused' && !this.wasPaused) {
                     console.log('Resuming game...');
                     this.gameInstance.togglePause();
                 } else {
-                    console.log('Game not paused, no need to resume');
+                    console.log('Game was already paused or no need to resume');
                 }
             } else {
                 console.log('No game instance found');
