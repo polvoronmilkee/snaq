@@ -1314,7 +1314,7 @@ if (eatenApple.type === 'boss') {
     usedPositions.has(`${sx},${sy}`) ||
     this.isCellTooCloseToHead(sx, sy, this.minAppleDistanceFromHead)
   );
-});
+};
 
   this.apples.push({
     x: sx,
