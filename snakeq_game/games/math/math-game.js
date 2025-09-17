@@ -79,14 +79,14 @@ class SnakeMathGame {
     // Boss challenge state (Endless mode)
     this.inBossChallenge = false
     this.bossAppleSpawned = false
-    this.nextBossAt = 5 // spawn boss after this many correct answers, then every +5
+    this.nextBossAt = 10 // spawn boss after this many correct answers, then every +10
     // Endless rewards: every N correct answers grant life or shield
     this.lifeRewardInterval = 10
     this.nextLifeRewardAt = 10
 
     // Minimum spawn distance for apples from the snake head (in grid cells)
     // Helps prevent immediate accidental collisions after eating
-    this.minAppleDistanceFromHead = 3
+    this.minAppleDistanceFromHead = 4
 
     this.baseSpeed = this.difficultySettings.baseSpeed
     this.speed = this.baseSpeed
@@ -2268,5 +2268,26 @@ document.addEventListener("mouseup", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  new SnakeMathGame()
+  console.log('DOMContentLoaded - Initializing game...');
+  const game = new SnakeMathGame()
+  
+  // Check if tutorial should be shown
+  const hasSeenTutorial = localStorage.getItem('miniTutorialSeen') === 'true';
+  console.log('Tutorial check - hasSeenTutorial:', hasSeenTutorial);
+  
+  if (!hasSeenTutorial) {
+    console.log('Setting up tutorial for first-time player...');
+    // Small delay to ensure all elements are rendered
+    setTimeout(() => {
+      console.log('Creating MiniTutorial instance...');
+      const miniTutorial = new MiniTutorial(game);
+      // Pause the game during tutorial
+      if (game.gameState === 'playing') {
+        console.log('Pausing game for tutorial...');
+        game.togglePause();
+      }
+    }, 1000);
+  } else {
+    console.log('Skipping tutorial - already seen');
+  }
 })

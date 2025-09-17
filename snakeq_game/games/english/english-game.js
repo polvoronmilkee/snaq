@@ -73,6 +73,10 @@ class SnakeEnglishGame {
         this.countdownActive = false
         this.escMenuActive = false
 
+        // Minimum spawn distance for apples from the snake head (in grid cells)
+        // Helps prevent immediate accidental collisions after eating
+        this.minAppleDistanceFromHead = 4
+
         this.baseSpeed = this.difficultySettings.baseSpeed
         this.speed = this.baseSpeed
         this.speedIncrement = this.difficultySettings.speedIncrease
@@ -1114,7 +1118,8 @@ class SnakeEnglishGame {
             } while (
                 usedPositions.has(`${x},${y}`) ||
                 this.snake.some((segment) => segment.x === x && segment.y === y) ||
-                this.cellIntersectsRect(x, y, this.sprintBar)
+                this.cellIntersectsRect(x, y, this.sprintBar) ||
+                this.isCellTooCloseToHead(x, y, this.minAppleDistanceFromHead)
             )
 
             usedPositions.add(`${x},${y}`)
@@ -1923,6 +1928,20 @@ class SnakeEnglishGame {
         const cX2 = cellX + cellW
         const cY2 = cellY + cellH
         return !(cX2 <= rect.x || rX2 <= cellX || cY2 <= rect.y || rY2 <= cellY)
+    }
+
+    // Helper: ensure apples don't spawn too close to the snake's head
+    // Uses wrap-aware distance since the board wraps at edges
+    isCellTooCloseToHead(gridX, gridY, minDistance) {
+        if (!this.snake || this.snake.length === 0) return false
+        const head = this.snake[0]
+        const dx = Math.abs(gridX - head.x)
+        const dy = Math.abs(gridY - head.y)
+        // wrap-aware (toroidal) distance on each axis
+        const wrapDx = Math.min(dx, this.GRID_WIDTH - dx)
+        const wrapDy = Math.min(dy, this.GRID_HEIGHT - dy)
+        const manhattan = wrapDx + wrapDy
+        return manhattan <= (minDistance ?? 2)
     }
 
     addToTotalPoints(points) {
