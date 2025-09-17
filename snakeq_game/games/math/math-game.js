@@ -2271,23 +2271,16 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log('DOMContentLoaded - Initializing game...');
   const game = new SnakeMathGame()
   
-  // Check if tutorial should be shown
-  const hasSeenTutorial = localStorage.getItem('miniTutorialSeen') === 'true';
-  console.log('Tutorial check - hasSeenTutorial:', hasSeenTutorial);
-  
-  if (!hasSeenTutorial) {
-    console.log('Setting up tutorial for first-time player...');
-    // Small delay to ensure all elements are rendered
-    setTimeout(() => {
-      console.log('Creating MiniTutorial instance...');
-      const miniTutorial = new MiniTutorial(game);
-      // Pause the game during tutorial
-      if (game.gameState === 'playing') {
-        console.log('Pausing game for tutorial...');
-        game.togglePause();
-      }
-    }, 1000);
-  } else {
-    console.log('Skipping tutorial - already seen');
-  }
+  // Always show the tutorial when the game loads
+  console.log('Setting up tutorial...');
+  // Small delay to ensure all elements are rendered
+  setTimeout(() => {
+    console.log('Creating MiniTutorial instance...');
+    const miniTutorial = new MiniTutorial(game);
+    // Pause the game during tutorial
+    if (game.gameState === 'playing') {
+      console.log('Pausing game for tutorial...');
+      game.togglePause();
+    }
+  }, 1000);
 })
