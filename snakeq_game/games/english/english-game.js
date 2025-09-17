@@ -287,6 +287,9 @@ class SnakeEnglishGame {
         this.gameLoop()
         this.initializeAudioStates()
 
+        // Ensure help fallbacks are installed (keyboard shortcut, MutationObserver)
+        try { this._installHelpFallbacks(); } catch (e) {}
+
         // Ensure countdown doesn't get stuck
         setTimeout(() => {
             this.ensureCountdownComplete();
@@ -369,7 +372,70 @@ class SnakeEnglishGame {
         })
         this.confirmRestartBtn.addEventListener("click", () => this.confirmRestart())
         this.cancelRestartBtn.addEventListener("click", () => this.cancelRestart())
-        this.helpBtn.addEventListener("click", () => this.showInstructions())
+        // Bind help button (header). Use a delegation fallback in case the element is not bound
+        if (this.helpBtn) {
+            this.helpBtn.addEventListener("click", () => this.showInstructions());
+        } else {
+            // Delegation fallback: listen for clicks on the document and trigger when header help is clicked
+            document.addEventListener('click', (e) => {
+                try {
+                    const target = e.target;
+                    if (!target) return;
+                    // direct id match or a child inside the button
+                    if (target.id === 'help-btn' || (target.closest && target.closest('#help-btn'))) {
+                        this.showInstructions();
+                    }
+                } catch (err) {}
+            });
+        }
+        // Ensure a one-time delegation fallback exists (guards against timing and DOM replacement issues)
+        if (!this._helpDelegationAttached) {
+            this._helpDelegationAttached = true;
+            document.addEventListener('click', (e) => {
+                try {
+                    const t = e.target;
+                    if (!t) return;
+                    if (t.id === 'help-btn' || (t.closest && t.closest('#help-btn'))) {
+                        this.showInstructions();
+                    }
+                } catch (err) {}
+            });
+        }
+        // Additional capturing-phase listener: catches clicks before other handlers that may stop propagation
+        if (!this._helpCaptureAttached) {
+            this._helpCaptureAttached = true;
+            document.addEventListener('click', (e) => {
+                try {
+                    const t = e.target;
+                    if (!t) return;
+                    if (t.id === 'help-btn' || (t.closest && t.closest('#help-btn'))) {
+                        // call showInstructions on capture to ensure it runs even if other handlers call stopPropagation
+                        this.showInstructions();
+                    }
+                } catch (err) {}
+            }, true); // useCapture = true
+        }
+
+        // elementsFromPoint fallback: checks stacked elements under the click coordinates and triggers help
+        if (!this._helpElementsFromPointAttached) {
+            this._helpElementsFromPointAttached = true;
+            document.addEventListener('click', (e) => {
+                try {
+                    const x = e.clientX;
+                    const y = e.clientY;
+                    if (typeof document.elementsFromPoint === 'function') {
+                        const els = document.elementsFromPoint(x, y);
+                        for (const el of els) {
+                            if (!el) continue;
+                            if (el.id === 'help-btn' || (el.closest && el.closest('#help-btn'))) {
+                                this.showInstructions();
+                                break;
+                            }
+                        }
+                    }
+                } catch (err) {}
+            });
+        }
         this.soundBtn.addEventListener("click", () => this.toggleSound())
         this.musicBtn.addEventListener("click", () => this.toggleMusic())
         this.restartBtn.addEventListener("click", () => this.showRestartConfirm())
@@ -497,30 +563,108 @@ class SnakeEnglishGame {
         this.escMenuActive = false;
         this.paused = false;
         $id("esc-menu").classList.add("hidden");
+        // collapse speed control if open to avoid leftover visible UI
+        try {
+            this.speedSliderContainer.classList.remove('expanded');
+            this.speedControlButton && this.speedControlButton.classList.remove('expanded');
+            setTimeout(() => {
+                this.speedSliderContainer.style.display = 'none';
+            }, 360);
+        } catch (e) {}
     }
 
     showInstructions() {
-        this.instructionsModal.classList.remove("hidden")
+        // Debug: report invocation
+        try {
+            console.log('[English] showInstructions called', { hasModal: !!this.instructionsModal });
+            // Animate modal: remove hidden, add show
+            this.instructionsModal.classList.remove('hidden');
+            // force reflow then add show so CSS transition runs
+            // eslint-disable-next-line no-unused-expressions
+            this.instructionsModal.offsetHeight;
+            this.instructionsModal.classList.add('show');
+        } catch (e) { console.warn('[English] showInstructions error', e); }
     }
 
     hideInstructions() {
-        this.instructionsModal.classList.add("hidden")
+        try {
+            this.instructionsModal.classList.remove('show');
+            // wait for CSS transition then hide fully
+            setTimeout(() => {
+                this.instructionsModal.classList.add('hidden');
+            }, 300);
+        } catch (e) { }
+    }
+
+    // Extra robustness: keyboard shortcut and MutationObserver to attach help button handler if DOM changes
+    _installHelpFallbacks() {
+        // keyboard shortcut (H or ?)
+        if (!this._helpKeyInstalled) {
+            this._helpKeyInstalled = true;
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'h' || e.key === 'H' || e.key === '?') {
+                    this.showInstructions();
+                }
+            });
+        }
+
+        // MutationObserver to watch for help button being added/changed
+        if (!this._helpObserverInstalled) {
+            this._helpObserverInstalled = true;
+            const observer = new MutationObserver((mutations) => {
+                for (const m of mutations) {
+                    if (m.addedNodes) {
+                        for (const n of m.addedNodes) {
+                            try {
+                                if (n.nodeType === 1) {
+                                    const found = n.id === 'help-btn' ? n : n.querySelector && n.querySelector('#help-btn');
+                                    if (found) {
+                                        try { found.addEventListener('click', () => this.showInstructions()); } catch(e){}
+                                    }
+                                }
+                            } catch (e) {}
+                        }
+                    }
+                }
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+            // store for potential later disconnect
+            this._helpObserver = observer;
+        }
     }
 
     initSpeedControl() {
         // Set initial values
         this.speedSlider.value = this.speedLevel;
         this.speedValueButton.textContent = this.speedLevel;
-        // Ensure initial collapsed state and button state
-        this.speedSliderContainer.classList.remove('expanded');
-        if (this.speedControlButton) this.speedControlButton.classList.remove('expanded');
 
-        // Button click toggles slider visibility using CSS class for transition
+        // Ensure initial collapsed state and button state
+        try {
+            this.speedSliderContainer.classList.remove('expanded');
+            this.speedSliderContainer.style.display = 'none';
+            if (this.speedControlButton) this.speedControlButton.classList.remove('expanded');
+        } catch (e) { }
+
+        // Button click toggles slider visibility with a small JS-driven show/hide to avoid CSS overrides
         this.speedControlButton.addEventListener('click', () => {
             this.playSound("click");
-            const expanded = this.speedSliderContainer.classList.toggle('expanded');
-            // mirror state on the button for styling
-            this.speedControlButton.classList.toggle('expanded', expanded);
+            const isExpanded = this.speedSliderContainer.classList.contains('expanded');
+            if (!isExpanded) {
+                // show then add class to trigger transition
+                this.speedSliderContainer.style.display = 'flex';
+                // force reflow so CSS transition runs
+                // eslint-disable-next-line no-unused-expressions
+                this.speedSliderContainer.offsetHeight;
+                this.speedSliderContainer.classList.add('expanded');
+                this.speedControlButton.classList.add('expanded');
+            } else {
+                // remove class to trigger collapse, then hide after transition
+                    this.speedSliderContainer.classList.remove('expanded');
+                    this.speedControlButton.classList.remove('expanded');
+                    setTimeout(() => {
+                        this.speedSliderContainer.style.display = 'none';
+                    }, 360);
+            }
         });
 
         // Slider changes update speed
