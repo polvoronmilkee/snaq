@@ -1565,7 +1565,7 @@ body::before {
   background: #4b692f;
   color: #fff;
   padding: 12px 20px;
-  border: 2px solid #fff;
+  border: 2px solid #31481c;
   font-size: 18px;
   text-align: center;
   margin-bottom: 10px;
@@ -1575,6 +1575,7 @@ body::before {
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  box-shadow: 0 0 10px #31481c;
 }
 
 
