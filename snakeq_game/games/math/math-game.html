@@ -172,6 +172,7 @@
                         <div class="heart filled"></div>
                         <div class="heart filled"></div>
                     </div>
+                    <div class="shield-indicator" id="shield-indicator"></div>
                 </div>
                 <div class="correct pixel-stat">
                     <img src="../../assets/images/icons/correct-icon.png" alt="Correct" class="stat-icon" />
@@ -197,6 +198,7 @@
                 <div id="game-over-overlay" class="overlay hidden">
                     <div class="overlay-content pixel-border">
                         <h2 id="game-over-title">Game Over</h2>
+                        <p id="correct-answer-display" class="correct-answer-text"></p>
                         <p id="final-score">Final Score: 0</p>
                         <p id="final-correct">Corrects: 0</p>
                         <button id="play-again-btn" class="btn pixel-btn btn-green">Play Again</button>
@@ -254,6 +256,21 @@
             <h3>Game Paused</h3>
             <div class="menu-options">
                 <button id="resume-btn" class="btn pixel-btn btn-green">Resume Game</button>
+                
+                <!-- Snake Speed Control -->
+                <div class="speed-control-section">
+                    <button class="pixel-btn btn-brown" id="speed-control-button">
+                        <span class="speed-button-text">Snake Speed: <span id="speed-value-button">5</span></span>
+                    </button>
+                    <div class="speed-slider-container" id="speed-slider-container">
+                        <div class="speed-control">
+                            <span class="speed-label">Slow</span>
+                            <input type="range" id="speed-slider" min="1" max="10" step="1" value="5" class="speed-slider">
+                            <span class="speed-label">Fast</span>
+                        </div>
+                    </div>
+                </div>
+                
                 <button id="help-btn-esc" class="btn pixel-btn">How to Play?</button>
                 <button id="main-menu-btn" class="btn pixel-btn btn-red">Main Menu</button>
             </div>
