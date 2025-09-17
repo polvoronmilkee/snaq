@@ -1401,6 +1401,7 @@ class LandingPage {
         { id: 'magentaTile', name: 'Pink Fuchsia', desc: 'A vibrant pink for the bold and beautiful', price: 100 },
         { id: 'matchaTile', name: 'Matcha Bliss', desc: 'For the matcha lovers', price: 100 },
         { id: 'coffeeTile', name: 'Cappuccino Candy', desc: 'A taste of sweet coffee candy', price: 100 },
+        { id: 'bananachocTile', name: 'Choco Banana Waffle', desc: 'A delightful chocolate chip waffle', price: 100 },
       
       ]
     };
