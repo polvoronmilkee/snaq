@@ -1306,15 +1306,6 @@ handleKeyDown(e) {
           this.snake.forEach((s) => usedPositions.add(`${s.x},${s.y}`));
           this.apples.forEach((a) => usedPositions.add(`${a.x},${a.y}`));
 
-  let sx, sy;
-  do {
-    sx = this.randInt(this.GRID_WIDTH - 1);
-    sy = this.randInt(this.GRID_HEIGHT - 1);
-  } while (
-    usedPositions.has(`${sx},${sy}`) ||
-    this.isCellTooCloseToHead(sx, sy, this.minAppleDistanceFromHead)
-  );
-};
           let sx, sy;
           do {
             sx = this.randInt(this.GRID_WIDTH - 1);
