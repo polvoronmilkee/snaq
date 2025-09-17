@@ -1400,7 +1400,7 @@ class LandingPage {
         { id: 'purpleTile', name: 'Purple Majesty', desc: 'A regal purple fit for royalty', price: 100 },
         { id: 'magentaTile', name: 'Pink Fuchsia', desc: 'A vibrant pink for the bold and beautiful', price: 100 },
         { id: 'matchaTile', name: 'Matcha Bliss', desc: 'For the matcha lovers', price: 100 },
-        { id: 'coffeeTile', name: 'Capupucino Candy', desc: 'A taste of sweet coffee candy', price: 100 },
+        { id: 'coffeeTile', name: 'Cappuccino Candy', desc: 'A taste of sweet coffee candy', price: 100 },
       
       ]
     };
