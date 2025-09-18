@@ -738,7 +738,7 @@ class SnakeMathGame {
     // Reset boss challenge state
     this.inBossChallenge = false
     this.bossAppleSpawned = false
-    this.nextBossAt = 5
+    this.nextBossAt = 10
 
     // Reset endless rewards
     this.lifeRewardInterval = 10
@@ -1323,7 +1323,7 @@ handleKeyDown(e) {
         ) {
           this.apples = []
           this.spawnBossApple()
-          this.nextBossAt += 5
+          this.nextBossAt += 10
         }
 
         if (eatenApple.type === 'boss') {
@@ -2283,4 +2283,5 @@ document.addEventListener("DOMContentLoaded", () => {
       game.togglePause();
     }
   }, 1000);
-})
+});
+
