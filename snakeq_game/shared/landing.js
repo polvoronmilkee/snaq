@@ -7,7 +7,7 @@ class LandingPage {
     this.selectedCategory = null;
     this.selectedMode = null;
     this.selectedDifficulty = null;
-    this.backgroundMusic = new Audio("assets/sounds/bg-music.mp3");
+    this.backgroundMusic = new Audio("assets/sounds/landing/bg-music.mp3");
     this.backgroundMusic.loop = true;
     this.musicEnabled = localStorage.getItem("musicEnabled") !== "false";
     this.soundEnabled = localStorage.getItem("soundEnabled") !== "false"; // default true
