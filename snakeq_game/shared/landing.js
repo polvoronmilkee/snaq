@@ -2,6 +2,8 @@ function $$(id) {
   return document.getElementById(id);
 }
 
+// HIIII!!!! :>
+
 class LandingPage {
   constructor() {
     this.selectedCategory = null;
