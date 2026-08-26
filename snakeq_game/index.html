@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <script type="module" src="database/firebase-config.js"></script>
+    <script type="module" src="database/supabase-config.js"></script>
 </head>
 
 <body>
@@ -252,15 +252,15 @@
     <div id="username-modal" class="instructions-modal hidden">
         <div class="instructions-content pixel-border color-white">
             <h2 class="welcome-message">Welcome! </h2>
-            <p class="choose-un" id="choose-un">What would you like to call your SnaQ?</p>
+            <p class="choose-un" id="choose-un">Enter your name to play!</p>
             
             <div class="username-input-container">
-                <input type="text" id="username-input" class="pixel-input" placeholder="Enter username..." maxlength="20">
+                <input type="text" id="username-input" class="pixel-input" placeholder="Your name..." maxlength="20">
                 <div class="username-error hidden" id="username-error">Please enter a valid username (3-20 characters)</div>
             </div>
 
             <div class="username-actions">
-                <button class="pixel-btn" id="save-username">Save Username</button>
+                <button class="pixel-btn" id="save-username">Play! 🎮</button>
             </div>
         </div>
     </div>

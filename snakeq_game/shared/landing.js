@@ -113,12 +113,12 @@ class LandingPage {
 
   async initializeLeaderboard() {
     try {
-      // Initialize Firebase leaderboard manager
+      // Initialize Supabase leaderboard manager
       if (window.LeaderboardManager) {
         this.leaderboardManager = new window.LeaderboardManager();
         console.log('Leaderboard system initialized');
       } else {
-        console.warn('LeaderboardManager not available - Firebase may not be loaded');
+        console.warn('LeaderboardManager not available - Supabase may not be loaded');
       }
     } catch (error) {
       console.error('Failed to initialize leaderboard:', error);
@@ -653,8 +653,10 @@ class LandingPage {
     btn.classList.add("selected");
     this.selectedCategory = btn.dataset.category;
 
-    // Go directly to game mode modal instead of enabling start button
-    this.showGameModeModal();
+    // Exhibit mode: always ask for username before starting a game
+    // This ensures each student playing enters their own name
+    this.pendingCategoryAfterUsername = true;
+    this.showUsernameModal();
   }
 
   showGameModeModal() {
@@ -1516,7 +1518,7 @@ class LandingPage {
     const leaderboardList = $$("leaderboard-list");
     if (!leaderboardList || !this.leaderboardManager) {
       if (leaderboardList) {
-        leaderboardList.innerHTML = '<div class="error-message">Leaderboard unavailable - Firebase not connected</div>';
+        leaderboardList.innerHTML = '<div class="error-message">Leaderboard unavailable - database not connected</div>';
       }
       return;
     }
@@ -1634,6 +1636,11 @@ class LandingPage {
     const usernameModal = $$("username-modal");
     if (usernameModal) {
       usernameModal.classList.remove("hidden");
+      // Force reflow to ensure the element is in the DOM
+      void usernameModal.offsetWidth;
+      // Add show class to trigger the transition (required by CSS)
+      usernameModal.classList.add("show");
+
       const usernameInput = $$("username-input");
       if (usernameInput) {
         // Pre-fill with current username if changing
@@ -1646,9 +1653,9 @@ class LandingPage {
       }
 
       // Update modal title based on context
-      const modalTitle = usernameModal.querySelector("h3");
+      const modalTitle = usernameModal.querySelector("h2");
       if (modalTitle) {
-        modalTitle.textContent = this.username ? "🎮 Change Your Username" : "🎮 Enter Your Username";
+        modalTitle.textContent = this.username ? "Welcome back!" : "Welcome!";
       }
     }
   }
@@ -1656,8 +1663,15 @@ class LandingPage {
   hideUsernameModal() {
     const usernameModal = $$("username-modal");
     if (usernameModal) {
-      usernameModal.classList.add("hidden");
+      // Remove show class to trigger fade out transition
+      usernameModal.classList.remove("show");
+      // After transition, add hidden class
+      setTimeout(() => {
+        usernameModal.classList.add("hidden");
+      }, 300);
     }
+    // Clear pending category if user cancels
+    this.pendingCategoryAfterUsername = false;
   }
 
   saveUsername() {
@@ -1682,7 +1696,7 @@ class LandingPage {
       // Re-enable button on error
       if (saveBtn) {
         saveBtn.disabled = false;
-        saveBtn.textContent = "Save Username";
+        saveBtn.textContent = "Play! \ud83c\udfae";
       }
       return;
     }
@@ -1693,7 +1707,7 @@ class LandingPage {
       // Re-enable button on error
       if (saveBtn) {
         saveBtn.disabled = false;
-        saveBtn.textContent = "Save Username";
+        saveBtn.textContent = "Play! \ud83c\udfae";
       }
       return;
     }
@@ -1708,6 +1722,9 @@ class LandingPage {
     // Note: Scores are now submitted from individual games to their specific categories
     // Overall leaderboard is calculated automatically by summing all category scores
 
+    // Check if we need to proceed to game mode modal after saving username
+    const shouldShowGameMode = this.pendingCategoryAfterUsername;
+
     // Close modal and show success
     this.hideUsernameModal();
     this.showNotification(`Welcome, ${username}! 🎮`);
@@ -1716,7 +1733,12 @@ class LandingPage {
     // Re-enable button for future use
     if (saveBtn) {
       saveBtn.disabled = false;
-      saveBtn.textContent = "Save Username";
+      saveBtn.textContent = "Play! \ud83c\udfae";
+    }
+
+    // If this was triggered from category selection, proceed to game mode modal
+    if (shouldShowGameMode && this.selectedCategory) {
+      this.showGameModeModal();
     }
   }
 
